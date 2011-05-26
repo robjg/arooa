@@ -25,15 +25,21 @@ implements ArooaDocFactory {
 
 	final private ArooaSession session;
 	
+	final private ArooaDescriptor descriptor;
+	
 	public SessionArooaDocFactory(ArooaSession session) {
+		this(session, session.getArooaDescriptor());
+	}	
+	
+	public SessionArooaDocFactory(ArooaSession session, 
+			ArooaDescriptor descriptor) {
 		this.session = session;
+		this.descriptor = descriptor;
 	}	
 	
 	@Override
 	public WriteableArooaDoc createBeanDocs(ArooaType arooaType) {
 		
-    	ArooaDescriptor descriptor = session.getArooaDescriptor();
-    	
     	ElementMappings mappings = descriptor.getElementMappings();
 		
     	MappingsContents content = mappings.getBeanDoc(arooaType);
@@ -57,8 +63,6 @@ implements ArooaDocFactory {
 		
 		WriteableBeanDoc beanDoc = new WriteableBeanDoc();
 		
-		ArooaDescriptor descriptor = session.getArooaDescriptor();
-		
 		String prefix = descriptor.getPrefixFor(element.getUri());
 
 		beanDoc.setPrefix(prefix);
@@ -79,12 +83,15 @@ implements ArooaDocFactory {
 	
 	public Iterable<WriteablePropertyDoc> createPropertyDocs(ArooaClass forClass) {
 
-		ArooaDescriptor descriptor = session.getArooaDescriptor();
-		
 		PropertyAccessor accessor = session.getTools().getPropertyAccessor();
 		
 		ArooaBeanDescriptor beanDescriptor = 
-			descriptor.getBeanDescriptor(forClass, accessor);
+				descriptor.getBeanDescriptor(forClass, accessor);
+		
+		if (beanDescriptor == null) {
+			throw new NullPointerException("No BeanDescriptor for " +
+					forClass);
+		}
 		
 		BeanOverview overview = forClass.getBeanOverview(accessor);
 

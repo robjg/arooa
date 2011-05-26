@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.oddjob.OurDirs;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaType;
+import org.oddjob.arooa.ElementMappings;
 import org.oddjob.arooa.life.InstantiationContext;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaElement;
@@ -56,11 +57,12 @@ public class URLDescriptorFactoryTest extends TestCase {
 		
 		ArooaDescriptor descriptor = test.createDescriptor(classLoader);
 				
-		ArooaClass result = descriptor.getElementMappings(
-				).mappingFor(new ArooaElement("ours"),
+		ElementMappings mappings = descriptor.getElementMappings();
+		ArooaClass result = mappings.mappingFor(new ArooaElement("ours"),
 						new InstantiationContext(ArooaType.COMPONENT, null));
 				
 		assertEquals(classLoader, 
 				((SimpleArooaClass) result).forClass().getClassLoader());
+		
 	}	
 }

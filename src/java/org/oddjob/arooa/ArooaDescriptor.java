@@ -29,8 +29,7 @@ public interface ArooaDescriptor extends BeanDescriptorProvider {
 	/**
 	 * Provide element to class name mappings for components.
 	 * 
-	 * @param element The element.
-	 * @return The class name or null if there isn't one.
+	 * @return ElementMappings. Must not be null.
 	 */
 	public ElementMappings getElementMappings();
 	

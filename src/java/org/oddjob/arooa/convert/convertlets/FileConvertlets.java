@@ -93,18 +93,22 @@ public class FileConvertlets implements ConversionProvider {
 		registry.register(File[].class, String.class, 
 				new FinalConvertlet<File[], String>() {
 			public String convert(File[] from) {
-				StringBuilder path = new StringBuilder();
-				for (File file : from) {
-					if (path.length() > 0) {
-						path.append(File.pathSeparator);
-					}
-					path.append(file.toString());
-				}
-				return path.toString();
+				return filesToPath(from);
 			};
 		});
 	}
 
+	public String filesToPath(File[] from) {
+		StringBuilder path = new StringBuilder();
+		for (File file : from) {
+			if (path.length() > 0) {
+				path.append(File.pathSeparator);
+			}
+			path.append(file.toString());
+		}
+		return path.toString();		
+	}
+	
 	public File[] pathToFiles(String from) {
 		String[] strings = from.split(File.pathSeparator);
 		File[] files = new File[strings.length];
