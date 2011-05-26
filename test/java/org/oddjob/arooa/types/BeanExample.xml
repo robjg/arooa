@@ -1,0 +1,11 @@
+<bean class="org.oddjob.arooa.types.PersonBean" name="John">
+    <friends>
+        <list>
+            <values>
+                <value value="Rod"/>
+                <value value="Jane"/>
+                <value value="Freddy"/>
+            </values>
+        </list>
+    </friends>
+</bean>

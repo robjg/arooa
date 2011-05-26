@@ -1,0 +1,36 @@
+<arooa namespace="http://rgordon.co.uk/test">
+    <conversions>
+        <value
+            value="org.oddjob.arooa.deploy.ArooaDescriptorTestBase$FruitConversions"/>
+    </conversions>
+    <components>
+        <is element="week"
+            className="org.oddjob.arooa.deploy.ArooaDescriptorTestBase$Week">
+            <properties>
+                <is type="COMPONENT" name="days"/>
+            </properties>
+        </is>
+        <is element="monday"
+            className="org.oddjob.arooa.deploy.ArooaDescriptorTestBase$Monday"/>
+        <is element="tuesday"
+            className="org.oddjob.arooa.deploy.ArooaDescriptorTestBase$Tuesday"/>
+    </components>
+    <values>
+        <is element="snack"
+            className="org.oddjob.arooa.deploy.ArooaDescriptorTestBase$HealthySnack">
+            <interceptor>
+                <bean
+                    class="org.oddjob.arooa.parsing.interceptors.OnePropertyInterceptor"
+                    property="fruit"/>
+            </interceptor>
+        </is>
+        <is element="apple"
+            className="org.oddjob.arooa.deploy.ArooaDescriptorTestBase$Apple">
+            <properties>
+                <is type="TEXT" name="description"/>
+            </properties>
+        </is>
+        <is element="orange"
+            className="org.oddjob.arooa.deploy.ArooaDescriptorTestBase$Orange"/>
+    </values>
+</arooa>

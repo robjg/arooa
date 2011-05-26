@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry kind="src" path="test/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-logging.jar"/>
+	<classpathentry exported="true" kind="lib" path="test/lib/junit.jar"/>
+	<classpathentry exported="true" kind="lib" path="test/lib/xmlunit-1.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2.16.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/javax.inject.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-beanutils-1.8.3.jar" sourcepath="C:/rob/java/commons-beanutils-1.8.3/commons-beanutils-1.8.3-sources.jar"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>

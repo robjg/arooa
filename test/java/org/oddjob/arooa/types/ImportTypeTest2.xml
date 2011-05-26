@@ -1,0 +1,5 @@
+<bean class='org.oddjob.arooa.types.ImportTypeTest$Apple'>
+	<colour>
+		<value value='red' />
+	</colour>
+</bean>

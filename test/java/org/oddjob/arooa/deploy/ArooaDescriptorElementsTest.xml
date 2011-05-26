@@ -1,0 +1,37 @@
+<arooa:descriptor xmlns:arooa="http://rgordon.co.uk/oddjob/arooa"
+    namespace="http://rgordon.co.uk/test">
+    <conversions>
+        <value
+            value="org.oddjob.arooa.deploy.ArooaDescriptorTestBase$FruitConversions"/>
+    </conversions>
+    <components>
+        <arooa:bean-def element="week"
+            className="org.oddjob.arooa.deploy.ArooaDescriptorTestBase$Week">
+            <properties>
+                <arooa:property name="days" type="COMPONENT"/>
+            </properties>
+        </arooa:bean-def>
+        <arooa:bean-def element="monday"
+            className="org.oddjob.arooa.deploy.ArooaDescriptorTestBase$Monday"/>
+        <arooa:bean-def element="tuesday"
+            className="org.oddjob.arooa.deploy.ArooaDescriptorTestBase$Tuesday"/>
+    </components>
+    <values>
+        <arooa:bean-def element="snack"
+            className="org.oddjob.arooa.deploy.ArooaDescriptorTestBase$HealthySnack">
+            <interceptor>
+                <bean
+                    class="org.oddjob.arooa.parsing.interceptors.OnePropertyInterceptor"
+                    property="fruit"/>
+            </interceptor>
+        </arooa:bean-def>
+        <arooa:bean-def element="apple"
+            className="org.oddjob.arooa.deploy.ArooaDescriptorTestBase$Apple">
+            <properties>
+                <arooa:property name="description" type="TEXT"/>
+            </properties>
+        </arooa:bean-def>
+        <arooa:bean-def element="orange"
+            className="org.oddjob.arooa.deploy.ArooaDescriptorTestBase$Orange"/>
+    </values>
+</arooa:descriptor>

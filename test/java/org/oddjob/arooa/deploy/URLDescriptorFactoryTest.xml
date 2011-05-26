@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<arooa:descriptor xmlns:arooa="http://rgordon.co.uk/oddjob/arooa">
+	<components>
+		<arooa:bean-def element="ours" className="org.oddjob.arooa.deploy.OurComponent" />
+	</components>
+</arooa:descriptor>

@@ -1,0 +1,5 @@
+<test>
+	<a foo="${my.foo}">
+		<b ba="${my.ba}"/>
+	</a>
+</test>

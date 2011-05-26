@@ -1,0 +1,7 @@
+<snack>
+    <fruit>
+        <is key='morning' type='apple' colour='red'/>
+        <is key='afternoon' type='grapes' colour='white'/>
+    </fruit>
+</snack>
+        

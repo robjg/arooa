@@ -1,0 +1,164 @@
+package org.oddjob.arooa.parsing;
+
+import java.io.IOException;
+
+import org.custommonkey.xmlunit.XMLTestCase;
+import org.custommonkey.xmlunit.XMLUnit;
+import org.oddjob.arooa.ArooaParseException;
+import org.oddjob.arooa.ConfigurationHandle;
+import org.oddjob.arooa.deploy.annotations.ArooaComponent;
+import org.oddjob.arooa.reflect.ArooaPropertyException;
+import org.oddjob.arooa.registry.ChangeHow;
+import org.oddjob.arooa.standard.StandardArooaParser;
+import org.oddjob.arooa.xml.XMLConfiguration;
+import org.xml.sax.SAXException;
+
+public class HandleConfigurationSessionTest extends XMLTestCase {
+
+	public static interface Fruit {
+		
+	}
+	
+	public static class Apple implements Fruit {
+		
+	}
+	
+	public static class Orange implements Fruit {
+		
+	}
+	
+	public static class Snack {
+		
+		Fruit fruit;
+
+		public Fruit getFruit() {
+			return fruit;
+		}
+
+		@ArooaComponent
+		public void setFruit(Fruit fruit) {
+			this.fruit = fruit;
+		}
+	}
+	
+	class OurListener implements SessionStateListener {
+		boolean modified;
+		
+		public void sessionModifed(ConfigSessionEvent event) {
+			modified = true;
+		}
+		
+		public void sessionSaved(ConfigSessionEvent event) {
+			modified = false;
+		}
+	}
+	
+	public void testModified() 
+	throws ArooaParseException, SAXException, 
+			IOException, ArooaPropertyException {
+		
+		XMLConfiguration config = new XMLConfiguration("TEST", 
+				"<snack>" +
+				" <fruit>" +
+				"  <bean id='fruit' class='" + Apple.class.getName() + "'/>" +
+				" </fruit>" +
+				"</snack>");
+
+		Snack root = new Snack();
+		
+		StandardArooaParser parser = new StandardArooaParser(root);
+
+		ConfigurationHandle handle = parser.parse(config);
+		
+		HandleConfigurationSession test = 
+			new HandleConfigurationSession(parser.getSession(), handle);
+		
+		OurListener listener = new OurListener();
+		
+		test.addSessionStateListener(listener);
+		
+		assertFalse(test.isModified());
+		assertFalse(listener.modified);
+		
+		DragPoint dragPoint = test.dragPointFor(
+				parser.getSession().getBeanRegistry().lookup("fruit"));
+		
+		DragTransaction trn = dragPoint.beginChange(ChangeHow.FRESH);
+		dragPoint.cut();
+		trn.commit();
+		
+		assertTrue(test.isModified());
+		assertTrue(listener.modified);
+		
+		test.save();
+		
+		assertFalse(test.isModified());
+		assertFalse(listener.modified);
+		
+		DragPoint rootPoint = test.dragPointFor(
+				root);
+		
+		trn = rootPoint.beginChange(ChangeHow.FRESH);
+		rootPoint.paste(0, 
+				"  <bean id='fruit' class='" + Orange.class.getName() + "'/>");
+		trn.commit();
+		
+		assertTrue(test.isModified());
+		assertTrue(listener.modified);
+		
+		test.save();
+		
+		assertFalse(test.isModified());
+		assertFalse(listener.modified);
+		
+		XMLUnit.setIgnoreWhitespace(true);
+
+		String expected = 
+			"<snack>" +
+			" <fruit>" +
+			"  <bean id='fruit' class='" + Orange.class.getName() + "'/>" +
+			" </fruit>" +
+			"</snack>";
+
+		System.out.println(config.getSavedXml());
+		
+		assertXMLEqual(expected, config.getSavedXml());
+	}
+
+	public void testModifiedWhenReplaceRoot() throws ArooaParseException {
+		
+		XMLConfiguration config = new XMLConfiguration("TEST", 
+				"<snack/>");
+
+		Snack root = new Snack();
+		
+		StandardArooaParser parser = new StandardArooaParser(root);
+
+		ConfigurationHandle handle = parser.parse(config);
+		
+		HandleConfigurationSession test = 
+			new HandleConfigurationSession(parser.getSession(), handle);
+		
+		OurListener listener = new OurListener();
+		
+		test.addSessionStateListener(listener);
+		
+		assertFalse(test.isModified());
+		assertFalse(listener.modified);
+		
+		ArooaContext context = handle.getDocumentContext();
+		ArooaContext parent = context.getParent();
+		
+		CutAndPasteSupport.replace(parent, context, config);
+		
+		
+		assertTrue(test.isModified());
+		assertTrue(listener.modified);
+		
+		test.save();
+		
+		assertFalse(test.isModified());
+		assertFalse(listener.modified);
+		
+	}
+}

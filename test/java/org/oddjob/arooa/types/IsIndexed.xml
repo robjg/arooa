@@ -1,0 +1,7 @@
+<snack>
+    <fruit>
+        <is type='apple' colour='red'/>
+        <is type='pear' colour='green'/>
+    </fruit>
+</snack>
+        
