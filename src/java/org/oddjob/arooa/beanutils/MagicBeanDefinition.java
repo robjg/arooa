@@ -1,10 +1,10 @@
 package org.oddjob.arooa.beanutils;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.commons.beanutils.DynaClass;
-import org.apache.commons.beanutils.DynaProperty;
 import org.oddjob.arooa.reflect.ArooaClass;
 
 /**
@@ -60,12 +60,11 @@ public class MagicBeanDefinition {
 			throw new IllegalStateException(
 					"A Magic Bean Definition must have a name.");
 		}
+
+		Map<String, Class<?>> types = new LinkedHashMap<String, Class<?>>();
 		
-		DynaProperty[] dynas = new DynaProperty[properties.size()];
-		
-		for (int i = 0; i < dynas.length; ++i) {
-			MagicBeanProperty prop = properties.get(i);
-			
+		for (MagicBeanProperty prop : properties) {
+						
 			String className = prop.getType();
 			Class<?> cl;
 			if (className == null) {
@@ -80,11 +79,9 @@ public class MagicBeanDefinition {
 				}
 			}
 			
-			dynas[i] = new DynaProperty(prop.getName(), cl);
+			types.put(prop.getName(), cl);
 		}
-		
-		DynaClass dynaClass = new MagicBeanClass(dynas, name);
-		
-		return new DynaArooaClass(dynaClass, MagicBean.class);
+				
+		return new MagicBeanClassCreator().create(name, types);
 	}
 }

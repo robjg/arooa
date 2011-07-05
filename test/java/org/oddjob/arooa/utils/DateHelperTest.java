@@ -70,7 +70,7 @@ public class DateHelperTest extends TestCase {
 
 		TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"));
 		
-		m = DateHelper.parseTime("10:47:56:123");
+		m = DateHelper.parseTime("10:47:56.123");
 		logger.debug("" + new Date(m));	
 		assertEquals(10 * HOUR + 47 * MINUTE + 56 * SECOND + 123, m);
 		

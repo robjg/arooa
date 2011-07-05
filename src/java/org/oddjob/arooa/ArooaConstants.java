@@ -18,7 +18,7 @@ public class ArooaConstants {
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
 	public static final String DATE_FORMAT_TZ = "yyyy-MM-dd z";
 	
-	public static final String TIME_FORMAT1 = "HH:mm:ss:SSS";
+	public static final String TIME_FORMAT1 = "HH:mm:ss.SSS";
 	public static final String TIME_FORMAT2 = "HH:mm:ss";
 	public static final String TIME_FORMAT3 = "HH:mm";
 

@@ -62,7 +62,7 @@ public class SqlDateConvertletsTest extends TestCase {
 		String result = path.convert(new java.sql.Date(
 				DateHelper.parseDate("2010-07-02").getTime()), null);
 		
-		assertEquals("2010-07-02 00:00:00:000", result);
+		assertEquals("2010-07-02 00:00:00.000", result);
 	}
 
 	

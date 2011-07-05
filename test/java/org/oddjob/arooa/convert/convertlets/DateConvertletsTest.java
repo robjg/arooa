@@ -32,9 +32,9 @@ public class DateConvertletsTest extends TestCase {
 								Convertlet<F, T> convertlet) throws ConvertletException{
 							assertEquals(Date.class, from);
 							assertEquals(String.class, to);
-							assertEquals("2007-12-25 12:57:00:000", 
+							assertEquals("2007-12-25 12:57:00.000", 
 									convertlet.convert(from.cast(parse("2007-12-25 12:57"))).toString());
-							assertEquals("2007-12-25 00:00:00:000", 
+							assertEquals("2007-12-25 00:00:00.000", 
 									convertlet.convert(from.cast(parse("2007-12-25"))).toString());
 						};
 					},
