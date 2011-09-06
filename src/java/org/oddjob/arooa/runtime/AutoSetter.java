@@ -84,10 +84,10 @@ public class AutoSetter {
 						property + " of " + classIdentifier);
 			}
 			
-			ServiceFinder finder = new CompositeServiceFinder(new ServiceFinder[] {
+			ServiceFinder finder = new CompositeServiceFinder(
 					new DirectoryServiceFinder(session.getBeanRegistry()),
 					new ComponentsServiceFinder(session.getComponentPool())
-			});
+				);
 			
 			Object value = finder.find(
 					overview.getPropertyType(property), 

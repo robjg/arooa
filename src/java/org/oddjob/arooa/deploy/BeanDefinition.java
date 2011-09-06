@@ -114,5 +114,9 @@ public class BeanDefinition {
 		return false;
 	}
 	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + ", element=" + element;
+	}
 }
 

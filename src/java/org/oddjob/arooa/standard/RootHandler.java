@@ -8,8 +8,8 @@ import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.parsing.ArooaHandler;
 
 /**
- * The first handler factory to be called. This will recieve
- * an onStartChild with the document root as the child
+ * The first handler to be called. This will receive
+ * an onStartElement with the document root as the 
  * element. 
  * <p>
  * If the document tag is specified this will 
@@ -18,7 +18,7 @@ import org.oddjob.arooa.parsing.ArooaHandler;
  * <p>
  * The startHandler is provided as the handler for
  * dealing with this document element. Thus the startHandler
- * can then process the docment element in it's onStartElement
+ * can then process the document element in it's onStartElement
  * method as per the typical pattern of an ArooaHandler.
  *
  * @see ArooaHandler.

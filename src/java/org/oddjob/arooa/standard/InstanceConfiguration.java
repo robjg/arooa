@@ -18,7 +18,8 @@ import org.oddjob.arooa.runtime.ExpressionParser;
 import org.oddjob.arooa.runtime.ParsedExpression;
 
 /**
- * 
+ * Holds configuration information for an instance of 
+ * something (a component or value).
  */
 abstract class InstanceConfiguration {
 
@@ -230,5 +231,9 @@ abstract class InstanceConfiguration {
 			ArooaContext context) 
 	throws ArooaConfigurationException;
 	
-
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + " for " + wrappedObject;
+	}
+	
 }

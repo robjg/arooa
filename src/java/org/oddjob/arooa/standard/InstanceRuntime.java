@@ -17,6 +17,12 @@ import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeEvent;
 import org.oddjob.arooa.runtime.RuntimeListener;
 
+/**
+ * {@link RuntimeConfiguration} for an instance of something (a 
+ * component or value).
+ * 
+ * @author rob
+ */
 abstract class InstanceRuntime extends StandardRuntime 
 implements RuntimeConfiguration {		
 	
@@ -27,6 +33,10 @@ implements RuntimeConfiguration {
 
 	private final ArooaClass runtimeClass;
 	
+	/**
+	 * Added to a parent runtime to ensure configuration
+	 * and destruction events are passed down the hierarchy.
+	 */
 	private final RuntimeListener runtimeListener = 
 		new RuntimeListener() {
 
@@ -71,6 +81,7 @@ implements RuntimeConfiguration {
 		}
 	};
 	
+	/** True when init has completed without an exception. */
 	private boolean fullyInitialised;
 	
 	public InstanceRuntime(
@@ -78,16 +89,16 @@ implements RuntimeConfiguration {
 			ArooaContext parentContext) {
 		super(parentContext);
 
-		this.instance = instance;
-
-		this.runtimeClass = instance.getArooaClass();
-		
 		if (instance == null) {
 			throw new NullPointerException("No Instance.");
 		}
+		
+		this.instance = instance;
+		this.runtimeClass = instance.getArooaClass();
+		
 		if (runtimeClass == null) {
 			throw new NullPointerException("No Arooa Class.");
-		}
+		}		
 	}
 
 	InstanceConfiguration getInstance() {
@@ -206,4 +217,8 @@ implements RuntimeConfiguration {
 		instance.setMappedProperty(name, key, value, getContext());
 	}
 
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + " for " + instance.getWrappedObject();
+	}
 }

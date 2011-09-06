@@ -8,6 +8,12 @@ import org.oddjob.arooa.parsing.PrefixMappings;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
+/**
+ * An {@link ArooaContext} for standard parsers.
+ * 
+ * @author rob
+ *
+ */
 class StandardArooaContext implements ArooaContext {
 
 	private final StandardRuntime runtime;
