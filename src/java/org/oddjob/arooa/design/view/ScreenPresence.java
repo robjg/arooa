@@ -6,6 +6,13 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.io.Serializable;
 
+/**
+ * Represent location and size information for a screen
+ * component.
+ * 
+ * @author rob
+ *
+ */
 public class ScreenPresence implements Serializable {
 	private static final long serialVersionUID = 2011042600L;
 	
@@ -52,5 +59,12 @@ public class ScreenPresence implements Serializable {
 	public static ScreenPresence wholeScreen() {
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		return new ScreenPresence(new Point(0, 0), dim);
+	}
+	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + ": location=(" + location.getX() + 
+				", " + location.getY() + ", size=(" + size.getWidth() +
+				", " + size.getHeight();
 	}
 }

@@ -16,6 +16,17 @@ import org.oddjob.arooa.registry.BeanRegistry;
 import org.oddjob.arooa.registry.ComponentPool;
 import org.oddjob.arooa.runtime.PropertyManager;
 
+/**
+ * An {@link ArooaParser} that parses an {@link ArooaConfiguration}
+ * into an XML string.
+ * <p>
+ * Once the {@link #parse(ArooaConfiguration)} method has been
+ * called the XML is available using the {@link #getXml()} 
+ * method.
+ * 
+ * @author rob
+ *
+ */
 public class XMLArooaParser implements ArooaParser {
 
 	private XmlHandler2 handler; 

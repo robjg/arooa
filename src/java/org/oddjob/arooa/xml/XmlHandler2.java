@@ -32,6 +32,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
+/**
+ * Converts {@link ArooaHandler#onStartElement(ArooaElement, ArooaContext)}
+ * events into an internal DOM.
+ * 
+ * @author rob
+ *
+ */
 public class XmlHandler2 implements ArooaHandler {
 
 	private final Document document;

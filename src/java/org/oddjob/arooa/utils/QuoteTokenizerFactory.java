@@ -6,6 +6,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Provides a tokenizer where the token is a regular expression but where
+ * a quote character and escape character can be used.
+ * 
+ * @author rob
+ *
+ */
 public class QuoteTokenizerFactory implements ArooaTokenizerFactory {
 
 	private final String regexp;

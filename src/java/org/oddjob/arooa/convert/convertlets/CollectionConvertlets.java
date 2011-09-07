@@ -26,7 +26,7 @@ public class CollectionConvertlets implements ConversionProvider {
 	 * (non-Javadoc)
 	 * @see org.oddjob.arooa.convert.ConvertletProvider#registerWith(org.oddjob.arooa.convert.ConvertletRegistry)
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public void registerWith(ConversionRegistry registry) {
 
 		registry.register(Collection.class, Object[].class, 

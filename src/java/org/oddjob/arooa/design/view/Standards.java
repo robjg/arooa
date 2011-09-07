@@ -14,6 +14,9 @@ import javax.swing.KeyStroke;
 public class Standards {
 
 	// file actions 
+	public static final Integer NEW_EXPLORER_MNEMONIC_KEY = new Integer(KeyEvent.VK_E);
+	public static final KeyStroke NEW_EXPLORER_ACCELERATOR_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK);
+	
 	public static final Integer NEW_MNEMONIC_KEY = new Integer(KeyEvent.VK_N);
 	public static final KeyStroke NEW_ACCELERATOR_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK);
 		

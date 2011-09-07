@@ -30,7 +30,7 @@ public class ConvertType<T> implements ArooaValue, ArooaSessionAware {
 	
 	public static class Conversions implements ConversionProvider {
 		
-		@SuppressWarnings({ "unchecked" })
+		@SuppressWarnings("rawtypes")
 		public void registerWith(ConversionRegistry registry) {
 			registry.registerJoker(ConvertType.class, 
 					new Joker<ConvertType>() {
