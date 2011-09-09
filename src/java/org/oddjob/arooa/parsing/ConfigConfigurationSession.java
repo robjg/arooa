@@ -4,6 +4,8 @@ import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
+import org.oddjob.arooa.ConfigurationHandle;
+import org.oddjob.arooa.xml.XMLArooaParser;
 
 /**
  * A {@link ConfigurationSession} for an {@link ArooaConfiguration}.
@@ -17,36 +19,48 @@ import org.oddjob.arooa.ArooaSession;
  */
 public class ConfigConfigurationSession implements ConfigurationSession {
 
-	private final ArooaSession session;
+	private final HandleConfigurationSession delegate;
 	
-	private final ArooaConfiguration configuration;
-
+	private final ConfigurationHandle handle;
+	
 	public ConfigConfigurationSession(ArooaSession session, ArooaConfiguration configuration) {
-		this.session = session;
-		this.configuration = configuration;
+		
+		XMLArooaParser parser = new XMLArooaParser();
+		
+		try {
+			handle = parser.parse(configuration);
+		} catch (ArooaParseException e) {
+			throw new RuntimeException(e);
+		}
+
+		delegate = new HandleConfigurationSession(session, handle);
+		
 	}
 	
 	public DragPoint dragPointFor(Object component) {
 		
-		return new DragConfiguration(configuration);
+		return new DragConfiguration(handle.getDocumentContext().getConfigurationNode());
+
 	}
 	
 	public boolean isModified() {
-		return false;
+		return delegate.isModified();
 	}
 	
 	public void addSessionStateListener(SessionStateListener listener) {
+		delegate.addSessionStateListener(listener);
 	}
 	
 	public void removeSessionStateListener(SessionStateListener listener) {
+		delegate.removeSessionStateListener(listener);
 	}
 	
 	public void save() throws ArooaParseException {
-		
+		delegate.save();
 	}
 	
 	public ArooaDescriptor getArooaDescriptor() {
-		return session.getArooaDescriptor();
+		return delegate.getArooaDescriptor();
 	}
 	
 }

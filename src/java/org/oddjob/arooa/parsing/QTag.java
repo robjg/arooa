@@ -1,10 +1,14 @@
 package org.oddjob.arooa.parsing;
 
-import java.io.Serializable;
 import java.net.URI;
 
-public class QTag implements Serializable, Comparable<QTag> {
-	private static final long serialVersionUID = 2008100100;
+/**
+ * Represents a element as a prefix and a tag name.
+ * 
+ * @author rob
+ *
+ */
+public class QTag implements Comparable<QTag> {
 	
 	public static final QTag NULL_TAG = new QTag("");
 	

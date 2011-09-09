@@ -4,6 +4,7 @@
 package org.oddjob.arooa.xml;
 
 import java.io.ByteArrayInputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
@@ -34,10 +35,20 @@ import org.xml.sax.XMLReader;
 public class XMLConfiguration implements ArooaConfiguration {
 
 	/**
+	 * Needed because the XML parser doesn't appear to close files after use.
+	 */
+	abstract class CloseableInputSource extends InputSource implements Closeable {
+		
+		public CloseableInputSource(InputStream in) {
+			super(in);
+		}
+	}
+
+	/**
 	 * Encapsulate the source of the XML.
 	 */
 	interface SourceFactory {
-		InputSource createInput() throws IOException;
+		CloseableInputSource createInput() throws IOException;
 		
 		void save(ConfigurationNode rootConfigurationNode) throws ArooaParseException;
 	}
@@ -59,10 +70,18 @@ public class XMLConfiguration implements ArooaConfiguration {
 		}
 		sourceFactory = new SourceFactory() {
 			@Override
-			public InputSource createInput() throws IOException {
-		        InputStream inputStream = new FileInputStream(file);
-		        InputSource inputSource = new InputSource(inputStream);
+			public CloseableInputSource createInput() throws IOException {
+		        final InputStream inputStream = new FileInputStream(file);
+		        
+		        CloseableInputSource inputSource = new CloseableInputSource(inputStream) {
+		        	@Override
+		        	public void close() throws IOException {
+		        		inputStream.close();
+		        	}
+		        };
+		        
 				inputSource.setSystemId(new File(file.getAbsolutePath()).toURI().toString());
+				
 				return inputSource;
 			}
 			@Override
@@ -94,9 +113,14 @@ public class XMLConfiguration implements ArooaConfiguration {
 	public XMLConfiguration(final String systemId, final String xml) {
 		sourceFactory = new SourceFactory() {
 			@Override
-			public InputSource createInput() throws IOException {
-		        InputStream inputStream = new ByteArrayInputStream(xml.getBytes());
-		        InputSource inputSource = new InputSource(inputStream);
+			public CloseableInputSource createInput() throws IOException {
+		        final InputStream inputStream = new ByteArrayInputStream(xml.getBytes());
+		        CloseableInputSource inputSource = new CloseableInputSource(inputStream) {
+		        	@Override
+		        	public void close() throws IOException {
+		        		inputStream.close();
+		        	}
+		        };
 				inputSource.setSystemId(systemId);
 				return inputSource;
 			}			
@@ -129,17 +153,24 @@ public class XMLConfiguration implements ArooaConfiguration {
 		}
 		sourceFactory = new SourceFactory() {
 			@Override
-			public InputSource createInput() throws IOException {
+			public CloseableInputSource createInput() throws IOException {
 				ClassLoader classloader = maybeClassLoader;
 				if (classloader == null) {
 					classloader = getClass().getClassLoader();
 				}
-				InputStream inputStream = classloader.getResourceAsStream(resource);
+				
+				final InputStream inputStream = classloader.getResourceAsStream(resource);
 				
 				if (inputStream == null) {
 					throw new IOException("Can't find resource: " + resource);
 				}
-		        InputSource inputSource = new InputSource(inputStream);
+				
+		        CloseableInputSource inputSource = new CloseableInputSource(inputStream) {
+		        	@Override
+		        	public void close() throws IOException {
+		        		inputStream.close();
+		        	}
+		        };
 				inputSource.setSystemId("/" + resource);
 				return inputSource;
 			}			
@@ -165,8 +196,13 @@ public class XMLConfiguration implements ArooaConfiguration {
 			throw new NullPointerException();
 		}
 		sourceFactory = new SourceFactory() {
-			public InputSource createInput() throws IOException {
-			    InputSource inputSource = new InputSource(in);
+			public CloseableInputSource createInput() throws IOException {
+			    CloseableInputSource inputSource = new CloseableInputSource(in) {
+			    	@Override
+			    	public void close() throws IOException {
+			    		in.close();
+			    	}
+			    };
 				inputSource.setSystemId(systemId);
 				return inputSource;
 			}
@@ -181,31 +217,6 @@ public class XMLConfiguration implements ArooaConfiguration {
 		};
 	}
 	
-	/**
-	 * Constructor for an InputSource.
-	 * 
-	 * @param inputSource
-	 */
-	public XMLConfiguration(final InputSource inputSource) {
-		if (inputSource == null) {
-			throw new NullPointerException();
-		}
-		sourceFactory = new SourceFactory() {
-			@Override
-			public InputSource createInput() throws IOException {
-				return inputSource;
-			}
-			@Override
-			public void save(ConfigurationNode rootConfigurationNode) throws ArooaParseException {
-				commonSave(rootConfigurationNode);
-			}
-			@Override
-			public String toString() {				
-				return inputSource.getSystemId();
-			}
-		};
-		
-	}
 		
 	/*
 	 * (non-Javadoc)
@@ -214,7 +225,7 @@ public class XMLConfiguration implements ArooaConfiguration {
 	public ConfigurationHandle parse(ArooaContext parentContext) 
 	throws ArooaParseException {
 	
-		InputSource inputSource = null;
+		CloseableInputSource inputSource = null;
 		try {
 			inputSource = sourceFactory.createInput();
 		} catch (IOException e) {
@@ -264,6 +275,13 @@ public class XMLConfiguration implements ArooaConfiguration {
             throw new ArooaParseException("Error reading input.",
                       location, exc);
         } 
+        finally {
+        	try {
+				inputSource.close();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+        }
         
         return new ConfigurationHandle() { 
         	public void save() throws ArooaParseException {

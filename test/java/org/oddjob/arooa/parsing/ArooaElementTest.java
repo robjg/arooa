@@ -1,11 +1,16 @@
 package org.oddjob.arooa.parsing;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import junit.framework.TestCase;
 
-public class ArooaElementEqualsTest extends TestCase {
+import org.oddjob.TestHelper;
+
+public class ArooaElementTest extends TestCase {
 
 	public void testEquals1() {
 		
@@ -59,5 +64,22 @@ public class ArooaElementEqualsTest extends TestCase {
 		assertNotSame(a1, a2);
 	}
 	
+	public void testSerialize() throws URISyntaxException, IOException, ClassNotFoundException {
+		
+		ArooaElement test = new ArooaElement(
+				new URL("http://rgordon.co.uk/oddjob/test").toURI(), "foo");
+		
+		ArooaElement copy = TestHelper.copy(test);
+		
+		assertEquals(test, copy);
+	}
+	
+	public void testToString() throws MalformedURLException, URISyntaxException {
+		
+		ArooaElement test = new ArooaElement(
+				new URL("http://rgordon.co.uk/oddjob/test").toURI(), "foo");
 
+		assertEquals("http://rgordon.co.uk/oddjob/test:foo", test.toString());
+		
+	}
 }

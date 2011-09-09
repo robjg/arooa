@@ -1,5 +1,7 @@
 package org.oddjob.arooa.parsing;
 
+import org.oddjob.arooa.design.DesignFactory;
+
 
 /**
  * Something, typically  a component, that is able to provide editing
@@ -30,4 +32,10 @@ public interface ConfigurationOwner {
 	 * @param listener
 	 */
 	public void removeOwnerStateListener(OwnerStateListener listener);
+	
+	
+	public DesignFactory rootDesignFactory();
+	
+	public ArooaElement rootElement();
+	
 }

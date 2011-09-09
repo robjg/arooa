@@ -11,8 +11,7 @@ import org.oddjob.arooa.utils.ListenerSupportBase;
  * @author rob
  *
  */
-public class ConfigurationOwnerSupport extends ListenerSupportBase<OwnerStateListener>
-implements ConfigurationOwner {
+public class ConfigurationOwnerSupport extends ListenerSupportBase<OwnerStateListener> {
 
 	private final ConfigurationOwner source;
 	
@@ -41,6 +40,5 @@ implements ConfigurationOwner {
 	
 	public void removeOwnerStateListener(OwnerStateListener listener) {
 		removeListener(listener);
-	}
-	
+	}	
 }

@@ -3,12 +3,22 @@
  */
 package org.oddjob.arooa.parsing;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class ArooaElement {
-
+/**
+ * Represent an element, which is an abstract of an XML element
+ * but XML agnostic, so that an Arooa configuration could be anything,
+ * not just XML.
+ * 
+ * @author rob
+ *
+ */
+public class ArooaElement implements Serializable {
+	private static final long serialVersionUID = 2011060800L;
+	
 	private final URI uri;
 	private final String tag;
 	private final SimpleAttributes attributes;
@@ -94,7 +104,9 @@ public class ArooaElement {
 		return attributes;
 	}
 	
-	class SimpleAttributes implements ArooaAttributes {
+	static class SimpleAttributes implements ArooaAttributes, Serializable {
+		private static final long serialVersionUID = 2011060800L;
+		
 		private final Map<String, String> atts = new LinkedHashMap<String, String>();
 
 		SimpleAttributes() {
