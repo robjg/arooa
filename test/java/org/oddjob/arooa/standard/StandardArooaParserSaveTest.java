@@ -1,5 +1,7 @@
 package org.oddjob.arooa.standard;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaConfiguration;
@@ -160,6 +162,14 @@ public class StandardArooaParserSaveTest extends XMLTestCase {
 		
 		XMLConfiguration config = new XMLConfiguration("TEST", xml);
 		
+		final AtomicReference<String > savedXML = new AtomicReference<String>();
+		config.setSaveHandler(new XMLConfiguration.SaveHandler() {
+			@Override
+			public void acceptXML(String xml) {
+				savedXML.set(xml);
+			}
+		});
+		
 		StandardArooaParser parser = new StandardArooaParser(root,
 				new OurDescriptor());
 		
@@ -183,7 +193,7 @@ public class StandardArooaParserSaveTest extends XMLTestCase {
 			"    </snack>" + EOL +
 			"</root>" + EOL;
 		
-		assertXMLEqual(expected, config.getSavedXml());
+		assertXMLEqual(expected, savedXML.get());
 	}
 	
 	public void testSaveOfAParse() throws Exception {
@@ -193,6 +203,14 @@ public class StandardArooaParserSaveTest extends XMLTestCase {
 		String xml = "<root><snack><apple/></snack></root>";
 		
 		XMLConfiguration config = new XMLConfiguration("TEST", xml);
+		
+		final AtomicReference<String > savedXML = new AtomicReference<String>();
+		config.setSaveHandler(new XMLConfiguration.SaveHandler() {
+			@Override
+			public void acceptXML(String xml) {
+				savedXML.set(xml);
+			}
+		});
 		
 		StandardArooaParser parser = new StandardArooaParser(root,
 				new OurDescriptor());
@@ -218,7 +236,7 @@ public class StandardArooaParserSaveTest extends XMLTestCase {
 		
 		handle2.save();
 		
-		assertNull(config.getSavedXml());
+		assertNull(savedXML.get());
 		
 		handle1.save();
 		
@@ -229,7 +247,7 @@ public class StandardArooaParserSaveTest extends XMLTestCase {
 			"    </snack>" + EOL +
 			"</root>" + EOL;
 		
-		assertXMLEqual(expected, config.getSavedXml());
+		assertXMLEqual(expected, savedXML.get());
 	}
 	
 	public void testChangeDocAndSave() throws Exception {
@@ -238,6 +256,14 @@ public class StandardArooaParserSaveTest extends XMLTestCase {
 
 		XMLConfiguration config = new XMLConfiguration("TEST", 
 				"<root id='x'/>");
+		
+		final AtomicReference<String > savedXML = new AtomicReference<String>();
+		config.setSaveHandler(new XMLConfiguration.SaveHandler() {
+			@Override
+			public void acceptXML(String xml) {
+				savedXML.set(xml);
+			}
+		});
 		
 		StandardArooaParser parser = new StandardArooaParser(root,
 				new OurDescriptor());
@@ -257,18 +283,17 @@ public class StandardArooaParserSaveTest extends XMLTestCase {
 				rootContext, 
 				new XMLConfiguration("TEST", "<root id='y'/>")
 			);
-
 		
 		handle2.save();
 		
-		assertNull(config.getSavedXml());
+		assertNull(savedXML.get());
 		
 		handle1.save();
 		
 		String expected = 
 			"<root id=\"y\"/>" + EOL;
 		
-		assertXMLEqual(expected, config.getSavedXml());
+		assertXMLEqual(expected, savedXML.get());
 	}
 
 }

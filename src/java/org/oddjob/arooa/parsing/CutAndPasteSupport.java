@@ -294,5 +294,18 @@ public class CutAndPasteSupport {
 			return handle;
 		}
 	}
+	
+	public static String copy(ArooaContext context) {
+		XMLArooaParser xmlParser = new XMLArooaParser();
+		
+		try {
+			xmlParser.parse(context.getConfigurationNode());
+		}
+		catch (ArooaParseException e) {
+			throw new RuntimeException(e);
+		}
+		return xmlParser.getXml();
+	}
+
 }
 

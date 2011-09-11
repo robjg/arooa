@@ -1,5 +1,7 @@
 package org.oddjob.arooa.design.designer;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import javax.swing.tree.TreeModel;
 
 import org.custommonkey.xmlunit.XMLTestCase;
@@ -130,9 +132,17 @@ public class DesignerModelTest extends XMLTestCase {
 		
 		unknown.setXml("<lunch/>");
 		
+		final AtomicReference<String > savedXML = new AtomicReference<String>();
+		config.setSaveHandler(new XMLConfiguration.SaveHandler() {
+			@Override
+			public void acceptXML(String xml) {
+				savedXML.set(xml);
+			}
+		});
+		
 		handle.save();
 		
-		assertXMLEqual("<lunch/>" + EOL, config.getSavedXml());
+		assertXMLEqual("<lunch/>" + EOL, savedXML.get());
 	}
 	
 	private class OurDescriptor extends MockArooaDescriptor {

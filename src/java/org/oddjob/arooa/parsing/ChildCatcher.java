@@ -4,6 +4,12 @@ import org.oddjob.arooa.runtime.ConfigurationNodeEvent;
 import org.oddjob.arooa.runtime.ConfigurationNodeListener;
 import org.oddjob.arooa.runtime.ModificationRefusedException;
 
+/**
+ * Capture the child context of a current context;
+ * 
+ * @author rob
+ *
+ */
 public class ChildCatcher {
 
 	private ArooaContext child;
@@ -37,8 +43,12 @@ public class ChildCatcher {
 		parentContext.getConfigurationNode().removeNodeListener(listener);			
 	}
 	
+	/**
+	 * The child context.
+	 * 
+	 * @return The context. Null if no child exists.
+	 */
 	public ArooaContext getChild() {
 		return child;
-	}
-	
+	}	
 }

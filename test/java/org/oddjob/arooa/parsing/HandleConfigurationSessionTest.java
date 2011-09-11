@@ -1,6 +1,7 @@
 package org.oddjob.arooa.parsing;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -64,6 +65,14 @@ public class HandleConfigurationSessionTest extends XMLTestCase {
 				" </fruit>" +
 				"</snack>");
 
+		final AtomicReference<String > savedXML = new AtomicReference<String>();
+		config.setSaveHandler(new XMLConfiguration.SaveHandler() {
+			@Override
+			public void acceptXML(String xml) {
+				savedXML.set(xml);
+			}
+		});
+		
 		Snack root = new Snack();
 		
 		StandardArooaParser parser = new StandardArooaParser(root);
@@ -119,16 +128,21 @@ public class HandleConfigurationSessionTest extends XMLTestCase {
 			"  <bean id='fruit' class='" + Orange.class.getName() + "'/>" +
 			" </fruit>" +
 			"</snack>";
-
-		System.out.println(config.getSavedXml());
 		
-		assertXMLEqual(expected, config.getSavedXml());
+		assertXMLEqual(expected, savedXML.get());
 	}
 
 	public void testModifiedWhenReplaceRoot() throws ArooaParseException {
 		
 		XMLConfiguration config = new XMLConfiguration("TEST", 
 				"<snack/>");
+		
+		config.setSaveHandler(new XMLConfiguration.SaveHandler() {
+			@Override
+			public void acceptXML(String xml) {
+				// don't care
+			}
+		});
 
 		Snack root = new Snack();
 		

@@ -1,5 +1,7 @@
 package org.oddjob.arooa.design;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaType;
@@ -86,13 +88,21 @@ public class DesignParserSaveTest extends XMLTestCase {
 
 		idField.getAttribute().attribute("y");
 
+		final AtomicReference<String > savedXML = new AtomicReference<String>();
+		config.setSaveHandler(new XMLConfiguration.SaveHandler() {
+			@Override
+			public void acceptXML(String xml) {
+				savedXML.set(xml);
+			}
+		});
+		
 		designHandle.save();
 
 		String expected = 
 			"<healthy:snack xmlns:healthy=\"urn:healthy\"" + EOL +
 			"               id=\"y\"/>" + EOL;
 		
-		assertXMLEqual(expected, config.getSavedXml());
+		assertXMLEqual(expected, savedXML.get());
 	}
 
 	public void testSave() throws Exception {
@@ -125,6 +135,14 @@ public class DesignParserSaveTest extends XMLTestCase {
 
 		idField.getAttribute().attribute("y");
 
+		final AtomicReference<String > savedXML = new AtomicReference<String>();
+		config.setSaveHandler(new XMLConfiguration.SaveHandler() {
+			@Override
+			public void acceptXML(String xml) {
+				savedXML.set(xml);
+			}
+		});
+		
 		designHandle.save();
 
 		standardHandle.save();
@@ -133,7 +151,7 @@ public class DesignParserSaveTest extends XMLTestCase {
 			"<healthy:snack xmlns:healthy=\"urn:healthy\"" + EOL +
 			"               id=\"y\"/>" + EOL;
 		
-		assertXMLEqual(expected, config.getSavedXml());
+		assertXMLEqual(expected, savedXML.get());
 	}
 	
 	public static class Snack2 implements ArooaLifeAware { 
@@ -219,10 +237,18 @@ public class DesignParserSaveTest extends XMLTestCase {
 			// expected
 		}
 
+		final AtomicReference<String > savedXML = new AtomicReference<String>();
+		config.setSaveHandler(new XMLConfiguration.SaveHandler() {
+			@Override
+			public void acceptXML(String xml) {
+				savedXML.set(xml);
+			}
+		});
+		
 		standardHandle.save();
 
 		// no change
-		assertXMLEqual(xml, config.getSavedXml());
+		assertXMLEqual(xml, savedXML.get());
 		
 		assertEquals(1, snack.count);
 		

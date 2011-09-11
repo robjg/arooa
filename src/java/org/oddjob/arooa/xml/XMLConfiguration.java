@@ -53,11 +53,16 @@ public class XMLConfiguration implements ArooaConfiguration {
 		void save(ConfigurationNode rootConfigurationNode) throws ArooaParseException;
 	}
 
+	public interface SaveHandler {
+		
+		public void acceptXML(String xml);
+	}
+	
 	/** The source factory created on construction. */
 	private final SourceFactory sourceFactory;
 	
 	/** The result of save being called on the parsed handle. */
-	private String savedXml;
+	private SaveHandler saveHandler;
 	
 	/**
 	 * Constructor for a file.
@@ -86,7 +91,7 @@ public class XMLConfiguration implements ArooaConfiguration {
 			}
 			@Override
 			public void save(ConfigurationNode rootConfigurationNode) throws ArooaParseException {
-				commonSave(rootConfigurationNode);
+				String savedXml = toXML(rootConfigurationNode);
 				try {
 					
 					PrintWriter out = new PrintWriter(new FileWriter((file)));
@@ -295,7 +300,7 @@ public class XMLConfiguration implements ArooaConfiguration {
         };
 	}
 
-	void commonSave(ConfigurationNode rootConfigurationNode) throws ArooaParseException {
+	String toXML(ConfigurationNode rootConfigurationNode) throws ArooaParseException {
 		if (rootConfigurationNode == null) {
 			throw new NullPointerException("No Configuration To Save.");
 		}
@@ -305,16 +310,29 @@ public class XMLConfiguration implements ArooaConfiguration {
 		parser.parse(
 				rootConfigurationNode);
 
-		savedXml = parser.getXml();
+		return parser.getXml();
 	}
 	
+	void commonSave(ConfigurationNode rootConfigurationNode) throws ArooaParseException {
+
+		if (saveHandler == null) {
+			throw new UnsupportedOperationException("Unable to save configuration back to source.");
+		}
+		
+		saveHandler.acceptXML(toXML(rootConfigurationNode));
+	}
+
 	/**
 	 * Get the resultant XML from calling {@link ConfigurationHandle#save()}.
 	 * 
 	 * @return
 	 */
-	public String getSavedXml() {
-		return savedXml;
+	public void setSaveHandler(SaveHandler saveHandler) {
+		this.saveHandler = saveHandler;
+	}
+
+	public SaveHandler getSaveHandler() {
+		return saveHandler;
 	}
 	
 	@Override

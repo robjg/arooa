@@ -2,6 +2,7 @@ package org.oddjob.arooa.parsing;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.oddjob.arooa.ArooaParseException;
@@ -41,6 +42,14 @@ public class QTagConfigurationTest extends XMLTestCase {
 		
 		XMLConfiguration config = new XMLConfiguration("TEST", "<veg/>");
 	
+		final AtomicReference<String > savedXML = new AtomicReference<String>();
+		config.setSaveHandler(new XMLConfiguration.SaveHandler() {
+			@Override
+			public void acceptXML(String xml) {
+				savedXML.set(xml);
+			}
+		});
+		
 		StandardArooaParser parser = new StandardArooaParser(root);
 		
 		ConfigurationHandle handle = parser.parse(config);
@@ -56,6 +65,6 @@ public class QTagConfigurationTest extends XMLTestCase {
 		String expected = "<fruit:apple xmlns:fruit=\"http://fruit\"/>" + System.getProperty("line.separator");
 
 		assertXMLEqual(expected,
-				config.getSavedXml());
+				savedXML.get());
 	}
 }

@@ -2,6 +2,7 @@ package org.oddjob.arooa.types;
 
 import java.io.Serializable;
 
+import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.ArooaValue;
 import org.oddjob.arooa.convert.ConversionProvider;
@@ -11,8 +12,10 @@ import org.oddjob.arooa.convert.ConvertletException;
 import org.oddjob.arooa.design.DesignFactory;
 import org.oddjob.arooa.design.DesignInstance;
 import org.oddjob.arooa.design.etc.UnknownInstance;
+import org.oddjob.arooa.life.ArooaContextAware;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
+import org.oddjob.arooa.parsing.ChildCatcher;
 
 /**
  * @oddjob.description A type that converts it's XML contents into
@@ -26,11 +29,13 @@ import org.oddjob.arooa.parsing.ArooaElement;
  * 
  * @author Rob Gordon.
  */
-public class XMLType implements ArooaValue, Serializable {
+public class XMLType implements ArooaContextAware, ArooaValue, Serializable {
 	private static final long serialVersionUID = 20081118;
 	
 	public static final ArooaElement ELEMENT = new ArooaElement("xml"); 
 		
+	private ArooaContext arooaContext;
+	
 	/**
 	 * @oddjob.property
 	 * @oddjob.description This is only used internally. It can't
@@ -41,7 +46,9 @@ public class XMLType implements ArooaValue, Serializable {
 	private String xml;
 
 	public static class Conversions implements ConversionProvider {
+		
 		public void registerWith(ConversionRegistry registry) {
+
 			registry.register(XMLType.class, String.class, 
 					new Convertlet<XMLType, String>() {
 				public String convert(XMLType from)
@@ -49,7 +56,28 @@ public class XMLType implements ArooaValue, Serializable {
 	    			return from.xml;
 				}
 			});
+			
+			registry.register(XMLType.class, ArooaConfiguration.class, 
+					new Convertlet<XMLType, ArooaConfiguration>() {
+				public ArooaConfiguration convert(XMLType from)
+						throws ConvertletException {
+					
+					ArooaContext childContext = 
+						new ChildCatcher(from.arooaContext, 0).getChild();
+					
+					if (childContext == null) {
+						return null;
+					}
+					
+					return childContext.getConfigurationNode();					
+				}
+			});
 		}
+	}
+	
+	@Override
+	public void setArooaContext(ArooaContext context) {
+		this.arooaContext = context;
 	}
 	
 	public void setXml(String xml) {
@@ -59,8 +87,7 @@ public class XMLType implements ArooaValue, Serializable {
     public String toString() {
     	return "Embedded XML";
     }
-    
-    
+        
 	public static class XMLDesignFactory implements DesignFactory {
 		
 		public DesignInstance createDesign(
@@ -77,4 +104,3 @@ public class XMLType implements ArooaValue, Serializable {
 	};
 
 }
-

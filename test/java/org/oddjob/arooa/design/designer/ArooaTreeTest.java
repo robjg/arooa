@@ -2,8 +2,6 @@ package org.oddjob.arooa.design.designer;
 
 import java.awt.Point;
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -194,13 +192,12 @@ public class ArooaTreeTest extends TestCase {
 
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-		frame.addWindowListener(new WindowAdapter() {
+		test.config.setSaveHandler(new XMLConfiguration.SaveHandler() {
 			@Override
-			public void windowClosed(WindowEvent e) {
-				System.out.println(test.config.getSavedXml());
+			public void acceptXML(String xml) {
+				System.out.println(xml);
 			}
-		});
-		
+		});		
 	}
 
 

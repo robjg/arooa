@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.oddjob.arooa.ArooaBeanDescriptor;
@@ -357,10 +358,18 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 		
 		assertXMLEqual(xml, xmlParser.getXml());
 		
+		final AtomicReference<String > savedXML = new AtomicReference<String>();
+		config.setSaveHandler(new XMLConfiguration.SaveHandler() {
+			@Override
+			public void acceptXML(String xml) {
+				savedXML.set(xml);
+			}
+		});
+		
 		// check it will save - no reason why it shouldn't...
 		handle.save();
 		
-		assertXMLEqual(xml, config.getSavedXml());
+		assertXMLEqual(xml, savedXML.get());
 
 		// check what's there is still valid by cutting it.
 		ArooaContext orangeContext2 = session.getComponentPool().contextFor(

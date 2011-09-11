@@ -1,5 +1,7 @@
 package org.oddjob.arooa.convert.jokers;
 
+import java.io.File;
+
 import junit.framework.TestCase;
 
 import org.oddjob.arooa.convert.ConversionFailedException;
@@ -50,6 +52,9 @@ public class ArrayConversionsTest extends TestCase {
 		
 	}
 	
+	/**
+	 * 42 gets converted to true?
+	 */
 	public void testABigFatBugThatNeedFixing() throws ConversionFailedException {
 
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
@@ -60,10 +65,29 @@ public class ArrayConversionsTest extends TestCase {
 		
 		assertEquals("Integer-Number-Object-String[]", path.toString());
 		
-		Object[] result = path.convert(new Integer(42), null);
+		String[] result = path.convert(new Integer(42), null);
 
 		assertEquals(1, result.length);
 		assertEquals("true", result[0]);  
+		
+	}
+	
+	public void testFilesToStrings() throws ConversionFailedException {
+
+		DefaultConversionRegistry registry = new DefaultConversionRegistry();
+		new DefaultConversionProvider().registerWith(registry);
+		
+		ConversionPath<File[], String[]> path = registry.findConversion(
+				File[].class, String[].class);
+		
+		assertEquals("File[]-Object-String[]", path.toString());
+		
+		Object[] result = path.convert(
+				new File[] { new File("a.txt"), new File("b.txt") }, null);
+
+		assertEquals(2, result.length);
+		assertEquals("a.txt", result[0]);  
+		assertEquals("b.txt", result[1]);  
 		
 	}
 }

@@ -5,7 +5,6 @@ import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.registry.ChangeHow;
-import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
 /**
@@ -54,15 +53,7 @@ public class DragContext implements DragPoint {
 	}
 	
 	public String copy() {
-		XMLArooaParser xmlParser = new XMLArooaParser();
-		
-		try {
-			xmlParser.parse(context.getConfigurationNode());
-		}
-		catch (ArooaParseException e) {
-			throw new RuntimeException(e);
-		}
-		return xmlParser.getXml();
+		return CutAndPasteSupport.copy(context);
 	}
 	
 	private void reallyCut() {
