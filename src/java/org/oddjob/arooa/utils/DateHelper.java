@@ -167,6 +167,24 @@ public class DateHelper {
 				ArooaConstants.TIME_FORMAT1).format(date);
 	}
 	
+	public static String formatDateTimeInteligently(Date date) {		
+		if (date == null) {
+			return null;
+		}
+		
+		if (date.getTime() % 1000 == 0) {
+			// no milliseconds - then miss them off.
+			return new SimpleDateFormat(
+					ArooaConstants.DATE_FORMAT + " " + 
+					ArooaConstants.TIME_FORMAT2).format(date);
+		}
+		else {
+			return new SimpleDateFormat(
+					ArooaConstants.DATE_FORMAT + " " + 
+					ArooaConstants.TIME_FORMAT1).format(date);
+		}
+	}
+	
 	/**
 	 * Helper function. Not public.
 	 * 
