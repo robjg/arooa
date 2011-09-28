@@ -41,8 +41,7 @@ public class StandardFormView implements SwingFormView {
 		c.gridy = 0;
 		form.add(Looks.typePanel(
 					standardForm.getTitle(),
-					standardForm.getDesign(),
-					standardForm.supressId()),
+					standardForm.getDesign()),
 				c);
 
 		int items = standardForm.size();

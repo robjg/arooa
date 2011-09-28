@@ -44,4 +44,16 @@ implements DesignComponent {
 		throw new RuntimeException("Unexpected from class: " + 
 				this.getClass().getName());
 	}	
+	
+	@Override
+	public String getId() {
+		throw new RuntimeException("Unexpected from class: " + 
+				this.getClass().getName());
+	}
+	
+	@Override
+	public void setId(String id) {
+		throw new RuntimeException("Unexpected from class: " + 
+				this.getClass().getName());
+	}
 }

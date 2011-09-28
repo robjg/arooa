@@ -3,11 +3,16 @@ package org.oddjob.arooa.design;
 import org.oddjob.arooa.design.screem.BorderedGroup;
 import org.oddjob.arooa.design.screem.Form;
 import org.oddjob.arooa.design.screem.FormItem;
+import org.oddjob.arooa.design.screem.NullForm;
 import org.oddjob.arooa.design.screem.StandardForm;
 
 class GenericFormFactory {
 
 	static Form createForm(DesignInstanceBase designInstance) {
+		
+		if (designInstance.children().length == 0) {
+			return new NullForm();
+		}
 		
 		BorderedGroup group = new BorderedGroup("Properties");
 		

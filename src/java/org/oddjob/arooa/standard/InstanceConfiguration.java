@@ -2,7 +2,6 @@ package org.oddjob.arooa.standard;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaConfigurationException;
-import org.oddjob.arooa.ArooaConstants;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.convert.ArooaConversionException;
@@ -32,8 +31,6 @@ abstract class InstanceConfiguration {
     
     private final TextHandler textHandler = new TextHandler();
     
-	private final String id;
-	
     private final AutoSetter autoSetter;
 	
     
@@ -66,20 +63,11 @@ abstract class InstanceConfiguration {
         this.wrappedObject = wrappedObject;
         attributeSetter = new AttributeSetter(
         		this, attributes);
-		this.id = attributes.get(
-				ArooaConstants.ID_PROPERTY);
-		
-		getAttributeSetter().addOptionalAttribute(
-				ArooaConstants.ID_PROPERTY);
-        
+       
         this.autoSetter = new AutoSetter();
 
     }
 
-    String getId() {
-    	return id;
-    }
-    
     Object getWrappedObject() {
     	return wrappedObject;
     }

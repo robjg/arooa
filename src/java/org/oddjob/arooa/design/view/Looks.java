@@ -20,6 +20,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import org.oddjob.arooa.design.DesignComponent;
 import org.oddjob.arooa.design.DesignInstance;
 
 /**
@@ -61,8 +62,7 @@ public class Looks{
 	 * Create the title panel with the type name for the top of
 	 * the detail form.
 	 */
-	public static Component typePanel(String title, final DesignInstance design, 
-			boolean isNoIdField) {
+	public static Component typePanel(String title, final DesignInstance design) {
 		JPanel typePanel = new JPanel(new GridBagLayout());
 		
 		GridBagConstraints c = new GridBagConstraints();
@@ -83,7 +83,11 @@ public class Looks{
 				labelFont.getSize() * 1.5F));
 		typePanel.add(typeLabel, c);
 
-		if (!isNoIdField) {
+		if (design instanceof DesignComponent) {
+			
+			final DesignComponent designComponent = 
+				(DesignComponent) design;
+			
 			c.weightx = 0.0;
 			c.fill = GridBagConstraints.NONE;
 			c.gridwidth = 1;
@@ -96,17 +100,17 @@ public class Looks{
 			c.gridx = 1;
 	
 			final JTextField idText = new JTextField(30);		
-			idText.setText(design.getId());
+			idText.setText(designComponent.getId());
 			
 			idText.getDocument().addDocumentListener(new DocumentListener() {
 				public void changedUpdate(DocumentEvent e) {
-					design.setId(idText.getText());
+					designComponent.setId(idText.getText());
 				}
 				public void removeUpdate(DocumentEvent e) {
-					design.setId(idText.getText());
+					designComponent.setId(idText.getText());
 				}
 				public void insertUpdate(DocumentEvent e) {
-					design.setId(idText.getText());
+					designComponent.setId(idText.getText());
 				}
 			});		
 			

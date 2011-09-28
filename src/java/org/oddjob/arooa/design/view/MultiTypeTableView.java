@@ -312,8 +312,8 @@ public class MultiTypeTableView implements SwingItemView {
 	}
 	
 	static Component generateRenderer(DesignInstance de) {
-		Form designDefintion = de.detail();
 		if (de != null) {
+			Form designDefintion = de.detail();
 			return SwingFormFactory.create(designDefintion).cell();
 		}
 		else {

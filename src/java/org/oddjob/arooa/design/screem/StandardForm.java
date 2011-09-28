@@ -19,8 +19,6 @@ public class StandardForm implements Form {
 	
 	private final DesignInstance design;
 	
-	private boolean supressId;
-	
 	private List<FormItem> groups = 
 		new ArrayList<FormItem>();
 	
@@ -40,16 +38,7 @@ public class StandardForm implements Form {
 	public DesignInstance getDesign() {
 		return design;
 	}
-	
-	public boolean supressId() {
-		return supressId;
-	}
-	
-	public StandardForm supressId(boolean supressId) {
-		this.supressId = supressId;
-		return this;
-	}
-	
+		
 	/**
 	 * Add a dialog definition which will be rendered as a group on the form.
 	 * 

@@ -145,25 +145,6 @@ public class DesignParserTest extends XMLTestCase {
 		
 	}
 	
-	public void testWithId() throws ArooaParseException, URISyntaxException, SAXException, IOException {
-		
-		DesignParser test = new DesignParser(
-				new StandardArooaSession(new OurDescriptor()),
-				new OurDesignF());
-		
-		String xml = "<thing id='apple'/>";
-		
-		test.parse(new XMLConfiguration("TEST", xml));
-		
-		OurDesign design = (OurDesign) test.getDesign();
-		
-		XMLArooaParser xmlParser = new XMLArooaParser();
-		
-		xmlParser.parse(design.getArooaContext().getConfigurationNode());
-		
-		assertXMLEqual(xml, xmlParser.getXml());
-	}
-	
 	public static class OtherThing {
 		
 		private Thing thing;
@@ -246,6 +227,30 @@ public class DesignParserTest extends XMLTestCase {
 			(DesignComponentInstance) child.instanceAt(0);
 		
 		assertNotNull(thing);
+	}
+	
+	public void testWithId() throws ArooaParseException, URISyntaxException, SAXException, IOException {
+		
+		ArooaDescriptor descriptor = new LinkedDescriptor(new OtherDescriptor(), 
+				new OurDescriptor());
+		
+		DesignParser test = new DesignParser(
+				new StandardArooaSession(descriptor));
+		test.setArooaType(ArooaType.COMPONENT);
+		
+		String xml = "<other id='apple'/>";
+		
+		test.parse(new XMLConfiguration("TEST", xml));
+		
+		DesignComponent design = (DesignComponent) test.getDesign();
+		
+		assertEquals ("apple", design.getId());
+		
+		XMLArooaParser xmlParser = new XMLArooaParser();
+		
+		xmlParser.parse(design.getArooaContext().getConfigurationNode());
+		
+		assertXMLEqual(xml, xmlParser.getXml());
 	}
 	
 }

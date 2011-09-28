@@ -19,6 +19,7 @@ import org.oddjob.arooa.types.ImportType;
 import org.oddjob.arooa.types.ListType;
 import org.oddjob.arooa.types.ValueType;
 import org.oddjob.arooa.types.XMLType;
+import org.oddjob.arooa.types.IdentifiableValueType;
 
 class DefaultValuesMappings implements ElementMappings {
 
@@ -41,6 +42,8 @@ class DefaultValuesMappings implements ElementMappings {
 				new SimpleArooaClass(XMLType.class));
 		classNames.put(ImportType.ELEMENT, 
 				new SimpleArooaClass(ImportType.class));
+		classNames.put(IdentifiableValueType.ELEMENT, 
+				new SimpleArooaClass(IdentifiableValueType.class));
 		
 		designNames.put(ValueType.ELEMENT, 
 				new ValueType.ValueDesignFactory());

@@ -65,7 +65,9 @@ public class GenericDesignFactory implements DesignFactory {
 		List<String> properties = new ArrayList<String>(
 				Arrays.asList(overview.getProperties()));
 		
-		properties.remove("id");
+		if (componentInstance) {
+			properties.remove("id");
+		}
 
 		ArooaBeanDescriptor arooaBeanDescriptor = 
 			session.getArooaDescriptor().getBeanDescriptor(

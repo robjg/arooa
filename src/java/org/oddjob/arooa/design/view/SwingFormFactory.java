@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.oddjob.arooa.design.screem.FileSelection;
 import org.oddjob.arooa.design.screem.Form;
+import org.oddjob.arooa.design.screem.NullForm;
 import org.oddjob.arooa.design.screem.StandardForm;
 import org.oddjob.arooa.design.screem.TextInput;
 import org.oddjob.arooa.design.screem.TextPsudoForm;
@@ -46,6 +47,13 @@ abstract public class SwingFormFactory<T extends Form> {
 			}	
 		});
 		
+		FACTORIES.put(NullForm.class, 
+				new SwingFormFactory<NullForm>() {
+			public SwingFormView onCreate(NullForm form) {
+				return new NullFormView();
+			}	
+		});
+	
 		FACTORIES.put(TextPsudoForm.class, 
 				new SwingFormFactory<TextPsudoForm>() {
 			public SwingFormView onCreate(TextPsudoForm form) {

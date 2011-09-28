@@ -3,7 +3,9 @@ package org.oddjob.arooa.design;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.oddjob.arooa.ArooaConstants;
 import org.oddjob.arooa.ArooaType;
+import org.oddjob.arooa.parsing.ArooaAttributes;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaClass;
@@ -30,6 +32,8 @@ implements DesignComponent {
 	/** Used for lazy initialisation. */
 	private boolean initialised;
 		
+	private String id;
+	
 	/**
 	 * Constructor.
 	 * 
@@ -39,7 +43,7 @@ implements DesignComponent {
 	public DesignComponentBase(ArooaElement element, ArooaContext parentContext) {
 		this(element, 
 				new ClassFinder().forElement(element, parentContext),
-			parentContext);
+			parentContext);		
 	}
 	
 	/**
@@ -52,6 +56,9 @@ implements DesignComponent {
 	public DesignComponentBase(ArooaElement element,
 			ArooaClass classIdentifier, ArooaContext parentContext) {
 		super(element, classIdentifier, parentContext);
+
+		ArooaAttributes attributes = element.getAttributes(); 
+		id = attributes.get(ArooaConstants.ID_PROPERTY);
 	}
 	
 	/**
@@ -114,4 +121,12 @@ implements DesignComponent {
 		componentProperty.removeDesignListener(listener);
 	}
 
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+	
 }

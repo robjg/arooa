@@ -18,5 +18,14 @@ implements DesignComponent {
 	
 	public void removeStructuralListener(DesignListener listener) {
 	}
+
+	@Override
+	public String getId() {
+		throw new UnsupportedOperationException();
+	}
 	
+	@Override
+	public void setId(String id) {
+		throw new UnsupportedOperationException();
+	}
 }

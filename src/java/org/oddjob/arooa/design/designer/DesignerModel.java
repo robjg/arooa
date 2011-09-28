@@ -76,11 +76,11 @@ public class DesignerModel extends Observable {
 							return newDoc.toString();
 						}
 						public String getId() {
-							return newDoc.getId();
+							throw new UnsupportedOperationException();
 						};
 						
 						public void setId(String id) {
-							newDoc.setId(id);
+							throw new UnsupportedOperationException();
 						};
 					};
 				}

@@ -2,6 +2,7 @@ package org.oddjob.arooa.standard;
 
 import org.apache.log4j.Logger;
 import org.oddjob.arooa.ArooaConfigurationException;
+import org.oddjob.arooa.ArooaConstants;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ComponentTrinity;
 import org.oddjob.arooa.life.ComponentPersistException;
@@ -23,6 +24,8 @@ class ComponentConfiguration extends InstanceConfiguration {
 	private static final Logger logger = Logger.getLogger(
 			ComponentConfiguration.class);
 
+	private final String id;
+	
 	private final InjectionStrategy injectionStrategy = new InjectionStrategy() {
 		
 		public void init(ParentPropertySetter parentPropertySetter) 
@@ -51,8 +54,18 @@ class ComponentConfiguration extends InstanceConfiguration {
 			ArooaAttributes attributes) {
 		super(arooaClass, wrappedObject, attributes);
 		this.proxy = proxy;	
-	}
+		
+		this.id = attributes.get(
+				ArooaConstants.ID_PROPERTY);
+		
+		getAttributeSetter().addOptionalAttribute(
+				ArooaConstants.ID_PROPERTY);
+ 	}
 
+    String getId() {
+    	return id;
+    }
+    
 	@Override
 	Object getObjectToSet() {
 		return proxy;

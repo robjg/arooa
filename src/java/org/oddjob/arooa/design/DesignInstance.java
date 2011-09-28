@@ -36,17 +36,4 @@ public interface DesignInstance {
 	 */
 	public ArooaContext getArooaContext();
 	
-	/**
-	 * Get the id of the instance, if there is one.
-	 * 
-	 * @return The id. May be null.
-	 */
-	public String getId();
-	
-	/**
-	 * Set the id of the instance.
-	 * 
-	 * @param id The id. May be null.
-	 */
-	public void setId(String id);
 }

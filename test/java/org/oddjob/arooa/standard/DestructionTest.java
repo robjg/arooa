@@ -91,7 +91,7 @@ public class DestructionTest extends TestCase {
 		"        <stuff id='stuff'/>" + EOL +
 		"    </moreStuff>" + EOL +
 		"    <other>" + EOL +
-		"        <other id='other'/>" + EOL +
+		"        <other/>" + EOL +
 		"    </other>" + EOL +
 		"</stuff>" + EOL;
 	
@@ -118,7 +118,6 @@ public class DestructionTest extends TestCase {
 				new XMLConfiguration("TEST", xml));
 
 		assertNotNull(session.getBeanRegistry().lookup("stuff"));
-		assertNotNull(session.getBeanRegistry().lookup("other"));
 		
 		parser.getSession().getComponentPool().configure(root);
 		
@@ -139,7 +138,6 @@ public class DestructionTest extends TestCase {
 		assertTrue(other.destroyed);
 		
 		assertNull(session.getBeanRegistry().lookup("stuff"));
-		assertNull(session.getBeanRegistry().lookup("other"));
 	}
 	
 	public void testParseAndDestroyNoConfigure() throws URISyntaxException, ArooaParseException {

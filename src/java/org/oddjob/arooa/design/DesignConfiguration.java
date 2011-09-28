@@ -30,10 +30,12 @@ class DesignConfiguration implements ArooaConfiguration {
 		
     	ArooaHandler handler = parentContext.getArooaHandler();
 
-    	String id = design.getId();
-    	if (id != null && id.length() > 0) {
-			element = element.addAttribute(
-					ArooaConstants.ID_PROPERTY, id);
+    	if (design instanceof DesignComponent) {
+        	String id = ((DesignComponent) design).getId();
+        	if (id != null && id.length() > 0) {
+    			element = element.addAttribute(
+    					ArooaConstants.ID_PROPERTY, id);
+        	}
     	}
     	
     	for (DesignProperty child: design.children()) {

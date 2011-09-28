@@ -30,8 +30,6 @@ abstract class DesignInstanceBase implements DesignInstance {
 		
 	private final ArooaContext context;
 
-	private String id;
-	
 	static class ClassFinder {
 		ArooaClass forElement(ArooaElement element, 
 				ArooaContext parentContext) {
@@ -72,8 +70,9 @@ abstract class DesignInstanceBase implements DesignInstance {
 		ArooaAttributes attributes = element.getAttributes(); 
 		for (String attributeName : attributes.getAttributNames()) {
 			if (ArooaConstants.ID_PROPERTY.equals(attributeName)) {
-				setId(attributes.get(ArooaConstants.ID_PROPERTY));
-				continue;
+				if (this instanceof DesignComponentBase) {
+					continue;
+				}
 			}
 			if (ArooaConstants.KEY_PROPERTY.equals(attributeName)) {
 				continue;
@@ -106,14 +105,6 @@ abstract class DesignInstanceBase implements DesignInstance {
 
 	public ArooaContext getArooaContext() {
 		return context;
-	}
-	
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
 	}
 	
 	@Override

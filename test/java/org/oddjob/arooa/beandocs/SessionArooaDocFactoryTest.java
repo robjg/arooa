@@ -31,7 +31,7 @@ public class SessionArooaDocFactoryTest extends TestCase {
 			results.put(beanDoc.getClassName(), beanDoc);
 		}
 		
-		assertEquals(8, results.size());
+		assertEquals(9, results.size());
 		
 		// Is
 		

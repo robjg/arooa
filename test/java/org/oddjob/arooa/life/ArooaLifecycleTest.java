@@ -149,7 +149,7 @@ public class ArooaLifecycleTest extends TestCase {
 			"<test>" +
 			" <object>" +
 			"  <bean class='" + EventCapture.class.getName() + "' " +
-			"    id='comp' constant='apple' runtime='${orange}'/>" +
+			"    constant='apple' runtime='${orange}'/>" +
 			" </object>" +
 			"</test>";
 		
@@ -256,7 +256,7 @@ public class ArooaLifecycleTest extends TestCase {
 			"    <bean id='owner' class='" + ThingWithObject.class.getName() + "'>" +
 			"     <object>" +
 			"      <bean class='" + EventCapture.class.getName() + "' " +
-			"       id='comp' constant='apple' runtime='${orange}'/>" +
+			"       	constant='apple' runtime='${orange}'/>" +
 			"     </object>" +
 			"    </bean>" +
 			"   </component>" +

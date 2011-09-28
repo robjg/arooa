@@ -64,14 +64,6 @@ class ObjectConfiguration extends InstanceConfiguration {
     		ArooaContext context) 
     throws ArooaConfigurationException {
     	ourWrapper.fireBeforeInit();
-    	// order is important. A component must be registered before it is
-    	// added to it's parent - a parent might want to use it's id.
-
-    	String id = getId();
-    	if (id != null) {
-    		context.getSession().getBeanRegistry().register(
-    				id, getWrappedObject());
-    	}
 		
     	internalInit(context);
     	

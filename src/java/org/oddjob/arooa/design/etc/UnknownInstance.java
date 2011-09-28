@@ -48,16 +48,6 @@ implements DesignInstance,
 		return element;
 	}
 		
-	@Override
-	public String getId() {
-		throw new UnsupportedOperationException("Id Only available in XML.");
-	}
-	
-	@Override
-	public void setId(String id) {
-		throw new UnsupportedOperationException("Id Only available in XML.");
-	}
-	
 	public String toString() {
 		return "XML";
 	}

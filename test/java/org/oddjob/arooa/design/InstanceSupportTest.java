@@ -14,6 +14,7 @@ import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaTools;
 import org.oddjob.arooa.ArooaType;
+import org.oddjob.arooa.ClassResolver;
 import org.oddjob.arooa.ElementMappings;
 import org.oddjob.arooa.MockArooaDescriptor;
 import org.oddjob.arooa.MockArooaSession;
@@ -25,6 +26,7 @@ import org.oddjob.arooa.convert.DefaultConverter;
 import org.oddjob.arooa.deploy.MappingsSwitch;
 import org.oddjob.arooa.design.model.MockDesignInstance;
 import org.oddjob.arooa.design.screem.Form;
+import org.oddjob.arooa.life.ClassLoaderClassResolver;
 import org.oddjob.arooa.life.InstantiationContext;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaContext;
@@ -74,12 +76,12 @@ public class InstanceSupportTest extends TestCase {
 			return new ArooaElement[] { APPLE, ORANGE };
 		}
 		
-//		@Override
-//		public DesignInstance designFor(ArooaElement element, 
-//				ArooaContext parentContext) {
-//			return null;
-//		}
-		
+		@Override
+		public DesignFactory designFor(ArooaElement element,
+				InstantiationContext parentContext) {
+			return null;
+		}
+				
 		@Override
 		public ArooaClass mappingFor(ArooaElement element,
 				InstantiationContext parentContext) {
@@ -123,6 +125,12 @@ public class InstanceSupportTest extends TestCase {
 					return new MappingsSwitch(
 							new MockElementMappings(),
 							new OurMappings());
+				}
+				
+				@Override
+				public ClassResolver getClassResolver() {
+					return new ClassLoaderClassResolver(
+							getClass().getClassLoader());
 				}
 			};
 		}
@@ -257,7 +265,7 @@ public class InstanceSupportTest extends TestCase {
 	
 		QTag[] tags = test.getTags();
 		
-		assertEquals(5, tags.length);
+		assertEquals(6, tags.length);
 		
 		Set<QTag> set = new HashSet<QTag>(Arrays.asList(tags));
 		

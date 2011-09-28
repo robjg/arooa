@@ -232,7 +232,7 @@ public class StandardPropertyHelper implements ExpressionParser {
 	     * Replaces <code>${xxx}</code> style constructions in the given value
 	     * with the string value of the corresponding data types.
 	     *
-	     * @param value The string to be scanned for property references.
+	     * @param thing The string to be scanned for property references.
 	     *              May be <code>null</code>, in which case this
 	     *              method returns immediately with no effect.
 	     * @param keys  Mapping (String to String) of property names to their

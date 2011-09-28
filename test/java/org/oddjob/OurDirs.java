@@ -28,6 +28,13 @@ public class OurDirs {
 		}
 	}
 	
+	/**
+	 * Constructor which builds the base directory from the
+	 * given property name.
+	 * 
+	 * @param property The name of the property that gives
+	 * the base directory.
+	 */
 	public OurDirs(String property) {
 		String baseDir = System.getProperty(property);
 		if (baseDir != null) {

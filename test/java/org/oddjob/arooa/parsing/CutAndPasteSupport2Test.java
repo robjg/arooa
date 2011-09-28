@@ -47,7 +47,11 @@ public class CutAndPasteSupport2Test extends TestCase {
 			"    <bean class='" + Component.class.getName() + "' id='b'/>" +
 			"   </child>" +
 			"   <value>" +
-			"    <bean id='v'/>" +
+			"	 <identify  id='v'>" +
+			"     <value>" +
+			"      <bean/>" +
+			"     </value>" +
+			"    </identify>" +
 			"   </value>" +
 			"  </bean>";
 		
@@ -71,12 +75,14 @@ public class CutAndPasteSupport2Test extends TestCase {
 		
 		assertEquals(3, components.ids.size());
 		
-		Object value1 = session.getBeanRegistry().lookup("v");
-		assertNotNull(value1);
-		
 		ArooaContext aContext = pool.trinityForId("a").getTheContext();
 
 		ArooaContext parent = aContext.getParent();
+		
+		aContext.getRuntime().configure();
+		
+		Object value1 = session.getBeanRegistry().lookup("v");
+		assertNotNull(value1);
 		
 		// Cut
 		
@@ -91,12 +97,15 @@ public class CutAndPasteSupport2Test extends TestCase {
 		
 		// Paste
 		
-		CutAndPasteSupport.paste(parent, 0,
+		ConfigurationHandle pasteHandle = 
+			CutAndPasteSupport.paste(parent, 0,
 				new XMLConfiguration("Paste", middleBit));
 		
 		components = new ComponentGrabber(session);
 		
 		assertEquals(3, components.ids.size());
+		
+		pasteHandle.getDocumentContext().getRuntime().configure();
 		
 		Object value3 = session.getBeanRegistry().lookup("v");
 		assertNotNull(value3);
@@ -241,7 +250,7 @@ public class CutAndPasteSupport2Test extends TestCase {
 			"    <bean class='" + Component.class.getName() + "' id='b'/>" +
 			"   </child>" +
 			"   <value>" +
-			"    <bean id='v'/>" +
+			"    <bean/>" +
 			"   </value>" +
 			"  </bean>";
 		
@@ -265,9 +274,6 @@ public class CutAndPasteSupport2Test extends TestCase {
 		
 		assertEquals(3, components.ids.size());
 		
-		Object value1 = session.getBeanRegistry().lookup("v");
-		assertNotNull(value1);
-		
 		ArooaContext aContext = pool.trinityForId("a").getTheContext();
 
 		ArooaContext parent = aContext.getParent();
@@ -280,10 +286,6 @@ public class CutAndPasteSupport2Test extends TestCase {
 		components = new ComponentGrabber(session);
 				
 		assertEquals(3, components.ids.size());
-		
-		Object value2 = session.getBeanRegistry().lookup("v");
-		assertNotNull(value2);
-		assertNotSame(value1, value2);
 		
 		handle.getDocumentContext().getRuntime().destroy();
 		

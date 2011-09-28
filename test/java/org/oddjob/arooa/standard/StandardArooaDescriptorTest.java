@@ -19,6 +19,7 @@ import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.types.BeanType;
 import org.oddjob.arooa.types.ClassType;
 import org.oddjob.arooa.types.ConvertType;
+import org.oddjob.arooa.types.IdentifiableValueType;
 import org.oddjob.arooa.types.ImportType;
 import org.oddjob.arooa.types.IsType;
 import org.oddjob.arooa.types.ListType;
@@ -84,6 +85,10 @@ public class StandardArooaDescriptorTest extends TestCase {
 				new InstantiationContext(ArooaType.VALUE,
 						new SimpleArooaClass(Object.class))));
 		
+		assertNotNull(mappings.mappingFor(IdentifiableValueType.ELEMENT, 
+				new InstantiationContext(ArooaType.VALUE,
+						new SimpleArooaClass(Object.class))));
+		
 		assertNotNull(mappings.mappingFor(XMLType.ELEMENT, 
 				new InstantiationContext(ArooaType.VALUE,
 						new SimpleArooaClass(Object.class))));
@@ -111,13 +116,14 @@ public class StandardArooaDescriptorTest extends TestCase {
 						null,
 						new DefaultConverter()));
 		
-		assertEquals(8, elements.length);
+		assertEquals(9, elements.length);
 		
 		Set<ArooaElement> set = new HashSet<ArooaElement>(Arrays.asList(elements));
 		
 		assertTrue(set.contains(new ArooaElement("is")));
 		assertTrue(set.contains(new ArooaElement("bean")));
 		assertTrue(set.contains(new ArooaElement("class")));
+		assertTrue(set.contains(new ArooaElement("identify")));
 		assertTrue(set.contains(new ArooaElement("import")));
 		assertTrue(set.contains(new ArooaElement("value")));
 		assertTrue(set.contains(new ArooaElement("xml")));

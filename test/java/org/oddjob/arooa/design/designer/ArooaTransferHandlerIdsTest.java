@@ -86,7 +86,7 @@ public class ArooaTransferHandlerIdsTest extends TestCase {
 			"   <child>" +
 			"    <bean class='" + Component.class.getName() + "' id='b'>" +
 			"     <value>" +
-			"      <bean id='v'/>" +
+			"      <bean/>" +
 			"     </value>" +
 			"    </bean>" +
 			"   </child>" +
@@ -110,10 +110,7 @@ public class ArooaTransferHandlerIdsTest extends TestCase {
 		
 		Component a1 = session.getBeanRegistry().lookup("a", Component.class);
 		Component b1 = session.getBeanRegistry().lookup("b", Component.class);
-		
-		Object value1 = session.getBeanRegistry().lookup("v");
-		assertNotNull(value1);
-		
+				
 		ArooaContext aContext = pool.trinityForId("a").getTheContext();
 
 		ArooaContext bContext = pool.trinityForId("b").getTheContext();
@@ -139,15 +136,11 @@ public class ArooaTransferHandlerIdsTest extends TestCase {
 		
 		Component a2 = session.getBeanRegistry().lookup("a", Component.class);
 		Component b2 = session.getBeanRegistry().lookup("b", Component.class);		
-		Object value2 = session.getBeanRegistry().lookup("v");
 		
 		assertSame(a1, a2);
 		
 		assertNotSame(b1, b2);
-		
-		assertNotNull(value2);
-		assertNotSame(value1, value2);
-		
+				
 		handle.getDocumentContext().getRuntime().destroy();
 		
 		assertEquals(4, a1.children.size());
@@ -212,7 +205,7 @@ public class ArooaTransferHandlerIdsTest extends TestCase {
 		String copyText = 
 			"    <bean class='" + Component.class.getName() + "' id='b'>" +
 			"     <value>" +
-			"      <bean id='v'/>" +
+			"      <bean/>" +
 			"     </value>" +
 			"    </bean>";
 
@@ -243,10 +236,8 @@ public class ArooaTransferHandlerIdsTest extends TestCase {
 		// Checks
 		
 		Component b2 = session.getBeanRegistry().lookup("b", Component.class);		
-		Object value2 = session.getBeanRegistry().lookup("v");
 		
 		assertNotNull(b2);		
-		assertNotNull(value2);
 		
 		handle.getDocumentContext().getRuntime().destroy();
 		

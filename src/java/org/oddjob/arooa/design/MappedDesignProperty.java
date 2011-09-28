@@ -150,16 +150,6 @@ public class MappedDesignProperty extends DesignPropertyBase {
 		DesignInstance getWrapping() {
 			return wrapping;
 		}
-		
-		@Override
-		public String getId() {
-			return wrapping.getId();
-		}
-		
-		@Override
-		public void setId(String id) {
-			wrapping.setId(id);
-		}
 	}
 	
 }

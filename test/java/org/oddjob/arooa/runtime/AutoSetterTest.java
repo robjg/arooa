@@ -192,7 +192,11 @@ public class AutoSetterTest extends TestCase {
 		String xml = 
 			"<root>" +
 			" <anything>" +
-			"  <bean id='register-me' class='" + MyServices.class.getName() + "'/>" +
+			"  <identify id='register-me'>" +
+			"   <value>" +
+			"  <bean  class='" + MyServices.class.getName() + "'/>" +
+			"   </value>" +
+			"  </identify>" +
 			" </anything>" +
 			" <thing>" +
 			"  <bean class='" + MyThing.class.getName() + "'/>" +
