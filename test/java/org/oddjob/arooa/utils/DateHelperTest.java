@@ -114,7 +114,7 @@ public class DateHelperTest extends TestCase {
 		
 		Date there = DateHelper.parseDate("2005-12-25", "GMT+02");
 		
-		Date here = DateHelper.parseDate("2005-12-25");
+		Date here = DateHelper.parseDate("2005-12-25", "GMT");
 		
 		int offset = TimeZone.getTimeZone("GMT+02").getOffset(
 				here.getTime());
@@ -127,7 +127,7 @@ public class DateHelperTest extends TestCase {
 		
 		Date there = DateHelper.parseDateTime("2005-12-25 12:00", "GMT+02");
 		
-		Date here = DateHelper.parseDateTime("2005-12-25 12:00");
+		Date here = DateHelper.parseDateTime("2005-12-25 12:00", "GMT");
 		
 		int offset = TimeZone.getTimeZone("GMT+02").getOffset(
 				here.getTime());
@@ -140,7 +140,7 @@ public class DateHelperTest extends TestCase {
 		
 		Date there = DateHelper.parseDateTime("2005-12-25", "GMT+02");
 		
-		Date here = DateHelper.parseDateTime("2005-12-25");
+		Date here = DateHelper.parseDateTime("2005-12-25", "GMT");
 		
 		int offset = TimeZone.getTimeZone("GMT+02").getOffset(
 				here.getTime());

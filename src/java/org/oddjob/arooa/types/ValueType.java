@@ -17,7 +17,7 @@ import org.oddjob.arooa.design.DesignProperty;
 import org.oddjob.arooa.design.DesignValueBase;
 import org.oddjob.arooa.design.SimpleTextAttribute;
 import org.oddjob.arooa.design.screem.Form;
-import org.oddjob.arooa.design.screem.TextPsudoForm;
+import org.oddjob.arooa.design.screem.TextPseudoForm;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 
@@ -121,7 +121,7 @@ public class ValueType implements ArooaValue, Serializable {
 		}
 
 		public Form detail() {
-			return new TextPsudoForm(value);
+			return new TextPseudoForm(value);
 		}
 
 	}	

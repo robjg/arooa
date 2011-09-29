@@ -13,7 +13,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import org.oddjob.arooa.design.DesignAttributeProperty;
-import org.oddjob.arooa.design.screem.TextPsudoForm;
+import org.oddjob.arooa.design.screem.TextPseudoForm;
 
 /**
  * <pre>
@@ -32,7 +32,7 @@ public class TextPsudoFormView implements SwingFormView {
 	 * 
 	 * @param elementField The ElementField being modelled.
 	 */
-	public TextPsudoFormView(TextPsudoForm elementField) {
+	public TextPsudoFormView(TextPseudoForm elementField) {
 		this.element = elementField.getAttribute();
 
 		textField = new JTextField(Looks.TEXT_FIELD_SIZE);

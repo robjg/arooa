@@ -9,17 +9,17 @@ import org.oddjob.arooa.design.DesignAttributeProperty;
 /**
  * Groups a attribute and it's title.
  */
-public class TextPsudoForm implements Form {
+public class TextPseudoForm implements Form {
 
 	private String title;
 	
 	private final DesignAttributeProperty attribute;
 	
-	public TextPsudoForm(DesignAttributeProperty attribute) {
+	public TextPseudoForm(DesignAttributeProperty attribute) {
 		this(attribute.property(), attribute);
 	}
 	
-	public TextPsudoForm(String title, DesignAttributeProperty attribute) {
+	public TextPseudoForm(String title, DesignAttributeProperty attribute) {
 		if (title == null) {
 			throw new NullPointerException("Null title not allowed!");
 		}

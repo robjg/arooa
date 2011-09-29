@@ -11,7 +11,7 @@ import org.oddjob.arooa.design.screem.Form;
 import org.oddjob.arooa.design.screem.NullForm;
 import org.oddjob.arooa.design.screem.StandardForm;
 import org.oddjob.arooa.design.screem.TextInput;
-import org.oddjob.arooa.design.screem.TextPsudoForm;
+import org.oddjob.arooa.design.screem.TextPseudoForm;
 
 /**
  * Creates {@link SwingFormView}s from {@link Form}s
@@ -54,9 +54,9 @@ abstract public class SwingFormFactory<T extends Form> {
 			}	
 		});
 	
-		FACTORIES.put(TextPsudoForm.class, 
-				new SwingFormFactory<TextPsudoForm>() {
-			public SwingFormView onCreate(TextPsudoForm form) {
+		FACTORIES.put(TextPseudoForm.class, 
+				new SwingFormFactory<TextPseudoForm>() {
+			public SwingFormView onCreate(TextPseudoForm form) {
 				return new TextPsudoFormView(form);
 			}	
 		});
