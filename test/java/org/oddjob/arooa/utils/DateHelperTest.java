@@ -4,6 +4,8 @@
 package org.oddjob.arooa.utils;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -17,6 +19,19 @@ import org.apache.log4j.Logger;
 public class DateHelperTest extends TestCase {
 	private static final Logger logger = Logger.getLogger(DateHelperTest.class);
 
+	public void testShowWhyWeNeedThreeTimeFormats() {
+		
+		SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
+		
+		try {
+			format.parse("12:45");
+			fail("Expected to fail.");
+		} catch (ParseException e) {
+			// Expected.
+		}
+		
+	}
+	
 	final long SECOND = 1000;
 	final long MINUTE = SECOND * 60;
 	final long HOUR = MINUTE * 60; 
@@ -91,16 +106,12 @@ public class DateHelperTest extends TestCase {
 
 	public void testParseDateTime() throws ParseException {
 
-//		TimeZone.setDefault(null);
-//		logger.debug(TimeZone.getDefault());
-//
-//		Date expected = new Date(DateHelper.parseDate(
-//				DateHelper.formatDate(new Date()), TimeZone.getDefault()).getTime()
-//			+ DateHelper.parseTime("10:47"));
-//		
-//		assertEquals(expected, DateHelper.parseDateTime("10:47", null));
-//
-//		Date d = DateHelper.parseDateTime("25-dec-05", null);
+		Calendar expected = Calendar.getInstance();
+		expected.clear();
+		expected.set(2005, 11, 25, 10, 47, 0);
+
+		assertEquals(expected.getTime(), 
+				DateHelper.parseDateTime("2005-12-25 10:47", (TimeZone) null));
 	}
 	
 	public void testDate() throws ParseException {
@@ -148,4 +159,5 @@ public class DateHelperTest extends TestCase {
 		logger.debug("Offset is " + offset);
 		assertEquals(here.getTime() - offset, there.getTime());
 	}
+	
 }

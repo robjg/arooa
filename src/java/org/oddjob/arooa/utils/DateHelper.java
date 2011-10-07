@@ -5,7 +5,6 @@ package org.oddjob.arooa.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -150,39 +149,97 @@ public class DateHelper {
 	 * Format a date into just text representing just the date.
 	 * 
 	 * @param date The date
+	 * 
 	 * @return The text equivalent.
 	 */
 	public static String formatDate(Date date) {
-		return new SimpleDateFormat(ArooaConstants.DATE_FORMAT).format(date);
+		return formatDate(date, null);
+	}
+	
+	/**
+	 * Format a date into just text representing just the date.
+	 * 
+	 * @param date The date
+	 * @param timeZone The time zone.
+	 * 
+	 * @return The text equivalent.
+	 */
+	public static String formatDate(Date date, TimeZone timeZone) {
+		SimpleDateFormat format = new SimpleDateFormat(ArooaConstants.DATE_FORMAT);
+		if (timeZone != null) {
+			format.setTimeZone(timeZone);
+		}
+		return format.format(date);
 	}
 	
 	/**
 	 * Format a date into full date/time text.
 	 * 
 	 * @param date The date
+	 * 
 	 * @return The text equivalent.
 	 */
 	public static String formatDateTime(Date date) {
-		return new SimpleDateFormat(ArooaConstants.DATE_FORMAT + " " + 
-				ArooaConstants.TIME_FORMAT1).format(date);
+		return formatDateTime(date, null);
 	}
 	
+	/**
+	 * Format a date into full date/time text.
+	 * 
+	 * @param date The date
+	 * @param timeZone The time zone.
+	 * 
+	 * @return The text equivalent.
+	 */
+	public static String formatDateTime(Date date, TimeZone timeZone) {
+		SimpleDateFormat format = new SimpleDateFormat(ArooaConstants.DATE_FORMAT + " " + 
+				ArooaConstants.TIME_FORMAT1);		
+		if (timeZone != null) {
+			format.setTimeZone(timeZone);
+		}
+		return format.format(date);
+	}
+
+	/**
+	 * Format date time with or without milliseconds.
+	 * 
+	 * @param date
+	 * @return
+	 */
 	public static String formatDateTimeInteligently(Date date) {		
+		return formatDateTimeInteligently(date, null);
+	}
+	
+	/**
+	 * Format date time with or without milliseconds.
+	 * 
+	 * @param date
+	 * @param timeZone
+	 * @return
+	 */
+	public static String formatDateTimeInteligently(Date date, TimeZone timeZone) {		
 		if (date == null) {
 			return null;
 		}
 		
+		SimpleDateFormat format;
 		if (date.getTime() % 1000 == 0) {
 			// no milliseconds - then miss them off.
-			return new SimpleDateFormat(
+			format = new SimpleDateFormat(
 					ArooaConstants.DATE_FORMAT + " " + 
-					ArooaConstants.TIME_FORMAT2).format(date);
+					ArooaConstants.TIME_FORMAT2);
 		}
 		else {
-			return new SimpleDateFormat(
+			format = new SimpleDateFormat(
 					ArooaConstants.DATE_FORMAT + " " + 
-					ArooaConstants.TIME_FORMAT1).format(date);
+					ArooaConstants.TIME_FORMAT1);
 		}
+		
+		if (timeZone != null) {
+			format.setTimeZone(timeZone);
+		}
+		
+		return format.format(date);
 	}
 	
 	/**
@@ -196,17 +253,11 @@ public class DateHelper {
 	 */
 	static Date parse(String text, String format, TimeZone timeZone) throws ParseException {
 		SimpleDateFormat f = new SimpleDateFormat(format);
-		f.setTimeZone(timeZone);
+		if (timeZone != null) {
+			f.setTimeZone(timeZone);
+		}
 
-		Date d = f.parse(text);
-		
-		Calendar c = Calendar.getInstance();
-		c.setTimeZone(timeZone);
-		c.setTime(d);
-		
-		return c.getTime();
+		return f.parse(text);		
 	}
 	
 }
-
-
