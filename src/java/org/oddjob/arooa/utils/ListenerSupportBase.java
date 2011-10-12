@@ -52,6 +52,12 @@ public class ListenerSupportBase<T> {
 		return onFirst;
 	}
 
+	/**
+	 * Set an action to run when the first listener
+	 * is added.
+	 * 
+	 * @param onFirst
+	 */
 	public void setOnFirst(Runnable onFirst) {
 		this.onFirst = onFirst;
 	}
@@ -60,6 +66,12 @@ public class ListenerSupportBase<T> {
 		return onEmpty;
 	}
 
+	/**
+	 * Set an action to be run when the last listener has
+	 * been removed.
+	 * 
+	 * @param onEmpty
+	 */
 	public void setOnEmpty(Runnable onEmpty) {
 		this.onEmpty = onEmpty;
 	}

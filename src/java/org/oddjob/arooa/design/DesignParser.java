@@ -168,6 +168,9 @@ public class DesignParser implements ArooaParser, DesignNotifier {
 		if (configuration == null) {
 			throw new NullPointerException("No configuration.");
 		}
+		if (type == null) {
+			throw new NullPointerException("No ArooaType.");
+		}
 		
 		ArooaHandler handler = new XMLFirstHandler() {
 			

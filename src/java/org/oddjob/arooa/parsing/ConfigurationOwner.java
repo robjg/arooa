@@ -15,7 +15,7 @@ public interface ConfigurationOwner {
 	/**
 	 * Provide a {@link ConfigurationSession}.
 	 * 
-	 * @return A {@link ConfigurationSession}. Never Null.
+	 * @return A {@link ConfigurationSession}. My be null if no session is available.
 	 */
 	public ConfigurationSession provideConfigurationSession();
 	
@@ -33,9 +33,18 @@ public interface ConfigurationOwner {
 	 */
 	public void removeOwnerStateListener(OwnerStateListener listener);
 	
-	
+	/**
+	 * Get the design factory for the configuration.
+	 * 
+	 * @return Never null.
+	 */
 	public DesignFactory rootDesignFactory();
 	
+	/**
+	 * Get the root element.
+	 * 
+	 * @return Never null.
+	 */
 	public ArooaElement rootElement();
 	
 }

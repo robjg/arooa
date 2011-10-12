@@ -13,6 +13,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 import org.oddjob.arooa.design.DesignNotifier;
+import org.oddjob.arooa.design.actions.ActionContributor;
 import org.oddjob.arooa.design.actions.ConfigurableMenus;
 import org.oddjob.arooa.design.view.SwingFormView;
 import org.oddjob.arooa.design.view.ViewHelper;
@@ -50,12 +51,17 @@ implements SwingFormView {
 		ConfigurableMenus menus = new ConfigurableMenus();	
 		
 		new DesignerEditActions(designerModel).contributeTo(menus);
-		new ViewActionsContributor(designerModel).contributeTo(menus);
+		
+		ActionContributor viewActions = new ViewActionsContributor(
+				designerModel);
+		viewActions.contributeTo(menus);
 		
 		this.menus = menus;
 		
 	    component = new DesignerPanel(designerModel, menus);
 
+		viewActions.addKeyStrokes(component);
+		
 		cell = ViewHelper.createDetailButton(designerForm);
 
 		if (!noErrorDialg) {

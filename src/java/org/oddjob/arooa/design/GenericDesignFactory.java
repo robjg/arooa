@@ -27,7 +27,15 @@ public class GenericDesignFactory implements DesignFactory {
 
 	private final ArooaClass arooaClass;
 	
+	/**
+	 * Constructor.
+	 * 
+	 * @param forClass The class. Must not be null.
+	 */
 	public GenericDesignFactory(ArooaClass forClass) {
+		if (forClass == null) {
+			throw new NullPointerException("No Class.");
+		}
 		this.arooaClass = forClass;
 	}
 	

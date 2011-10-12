@@ -1,7 +1,6 @@
 package org.oddjob.arooa.design.designer;
 
 import javax.swing.JMenu;
-import javax.swing.JPopupMenu;
 
 /**
  * Provides menus for a Swing view.
@@ -9,7 +8,7 @@ import javax.swing.JPopupMenu;
  * @author rob
  *
  */
-public interface MenuProvider {
+public interface MenuProvider extends PopupMenuProvider {
 
 	/**
 	 * Get the menus that are the menu bar.
@@ -17,12 +16,5 @@ public interface MenuProvider {
 	 * @return
 	 */
 	public JMenu[] getJMenuBar();
-	
-	/**
-	 * Get the pop-up menu.
-	 * 
-	 * @return
-	 */
-	public JPopupMenu getPopupMenu();
 	
 }

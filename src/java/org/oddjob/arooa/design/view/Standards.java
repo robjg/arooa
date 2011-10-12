@@ -35,14 +35,6 @@ public class Standards {
 	public static final Integer SAVEAS_MNEMONIC_KEY = new Integer(KeyEvent.VK_A);
 	public static final KeyStroke SAVEAS_ACCELERATOR_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK);
 	
-	public static final Integer EXIT_MNEMONIC_KEY = new Integer(KeyEvent.VK_G);
+	public static final Integer EXIT_MNEMONIC_KEY = new Integer(KeyEvent.VK_X);
 	
-	// designer component actions
-	public static final Integer VIEW_XML_MNEMONIC_KEY = new Integer(KeyEvent.VK_X);
-	public static final KeyStroke VIEW_XML_ACCELERATOR_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK);
-
-	public static final Integer VIEW_COMP_MNEMONIC_KEY = new Integer(KeyEvent.VK_C);
-	public static final KeyStroke VIEW_COMP_ACCELERATOR_KEY = KeyStroke.getKeyStroke(KeyEvent.VK_K, ActionEvent.CTRL_MASK);
-	
-	public static final Integer DELETE_MNEMONIC_KEY = new Integer(KeyEvent.VK_D);
 }

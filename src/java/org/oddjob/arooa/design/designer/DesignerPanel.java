@@ -2,8 +2,6 @@ package org.oddjob.arooa.design.designer;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.DropMode;
 import javax.swing.JOptionPane;
@@ -11,6 +9,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -19,6 +19,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import org.oddjob.arooa.design.view.Looks;
+import org.oddjob.arooa.design.view.TreePopup;
 import org.oddjob.arooa.parsing.DragContext;
 import org.oddjob.arooa.parsing.DragPoint;
 
@@ -31,12 +32,9 @@ import org.oddjob.arooa.parsing.DragPoint;
 public class DesignerPanel extends JPanel {
 	private static final long serialVersionUID = 2008100100;
 
-
 	private final JTree tree;
 
 	private final JScrollPane treeScroll;
-
-	private final MenuProvider menuBar;
 
 	/**
 	 * Constructor.
@@ -45,8 +43,6 @@ public class DesignerPanel extends JPanel {
 	 */
 	
 	public DesignerPanel(final DesignerModel model, MenuProvider menuBar) {
-		// set up the menu
-		this.menuBar = menuBar;
 		
 		// create tree.
 		tree = new ArooaTree(model.getTreeModel()) {
@@ -106,49 +102,47 @@ public class DesignerPanel extends JPanel {
 			}
 		});
 		
-		tree.addMouseListener(new PopupListener());
+		new TreePopup(tree, menuBar);
 
+		tree.addAncestorListener(new AncestorListener() {
+			
+			@Override
+			public void ancestorRemoved(AncestorEvent event) {
+				tree.removeAncestorListener(this);
+			}
+			
+			@Override
+			public void ancestorMoved(AncestorEvent event) {
+			}
+			
+			@Override
+			public void ancestorAdded(AncestorEvent event) {
+				tree.requestFocusInWindow();
+			}
+		});
+		
 		setLayout(new BorderLayout());
 		treeScroll = new JScrollPane();
-		treeScroll.setPreferredSize(new Dimension(
+		
+		treeScroll.setMinimumSize(new Dimension(
 				Looks.DESIGNER_TREE_WIDTH, Looks.DESIGNER_HEIGHT));
 		
 		treeScroll.setViewportView(tree);
 
 		// create detail pane
-		DesignerDetail dd = new DesignerDetail();
-		dd.setPreferredSize(new Dimension(
-				Looks.DETAIL_FORM_WIDTH, Looks.DESIGNER_HEIGHT));
-		model.addObserver(dd);
+		DesignerDetail designerDetail = new DesignerDetail();
+
+		model.addObserver(designerDetail);
+
+		// This must be after the detail observer so the detail panel 
+		// is sized correctly to start.
+		tree.setSelectionPath(new TreePath(tree.getModel().getRoot()));
 		
 		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-			treeScroll, dd);
+			treeScroll, designerDetail);
 
 		add(split);
 		
 	}
 		
-	class PopupListener extends MouseAdapter {
-		public void mousePressed(MouseEvent e) {
-			maybeShowPopup(e);
-		}
-		public void mouseClicked(MouseEvent e) {
-			maybeShowPopup(e);
-		}
-		public void mouseReleased(MouseEvent e) {
-			maybeShowPopup(e);
-		}
-		
-		private void maybeShowPopup(MouseEvent e) {
-			if (!e.isPopupTrigger()) {
-				return;
-			}
-			TreePath path = tree.getPathForLocation(e.getX(), e.getY());
-			tree.setSelectionPath(path);
-			if (menuBar.getPopupMenu() != null) {
-				menuBar.getPopupMenu().show(e.getComponent(), e.getX(), e.getY());
-			}
-		}
-	}
-
 }

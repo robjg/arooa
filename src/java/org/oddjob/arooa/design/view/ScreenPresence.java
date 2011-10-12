@@ -30,6 +30,12 @@ public class ScreenPresence implements Serializable {
 		this.size = component.getSize();
 	}
 	
+	/**
+	 * Fit a component to the location and size of this 
+	 * screen presence.
+	 * 
+	 * @param component
+	 */
 	public void fit(Component component) {
 		component.setLocation(location);
 		component.setSize(size);
@@ -43,17 +49,44 @@ public class ScreenPresence implements Serializable {
 		return size;
 	}
 	
+	/**
+	 * Return the location relative to this screen area that would
+	 * centre something of the given size within this screen area..
+	 * 
+	 * @param size
+	 * @return
+	 */
+	public Point locationToCenter(Dimension size) {
+		
+		int width = (int) size.getWidth();
+		int height = (int) size.getHeight();
+		
+		int x = (int) (location.getX() + 
+				(this.size.getWidth() - width) / 2);
+		int y = (int) (location.getY() + 
+				(this.size.getHeight() - height) / 2);
+		
+		return new Point(x, y);
+	}
+	
+	/**
+	 * Create ScreenPresence a factor the size of this. The location will 
+	 * be adjusted so that it is offset equally in both x and y direction
+	 * from this ScreenPresence.
+	 * 
+	 * @param factor The factor to size the new ScreenPresence by.
+	 * 
+	 * @return
+	 */
 	public ScreenPresence smaller(double factor) {
 		int width = (int) (size.getWidth() * factor);
 		int height = (int) (size.getHeight() * factor);
 		
-		int x = (int) (location.getX() + 
-				(size.getWidth() - width) / 2);
-		int y = (int) (location.getY() + 
-				(size.getHeight() - height) / 2);
+		Dimension size = new Dimension(width, height);
 		
-		return new ScreenPresence(new Point(x, y), 
-				new Dimension(width, height));
+		return new ScreenPresence(
+				locationToCenter(size), 
+				size);
 	}
 	
 	public static ScreenPresence wholeScreen() {

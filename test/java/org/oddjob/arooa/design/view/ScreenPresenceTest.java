@@ -7,6 +7,19 @@ import junit.framework.TestCase;
 
 public class ScreenPresenceTest extends TestCase {
 
+	public void testLocationToCenter() {
+		
+		ScreenPresence test = new ScreenPresence(
+				new Point(400, 600),
+				new Dimension(100, 200));
+		
+		Point point = test.locationToCenter(
+				new Dimension(50, 100));
+		
+		assertEquals(425.0, point.getX());
+		assertEquals(650.0, point.getY());
+	}
+	
 	public void testSmaller() {
 		
 		ScreenPresence test = new ScreenPresence(

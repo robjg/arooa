@@ -1,5 +1,6 @@
 package org.oddjob.arooa.design.designer;
 
+import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.deploy.ArooaDescriptorDescriptor;
 import org.oddjob.arooa.standard.StandardArooaSession;
 
@@ -11,6 +12,7 @@ public class ArooaDesignerMain {
 		designer.setArooaSession(
 				new StandardArooaSession(
 						new ArooaDescriptorDescriptor()));
+		designer.setArooaType(ArooaType.VALUE);
 		
 		designer.run();
 	}

@@ -33,14 +33,14 @@ public interface ArooaContext {
 	/**
 	 * Get the parent {@link ArooaContext}
 	 * 
-	 * @return
+	 * @return The parent context. This will be null for the root context.
 	 */
 	public ArooaContext getParent();
 	
     /**
      * Get the current {@link RuntimeConfiguration{} for this context.
      * 
-     * @return A RuntimeConfiguration. Never null.
+     * @return A RuntimeConfiguration. This may be null for the root context.
      */
     public RuntimeConfiguration getRuntime();
 

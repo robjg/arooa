@@ -2,7 +2,6 @@ package org.oddjob.arooa.design.view;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -36,7 +35,7 @@ public class ViewMainHelper implements Runnable {
 		
 		JScrollPane scroll = new JScrollPane();
 		scroll.setViewportView(view);
-		scroll.setPreferredSize(new Dimension(500, 400));
+//		scroll.setPreferredSize(new Dimension(500, 400));
 		
 		JPanel panel = new JPanel(new BorderLayout());
 		

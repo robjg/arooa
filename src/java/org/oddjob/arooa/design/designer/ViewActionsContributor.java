@@ -7,6 +7,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.Action;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
 import org.apache.log4j.Logger;
@@ -22,6 +25,12 @@ import org.oddjob.arooa.design.etc.UnknownInstance;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
+/**
+ * Provides the designers 'View As XML' and 'View As Component' actions.
+ * 
+ * @author rob
+ *
+ */
 public class ViewActionsContributor implements ActionContributor {
 
 	private static final Logger logger = Logger.getLogger(ViewActionsContributor.class);
@@ -130,6 +139,18 @@ public class ViewActionsContributor implements ActionContributor {
 			}
 			
 		}
+	}
+	
+	public void addKeyStrokes(JComponent component) {
+
+		ActionMap actionMap = component.getActionMap();
+		InputMap inputMap = component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+		
+		String name = (String) viewAction.getValue(Action.NAME);
+		actionMap.put(name, viewAction);
+		KeyStroke keyStroke = (KeyStroke) viewAction.getValue(Action.ACCELERATOR_KEY);
+			
+		inputMap.put(keyStroke, name);
 	}
 	
 }

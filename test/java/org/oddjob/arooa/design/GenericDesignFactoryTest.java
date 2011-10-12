@@ -52,6 +52,41 @@ public class GenericDesignFactoryTest extends TestCase {
 	
 	}
 	
+	public static class Fruit {
+		
+		String name;
+
+		Fruit more;
+		
+		public Fruit getMore() {
+			return more;
+		}
+
+		public void setMore(Fruit more) {
+			this.more = more;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String id) {
+			this.name = id;
+		}
+	}
+	
+	public void testThingWithAnElement() {
+		
+		GenericDesignFactory factory = new GenericDesignFactory(
+				new SimpleArooaClass(Fruit.class));
+		
+		DesignInstance design = factory.createDesign(
+				new ArooaElement("foo"), 
+				new DesignSeedContext(ArooaType.VALUE, new StandardArooaSession()));
+		
+		this.design = design;
+	}
+	
 //	public void testMagicBean() {
 //		
 //		MagicBeanDef def = new MagicBeanDef();
@@ -98,7 +133,7 @@ public class GenericDesignFactoryTest extends TestCase {
 	public static void main(String... args) {
 		
 		GenericDesignFactoryTest test = new GenericDesignFactoryTest();
-		test.testPrimatives();
+		test.testThingWithAnElement();
 		
 		ViewMainHelper helper = new ViewMainHelper(test.design);
 		

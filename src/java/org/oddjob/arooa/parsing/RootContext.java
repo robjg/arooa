@@ -25,6 +25,7 @@ public class RootContext implements ArooaContext {
 	
 	private final PrefixMappings prefixMappings = new SimplePrefixMappings();
 		
+	/** Configuration node is needed to track children. */
 	private final ConfigurationNode configurationNode = 
 		new AbstractConfigurationNode() {
 
@@ -42,10 +43,22 @@ public class RootContext implements ArooaContext {
 			}
 	};
 	
+	/**
+	 * Constructor.
+	 * 
+	 * @param type The type. May be null depending on parser 
+	 * (XMLArooaParser for instance).
+	 * @param session The session. Must be null depending on parser.
+	 * @param rootHandler The handler. Must not be null.
+	 */
 	public RootContext(
 			ArooaType type,
 			ArooaSession session, 
 			ArooaHandler rootHandler) {
+
+		if (rootHandler == null) {
+			throw new NullPointerException("No Handler");
+		}
 		
 		this.type = type;
 		this.rootHandler = rootHandler;

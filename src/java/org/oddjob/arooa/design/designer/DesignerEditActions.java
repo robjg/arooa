@@ -7,6 +7,11 @@ import org.oddjob.arooa.design.DesignComponent;
 import org.oddjob.arooa.design.actions.EditActionsContributor;
 import org.oddjob.arooa.parsing.CutAndPasteSupport;
 
+/**
+ * Adds enabled/disabled functionality to the standard edit actions.
+ * 
+ * @author rob
+ */
 public class DesignerEditActions extends EditActionsContributor {
 
 	public DesignerEditActions(final DesignerModel model) {		

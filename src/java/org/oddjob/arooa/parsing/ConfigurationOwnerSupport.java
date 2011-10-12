@@ -22,11 +22,24 @@ public class ConfigurationOwnerSupport extends ListenerSupportBase<OwnerStateLis
 	}
 	
 	public void setConfigurationSession(ConfigurationSession session) {
+		if (this.session == session) {
+			return;
+		}
+		
 		this.session = session;
 		
 		List<OwnerStateListener> copy = copy();
 		for (OwnerStateListener listener : copy) {
-			listener.sessionChanged(new ConfigOwnerEvent(source));
+			ConfigOwnerEvent event;
+			if (session == null) {
+				event = new ConfigOwnerEvent(source, 
+						ConfigOwnerEvent.Change.SESSION_DESTROYED);
+			}
+			else {
+				event = new ConfigOwnerEvent(source, 
+						ConfigOwnerEvent.Change.SESSION_CREATED);
+			}
+			listener.sessionChanged(event);
 		}
 	}
 	

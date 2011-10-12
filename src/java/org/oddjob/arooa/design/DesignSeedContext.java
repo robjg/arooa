@@ -9,6 +9,13 @@ import org.oddjob.arooa.parsing.SimplePrefixMappings;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
+/**
+ * Used when creating a context for a design because no {@link ArooaHandler}
+ * is needed.
+ * 
+ * @author rob
+ *
+ */
 public class DesignSeedContext implements ArooaContext {
 
 	private final ArooaSession session;

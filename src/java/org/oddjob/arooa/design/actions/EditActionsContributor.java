@@ -14,6 +14,12 @@ import javax.swing.TransferHandler;
 
 import org.oddjob.arooa.design.designer.ArooaTree;
 
+/**
+ * Provides the cut/copy/paste and delete actions.
+ * 
+ * @author rob
+ *
+ */
 public class EditActionsContributor implements ActionContributor {
 
 	public static final String EDIT_MENU_ID = "edit-menu";
@@ -179,5 +185,12 @@ public class EditActionsContributor implements ActionContributor {
 						ActionEvent.ACTION_PERFORMED, null));
 			}
 		}
+	}
+	
+	@Override
+	public void addKeyStrokes(JComponent component) {
+		
+		// Keystrokes are registered already in the TransferHandler class,
+		// so nothing to do here.
 	}
 }

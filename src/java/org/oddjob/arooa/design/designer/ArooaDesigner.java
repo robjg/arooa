@@ -17,6 +17,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -255,6 +256,9 @@ implements ArooaSessionAware, Runnable {
 	public void run() {
 		if (session == null) {
 			throw new NullPointerException("No Session.");
+		}
+		if (arooaType == null) {
+			throw new NullPointerException("No ArooType.");
 		}
 		
 		stop = false;
@@ -676,6 +680,12 @@ implements ArooaSessionAware, Runnable {
 			
 			actionRegistry.addMenuItem(
 					FILE_ID, EXIT_GROUP, exitAction);
+		}
+		
+		@Override
+		public void addKeyStrokes(JComponent component) {
+			// TODO Auto-generated method stub
+			
 		}
 	}
 

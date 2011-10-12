@@ -16,12 +16,16 @@ import org.oddjob.arooa.runtime.RuntimeConfiguration;
  */
 public class InstantiationContext {
 
+	/** The type. */
 	private final ArooaType arooaType;
-	
+
+	/** The class. */
 	private final ArooaClass arooaClass;
 
+	/** The class resolver. */
 	private final ClassResolver classResolver;
-	
+
+	/** The converter. */
 	private final ArooaConverter converter;
 	
 	/**
@@ -31,6 +35,7 @@ public class InstantiationContext {
 	 */
 	public InstantiationContext(ArooaContext context) {
 		this.arooaType = context.getArooaType();
+		
 		RuntimeConfiguration runtime = context.getRuntime();
 		if (runtime == null) {
 			this.arooaClass = null;
@@ -38,10 +43,13 @@ public class InstantiationContext {
 		else {
 			this.arooaClass = runtime.getClassIdentifier();
 		}
+		
 		this.classResolver = context.getSession(
 				).getArooaDescriptor().getClassResolver();
 		this.converter = context.getSession().getTools(
 				).getArooaConverter();
+		
+		validate();
 	}
 	
 	/**
@@ -54,6 +62,13 @@ public class InstantiationContext {
 		this(arooaType, arooaClass, null, null);
 	}
 	
+	/**
+	 * Constructor with no converter.
+	 * 
+	 * @param arooaType
+	 * @param arooaClass
+	 * @param classResolver
+	 */
 	public InstantiationContext(
 			ArooaType arooaType, ArooaClass arooaClass, 
 			ClassResolver classResolver) {
@@ -73,21 +88,47 @@ public class InstantiationContext {
 		this(arooaType, arooaClass, null, converter);
 	}
 	
-	
+	/**
+	 * Constructor.
+	 * 
+	 * @param arooaType Must not be null.
+	 * @param arooaClass May be null.
+	 * @param classResolver May be null.
+	 * @param converter May be null.
+	 */
 	public InstantiationContext(
 			ArooaType arooaType, ArooaClass arooaClass, 
 			ClassResolver classResolver,
 			ArooaConverter converter) {
+		
 		this.arooaType = arooaType;
 		this.arooaClass = arooaClass;
 		this.classResolver = classResolver;
 		this.converter = converter;
+		
+		validate();
+	}
+
+	private void validate() {
+		if (arooaType == null) {
+			throw new NullPointerException("No ArooaType");
+		}		
 	}
 	
+	/**
+	 * Getter for class.
+	 * 
+	 * @return The class. May be null.
+	 */
 	public ArooaClass getArooaClass() {
 		return arooaClass;
 	}
 	
+	/**
+	 * Getter for type.
+	 * 
+	 * @return The type. Will not be null. 
+	 */
 	public ArooaType getArooaType() {
 		return arooaType;
 	}

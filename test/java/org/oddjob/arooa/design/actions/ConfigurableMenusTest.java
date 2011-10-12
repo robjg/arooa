@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -43,6 +44,11 @@ public class ConfigurableMenusTest extends TestCase {
 			
 			actionRegistry.addMenuItem("FRUIT", "first", apple);
 			actionRegistry.addMenuItem("FRUIT", "second", orange);
+		}
+		
+		@Override
+		public void addKeyStrokes(JComponent component) {
+			throw new RuntimeException("Unexpected.");
 		}
 	}
 	
@@ -135,6 +141,11 @@ public class ConfigurableMenusTest extends TestCase {
 			actionRegistry.addMenuItem("FRUIT", "others", apple);
 			actionRegistry.addMenuItem("FRUIT", "others", orange);
 			actionRegistry.addMenuItem("VEG", "others", cabbage);
+		}
+		
+		@Override
+		public void addKeyStrokes(JComponent component) {
+			throw new RuntimeException("Unexpected.");
 		}
 	}
 	
