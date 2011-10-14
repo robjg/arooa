@@ -370,6 +370,9 @@ public class BeanUtilsPropertyAccessor implements PropertyAccessor {
 	throws ArooaPropertyException {
 		try {
 			return propertyUtilsBean.getProperty(bean, property);
+		} catch (IndexOutOfBoundsException e) {
+			// Return null if index access is out of bounds.
+			return null;
 		} catch (BeanAccessLanguageException e) {
 			throw new ArooaPropertyException(property, e);
 		} catch (IllegalAccessException e) {

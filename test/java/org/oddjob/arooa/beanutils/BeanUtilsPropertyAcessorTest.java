@@ -20,6 +20,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.oddjob.arooa.ArooaConfigurationException;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaValue;
+import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.convert.ConversionFailedException;
 import org.oddjob.arooa.convert.DefaultConverter;
@@ -47,7 +48,7 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
 		
     	PropertyAccessor bubh = 
     		new BeanUtilsPropertyAccessor().accessorWithConversions(CONVERTER);
-    	ThingWithAttributes subject = new ThingWithAttributes();
+    	ThingWithSetters subject = new ThingWithSetters();
     	
         try {
             bubh.setProperty(subject, "one", "test");
@@ -102,7 +103,8 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
         
         // set String on File
         bubh.setProperty(subject, "eight", "hello.txt");
-
+        assertEquals(new File("hello.txt"), subject.eight);
+        
         // set Object[] on File[]
         try {
         	bubh.setProperty(subject, "nine", new Object[] { "hello.txt" } );
@@ -149,6 +151,96 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
         assertEquals("pairs", CONVERTER.convert(subject.thirteen[1], Object.class));
     }
 
+    public void testAttributeGetters() throws ArooaException, ArooaPropertyException, ArooaConversionException {
+		
+    	PropertyAccessor test = 
+    		new BeanUtilsPropertyAccessor().accessorWithConversions(CONVERTER);
+    	
+    	ThingWithGetters subject = new ThingWithGetters();
+    	
+        try {
+            test.getProperty(subject, "one");
+            fail("getOne doesn't exist");
+        } catch (ArooaPropertyException be) {
+        }
+        try {
+        	test.getProperty(subject, "two");
+            fail("getTwo return void");
+        } catch (ArooaPropertyException be) {
+        }
+        try {
+        	test.getProperty(subject, "three");
+            fail("getThree has an argument");
+        } catch (ArooaPropertyException be) {
+        }
+        
+        // get string on String
+        String five = test.getProperty(subject, "five", String.class);
+        assertEquals("test", five);
+        
+        // get File on String
+        File five_ = test.getProperty(subject, "five", File.class);        
+        assertEquals(new File("test"), five_);
+                
+        // get Integer on int
+        int six = test.getProperty(subject, "six", int.class);
+        assertEquals(2, six);
+        
+        // get Integer on Integer
+        Integer seven = test.getProperty(subject, "seven", Integer.class);        
+        assertEquals(new Integer(2), seven);
+        
+        // get String from File
+        String eight = test.getProperty(subject, "eight", String.class);
+        assertEquals("hello.txt", eight);
+        
+        // get String[] from File[]
+        String[] nine = test.getProperty(subject, "nine", String[].class );        
+    	assertEquals("hello.txt", nine[0]);
+        
+	    // nine2 are extra tests because BeanUtils messes with String arrays.
+    	// since 0.23.0 we do our own conversions so these aren't so applicable
+    	// but the more tests the better.    	
+    	
+        // get Object[] on String[]
+        Object[] nine2 = test.getProperty(subject, "nine2", Object[].class );        
+    	assertEquals( "hello.txt", nine2[0]);
+        
+        // get File[] from String[]
+        File[] nine2_ = test.getProperty(subject, "nine2", File[].class );        
+    	assertEquals( new File("hello.txt") , nine2_[0]);
+        
+        // get String[] from int[]
+        try {
+            test.getProperty(subject, "ten", String[].class);
+            fail("Can't convert int[] to String[]");
+        }
+        catch (NoConversionAvailableException e) {
+        	// Expected but, but maybe it shouldn't be. 
+        }
+        
+        // get String[] from Integer[]
+        String[] ten2 = test.getProperty(subject, "ten2", String[].class);
+        assertEquals("1", ten2[0]);
+        assertEquals("2", ten2[1]);
+        assertEquals("3", ten2[2]);
+        
+        String eleven0 = test.getProperty(subject, "eleven[0]", String.class);
+        String eleven1 = test.getProperty(subject, "eleven[1]", String.class);
+        String eleven2 = test.getProperty(subject, "eleven[2]", String.class);
+        assertEquals("apples", eleven0);
+        assertEquals("pairs", eleven1);
+        assertEquals(null, eleven2);
+                
+        // get File from an AV.
+        Object twelve = test.getProperty(subject, "twelve", Object.class);        
+        assertEquals(new File("hello.txt"), twelve);
+        
+        String[] thirteen = test.getProperty(subject, "thirteen", String[].class);
+        assertEquals("apples", thirteen[0]);
+        assertEquals("pairs", thirteen[1]);
+    }
+    
     /**
      * More complicated cases.
      *
@@ -156,7 +248,7 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
     public void testAttributeSetters2() {
     	PropertyAccessor bubh = 
     		new BeanUtilsPropertyAccessor().accessorWithConversions(CONVERTER);
-    	Object subject = new ThingWithAttributes();
+    	Object subject = new ThingWithSetters();
     	
         // set Object[] on File[]
         bubh.setSimpleProperty(subject, "nine", new ArooaObject[] { 
@@ -277,8 +369,8 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
      * 
      */
 	public static class OuterBean {
-		ThingWithAttributes nested = new ThingWithAttributes();
-		public ThingWithAttributes getNested() {
+		ThingWithSetters nested = new ThingWithSetters();
+		public ThingWithSetters getNested() {
 			return nested; 
 		}
 	}
@@ -290,7 +382,7 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
      * that aren't).
      *
      */
-	public static class ThingWithAttributes {
+	public static class ThingWithSetters {
 		String five; 
 		int six;
 		Integer seven;
@@ -360,6 +452,77 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
 
 	}
 	
+	public static class ThingWithGetters {
+		String five = "test";
+		int six = 2;
+		Integer seven = new Integer(2);
+		File eight = new File("hello.txt");
+		File[] nine = new File[] { new File("hello.txt") };
+		String[] nine2 = new String[] { "hello.txt" };
+		int[] ten = { 1, 2, 3 };
+		Integer[] ten2 = { new Integer(1), new Integer(2), new Integer(3) };
+		String[] eleven = new String[] { "apples",  "pairs" };
+		ArooaValue twelve = new ArooaObject(new File("hello.txt"));
+		ArooaValue[] thirteen = new ArooaObject[] { 
+				new ArooaObject("apples"), new ArooaObject("pairs") };
+		
+	    public void getTwo() {
+	    }
+	    
+	    public int getThree(String s) {
+	    	return 0;
+	    }
+	    
+	    public void setFour(String s1, String s2) {}
+	    public String getFour() {
+	    	return "";
+	    }
+	    
+	    public String getFive() {
+			return five;
+		}
+	    
+	    public int getSix() {
+	    	return six;
+	    }
+	    
+	    public Integer getSeven() {
+	    	return seven;
+	    }
+	    
+	    public File getEight() { 
+	    	return eight;
+	    }
+	    
+	    public File[] getNine() { 
+	    	return nine;
+	    }
+	    
+	    public String[] getNine2() { 
+	    	return nine2;
+	    }
+	    
+	    public int[] getTen() { 
+	    	return ten;
+	    }
+	    
+	    public Integer[] getTen2() { 
+	    	return ten2;
+	    }
+	    
+	    public String getEleven(int index) {
+	    	return eleven[index];
+	    }
+	    
+	    public ArooaValue getTwelve() {
+	    	return twelve;
+	    }
+	    
+	    public ArooaValue[] getThirteen() {
+	    	return thirteen;
+	    }
+
+	}
 
     /**
      * Fixture - an object with mapped properties (as
@@ -427,7 +590,7 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
 	public void testPropertyType() {
     	BeanUtilsPropertyAccessor bubh = new BeanUtilsPropertyAccessor();
     	
-		ThingWithAttributes t = new ThingWithAttributes();
+		ThingWithSetters t = new ThingWithSetters();
 
 		// [] property
 		assertEquals(File[].class, bubh.getPropertyType(t, "nine"));
@@ -459,7 +622,7 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
 	 */
 	public void testPropertyType2() throws Exception{
 		// first look at an array without a indexed acessor.
-		ThingWithAttributes thing = new ThingWithAttributes();
+		ThingWithSetters thing = new ThingWithSetters();
 		
 		PropertyDescriptor pd1 = PropertyUtils.getPropertyDescriptor(thing, "nine");
 		assertNotNull("descriptor 1", pd1);
