@@ -242,6 +242,47 @@ public class DateHelper {
 		return format.format(date);
 	}
 	
+	public static String formatMilliseconds(long milliseconds) {
+	
+		long seconds = milliseconds / 1000;
+		
+		if (seconds < 60) {
+			return "" + seconds + " second" + s(seconds);
+		}
+		
+		long minutes = seconds / 60;
+		seconds = seconds % 60;
+		
+		if (minutes < 60) {
+			return "" + minutes + " minute" + s(minutes) + " " 
+				+ seconds + " second" + s(seconds); 
+		}
+		
+		long hours = minutes / 60;
+		minutes = minutes % 60;
+		
+		if (hours < 24) {
+			return "" + hours + " hour" + s(hours) + " " + 
+				minutes + " minute" + s (minutes);
+		}
+		
+		long days = hours / 24;
+		hours = hours % 24;
+		
+		return "" + days + " day" + s(days) + " " + 
+			hours + " hour" + s(hours) + " and " +
+			minutes + " minute" + s(minutes);
+	}
+	
+	private static String s(long quantity) {
+		if (quantity == 1) {
+			return "";
+		}
+		else {
+			return "s";
+		}
+	}
+	
 	/**
 	 * Helper function. Not public.
 	 * 

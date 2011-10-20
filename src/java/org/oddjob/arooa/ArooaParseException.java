@@ -20,8 +20,7 @@ public class ArooaParseException extends Exception {
 		super(message, t);
 		this.location = location;
 	}
-	
- 	
+	 	
 	/**
 	 * Returns the location of the error and the error message.
 	 *
@@ -29,8 +28,8 @@ public class ArooaParseException extends Exception {
 	 */
 	public String toString() {
 		return (location == null ? 
-				"(Unknown Location): " : location.toString()) + 
-		getMessage();
+				"(Unknown Location): " : location.toString()) + " " +
+				getMessage();
 	}
 
 

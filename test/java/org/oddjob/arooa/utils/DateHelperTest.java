@@ -159,5 +159,46 @@ public class DateHelperTest extends TestCase {
 		logger.debug("Offset is " + offset);
 		assertEquals(here.getTime() - offset, there.getTime());
 	}
-	
+
+	public void testFormatMilliseconds() {
+		
+		assertEquals("0 seconds", 
+				DateHelper.formatMilliseconds(999L));
+		
+		assertEquals("1 second", 
+				DateHelper.formatMilliseconds(1050L));
+		
+		assertEquals("55 seconds", 
+				DateHelper.formatMilliseconds(55002L));
+		
+		long oneMinute = 60 * 1000;
+		
+		assertEquals("1 minute 0 seconds", 
+				DateHelper.formatMilliseconds(oneMinute));
+		
+		assertEquals("2 minutes 5 seconds",
+				DateHelper.formatMilliseconds(
+						2 * oneMinute + 5000L));
+		
+		long oneHour = 60 * oneMinute;
+		
+		assertEquals("1 hour 0 minutes",
+				DateHelper.formatMilliseconds(oneHour));
+		
+		assertEquals("1 hour 1 minute",
+				DateHelper.formatMilliseconds(oneHour + oneMinute));
+		
+		assertEquals("5 hours 59 minutes",
+				DateHelper.formatMilliseconds(
+						5 * oneHour + 59 * oneMinute));
+		
+		long oneDay = 24 * oneHour; 
+		
+		assertEquals("1 day 0 hours and 0 minutes",
+				DateHelper.formatMilliseconds(oneDay));
+		
+		assertEquals("17 days 4 hours and 35 minutes",
+				DateHelper.formatMilliseconds(
+						17 * oneDay + 4 * oneHour + 35 * oneMinute));
+	}
 }
