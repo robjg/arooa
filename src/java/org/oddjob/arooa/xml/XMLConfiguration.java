@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 
 import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaException;
@@ -222,6 +223,38 @@ public class XMLConfiguration implements ArooaConfiguration {
 		};
 	}
 	
+	/**
+	 * Constructor for a URL.
+	 * 
+	 * @param url
+	 */
+	public XMLConfiguration(final URL url) {
+		if (url == null) {
+			throw new NullPointerException();
+		}
+		sourceFactory = new SourceFactory() {
+			public CloseableInputSource createInput() throws IOException {
+				final InputStream in = url.openStream();
+				
+			    CloseableInputSource inputSource = new CloseableInputSource(in) {
+			    	@Override
+			    	public void close() throws IOException {
+			    		in.close();
+			    	}
+			    };
+				inputSource.setSystemId(url.toExternalForm());
+				return inputSource;
+			}
+			@Override			
+			public void save(ConfigurationNode rootConfigurationNode) throws ArooaParseException {
+				commonSave(rootConfigurationNode);
+			}
+			@Override
+			public String toString() {
+				return url.toExternalForm();
+			}
+		};
+	}
 		
 	/*
 	 * (non-Javadoc)

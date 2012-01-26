@@ -2,6 +2,7 @@ package org.oddjob.arooa.types;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.URL;
 
 import javax.inject.Inject;
 
@@ -48,7 +49,21 @@ public class XMLConfigurationType implements ValueFactory<ArooaConfiguration> {
 	 */
 	private InputStream input;
 	
+	/**
+	 * @oddjob.property 
+	 * @oddjob.description The class loader to use for reading a resource.
+	 * Will be set automatically by Oddjob if one isn't provided.
+	 * @oddjob.required No.
+	 */
 	private ClassLoader classLoader;
+	
+	/**
+	 * @oddjob.property 
+	 * @oddjob.description A URL to read configuration from.
+	 * @oddjob.required No.
+	 */
+	private URL url;
+	
 	
 	@Override
 	public ArooaConfiguration toValue() {
@@ -64,6 +79,9 @@ public class XMLConfigurationType implements ValueFactory<ArooaConfiguration> {
 		}
 		else if (xml != null) {
 			return new XMLConfiguration("EmbeddedXML", xml);
+		}
+		else if (url != null) {
+			return new XMLConfiguration(url);
 		}
 		else {
 			return null;
@@ -103,8 +121,20 @@ public class XMLConfigurationType implements ValueFactory<ArooaConfiguration> {
 		this.input = inputStream;
 	}
 	
+	public ClassLoader getClassLoader() {
+		return classLoader;
+	}
+
 	@Inject
 	public void setClassLoader(ClassLoader classLoader) {
 		this.classLoader = classLoader;
+	}
+
+	public URL getUrl() {
+		return url;
+	}
+
+	public void setUrl(URL url) {
+		this.url = url;
 	}
 }

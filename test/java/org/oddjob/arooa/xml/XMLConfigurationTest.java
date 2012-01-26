@@ -1,5 +1,7 @@
 package org.oddjob.arooa.xml;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -191,6 +193,64 @@ public class XMLConfigurationTest extends TestCase {
 		} catch (ArooaParseException e) {
 			// expected.
 		}
+	}
+	
+	public void testInputStreamSource() throws ArooaParseException {
 		
+		InputStream input = getClass().getResourceAsStream(
+				"XMLConfigurationTest.xml");
+		
+		XMLConfiguration test = new XMLConfiguration("TEST", input);
+
+		RootContext context = new RootContext();
+		
+		test.parse(context);
+		
+		assertEquals(5, context.results.size());
+		
+		try {
+			test.parse(context);
+			fail("Exepected to fail because stream is closed.");
+		}
+		catch (ArooaParseException e) {
+			// expected.
+		}
+	}
+	
+	public void testResource() throws ArooaParseException {
+		
+		XMLConfiguration test = new XMLConfiguration(
+				"org/oddjob/arooa/xml/XMLConfigurationTest.xml",
+				getClass().getClassLoader());
+
+		RootContext context = new RootContext();
+		
+		test.parse(context);
+		
+		assertEquals(5, context.results.size());
+
+		// test re-readable.
+		test.parse(context);
+		
+		assertEquals(10, context.results.size());
+	}
+	
+	public void testURL() throws ArooaParseException {
+		
+		URL url = getClass().getResource(
+				"XMLConfigurationTest.xml");
+		
+		XMLConfiguration test = new XMLConfiguration(url);
+
+		RootContext context = new RootContext();
+		
+		test.parse(context);
+		
+		assertEquals(5, context.results.size());
+
+		// test re-readable.
+		test.parse(context);
+		
+		assertEquals(10, context.results.size());
 	}
 }
