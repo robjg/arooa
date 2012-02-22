@@ -9,14 +9,18 @@ import junit.framework.TestCase;
 
 public class SpringSafeCalendarTest extends TestCase {
 
-	SimpleDateFormat resultFormat = 
-		new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	SimpleDateFormat resultFormat;
+	
+	Calendar cal;
+	
+	public SpringSafeCalendarTest() {
+		resultFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		resultFormat.setTimeZone(TimeZone.getTimeZone("Europe/London"));
+		cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/London"));
+	}
+		
 	
 	public void testDifferentSpringTimes() throws ParseException {
-		
-		TimeZone.setDefault(TimeZone.getTimeZone("Europe/London"));
-		
-		Calendar cal = Calendar.getInstance();
 		cal.set(2005, 02, 27);
 		
 		TimeParser timeFormat; 
@@ -43,15 +47,9 @@ public class SpringSafeCalendarTest extends TestCase {
 		assertEquals("2005-03-27 02:05",
 				resultFormat.format(
 						timeFormat.parse("02:05")));
-		
-		TimeZone.setDefault(null);
 	}
 	
 	public void testDifferentAutumnTimes() throws ParseException {
-		
-		TimeZone.setDefault(TimeZone.getTimeZone("Europe/London"));
-		
-		Calendar cal = Calendar.getInstance();
 		cal.set(2005, 9, 30);
 		
 		TimeParser timeFormat; 
@@ -78,7 +76,5 @@ public class SpringSafeCalendarTest extends TestCase {
 		assertEquals("2005-10-30 02:05",
 				resultFormat.format(
 						timeFormat.parse("02:05")));
-		
-		TimeZone.setDefault(null);
 	}
 }
