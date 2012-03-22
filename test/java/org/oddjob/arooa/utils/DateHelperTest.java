@@ -12,6 +12,7 @@ import java.util.TimeZone;
 import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;
+import org.oddjob.arooa.ArooaConstants;
 
 /**
  * 
@@ -200,5 +201,34 @@ public class DateHelperTest extends TestCase {
 		assertEquals("17 days 4 hours and 35 minutes",
 				DateHelper.formatMilliseconds(
 						17 * oneDay + 4 * oneHour + 35 * oneMinute));
+	}
+	
+	public void testSesibleErrorMessage() {
+		
+		try {
+			DateHelper.parseDate("20120322");
+		} catch (ParseException e) {
+			logger.info(e.getMessage());
+			assertTrue(e.getMessage().contains(ArooaConstants.DATE_FORMAT));
+		}
+		
+		try {
+			DateHelper.parseTime("12-45");
+		} catch (ParseException e) {
+			logger.info(e.getMessage());
+			assertTrue(e.getMessage().contains(ArooaConstants.TIME_FORMAT1));
+			assertTrue(e.getMessage().contains(ArooaConstants.TIME_FORMAT2));
+			assertTrue(e.getMessage().contains(ArooaConstants.TIME_FORMAT3));
+		}
+		
+		try {
+			DateHelper.parseDateTime("20120322 12-45");
+		} catch (ParseException e) {
+			logger.info(e.getMessage());
+			assertTrue(e.getMessage().contains(ArooaConstants.DATE_FORMAT));
+			assertTrue(e.getMessage().contains(ArooaConstants.TIME_FORMAT1));
+			assertTrue(e.getMessage().contains(ArooaConstants.TIME_FORMAT2));
+			assertTrue(e.getMessage().contains(ArooaConstants.TIME_FORMAT3));
+		}
 	}
 }

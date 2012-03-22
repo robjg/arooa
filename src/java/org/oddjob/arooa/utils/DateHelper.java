@@ -23,8 +23,8 @@ public class DateHelper {
 	 * 
 	 * @param text The date time.
 	 * @return The date for the given text in the current time zone.
-	 * @throws ParseException If the text isn't in a recognized
-	 * date/time foramt.
+	 * @throws ParseException If the text isn't in a recognised
+	 * date/time format.
 	 */
 	public static Date parseDateTime(String text) throws ParseException {
 		return parseDateTime(text, TimeZone.getDefault());
@@ -37,8 +37,8 @@ public class DateHelper {
 	 * @param text The date time.
 	 * @param timeZoneId The time zone identifier.
 	 * @return The date for the given text in the specified time zone. 
-	 * @throws ParseException If the text isn't in a recognized 
-	 * date/time foramt.
+	 * @throws ParseException If the text isn't in a recognised 
+	 * date/time format.
 	 */
 	public static Date parseDateTime(String text, String timeZoneId) 
 	throws ParseException {
@@ -56,8 +56,8 @@ public class DateHelper {
 	 * @param text The date time
 	 * @param timeZone The timeZone.
 	 * @return The date for the given text in the specified time zone.
-	 * @throws ParseException If the text isn't in a recognized 
-	 * date/time foramt.
+	 * @throws ParseException If the text isn't in a recognised 
+	 * date/time format.
 	 */
 	public static Date parseDateTime(String text, TimeZone timeZone) 
 	throws ParseException {
@@ -65,16 +65,25 @@ public class DateHelper {
 			return parseDate(text, timeZone);
 		}
 		else {
+			String format1 = ArooaConstants.DATE_FORMAT + " " 
+					+ ArooaConstants.TIME_FORMAT1;
 			try {
-				return parse(text, ArooaConstants.DATE_FORMAT + " " 
-						+ ArooaConstants.TIME_FORMAT1, timeZone);
+				return parse(text, format1, timeZone);
 			} catch (ParseException e) {
+				String format2 = ArooaConstants.DATE_FORMAT + " " 
+						+ ArooaConstants.TIME_FORMAT2;
 				try {
-					return parse(text, ArooaConstants.DATE_FORMAT + " " 
-							+ ArooaConstants.TIME_FORMAT2, timeZone);
+					return parse(text, format2, timeZone);
 				} catch (ParseException e2) {
-					return parse(text, ArooaConstants.DATE_FORMAT + " " 
-							+ ArooaConstants.TIME_FORMAT3, timeZone);					
+					String format3 = ArooaConstants.DATE_FORMAT + " " 
+							+ ArooaConstants.TIME_FORMAT3;
+					try {
+						return parse(text, format3, timeZone);
+					} catch (ParseException e3) {
+						throw new ParseException(e.getMessage() + 
+								", valid formats are " + format1 + ", " +
+								format2 + " or " + format3, e.getErrorOffset());
+					}
 				}
 			}
 		}
@@ -85,7 +94,7 @@ public class DateHelper {
 	 * 
 	 * @param text A date.
 	 * @return The date for the given text.
-	 * @throws ParseException If the date isn't in the recognized 
+	 * @throws ParseException If the date isn't in the recognised 
 	 * date format. 
 	 */
 	public static Date parseDate(String text) throws ParseException {
@@ -99,7 +108,7 @@ public class DateHelper {
 	 * @param timeZoneId The time zone identifier.
 	 * 
 	 * @return The date for the given text in the specified time zone.
-	 * @throws ParseException If the date isn't in the recognized
+	 * @throws ParseException If the date isn't in the recognised
 	 * date format.
 	 */
 	public static Date parseDate(String text, String timeZoneId) throws ParseException {
@@ -116,11 +125,18 @@ public class DateHelper {
 	 * @param text The date text.
 	 * @param timeZone The time zone.
 	 * @return The date for the given text in the specified time zone.
-	 * @throws ParseException If the date isn't in the recognized
+	 * @throws ParseException If the date isn't in the recognised
 	 * date format.
 	 */
 	public static Date parseDate(String text, TimeZone timeZone) throws ParseException {
-		return parse(text, ArooaConstants.DATE_FORMAT, timeZone);		
+		try {
+			return parse(text, ArooaConstants.DATE_FORMAT, timeZone);
+		} catch (ParseException e) {
+			throw new ParseException(e.getMessage() + 
+					", valid format is " + ArooaConstants.DATE_FORMAT, 
+				e.getErrorOffset());
+		}
+
 	}
 	
 	/**
@@ -128,7 +144,7 @@ public class DateHelper {
 	 * 
 	 * @param text The time.
 	 * @return The time as milliseconds.
-	 * @throws ParseException If pasing fails.
+	 * @throws ParseException If parsing fails.
 	 */
 	public static long parseTime(String text) throws ParseException {
 		TimeZone timeZone = TimeZone.getTimeZone("GMT+00");
@@ -139,7 +155,15 @@ public class DateHelper {
 			try {
 				d = parse(text, ArooaConstants.TIME_FORMAT2, timeZone);
 			} catch (ParseException e2) {
-					d = parse(text, ArooaConstants.TIME_FORMAT3, timeZone);				
+				try {
+					d = parse(text, ArooaConstants.TIME_FORMAT3, timeZone);
+				} catch (ParseException e3) {
+					throw new ParseException(e.getMessage() + 
+							", valid formats are " + 
+							ArooaConstants.TIME_FORMAT1 + ", " +
+							ArooaConstants.TIME_FORMAT2 + " or " + 
+							ArooaConstants.TIME_FORMAT3, e.getErrorOffset());
+				}
 			}
 		}
 		return d.getTime();
