@@ -5,8 +5,13 @@
 
 ============================================================================ -->
 
-<project default="jar" basedir="." name="Arooa">
+<project xmlns:artifact="antlib:org.apache.maven.artifact.ant"
+	default="jar" basedir="." name="Arooa">
 
+	<taskdef uri="antlib:org.apache.maven.artifact.ant"
+	            resource="org/apache/maven/artifact/ant/antlib.xml"
+		classpath="../oj-assembly/antlibs/maven-ant-tasks-2.1.3.jar"/>
+	
 	<!-- =================================================================== -->
 	<!-- Initialization target                                               -->
 	<!-- =================================================================== -->
@@ -45,26 +50,20 @@
 		<property name="test.src"     value="${test.dir}/java"/>
 		<property name="lib.dir"      value="./lib"/>
 		<property name="test.lib"     value="${test.dir}/lib"/>
-		<property name="src.docs"     value="${src.dir}/documentation"/>
-		<property name="docs.dir"     value="${src.dir}/documentation/xdocs"/>
 		<property name="packages"     value="org.oddjob"/>
-		<property name="stylesheets.dir"  value="${src.dir}/documentation/stylesheets"/>
 
 		<property name="build.dir"      value="./build"/>
 		<property name="build.src"      value="${build.dir}/src"/>
 		<property name="build.test"      value="${build.dir}/test"/>
 		<property name="build.classes"     value="${build.dir}/classes"/>
 		<property name="build.lib"     value="${build.dir}/lib"/>
-		<property name="build.docs"     value="${build.dir}/docs"/>
-		<property name="build.tools"     value="${build.dir}/tools"/>
-		<property name="build.reference" value="${build.dir}/reference"/>
-		<property name="build.xdocs"    value="${build.dir}/xdocs"/>
 		<property name="build.javadocs" value="${build.dir}/javadocs"/>
-		<property name="build.xjavadocs" value="${build.dir}/xjavadocs"/>
 
 		<property name="test.reports" value="${build.test}/reports"/>
 		
-		<property name="jar.name"       value="${name}-${build.version}.jar"/>
+		<property name="jar.name"       	value="${name}-${build.version}.jar"/>
+		<property name="sources.jar.name"   value="${name}-${build.version}-sources.jar"/>
+		<property name="javadoc.jar.name"   value="${name}-${build.version}-javadoc.jar"/>
 
 		<filter token="Name"    value="${Name}"/>
 		<filter token="name"    value="${name}"/>
@@ -126,6 +125,11 @@
 		</copy>
 	</target>
 
+	<target name="jar-sources" depends="prepare-src-main">
+	    <jar destfile="${build.dir}/${sources.jar.name}"
+	         basedir="${build.src}">
+	    </jar>
+	</target>
 
 	<!-- =================================================================== -->
 	<!-- Compiles the source directory                                       -->
@@ -189,63 +193,11 @@
 	</target>
 
 	<!-- =================================================================== -->
-	<!-- Prepares the docs                                                   -->
-	<!-- =================================================================== -->
-	
-	<target name="prepare-docs">
-		<mkdir dir="${build.xdocs}" />
-		<mkdir dir="${build.docs}" />
-		<mkdir dir="${build.dir}/work"/>
-
-		<!-- make filtered copy of XML docs -->
-		<copy todir="${build.xdocs}" filtering="on">
-			<fileset dir="${docs.dir}"/>
-		</copy>
-
-	</target>
-
-	<!-- =================================================================== -->
-	<!-- The documentation system                                            -->
-	<!-- =================================================================== -->
-	<target name="docs"
-          depends="init, prepare-docs"
-          description="Builds the documentation">
-
-		<xslt basedir="${build.xdocs}" destdir="${build.docs}"
-             extension=".html" style="${stylesheets.dir}/site.xsl">
-			<param name="header" expression="header.html"/>
-			<param name="index-file" expression="sidebar.xml"/>
-			<classpath refid="classpath"/>
-		</xslt>
-
-		<mkdir dir="${build.docs}/userguide"/>
-		<mkdir dir="${build.docs}/userguide/images"/>
-		<copy todir="${build.docs}/userguide/images" filtering="off">
-			<fileset dir="${src.docs}/userguide/images"/>
-		</copy>
-		<copy todir="${build.docs}/userguide" filtering="on">
-			<fileset dir="${src.docs}/userguide"/>
-		</copy>
-
-		<mkdir dir="${build.docs}/devguide"/>
-		<mkdir dir="${build.docs}/devguide/images"/>
-		<copy todir="${build.docs}/devguide/images" filtering="off">
-			<fileset dir="${src.docs}/devguide/images"/>
-		</copy>
-		<copy todir="${build.docs}/devguide" filtering="on">
-			<fileset dir="${src.docs}/devguide"/>
-		</copy>
-
-		
-		
-	</target>
-
-	<!-- =================================================================== -->
 	<!-- Set a variable if javadoc is already up-to-date.                    -->
 	<!-- =================================================================== -->
 	<target name="javadocs_check">
 		<mkdir dir="${build.javadocs}"/>
-		<uptodate property="javadocs.notrequired" targetfile="${build.javadocs}/packages.html" >
+		<uptodate property="javadocs.notrequired" targetfile="${build.javadocs}/index.html" >
 			<srcfiles dir= "${build.src}" includes="**/*.java,**/package.html"/>
 		</uptodate>
 	</target>
@@ -256,7 +208,7 @@
 	<target name="javadocs_done" if="javadocs.notrequired">
 		<echo message="-------------------------------------------------------------"/>
 		<echo message="Not rebuilding Javadocs, as they are up-to-date:"/>
-		<echo message="  ${build.javadocs}/packages.html is more recent than"/>
+		<echo message="  ${build.javadocs}/index.html is more recent than"/>
 		<echo message="  ${build.src}/**/*.java"/>
 		<echo message="-------------------------------------------------------------"/>
 	</target>
@@ -291,26 +243,12 @@
 			<tag name="throws"/>
 		</javadoc>
 	</target>
-
-	<!-- =================================================================== -->
-	<!-- Creates the API documentation (using the Sun XML doclet)            -->
-	<!-- =================================================================== -->
-	<target name="xjavadocs" depends="prepare-src-main, javadocs_check, javadocs_done"
-      unless="javadocs.notrequired"
-      description="* Generates the API documentation (using the Sun XML doclet)">
-		<mkdir dir="${build.xjavadocs}"/>
-		<javadoc packagenames="${packages}"
-             sourcepath="${build.src}"
-             destdir="${build.xjavadocs}"
-             author="true"
-             version="true"
-             use="false"
-             doclet="com.sun.xml.XmlDoclet"
-             docletpathref="classpath">
-			<classpath refid="classpath"/>
-		</javadoc>
+	
+	<target name="jar-javadoc" depends="javadocs">
+	    <jar destfile="${build.dir}/${javadoc.jar.name}"
+	         basedir="${build.javadocs}">
+	    </jar>
 	</target>
-
 
 	<!-- =================================================================== -->
 	<!-- Test targets                                                       -->
@@ -422,7 +360,89 @@
 
 	</target>
 	
+	<!-- =================================================================== -->
+	<!-- Maven Targets			                                     -->
+	<!-- =================================================================== -->
+	
+	<target name="maven-init" depends="init, jar, jar-sources, jar-javadoc">
+		
+		<property name="maven.groupId"		value="uk.co.gordon" />
+		<property name="maven.artifactId" 	value="${name}" />
+		<property name="maven.version" 		value="${version}" />
 
+	    <!-- define artifacts' name, which follows the convention of Maven -->
+		<property name="maven.jar" 			value="${basedir}/lib/${jar.name}" />
+		<property name="maven.javadoc.jar" 	value="${basedir}/build/${javadoc.jar.name}" />
+		<property name="maven.sources.jar" 	value="${basedir}/build/${sources.jar.name}" />
+		<property name="maven.pom" 			value="${basedir}/build/pom.xml" />
+
+	    <!-- defined maven snapshots and staging repository id and url -->
+		<property name="maven.snapshots.repository.id" 	value="sonatype-nexus-snapshots" />
+		<property name="maven.snapshots.repository.url" value="https://oss.sonatype.org/content/repositories/snapshots/" />
+		<property name="maven.staging.repository.id" 	value="sonatype-nexus-staging" />
+		<property name="maven.staging.repository.url" 	value="https://oss.sonatype.org/service/local/staging/deploy/maven2/" />
+
+		<property name="maven.deploy.plugin" 	value="org.apache.maven.plugins:maven-deploy-plugin:2.6" />
+		<property name="maven.gpg.plugin" 		value="org.apache.maven.plugins:maven-gpg-plugin:1.3" />
+		
+		<copy file="${src.dir}/pom.xml" todir="${build.dir}" filtering="on"/>
+	</target>
+	
+	<target name="maven-install" depends="maven-init" 
+			description="Install in local repository">
+		<artifact:install file="${maven.jar}">
+	    	<pom file="${maven.pom}"/>
+			<attach file="${maven.sources.jar}" type="jar" classifier="sources"/>
+			<attach file="${maven.javadoc.jar}" type="jar" classifier="javadoc"/>	  
+		</artifact:install>
+	</target>
+	
+    <target name="maven-deploy" depends="maven-init" 
+    	description="Deploy snapshot version to Maven snapshot repository">
+		<artifact:mvn>
+			<arg value="${maven.deploy.plugin}:deploy-file" />
+			<arg value="-Durl=${maven.snapshots.repository.url}" />
+			<arg value="-DrepositoryId=${maven.snapshots.repository.id}" />
+			<arg value="-DpomFile=${maven.pom}" />
+			<arg value="-Dfile=${maven.jar}" />
+		</artifact:mvn>
+    </target>
+	
+	<target name="maven-stage" depends="maven-init" 
+		description="Deploy release version to Maven staging repository">
+		<!-- sign and deploy the main artifact -->
+		<artifact:mvn>
+			<arg value="${maven.gpg.plugin}:sign-and-deploy-file" />
+			<arg value="-Durl=${maven.staging.repository.url}" />
+			<arg value="-DrepositoryId=${maven.staging.repository.id}" />
+			<arg value="-DpomFile=${maven.pom}" />
+			<arg value="-Dfile=${maven.jar}" />
+	        <arg value="-Pgpg" />
+		</artifact:mvn>
+
+		<!-- sign and deploy the sources artifact -->
+		<artifact:mvn>
+			<arg value="${maven.gpg.plugin}:sign-and-deploy-file" />
+			<arg value="-Durl=${maven.staging.repository.url}" />
+			<arg value="-DrepositoryId=${maven.staging.repository.id}" />
+			<arg value="-DpomFile=${maven.pom}" />
+			<arg value="-Dfile=${maven.sources.jar}" />
+			<arg value="-Dclassifier=sources" />
+			<arg value="-Pgpg" />
+		</artifact:mvn>
+	
+		<!-- sign and deploy the javadoc artifact -->
+		<artifact:mvn>
+			<arg value="${maven.gpg.plugin}:sign-and-deploy-file" />
+			<arg value="-Durl=${maven.staging.repository.url}" />
+			<arg value="-DrepositoryId=${maven.staging.repository.id}" />
+			<arg value="-DpomFile=${maven.pom}" />
+			<arg value="-Dfile=${maven.javadoc.jar}" />
+			<arg value="-Dclassifier=javadoc" />
+	        <arg value="-Pgpg" />
+		</artifact:mvn>
+	</target>
+	
 	<!-- =================================================================== -->
 	<!-- Clean targets                                                       -->
 	<!-- =================================================================== -->
@@ -431,6 +451,7 @@
 		<delete>
 			<fileset dir="${lib.dir}">
 				<include name="${name}*.jar"/>
+				<include name="${name}*.jar.asc"/>
 			</fileset>
 		</delete>
 	</target>
