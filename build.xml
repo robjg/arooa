@@ -405,6 +405,8 @@
 			<arg value="-DrepositoryId=${maven.snapshots.repository.id}" />
 			<arg value="-DpomFile=${maven.pom}" />
 			<arg value="-Dfile=${maven.jar}" />
+			<arg value="-Dsources=${maven.sources.jar}" />
+			<arg value="-Djavadoc=${maven.javadoc.jar}" />
 		</artifact:mvn>
     </target>
 	
