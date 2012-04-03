@@ -12,6 +12,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.concurrent.Callable;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -66,10 +67,15 @@ public class TextInputView implements SwingItemView, SwingFormView {
 			public void actionPerformed(ActionEvent e) {
 				Component form = SwingFormFactory.create(textInput).dialog();
 	
-				ValueDialog valueDialog = new ValueDialog(form);
+				ValueDialog valueDialog = new ValueDialog(form,
+						new Callable<Boolean>() {
+							@Override
+							public Boolean call() throws Exception {
+								text.setText(textInput.getText());
+								return true;
+							}
+						});
 				valueDialog.showDialog(button);
-				
-				text.setText(textInput.getText());
 			}
 		});
 		updateView();

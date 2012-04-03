@@ -17,13 +17,26 @@ import org.oddjob.arooa.reflect.PropertyAccessor;
 
 abstract class DesignPropertyBase implements DesignElementProperty {
 
+	/** The name of the property. */
 	private final String property;
 	
+	/** The context for this node. */
 	private final ArooaContext arooaContext;
 	
+	/** listener notified when the design changes. */
 	private final List<DesignListener> listeners =
 		new ArrayList<DesignListener>();
 	
+	/**
+	 * Constructor that creates a {@link DesignProperty} using the given
+	 * property class and type and only uses the parent for it's context.
+	 * This is used by the {@link GenericDesignFactory}.
+	 * 
+	 * @param property The property name.
+	 * @param propertyClass The property class.
+	 * @param type The type (component/value) of the property.
+	 * @param parent The parent DesignInstance.
+	 */
 	DesignPropertyBase(String property,
 			Class<?> propertyClass,
 			ArooaType type,
@@ -36,6 +49,15 @@ abstract class DesignPropertyBase implements DesignElementProperty {
 				this.arooaContext.getConfigurationNode());
 	}	
 	
+	/**
+	 * Constructor that creates a {@link DesignProperty} from the 
+	 * characteristics of the property given by the parent instance.
+	 * 
+	 * @param property The property name.
+	 * @param parent The parent DesignInstance.
+	 * 
+	 * @throws ArooaPropertyException
+	 */
 	DesignPropertyBase(String property,
 			DesignInstance parent) 
 	throws ArooaPropertyException {
@@ -72,7 +94,7 @@ abstract class DesignPropertyBase implements DesignElementProperty {
 	 * elegant!
 	 * 
 	 * @param element
-	 * @return
+	 * @return The thing that will insert the design into this property.
 	 */
 	DesignSetter getDesignSetter(final ArooaElement element) {
 		return new DesignSetter() {
@@ -83,8 +105,12 @@ abstract class DesignPropertyBase implements DesignElementProperty {
 	}
 	
 	/**
-	 * Used During parsing - used by MappedDesignProperty.
-	 * @return
+	 * Used During parsing. 
+	 * 
+	 * @see MappedDesignProperty.
+	 * 
+	 * @return The key of this property if it is a mapped property. Null
+	 * otherwise.
 	 */
 	String getKey(DesignInstance instance) {
 		return null;
@@ -98,10 +124,32 @@ abstract class DesignPropertyBase implements DesignElementProperty {
 		return arooaContext;
 	}
 		
+	/**
+	 * Subclasses must override this to support adding the designs
+	 * of the values of this property.
+	 * 
+	 * @param index The index of the instance for list and mapped 
+	 * properties. 0 for simple properties.
+	 * @param instance The instance.
+	 */
 	abstract void insertInstance(int index, DesignInstance instance);
 
+	/**
+	 * Overridden by subclasses to provide the number of design instances 
+	 * for this property.
+	 * 
+	 * @return The number of design instances.
+	 */
 	abstract int instanceCount();
 	
+	/***
+	 * Overridden by subclasses to provide the design of the property value
+	 * at the index.
+	 * 
+	 * @param index The property value's index.
+	 * 
+	 * @return The design. Never null.
+	 */
 	abstract DesignInstance instanceAt(int index);
 
 	public void addDesignListener(DesignListener listener) {
@@ -120,6 +168,13 @@ abstract class DesignPropertyBase implements DesignElementProperty {
 		}
 	}
 
+	/**
+	 * Used by {@link DesignSetter}s to do the actual design insertion. 
+	 * This method notifies design listeners of the design change.
+	 * 
+	 * @param index
+	 * @param design
+	 */
 	void synchronizedInsert(int index, DesignInstance design) {
 		synchronized (listeners) {
 			DesignStructureEvent event;

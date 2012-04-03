@@ -5,6 +5,12 @@ import org.oddjob.arooa.design.screem.Form;
 import org.oddjob.arooa.design.view.SwingFormFactory;
 import org.oddjob.arooa.design.view.SwingFormView;
 
+/**
+ * The Designer dialogue form.
+ * 
+ * @author rob
+ *
+ */
 public class ArooaDesignerForm implements Form {
 
 	static {
@@ -17,17 +23,29 @@ public class ArooaDesignerForm implements Form {
 		});
 	}
 	
+	
 	private final String title;
 	
 	private final DesignNotifier configHelper;
 	
-	public ArooaDesignerForm(String title, DesignNotifier configHelper) {
+	/**
+	 * Constructor.
+	 * 
+	 * @param title The title.
+	 * @param designNotifier Will be notifier when design changes.
+	 */
+	public ArooaDesignerForm(String title, DesignNotifier designNotifier) {
 		this.title = title;
-		this.configHelper = configHelper;
+		this.configHelper = designNotifier;
 	}
 	
-	public ArooaDesignerForm(DesignNotifier configHelper) {
-		this(null, configHelper);
+	/**
+	 * Constructor.
+	 * 
+	 * @param designNotfier
+	 */
+	public ArooaDesignerForm(DesignNotifier designNotfier) {
+		this(null, designNotfier);
 	}
 	
 	public String getTitle() {

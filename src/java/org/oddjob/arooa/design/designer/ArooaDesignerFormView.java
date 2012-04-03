@@ -19,7 +19,7 @@ import org.oddjob.arooa.design.view.SwingFormView;
 import org.oddjob.arooa.design.view.ViewHelper;
 
 /**
- * @oddjob.description Run a GUI designer for Oddjob.
+ * The Swing GUI designer dialogue for Oddjob.
  * 
  * @author Rob Gordon
  */
@@ -33,6 +33,11 @@ implements SwingFormView {
 	
 	private final MenuProvider menus;
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param designerForm The underlying form.
+	 */
 	public ArooaDesignerFormView(ArooaDesignerForm designerForm) {
 		this(designerForm, false);
 	}
@@ -44,9 +49,9 @@ implements SwingFormView {
 	public ArooaDesignerFormView(ArooaDesignerForm designerForm,
 			boolean noErrorDialg) {
 		
-		DesignNotifier configHelper = designerForm.getConfigHelper();		
+		DesignNotifier designerNotifier = designerForm.getConfigHelper();		
 		
-		DesignerModel designerModel = new DesignerModel(configHelper);
+		DesignerModel designerModel = new DesignerModel(designerNotifier);
 		
 		ConfigurableMenus menus = new ConfigurableMenus();	
 		

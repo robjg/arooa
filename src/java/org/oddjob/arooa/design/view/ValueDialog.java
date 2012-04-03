@@ -11,6 +11,7 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.concurrent.Callable;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -19,24 +20,61 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
+import org.apache.log4j.Logger;
+
 /**
  * Create dialogs for forms.
  */
 public class ValueDialog {
-	private static final long serialVersionUID = 2008100100;
+	private static final Logger logger = Logger.getLogger(ValueDialog.class);
 
+	/** The form. */
 	private final Component form;
 	
+	/** Called when OK selected. */
+	private final Callable<Boolean> okAction;
+
+	private boolean chosen;
+
+	/**
+	 * Default OK action set the chosen flag.
+	 * 
+	 * @param form
+	 */
 	public ValueDialog(Component form) {
-		this.form = form;
+		this(form, null);
 	}
 	
-	private boolean chosen;
-		
+	/**
+	 * Provide an action for when OK selected.
+	 * 
+	 * @param form
+	 * @param okAction
+	 */
+	public ValueDialog(Component form, Callable<Boolean> okAction) {
+		this.form = form;
+		if (okAction == null) {
+			this.okAction = new Callable<Boolean>() {
+				@Override
+				public Boolean call() throws Exception {
+					return true;
+				}
+			};
+		}
+		else {
+			this.okAction = okAction;
+		}
+	}
+	
 	public boolean isChosen() {
 		return chosen;
 	}
 	
+	/**
+	 * Show the dialogue.
+	 * 
+	 * @param parent
+	 */
 	public void showDialog(Component parent) {
 		
 		Window window = ViewHelper.getWindowForComponent(parent);
@@ -59,8 +97,19 @@ public class ValueDialog {
 		final ActionListener enterAction = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				chosen = true;
-				dialog.dispose();
+				try {
+					chosen = okAction.call();
+				}
+				catch (Exception ex) {
+					if (logger.isDebugEnabled()) {
+						logger.debug("OK Action failed.", ex);
+					}
+					DialogueHelper.showExceptionMessage(form, ex);
+					chosen = false;					
+				}
+				if (chosen) {
+					dialog.dispose();
+				}
 			}
 		};
 		
@@ -106,20 +155,6 @@ public class ValueDialog {
 		}
 		
 		dialog.setVisible(true);
-	}
-	
-	class OK implements Runnable {
-
-		private final Dialog dialog;
-		
-		public OK(Dialog dialog) {
-			this.dialog = dialog;
-		}
-		
-		public void run() {
-			chosen = true;
-			dialog.dispose();
-		}
 	}
 	
 }

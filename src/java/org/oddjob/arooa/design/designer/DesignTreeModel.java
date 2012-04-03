@@ -14,11 +14,14 @@ import org.oddjob.arooa.design.DesignComponent;
 
 
 /**
- * A model which provide the sing tree model of the Oddjob structure.
+ * The Swing Tree Model of a Design.
+ * <p>
+ * The model allows the root component to be changed.
+ * 
+ * @see DesignTreeNode
  * 
  * @author Rob Gordon 
  */
-
 public class DesignTreeModel implements TreeModel {
 
 	/** Tree model listeners. */
@@ -27,15 +30,12 @@ public class DesignTreeModel implements TreeModel {
 	
 	/** The root node. */
 	private DesignTreeNode root;
-	
+		
 	/**
-	 * Constructor.
+	 * Set the root component.
 	 * 
-	 * @param node The top of the tree.
+	 * @param node The root component.
 	 */
-	public DesignTreeModel() {
-	}
-	
 	public void setRoot(DesignComponent node) {
 		if (root != null) {
 			root.destroy();
@@ -46,10 +46,6 @@ public class DesignTreeModel implements TreeModel {
 		fireTreeStructureChanged(root);
 		
 		root.build();
-	}
-	
-	public void build() {
-	    root.build();
 	}
 	
 	public void addTreeModelListener(TreeModelListener tml) {

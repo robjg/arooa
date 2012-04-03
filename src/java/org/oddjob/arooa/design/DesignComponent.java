@@ -3,16 +3,27 @@
  */
 package org.oddjob.arooa.design;
 
-
 /**
- * A DesignComponent provides the configuration for a job.
+ * A DesignComponent provides the design configuration for a component.
  * 
- * 
+ * @author rob
  */
 public interface DesignComponent extends DesignInstance {
 	
+	/**
+	 * Add a listener that will notified when child 
+	 * {@link DesignComponent}s are added or removed from this 
+	 * DesignComponent. This is used by the {@link DesignTreeModel}.
+	 * 
+	 * @param listener The listener.
+	 */
 	public void addStructuralListener(DesignListener listener);
-	
+
+	/**
+	 * Remove a listener.
+	 * 
+	 * @param listener The listener.
+	 */
 	public void removeStructuralListener(DesignListener listener);
 	
 	/**

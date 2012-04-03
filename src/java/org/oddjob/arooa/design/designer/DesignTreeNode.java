@@ -15,6 +15,8 @@ import org.oddjob.arooa.design.view.SwingFormFactory;
  * This class wraps a DesignComponent allowing it to 
  * act as a TreeNode.
  * 
+ * @see DesignTreeModel
+ * 
  * @author Rob Gordon 
  */
 public class DesignTreeNode 
