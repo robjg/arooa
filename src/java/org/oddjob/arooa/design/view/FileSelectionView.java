@@ -7,19 +7,12 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 
-import javax.swing.AbstractAction;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import org.oddjob.arooa.design.screem.FileSelection;
 
@@ -30,8 +23,8 @@ public class FileSelectionView implements SwingItemView, SwingFormView {
 		
 	private final FileSelection fileSelection;
 	private final JLabel label;
-	private final JTextField textField;
-	private JButton detailButton;
+	
+	private final FileSelectionWidget widget;
 	
 	public FileSelectionView(FileSelection fs) {
 		this.fileSelection = fs;
@@ -44,62 +37,30 @@ public class FileSelectionView implements SwingItemView, SwingFormView {
 		}
 		label = new JLabel(paddedTitle.toString(), SwingConstants.LEADING);
 
-		textField = new JTextField(Looks.TEXT_FIELD_SIZE);
-		updateView();
-		
-		textField.getDocument().addDocumentListener(new DocumentListener() {
-			public void changedUpdate(DocumentEvent e) {
-				fileSelection.setFile(textField.getText());
-			}
-			public void removeUpdate(DocumentEvent e) {
-				fileSelection.setFile(textField.getText());
-			}
-			public void insertUpdate(DocumentEvent e) {
-				fileSelection.setFile(textField.getText());
-			}
-		});		
-				
-		detailButton = new JButton();
-		detailButton.setAction(new AbstractAction("...") {
-			private static final long serialVersionUID = 2008120800L;
+		widget = new FileSelectionWidget();
+		widget.setSelectedFile(fileSelection.getFile() == null ? null :
+			new File(fileSelection.getFile()));		
+		widget.addPropertyChangeListener(
+				FileSelectionWidget.SELECTED_FILE_PROPERTY, 
+				new PropertyChangeListener() {
 			
-			public void actionPerformed(ActionEvent e) {
-			    JFileChooser chooser = new JFileChooser();
-			    if (fileSelection.getFile() != null) {
-			        chooser.setCurrentDirectory(new File(fileSelection.getFile()).getParentFile());
-			    }
-			    
-				int option = chooser.showOpenDialog(detailButton);
-				
-				if (option == JFileChooser.APPROVE_OPTION) {
-					File chosen = chooser.getSelectedFile();
-					textField.setText(chosen.getPath());
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				File file = (File) evt.getNewValue();
+				if (file == null) {
+					fileSelection.setFile(null);
+				}
+				else {
+					fileSelection.setFile(file.getPath());
 				}
 			}
 		});
 		
 	}
 	
-	// cell and inline have a lot in common.
-	private void updateView() {
-		String fileName = fileSelection.getFile();
-		if (fileName == null) {			
-			textField.setText("");
-		}
-		else {
-			textField.setText(fileName);
-		}
-		
-	}
 	
 	public Component cell() {
-		JPanel panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-		
-		detailButton.setMargin(new Insets(0, 0, 0, 0));
-		panel.add(textField);
-		panel.add(detailButton);
-		return 	panel;
+		return widget;
 	}
 
 	public Component dialog() {
@@ -132,21 +93,14 @@ public class FileSelectionView implements SwingItemView, SwingFormView {
 
 		container.add(label, c);
 		
-		c.fill = GridBagConstraints.NONE;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.NORTHEAST;
 		c.gridx = columnCount++;
-		c.gridwidth = 1;
-		c.insets = new Insets(3, 0, 3, 0);
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.insets = new Insets(3, 3, 3, 3);
 		
-		container.add(textField, c);
+		container.add(widget, c);
 		
-		if (detailButton != null) {
-			c.fill = GridBagConstraints.NONE;
-			c.anchor = GridBagConstraints.NORTHWEST;
-			c.gridx = columnCount++;
-			
-			container.add(detailButton, c);
-		}
 		return row + 1;
 	}
 
@@ -155,9 +109,9 @@ public class FileSelectionView implements SwingItemView, SwingFormView {
 	 */
 	public void setEnabled(boolean enabled) {
 		label.setEnabled(enabled);
-		textField.setEditable(enabled);
-		detailButton.setEnabled(enabled);
-		
+		widget.setEnabled(enabled);
+
+		// Why do we need this?
 		if (!enabled) {
 			fileSelection.setFile(null);
 		}

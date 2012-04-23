@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.concurrent.Callable;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -59,6 +60,15 @@ public class DialogueHelper {
 				panel, 
 				"Exception!", JOptionPane.ERROR_MESSAGE);
 		
+	}
+	
+	public static boolean showOKCancelDialogue(Component parentComponent,
+			Component dialogueForm, Callable<Boolean >okAction) {
+		
+		ValueDialog dialogue = new ValueDialog(dialogueForm, okAction);
+		dialogue.showDialog(parentComponent);
+		
+		return dialogue.isChosen();
 	}
 }
 
