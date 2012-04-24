@@ -39,12 +39,12 @@ class AttributeRuntime {
 	public void init(ArooaContext context) 
 	throws ArooaPropertyException {
 		
-		if (!evaluator.isConstantAttribute()) {
+		if (!evaluator.isConstant()) {
 			return;
 		}
 		
 		try {
-			Object newValue = evaluator.evaluateAsAttribute(
+			Object newValue = evaluator.evaluate(
 					context.getSession(), type);
 			
 			parentRuntime.setProperty(attribute, newValue, context);
@@ -57,12 +57,12 @@ class AttributeRuntime {
 	public void configure(ArooaContext context) 
 	throws ArooaPropertyException {
 				
-		if (evaluator.isConstantAttribute()) {
+		if (evaluator.isConstant()) {
 			return;
 		}
 		
 		try {
-			Object newValue = evaluator.evaluateAsAttribute(
+			Object newValue = evaluator.evaluate(
 				context.getSession(), type);
 		
 			parentRuntime.setProperty(attribute, newValue, context);		

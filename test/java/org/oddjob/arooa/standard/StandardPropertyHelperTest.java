@@ -86,6 +86,7 @@ public class StandardPropertyHelperTest extends TestCase {
         assertExpandsTo("$$$$-","$$-");
         assertExpandsTo("","");
         assertExpandsTo("Class$$subclass","Class$subclass");    
+        assertExpandsTo("Class$subclass", "Class$subclass");    
     }
     
     /**
@@ -143,10 +144,10 @@ public class StandardPropertyHelperTest extends TestCase {
 				new AllowNullSubstitutionPolicy());
 		
 		ParsedExpression evaluator1 = ph.parse("abc");
-		assertTrue(evaluator1.isConstantAttribute());
+		assertTrue(evaluator1.isConstant());
 		
 		ParsedExpression evaluator2 = ph.parse("${abc}");
-		assertFalse(evaluator2.isConstantAttribute());
+		assertFalse(evaluator2.isConstant());
 	}
 
 	/**
@@ -216,7 +217,7 @@ public class StandardPropertyHelperTest extends TestCase {
 		
     	ParsedExpression evaluator = ph.parse(source);
     	
-        Object actual = evaluator.evaluateAsAttribute(
+        Object actual = evaluator.evaluate(
         		new OurSession(), Object.class);
         
         assertEquals(source,expected,actual);

@@ -155,7 +155,7 @@ abstract class InstanceConfiguration {
 			ExpressionParser expressionParser = session.getTools().getExpressionParser();
 			ParsedExpression evaluator = expressionParser.parse(text);
 
-			if (evaluator.isConstantText()) {
+			if (evaluator.isConstant()) {
 				setTextProperty(text, session);
 			}
 		}
@@ -176,10 +176,11 @@ abstract class InstanceConfiguration {
 			ExpressionParser expressionParser = session.getTools().getExpressionParser();
 			ParsedExpression evaluator = expressionParser.parse(text);
 
-	    	if (!evaluator.isConstantText()) {
+	    	if (!evaluator.isConstant()) {
 			
 				try {
-					String replacement = evaluator.evaluateAsText(session);
+					String replacement = evaluator.evaluate(
+							session, String.class);
 
 					setTextProperty(replacement,
 							session);

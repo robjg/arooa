@@ -6,6 +6,7 @@ import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.convert.DefaultConverter;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.runtime.ExpressionParser;
+import org.oddjob.arooa.runtime.NestedExpressionParser;
 
 /**
  * The standard implementation of {@link ArooaTools}.
@@ -30,7 +31,7 @@ public class StandardTools implements ArooaTools {
 	public StandardTools() {
 		this.arooaConverter = new DefaultConverter();
 		this.propertyAccessor = new BeanUtilsPropertyAccessor();
-		this.expressionParser = new StandardPropertyHelper();
+		this.expressionParser = new NestedExpressionParser();
 	}
 	
 	/*

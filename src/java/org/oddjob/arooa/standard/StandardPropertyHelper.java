@@ -66,9 +66,10 @@ import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.convert.ArooaConverter;
-import org.oddjob.arooa.reflect.ArooaPropertyException;
+import org.oddjob.arooa.runtime.Evaluator;
 import org.oddjob.arooa.runtime.ExpressionParser;
 import org.oddjob.arooa.runtime.ParsedExpression;
+import org.oddjob.arooa.runtime.PropertyFirstEvaluator;
 import org.oddjob.arooa.runtime.SubstitutionPolicy;
 
 
@@ -81,6 +82,8 @@ import org.oddjob.arooa.runtime.SubstitutionPolicy;
 public class StandardPropertyHelper implements ExpressionParser {
 
 	private final SubstitutionPolicy substitutionPolicy;
+	
+	private final Evaluator evaluator = new PropertyFirstEvaluator();
 	
     /**
      * Default constructor.
@@ -199,22 +202,6 @@ public class StandardPropertyHelper implements ExpressionParser {
 		}
 	}
 	
-	private <T> T evaluate(String propertyName, 
-			ArooaSession session, Class<T> cl) throws ArooaPropertyException, ArooaConversionException {
-		
-		String value = session.getPropertyManager().lookup(propertyName);
-		
-		if (value == null) {
-			return session.getBeanRegistry().lookup(
-            		propertyName, cl);
-		}
-		else {
-			ArooaConverter converter = session.getTools().getArooaConverter();
-			return converter.convert(value, cl);
-		}
-		
-	}
-	
 	class StandardPropertyEvaluator implements ParsedExpression {
 		
 		private final Vector<String> fragments;
@@ -245,7 +232,8 @@ public class StandardPropertyHelper implements ExpressionParser {
 	     * @return the original string with the properties replaced, or
 	     *         <code>null</code> if the original string is <code>null</code>.
 	     */
-		public <T> T evaluateAsAttribute(ArooaSession session, Class<T> type) 
+		@Override
+		public <T> T evaluate(ArooaSession session, Class<T> type) 
 		throws ArooaConversionException {
 	    	
 	        StringBuffer sb = new StringBuffer();
@@ -257,7 +245,7 @@ public class StandardPropertyHelper implements ExpressionParser {
 	            String fragment = (String) i.nextElement();
 	            if (fragment == null) {
 	                String propertyName = (String) j.nextElement();
-	                String converted = evaluate(
+	                String converted = evaluator.evaluate(
 		                		propertyName, session, String.class);
 	                if (converted == null) {
 	                	converted = "";
@@ -276,23 +264,16 @@ public class StandardPropertyHelper implements ExpressionParser {
 	        return converter.convert(sb.toString(), type);
 	    }
 	
-	    public String evaluateAsText(ArooaSession session) 
-	    throws ArooaConversionException {
-			return evaluateAsAttribute(session, String.class);
-	    }
-	    
 		/**
 		 * Is the property constant. i.e. it doesn't contain any ${} type things.
 		 * 
 		 * @return True if the property is constant.
 		 */
-		public boolean isConstantAttribute() {
+		@Override
+		public boolean isConstant() {
 			return propertyRefs.size() == 0;
 		}
 	
-		public boolean isConstantText() {
-			return isConstantAttribute();
-		}
 	}
 
 	/**
@@ -306,25 +287,19 @@ public class StandardPropertyHelper implements ExpressionParser {
 			this.propertyExpression = propertyExpression;
 		}
 		
-		public <T> T evaluateAsAttribute(ArooaSession session, Class<T> type) 
+		@Override
+		public <T> T evaluate(ArooaSession session, Class<T> type) 
 		throws ArooaConversionException {
 			
-			T replacement = evaluate(propertyExpression, session, type);
+			T replacement = evaluator.evaluate(propertyExpression, session, type);
 			
             return substitutionPolicy.substituteObject(replacement);
 		}
 		
-		public String evaluateAsText(ArooaSession session) 
-		throws ArooaConversionException {
-			return evaluateAsAttribute(session, String.class);
-		}
-		
-		public boolean isConstantAttribute() {
+		@Override
+		public boolean isConstant() {
 			return false;
 		}
 		
-		public boolean isConstantText() {
-			return false;
-		}
 	}
 }
