@@ -5,7 +5,6 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 import org.oddjob.arooa.ArooaDescriptor;
-import org.oddjob.arooa.standard.StandardFragmentParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
 /**
@@ -46,18 +45,10 @@ implements ArooaDescriptorFactory {
 
 				logger.debug("Reading ArooaDescriptor [" + url + "].");
 
-				XMLConfiguration config = new XMLConfiguration(
-						url.toString(), url.openStream());
-
-				StandardFragmentParser parser = 
-					new StandardFragmentParser(new ArooaDescriptorDescriptor());
-
-				parser.parse(config);
-
-				ArooaDescriptorFactory factory = 
-					(ArooaDescriptorFactory) parser.getRoot();
-
-				ArooaDescriptor descriptor = factory.createDescriptor(classLoader);
+				ArooaDescriptor descriptor = 
+						new ConfigurationDescriptorFactory(
+								new XMLConfiguration(url)).createDescriptor(
+										classLoader);
 
 				if (urls.size() == 1) {
 					return descriptor;

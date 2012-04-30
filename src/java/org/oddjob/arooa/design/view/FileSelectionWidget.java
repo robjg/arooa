@@ -2,6 +2,8 @@ package org.oddjob.arooa.design.view;
 
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -18,6 +20,13 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.oddjob.arooa.design.screem.FileSelectionOptions;
 
+/**
+ * A simple file selection widget that is a text field and a button that
+ * launches the a file chooser.
+ * 
+ * @author rob
+ *
+ */
 public class FileSelectionWidget extends JPanel {
 	private static final long serialVersionUID = 2012042300L;
 	
@@ -26,10 +35,13 @@ public class FileSelectionWidget extends JPanel {
 	private final JTextField textField;
 	private final JButton detailButton;
 	
-	private File selectedFile;
+	private String selectedFile;
 	
 	private FileSelectionOptions options;
-		
+
+	/**
+	 * Constructor.
+	 */
 	public FileSelectionWidget() {
 
 		textField = new JTextField(Looks.TEXT_FIELD_SIZE);
@@ -50,8 +62,8 @@ public class FileSelectionWidget extends JPanel {
 
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				File file = (File) evt.getNewValue();
-				String text = file == null ? "" : file.getPath();
+				String file = (String) evt.getNewValue();
+				String text = file == null ? "" : file;
 				if (!text.equals(textField.getText())) {
 					textField.setText(text);
 				}
@@ -98,14 +110,14 @@ public class FileSelectionWidget extends JPanel {
 			    }
 			    
 			    if (getSelectedFile() != null) {
-			        chooser.setSelectedFile(getSelectedFile());
+			        chooser.setSelectedFile(new File(getSelectedFile()));
 			    }
 			    
 				int option = chooser.showDialog(detailButton, "OK");
 				
 				if (option == JFileChooser.APPROVE_OPTION) {
 					File chosen = chooser.getSelectedFile();
-					setSelectedFile(chosen);
+					setSelectedFile(chosen.getPath());
 				}
 			}
 		});
@@ -115,6 +127,19 @@ public class FileSelectionWidget extends JPanel {
 		detailButton.setMargin(new Insets(0, 1, 0, 1));
 		add(textField);
 		add(detailButton);
+		
+		// Required when used as the cell of a table.
+		addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				textField.requestFocus();
+			}
+		});
 	}
 	
 	protected void updateFileFromTextField() {
@@ -123,7 +148,7 @@ public class FileSelectionWidget extends JPanel {
 			setSelectedFile(null);
 		}
 		else {
-			setSelectedFile(new File(text));
+			setSelectedFile(text);
 		}
 	}
 	
@@ -135,13 +160,13 @@ public class FileSelectionWidget extends JPanel {
 		detailButton.setEnabled(enabled);
 	}
 
-	public void setSelectedFile(File file) {
-		File oldValue = this.selectedFile;
+	public void setSelectedFile(String file) {
+		String oldValue = this.selectedFile;
 		this.selectedFile = file;
 		firePropertyChange(SELECTED_FILE_PROPERTY, oldValue, file);
 	}
 	
-	public File getSelectedFile() {
+	public String getSelectedFile() {
 		return selectedFile;
 	}
 	

@@ -31,7 +31,7 @@ public class DesignerDetail extends JScrollPane implements Observer {
 		}
 		
 		if (component != null) {
-			setViewportView(component);			
+			setViewportView(component);
 		}
 		else {
 			setViewportView(new JPanel());

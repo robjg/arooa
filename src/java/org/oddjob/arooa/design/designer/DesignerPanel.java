@@ -18,7 +18,6 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import org.oddjob.arooa.design.view.Looks;
 import org.oddjob.arooa.design.view.TreePopup;
 import org.oddjob.arooa.parsing.DragContext;
 import org.oddjob.arooa.parsing.DragPoint;
@@ -122,13 +121,9 @@ public class DesignerPanel extends JPanel {
 		});
 		
 		setLayout(new BorderLayout());
-		treeScroll = new JScrollPane();
-		
-		treeScroll.setMinimumSize(new Dimension(
-				Looks.DESIGNER_TREE_WIDTH, Looks.DESIGNER_HEIGHT));
-		
+		treeScroll = new JScrollPane();		
 		treeScroll.setViewportView(tree);
-
+		
 		// create detail pane
 		DesignerDetail designerDetail = new DesignerDetail();
 
@@ -138,9 +133,20 @@ public class DesignerPanel extends JPanel {
 		// is sized correctly to start.
 		tree.setSelectionPath(new TreePath(tree.getModel().getRoot()));
 		
+		// attempt to the tree scroll. Not that setMiniumSize was
+		// being used but this was ignored by the split pane
+		// when calculator size but cause the split to be pushed across
+		// scrunching up the detail.
+		// try and proportion so tree is at least a third of the width
+		int minimum = (int) designerDetail.getPreferredSize().getWidth() / 2;
+		if (treeScroll.getPreferredSize().getWidth() < minimum) {
+			treeScroll.setPreferredSize(new Dimension(
+					minimum, 
+					(int) treeScroll.getPreferredSize().getHeight()));
+		}
 		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 			treeScroll, designerDetail);
-
+		
 		add(split);
 		
 	}

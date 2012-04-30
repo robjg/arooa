@@ -9,7 +9,6 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -38,21 +37,15 @@ public class FileSelectionView implements SwingItemView, SwingFormView {
 		label = new JLabel(paddedTitle.toString(), SwingConstants.LEADING);
 
 		widget = new FileSelectionWidget();
-		widget.setSelectedFile(fileSelection.getFile() == null ? null :
-			new File(fileSelection.getFile()));		
+		widget.setSelectedFile(fileSelection.getFile());		
 		widget.addPropertyChangeListener(
 				FileSelectionWidget.SELECTED_FILE_PROPERTY, 
 				new PropertyChangeListener() {
 			
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				File file = (File) evt.getNewValue();
-				if (file == null) {
-					fileSelection.setFile(null);
-				}
-				else {
-					fileSelection.setFile(file.getPath());
-				}
+				String file = (String) evt.getNewValue();
+				fileSelection.setFile(file);
 			}
 		});
 		

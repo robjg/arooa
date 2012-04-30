@@ -7,11 +7,10 @@ import java.net.URISyntaxException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.WindowConstants;
 
-import org.custommonkey.xmlunit.XMLTestCase;
+import junit.framework.TestCase;
+
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaParseException;
@@ -47,19 +46,19 @@ import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.parsing.MockArooaContext;
 import org.oddjob.arooa.parsing.PrefixMappings;
-import org.oddjob.arooa.parsing.QTag;
 import org.oddjob.arooa.parsing.SimplePrefixMappings;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 import org.oddjob.arooa.runtime.MockConfigurationNode;
 import org.oddjob.arooa.standard.StandardArooaSession;
-import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class MultiTypeTableViewTest extends XMLTestCase {
+public class MultiTypeTableViewTest extends TestCase {
 	
 	private Component view;
+
+	private DesignInstance design;
 	
 	public static class Fruit {
 		
@@ -113,7 +112,7 @@ public class MultiTypeTableViewTest extends XMLTestCase {
 			if ("orange".equals(element.getTag())) {
 				return new SimpleArooaClass(Orange.class);
 			}
-			throw new RuntimeException(element.toString());
+			return null;
 		}
 	}
 	
@@ -229,31 +228,7 @@ public class MultiTypeTableViewTest extends XMLTestCase {
 		
 		test.inline(panel, 0, 0, false);
 
-		assertEquals(2, panel.getComponentCount());
-		
-		JScrollPane scrollPane = (JScrollPane) panel.getComponent(1);
-		
-		JTable table = (JTable) scrollPane.getViewport().getComponent(0);
-		
-		table.setValueAt(prefixMappings.getQName(APPLE), 0, 0);
-		
-		assertEquals(1, property.instanceCount());
-		
-		table.setValueAt(prefixMappings.getQName(ORANGE), 0, 0);
-		
-		assertEquals(1, property.instanceCount());
-		
-		table.setValueAt(prefixMappings.getQName(APPLE), 1, 0);
-		
-		assertEquals(2, property.instanceCount());
-
-		table.setValueAt(new QTag(""), 1, 0);
-		
-		assertEquals(1, property.instanceCount());
-		
-		table.setValueAt(new QTag(""), 0, 0);
-		
-		assertEquals(0, property.instanceCount());
+		assertEquals(1, panel.getComponentCount());
 		
 		view = panel;
 	}
@@ -274,45 +249,8 @@ public class MultiTypeTableViewTest extends XMLTestCase {
 		
 		test.inline(panel, 0, 0, false);
 
-		assertEquals(2, panel.getComponentCount());
-		
-		JScrollPane scrollPane = (JScrollPane) panel.getComponent(1);
-		
-		JTable table = (JTable) scrollPane.getViewport().getComponent(0);
-		
-		table.setValueAt(prefixMappings.getQName(APPLE), 0, 0);
-		
-		assertEquals(1, property.instanceCount());
-		
-		table.setValueAt("morning", 0, 1);
-
-		XMLArooaParser parser = new XMLArooaParser();
-		
-		parser.parse(property.getArooaContext().getConfigurationNode());
-
-		String expected = 
-				"<fruit xmlns:fruit=\"http://fruit\">" + EOL +
-				"    <fruit:apple key=\"morning\"/>" + EOL +
-				"</fruit>" + EOL; 
-		
-		assertXMLEqual(expected, parser.getXml());
+		assertEquals(1, panel.getComponentCount());
 				
-		table.setValueAt(prefixMappings.getQName(ORANGE), 0, 0);
-		
-		assertEquals(1, property.instanceCount());
-		
-		table.setValueAt(prefixMappings.getQName(APPLE), 1, 0);
-		
-		assertEquals(2, property.instanceCount());
-
-		table.setValueAt(new QTag(""), 1, 0);
-		
-		assertEquals(1, property.instanceCount());
-		
-		table.setValueAt(new QTag(""), 0, 0);
-		
-		assertEquals(0, property.instanceCount());
-		
 		view = panel;
 	}
 	
@@ -329,22 +267,28 @@ public class MultiTypeTableViewTest extends XMLTestCase {
 
 		IndexedDesignProperty property; 
 		
+		MappedDesignProperty mapped; 
+		
 		OurDesign2(ArooaElement element, ArooaContext parentContext) {
 			super(element, new SimpleArooaClass(Object.class), parentContext);
 			
 			property = new IndexedDesignProperty(
 					"fruit", Fruit.class, ArooaType.VALUE, this);
+			
+			mapped = new MappedDesignProperty(
+					"mapped", Fruit.class, ArooaType.VALUE, this);
 		}
 		
 		
 		@Override
 		protected DesignProperty[] children() {
-			return new DesignProperty[] { property };
+			return new DesignProperty[] { property, mapped };
 		}
 		
 		public Form detail() {
 			return new StandardForm("Test", this)
-			.addFormItem(property.view());
+			.addFormItem(property.view())
+			.addFormItem(mapped.view());
 		}
 	}
 	
@@ -365,13 +309,13 @@ public class MultiTypeTableViewTest extends XMLTestCase {
 
 		parser.parse(new XMLConfiguration("TEST", xml));
 		
-		DesignInstance design = parser.getDesign();
+		design = parser.getDesign();
 		
 		view = SwingFormFactory.create(design.detail()).dialog();
 		
 	}
 	
-	public static void main(String args[]) throws ArooaParseException {
+	public static void main2(String args[]) throws ArooaParseException {
 		MultiTypeTableViewTest test = new MultiTypeTableViewTest();
 		test.testViewStartUp();
 		
@@ -381,6 +325,14 @@ public class MultiTypeTableViewTest extends XMLTestCase {
 		frame.setVisible(true);
 
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-
+	}
+	
+	public static void main(String args[]) throws ArooaParseException {
+		MultiTypeTableViewTest test = new MultiTypeTableViewTest();
+		test.testViewStartUp();
+		
+		ViewMainHelper view = new ViewMainHelper(test.design);
+		view.run();
+		
 	}
 }

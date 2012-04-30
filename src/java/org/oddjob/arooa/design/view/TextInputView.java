@@ -22,11 +22,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import org.oddjob.arooa.design.screem.TextInput;
 
 /**
- *  
+ *  A view for form and a form item that is a text area.
  */
 public class TextInputView implements SwingItemView, SwingFormView {
 		
@@ -35,30 +37,54 @@ public class TextInputView implements SwingItemView, SwingFormView {
 	private final JTextArea textArea;
 	private final JButton button;
 	
-	public TextInputView(TextInput ti) {
-		this.textInput = ti;
+	/**
+	 * Constructor.
+	 * 
+	 * @param textInputModel The model.
+	 */
+	public TextInputView(TextInput textInputModel) {
+		this.textInput = textInputModel;
 		
 		text = new JTextField(Looks.TEXT_FIELD_SIZE);
 		Insets insets = text.getBorder().getBorderInsets(text);
 		text.setBorder(BorderFactory.createEmptyBorder(
 				insets.top, insets.left, insets.bottom, insets.right));
+		textArea = new JTextArea();
 		
-		text.addFocusListener(new FocusListener() {
-			public void focusGained(FocusEvent e) {
+		updateView();
+		
+		text.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				textInput.setText(text.getText());
 			}
-			public void focusLost(FocusEvent e) {
+			
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				textInput.setText(text.getText());
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent e) {
 				textInput.setText(text.getText());
 			}
 		});
 		
-		textArea = new JTextArea();
-		textArea.addFocusListener(new FocusListener() {
-			public void focusGained(FocusEvent e) {
-			}
-			public void focusLost(FocusEvent e) {
+		textArea.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void removeUpdate(DocumentEvent e) {
 				textInput.setText(textArea.getText());
 			}
-		});		
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				textInput.setText(textArea.getText());
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				textInput.setText(textArea.getText());
+			}
+		});
 		
 		button = new JButton();
 		button.setAction(new AbstractAction("...") {
@@ -78,7 +104,6 @@ public class TextInputView implements SwingItemView, SwingFormView {
 				valueDialog.showDialog(button);
 			}
 		});
-		updateView();
 	}
 	
 	public Component dialog() {
@@ -102,6 +127,19 @@ public class TextInputView implements SwingItemView, SwingFormView {
 		button.setMargin(new Insets(0, 0, 0, 0));
 		panel.add(text);
 		panel.add(button);
+		// Required when used as the cell of a table.
+		panel.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				text.requestFocus();
+			}
+		});
+
 		return 	panel;
 	}
 	
