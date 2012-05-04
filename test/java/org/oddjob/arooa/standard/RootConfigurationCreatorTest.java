@@ -90,11 +90,13 @@ public class RootConfigurationCreatorTest extends TestCase {
 		@Override
 		public ComponentProxyResolver getComponentProxyResolver() {
 			return new ComponentProxyResolver() {
-				public Object resolve(Object object, ArooaContext parentContext) {
+				@Override
+				public Object resolve(Object object, ArooaSession session) {
 					assertTrue(object instanceof RootComponent); 
 					return new OurProxy();
 				}
-				public Object restore(Object proxy, ArooaContext parentContext) {
+				@Override
+				public Object restore(Object proxy, ArooaSession session) {
 					return null;
 				}
 			};

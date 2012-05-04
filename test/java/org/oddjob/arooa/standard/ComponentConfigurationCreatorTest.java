@@ -308,11 +308,13 @@ public class ComponentConfigurationCreatorTest extends TestCase {
 	
 	private class OurComponentProxyResolver implements ComponentProxyResolver {
 
-		public Object resolve(Object object, ArooaContext parentContext) {
+		@Override
+		public Object resolve(Object object, ArooaSession session) {
 			return new DummyProxy(object);
 		}
 		
-		public Object restore(Object proxy, ArooaContext parentContext) {
+		@Override
+		public Object restore(Object proxy, ArooaSession session) {
 			assertTrue(proxy instanceof DummyProxy);
 			return ((DummyProxy) proxy).wrapped;
 		}

@@ -37,7 +37,7 @@ class RootConfigurationCreator implements ElementAction<InstanceConfiguration>{
 			ComponentProxyResolver proxyResolver = session.getComponentProxyResolver();
 
 			if (proxyResolver != null) {
-				proxy = proxyResolver.resolve(root, context);
+				proxy = proxyResolver.resolve(root, context.getSession());
 			}
 					
 			if (proxy == null) {

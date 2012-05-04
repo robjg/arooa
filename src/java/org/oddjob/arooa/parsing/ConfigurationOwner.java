@@ -34,16 +34,19 @@ public interface ConfigurationOwner {
 	public void removeOwnerStateListener(OwnerStateListener listener);
 	
 	/**
-	 * Get the design factory for the configuration.
+	 * Get the design factory for the configuration. If this is null
+	 * the Oddjob Explorer won't show a DesignInside action.
 	 * 
-	 * @return Never null.
+	 * @return A DesignFactory. Must not be null if a 
+	 * ConfigurationSession is available.
 	 */
 	public DesignFactory rootDesignFactory();
 	
 	/**
 	 * Get the root element.
 	 * 
-	 * @return Never null.
+	 * @return The root element of the configuration. Must not be null if
+	 * a ConfiguraitonSession is available.
 	 */
 	public ArooaElement rootElement();
 	

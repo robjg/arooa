@@ -33,7 +33,8 @@ implements ElementAction<InstanceConfiguration>{
 		Object component = null;
 		
 		ComponentPersister persister = session.getComponentPersister();
-		ComponentProxyResolver proxyResolver = session.getComponentProxyResolver();
+		ComponentProxyResolver proxyResolver = 
+				session.getComponentProxyResolver();
 
 		ElementMappings mappings = session.getArooaDescriptor(
 				).getElementMappings();
@@ -64,7 +65,8 @@ implements ElementAction<InstanceConfiguration>{
 			}
 			
 			if (proxy != null && proxyResolver != null) {
-				component = proxyResolver.restore(proxy, parentContext);
+				component = proxyResolver.restore(proxy, 
+						parentContext.getSession());
 			}
 			
 			if (component == null) {
@@ -73,7 +75,8 @@ implements ElementAction<InstanceConfiguration>{
 		}
 			
 		if (proxy == null && proxyResolver != null) {
-			proxy = proxyResolver.resolve(component, parentContext);
+			proxy = proxyResolver.resolve(component, 
+					parentContext.getSession());
 		}
 
 		if (proxy == null) {

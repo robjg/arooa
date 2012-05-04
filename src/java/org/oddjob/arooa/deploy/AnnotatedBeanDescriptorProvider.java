@@ -21,6 +21,13 @@ import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.utils.ClassesUtils;
 
+/**
+ * Attempts to provide a {@link ArooaBeanDescriptor} from an annotated
+ * class.
+ * 
+ * @author rob
+ *
+ */
 public class AnnotatedBeanDescriptorProvider {
 	
 	public ArooaBeanDescriptor getBeanDescriptor(
@@ -68,6 +75,10 @@ public class AnnotatedBeanDescriptorProvider {
 		}
 	}
 
+	/**
+	 * Save {@link PropertyDefintion}s for discovered annotations.
+	 *
+	 */
 	class DefinitionResults implements AnnotationResults {
 		
 		private final ArooaBeanDescriptor base;
@@ -75,24 +86,39 @@ public class AnnotatedBeanDescriptorProvider {
 		private final Map<String, PropertyDefinition> defs = 
 			new LinkedHashMap<String, PropertyDefinition>();
 
+		private final ArooaClass cl;
+		
 		public DefinitionResults(ArooaClass cl, 
 				PropertyAccessor accessor) {
-			base = 
+			this.cl = cl;
+			this.base = 
 				new DefaultBeanDescriptorProvider(
 						).getBeanDescriptor(cl, accessor);
 		}
 		
+		/**
+		 * Provide or create a property definition.
+		 * 
+		 * @return PropertyDefinition
+		 */
 		private PropertyDefinition forName(String property) {
 			PropertyDefinition def = defs.get(property);
 			if (def == null) {
-				def = new PropertyDefinition(property, 
-						propertyType(base.getConfiguredHow(property)));
+				ConfiguredHow how = base.getConfiguredHow(property); 
+				if (how == null) {
+					throw new NullPointerException(
+							"No configuration information for property [" + 
+							property + "] of class [" + cl + 
+							"] - Is this property defined correctly?");
+				}
+				def = new PropertyDefinition(property, propertyType(how));
 				defs.put(property, def);
 			}
 			return def;
 		}
 		
-		PropertyDefinition.PropertyType propertyType(ConfiguredHow how) {
+		private PropertyDefinition.PropertyType propertyType(
+				ConfiguredHow how) {
 			switch (how) {
 			case ATTRIBUTE:
 				return PropertyDefinition.PropertyType.ATTRIBUTE;
@@ -131,7 +157,9 @@ public class AnnotatedBeanDescriptorProvider {
 
 	}
 	
-	
+	/**
+	 * Something that can process discovered annotations.
+	 */
 	interface AnnotationResults {
 
 		void componentProperty(String name);
@@ -149,6 +177,10 @@ public class AnnotatedBeanDescriptorProvider {
 		void flavour(String name, String flavour);
 	}
 	
+	/**
+	 * Finds annotations by iterating over methods only.
+	 *
+	 */
 	static class MemberAnnotationFinder {
 	
 		private final Class<?> cl;
@@ -157,6 +189,11 @@ public class AnnotatedBeanDescriptorProvider {
 			this.cl = cl;
 		}
 		
+		/**
+		 * Look for annotations and populate the results.
+		 *  
+		 * @param results The results to be populated.
+		 */
 		public void find(AnnotationResults results) {
 			
 			for (Method method : cl.getMethods()) {

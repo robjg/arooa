@@ -20,7 +20,6 @@ import org.oddjob.arooa.life.ComponentPersistException;
 import org.oddjob.arooa.life.ComponentPersister;
 import org.oddjob.arooa.life.ComponentProxyResolver;
 import org.oddjob.arooa.life.MockComponentPersister;
-import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.registry.ComponentPool;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
@@ -193,7 +192,8 @@ public class PersistTest extends TestCase {
 	
 	private class OurResolver implements ComponentProxyResolver {
 
-		public Object resolve(Object object, ArooaContext parentContext) {
+		@Override
+		public Object resolve(Object object, ArooaSession session) {
 			if (object instanceof Root) {
 				return null;
 			}
@@ -207,7 +207,8 @@ public class PersistTest extends TestCase {
 					handler);
 		}
 		
-		public Object restore(Object proxy, ArooaContext parentContext) {
+		@Override
+		public Object restore(Object proxy, ArooaSession session) {
 			
 			InvocationHandler handler = Proxy.getInvocationHandler(proxy);
 			
