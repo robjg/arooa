@@ -1,11 +1,5 @@
 package org.oddjob.arooa.types;
 
-import org.oddjob.arooa.ArooaType;
-import org.oddjob.arooa.design.DesignFactory;
-import org.oddjob.arooa.design.DesignInstance;
-import org.oddjob.arooa.design.etc.UnknownComponent;
-import org.oddjob.arooa.design.etc.UnknownInstance;
-import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 
 /**
@@ -41,21 +35,5 @@ public class BeanType {
 	 * argument constructor.
 	 * @oddjob.required No, defaults to java.lang.Object.
 	 */
-	public static final String ATTRIBUTE = "class"; 
-		
-	public static class ClassDesignFactory implements DesignFactory {
-		
-		public DesignInstance createDesign(
-				ArooaElement element, 
-				ArooaContext parentContext) {
-			
-			if (parentContext.getArooaType() == ArooaType.COMPONENT) {
-				return new UnknownComponent(element, parentContext);
-			}
-			else {
-				return new UnknownInstance(element, parentContext);		
-			}
-		}
-	};
-
+	public static final String ATTRIBUTE = "class"; 		
 }

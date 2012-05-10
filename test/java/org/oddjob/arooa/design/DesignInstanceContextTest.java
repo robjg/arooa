@@ -40,7 +40,7 @@ public class DesignInstanceContextTest extends XMLTestCase {
 		}
 		
 		@Override
-		protected DesignProperty[] children() {
+		public DesignProperty[] children() {
 			return new DesignProperty[] { colour, description };
 		}
 		

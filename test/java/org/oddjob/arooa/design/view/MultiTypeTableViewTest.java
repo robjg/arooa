@@ -281,7 +281,7 @@ public class MultiTypeTableViewTest extends TestCase {
 		
 		
 		@Override
-		protected DesignProperty[] children() {
+		public DesignProperty[] children() {
 			return new DesignProperty[] { property, mapped };
 		}
 		

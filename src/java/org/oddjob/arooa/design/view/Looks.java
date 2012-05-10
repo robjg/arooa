@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -31,7 +32,14 @@ public class Looks{
 	
 	public static final int DESIGNER_TREE_WIDTH = 200;
 	public static final int DETAIL_FORM_WIDTH = 400;
+	
 	public static final int DETAIL_FORM_BORDER = 4;
+	public static final Insets DETIAL_FORM_INSETS = 
+			new Insets(Looks.DETAIL_FORM_BORDER, 
+					Looks.DETAIL_FORM_BORDER, 
+					Looks.DETAIL_FORM_BORDER, 
+					Looks.DETAIL_FORM_BORDER);
+	
 	public static final int GROUP_BORDER = 3;
 	
 	public static final int DETAIL_USABLE_WIDTH = DETAIL_FORM_WIDTH
@@ -87,19 +95,19 @@ public class Looks{
 			
 			final DesignComponent designComponent = 
 				(DesignComponent) design;
-			
-			c.weightx = 0.0;
-			c.fill = GridBagConstraints.NONE;
+
+			setCommonLabelContraints(c);
 			c.gridwidth = 1;
 			++c.gridy;
 			
-			JLabel idLabel = new JLabel("id ");		
+			JLabel idLabel = new JLabel(ViewHelper.padLabel("id"),
+					SwingConstants.LEADING);
 			typePanel.add(idLabel, c);
 			
-			c.weightx = 1.0;
+			setCommonTextFieldContraints(c);
 			c.gridx = 1;
 	
-			final JTextField idText = new JTextField(30);		
+			final JTextField idText = new JTextField(TEXT_FIELD_SIZE);		
 			idText.setText(designComponent.getId());
 			
 			idText.getDocument().addDocumentListener(new DocumentListener() {
@@ -127,4 +135,21 @@ public class Looks{
 		return typePanel;		
 	}
 	
+	public static void setCommonLabelContraints(GridBagConstraints c) {
+		c.weightx = 0.3;
+		c.weighty = 0.0;
+		
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.NORTHWEST;
+		c.insets = new Insets(3, 3, 3, 20);		 
+	}
+	
+	public static void setCommonTextFieldContraints(GridBagConstraints c) {
+		c.weightx = 1.0;
+		c.weighty = 0.0;
+		
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.NORTHWEST;
+		c.insets = new Insets(3, 0, 3, 0);
+	}
 }

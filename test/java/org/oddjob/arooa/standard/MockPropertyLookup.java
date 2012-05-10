@@ -1,27 +1,27 @@
 package org.oddjob.arooa.standard;
 
+import java.util.Set;
+
 import org.oddjob.arooa.runtime.PropertyLookup;
-import org.oddjob.arooa.runtime.PropertyManager;
+import org.oddjob.arooa.runtime.PropertySource;
 
-public class MockPropertyManager extends MockPropertyLookup 
-implements PropertyManager {
+public class MockPropertyLookup implements PropertyLookup {
 
 	@Override
-	public void addPropertyLookup(PropertyLookup propertyLookup) {
+	public String lookup(String propertyName) {
 		throw new RuntimeException("Unexpected from class: " + 
 				this.getClass().getName());
 	}
 	
 	@Override
-	public void addPropertyOverride(PropertyLookup propertyLookup) {
+	public Set<String> propertyNames() {
 		throw new RuntimeException("Unexpected from class: " + 
 				this.getClass().getName());
 	}
 	
 	@Override
-	public void removePropertyLookup(PropertyLookup propertyLookup) {
+	public PropertySource sourceFor(String propertyName) {
 		throw new RuntimeException("Unexpected from class: " + 
 				this.getClass().getName());
 	}
-	
 }

@@ -12,7 +12,6 @@ import org.oddjob.arooa.design.SimpleDesignProperty;
 import org.oddjob.arooa.design.etc.UnknownInstance;
 import org.oddjob.arooa.design.screem.Form;
 import org.oddjob.arooa.design.screem.StandardForm;
-import org.oddjob.arooa.design.view.ViewMainHelper;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.standard.StandardArooaSession;
@@ -24,14 +23,12 @@ public class BeanTypeTest extends XMLTestCase {
 	
 	static final String EOL = System.getProperty("line.separator");
 	
-	DesignInstance design;
-	
 	public void testCreateAndParse() throws Exception {
 		
 		DesignParser parser = new DesignParser(
 				new StandardArooaSession());
 		
-		parser.parse(new XMLConfiguration("TEST", "<bean/>"));
+		parser.parse(new XMLConfiguration("TEST", "<idontexist/>"));
 		
 		UnknownInstance design = (UnknownInstance) parser.getDesign();
 		
@@ -74,7 +71,7 @@ public class BeanTypeTest extends XMLTestCase {
 		}
 		
 		@Override
-		protected DesignProperty[] children() {
+		public DesignProperty[] children() {
 			return new DesignProperty[] { fruit };
 		}
 		
@@ -82,33 +79,6 @@ public class BeanTypeTest extends XMLTestCase {
 			return new StandardForm("test", this)
 			.addFormItem(fruit.view());
 		}
-	}
-	
-	public void testDesign() throws Exception {
-	
-		DesignParser parser = new DesignParser(
-				new StandardArooaSession(),
-				new BeanType.ClassDesignFactory());
-		
-		parser.parse(new XMLConfiguration("TEST", "<bean/>"));
-		
-		design = parser.getDesign();
-		
-		XMLArooaParser xmlParser = new XMLArooaParser();
-		
-		xmlParser.parse(design.getArooaContext().getConfigurationNode());
-		
-		assertXMLEqual("<bean/>" + EOL, xmlParser.getXml());
-		
-	}
-	
-	public static void main(String args[]) throws Exception {
-
-		BeanTypeTest test = new BeanTypeTest();
-		test.testDesign();
-		
-		ViewMainHelper helper = new ViewMainHelper(test.design);
-		helper.run();
 	}
 	
 	public void testBeanExample() throws ArooaParseException {

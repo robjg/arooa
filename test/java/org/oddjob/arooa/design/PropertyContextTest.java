@@ -96,7 +96,7 @@ public class PropertyContextTest extends XMLTestCase {
 		}
 		
 		@Override
-		protected DesignProperty[] children() {
+		public DesignProperty[] children() {
 			throw new RuntimeException("Unexpected.");
 		}
 		

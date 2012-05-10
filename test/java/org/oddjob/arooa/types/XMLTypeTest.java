@@ -181,7 +181,7 @@ public class XMLTypeTest extends XMLTestCase {
 		}
 		
 		@Override
-		protected DesignProperty[] children() {
+		public DesignProperty[] children() {
 			return new DesignProperty[] { ourXml };
 		}
 		

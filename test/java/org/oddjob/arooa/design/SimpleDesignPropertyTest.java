@@ -109,7 +109,7 @@ public class SimpleDesignPropertyTest extends XMLTestCase {
 		}
 	
 		@Override
-		protected DesignProperty[] children() {
+		public DesignProperty[] children() {
 			return new DesignProperty[] { prop };
 		}
 	}

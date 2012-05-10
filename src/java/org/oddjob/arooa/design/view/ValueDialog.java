@@ -73,9 +73,22 @@ public class ValueDialog {
 	/**
 	 * Show the dialogue.
 	 * 
-	 * @param parent
+	 * @param parent The parent component/frame.
 	 */
 	public void showDialog(Component parent) {
+		showDialog(parent, false);
+	}
+	
+	/**
+	 * This is used by designer sub dialogues because there is no
+	 * way to cancel a change. This implementation is a quick and dirty
+	 * and needs re-thinking.
+	 * 
+	 * @param parent The parent component/frame.
+	 * @param hideCancel Hide the cancel button.
+	 */
+	public void showDialog(Component parent, boolean hideCancel) {
+			
 		
 		Window window = ViewHelper.getWindowForComponent(parent);
 		
@@ -128,7 +141,9 @@ public class ValueDialog {
 		cancel.addActionListener(cancelAction);
 		
 		selection.add(ok);
-		selection.add(cancel);
+		if (!hideCancel) {
+			selection.add(cancel);
+		}
 
 		KeyStroke escapeStroke = KeyStroke.getKeyStroke(
 				KeyEvent.VK_ESCAPE, 0);

@@ -6,6 +6,13 @@ import org.oddjob.arooa.design.screem.FormItem;
 import org.oddjob.arooa.design.screem.NullForm;
 import org.oddjob.arooa.design.screem.StandardForm;
 
+/**
+ * Utility class that creates a {@link Form} for a 
+ * {@link GenericDesignInstance}
+ * 
+ * @author rob
+ *
+ */
 class GenericFormFactory {
 
 	static Form createForm(DesignInstanceBase designInstance) {

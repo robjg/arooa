@@ -100,7 +100,7 @@ public class ViewActionsContributorTest extends TestCase {
 		}
 		
 		@Override
-		protected DesignProperty[] children() {
+		public DesignProperty[] children() {
 			return new DesignProperty[] { child };
 		}
 		

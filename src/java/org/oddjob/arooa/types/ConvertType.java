@@ -67,7 +67,7 @@ public class ConvertType<T> implements ArooaValue, ArooaSessionAware {
 	
 	/**
 	 * @oddjob.property
-	 * @oddjob.description The value to conert.
+	 * @oddjob.description The value to convert.
 	 * @oddjob.required No. If missing the result of the conversion will be
 	 * null.
 	 */

@@ -16,7 +16,8 @@ import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 
 /**
- * Mapped Design Property.
+ * Mapped Design Property. This design property keeps track of
+ * the instances and the keys.
  * 
  * @author rob
  *
@@ -26,6 +27,14 @@ public class MappedDesignProperty extends DesignPropertyBase {
 	private final List<InstanceWrapper> instances = 
 		new ArrayList<InstanceWrapper>();	
 		
+	/**
+	 * Constructor.
+	 * 
+	 * @param property
+	 * @param propertyClass
+	 * @param type
+	 * @param parent
+	 */
 	public MappedDesignProperty(String property,
 			Class<?> propertyClass,
 			ArooaType type,
@@ -33,6 +42,13 @@ public class MappedDesignProperty extends DesignPropertyBase {
 		super(property, propertyClass, type, parent);
 	}
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param property
+	 * @param parent
+	 * @throws ArooaPropertyException
+	 */
 	public MappedDesignProperty(String property,
 			DesignInstance parent) 
 	throws ArooaPropertyException {
@@ -63,6 +79,9 @@ public class MappedDesignProperty extends DesignPropertyBase {
 		return new MappedDesignSetter(key);
 	}
 
+	/**
+	 * Used during parsing. Wraps the instance with it's key
+	 */
 	class MappedDesignSetter implements DesignSetter {
 		
 		private final String key;
@@ -124,7 +143,7 @@ public class MappedDesignProperty extends DesignPropertyBase {
 		return ((InstanceWrapper) instance).key;
 	}
 	
-	static class InstanceWrapper implements DesignInstance {
+	public static class InstanceWrapper implements DesignInstance {
 	
 		private final DesignInstance wrapping;
 
@@ -147,7 +166,7 @@ public class MappedDesignProperty extends DesignPropertyBase {
 			return wrapping.getArooaContext();
 		}
 		
-		DesignInstance getWrapping() {
+		public DesignInstance getWrapping() {
 			return wrapping;
 		}
 		

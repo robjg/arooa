@@ -19,17 +19,18 @@ import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 
 /**
- * A DesignAdult may or may not be capable of having children.
- * If a DesignAdult does have children they must be design
- * elements.
- * 
+ * Base implementation for {@link DesignInstances}.
  */
-abstract class DesignInstanceBase implements DesignInstance {
+abstract class DesignInstanceBase implements ParsableDesignInstance {
 
 	private final ArooaElement element;
 		
 	private final ArooaContext context;
 
+	/**
+	 * Utility method for discovering the {@link ArooaClass} for an 
+	 * {@link ArooaElement}.
+	 */
 	static class ClassFinder {
 		ArooaClass forElement(ArooaElement element, 
 				ArooaContext parentContext) {
@@ -55,6 +56,13 @@ abstract class DesignInstanceBase implements DesignInstance {
 		}
 	}
 	
+	/**
+	 * Constructor.
+	 * 
+	 * @param element
+	 * @param classIdentifier
+	 * @param parentContext
+	 */
 	public DesignInstanceBase(ArooaElement element, 
 			ArooaClass classIdentifier, ArooaContext parentContext) {
 		
@@ -100,8 +108,6 @@ abstract class DesignInstanceBase implements DesignInstance {
 	public QTag tag() {
 		return InstanceSupport.tagFor(this);
 	}
-
-	protected abstract DesignProperty[] children();
 
 	public ArooaContext getArooaContext() {
 		return context;

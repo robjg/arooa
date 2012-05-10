@@ -81,4 +81,9 @@ public class XMLConfigurationNode extends AbstractConfigurationNode {
 	public void setContext(ArooaContext context) {
 		this.context = context;
 	}
+	
+	@Override
+	public String toString() {
+		return "XMLConfigurationNode for " + element;
+	}
 }

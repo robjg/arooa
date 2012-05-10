@@ -46,7 +46,7 @@ public class DesignParserSaveTest extends XMLTestCase {
 		}
 		
 		@Override
-		protected DesignProperty[] children() {
+		public DesignProperty[] children() {
 			return new DesignProperty[] { id, fruit };
 		}
 		

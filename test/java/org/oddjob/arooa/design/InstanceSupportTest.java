@@ -338,7 +338,7 @@ public class InstanceSupportTest extends TestCase {
 				context) {
 			
 			@Override
-			protected DesignProperty[] children() {
+			public DesignProperty[] children() {
 				return null;
 			}
 
@@ -369,7 +369,7 @@ public class InstanceSupportTest extends TestCase {
 				context) {
 			
 			@Override
-			protected DesignProperty[] children() {
+			public DesignProperty[] children() {
 				return null;
 			}
 

@@ -67,7 +67,7 @@ public class DesignPropertyBaseTest extends TestCase {
 		}
 		
 		@Override
-		protected DesignProperty[] children() {
+		public DesignProperty[] children() {
 			return new DesignProperty[] { fruit };
 		}
 		

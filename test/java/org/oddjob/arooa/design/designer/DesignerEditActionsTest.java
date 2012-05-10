@@ -104,7 +104,7 @@ public class DesignerEditActionsTest extends TestCase {
 		}
 		
 		@Override
-		protected DesignProperty[] children() {
+		public DesignProperty[] children() {
 			return new DesignProperty[] { child };
 		}
 		

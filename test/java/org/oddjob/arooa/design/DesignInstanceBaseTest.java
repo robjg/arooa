@@ -58,7 +58,7 @@ public class DesignInstanceBaseTest extends XMLTestCase {
 		}
 		
 		@Override
-		protected DesignProperty[] children() {
+		public DesignProperty[] children() {
 			return new DesignProperty[] { fruit };
 		}
 		

@@ -67,7 +67,7 @@ public class DesignerModelTest extends XMLTestCase {
 		}
 		
 		@Override
-		protected DesignProperty[] children() {
+		public DesignProperty[] children() {
 			return new DesignProperty[] {};
 		}
 		
@@ -237,7 +237,7 @@ public class DesignerModelTest extends XMLTestCase {
 		}
 		
 		@Override
-		protected DesignProperty[] children() {
+		public DesignProperty[] children() {
 			return new DesignProperty[] { fruit };
 		}
 
@@ -317,7 +317,7 @@ public class DesignerModelTest extends XMLTestCase {
 		}
 		
 		@Override
-		protected DesignProperty[] children() {
+		public DesignProperty[] children() {
 			return new DesignProperty[] { };
 		}
 

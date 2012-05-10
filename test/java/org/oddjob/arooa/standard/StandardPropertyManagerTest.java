@@ -4,8 +4,6 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.oddjob.arooa.runtime.PropertyLookup;
-
 public class StandardPropertyManagerTest extends TestCase {
 
 	Properties someProperties;
@@ -30,8 +28,10 @@ public class StandardPropertyManagerTest extends TestCase {
 		
 		StandardPropertyManager test = new StandardPropertyManager();
 		
-		test.addPropertyLookup(new StandardPropertyLookup(someProperties));
-		test.addPropertyLookup(new StandardPropertyLookup(otherProperties));
+		test.addPropertyLookup(new StandardPropertyLookup(
+				someProperties, "someProperties"));
+		test.addPropertyLookup(new StandardPropertyLookup(
+				otherProperties, "otherProperties"));
 		
 		assertEquals(System.getProperty("java.version"), 
 				test.lookup("java.version"));
@@ -43,9 +43,10 @@ public class StandardPropertyManagerTest extends TestCase {
 	public void testPropertiesNoParent() {
 		
 		StandardPropertyManager test = new StandardPropertyManager(
-				someProperties);
+				someProperties, "someProperties");
 		
-		test.addPropertyLookup(new StandardPropertyLookup(otherProperties));
+		test.addPropertyLookup(new StandardPropertyLookup(
+				otherProperties, "otherProperties"));
 		
 		assertEquals(System.getProperty("java.version"), 
 				test.lookup("java.version"));
@@ -57,10 +58,10 @@ public class StandardPropertyManagerTest extends TestCase {
 	public void testPropertiesAndParent() {
 		
 		StandardPropertyManager parent = new StandardPropertyManager(
-				someProperties);
+				someProperties, "someProperties");
 		
 		StandardPropertyManager test = new StandardPropertyManager(
-				parent, otherProperties);
+				parent, otherProperties, "otherProperties");
 				
 		assertEquals(System.getProperty("java.version"), 
 				test.lookup("java.version"));
@@ -72,10 +73,10 @@ public class StandardPropertyManagerTest extends TestCase {
 	public void testOverridesAndParent() {
 		
 		StandardPropertyManager parent = new StandardPropertyManager(
-				someProperties);
+				someProperties, "someProperties");
 		
 		StandardPropertyManager test = new StandardPropertyManager(
-				parent, null);
+				parent);
 				
 		assertEquals(System.getProperty("java.version"), 
 				test.lookup("java.version"));
@@ -83,7 +84,7 @@ public class StandardPropertyManagerTest extends TestCase {
 		assertEquals("apple", 
 				test.lookup("snack.fruit"));
 		
-		test.addPropertyOverride(new PropertyLookup() {
+		test.addPropertyOverride(new MockPropertyLookup() {
 			@Override
 			public String lookup(String propertyName) {
 				return otherProperties.getProperty(propertyName);

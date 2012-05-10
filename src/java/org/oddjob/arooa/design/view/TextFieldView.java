@@ -5,7 +5,6 @@ package org.oddjob.arooa.design.view;
 
 import java.awt.Container;
 import java.awt.GridBagConstraints;
-import java.awt.Insets;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -67,11 +66,7 @@ public class TextFieldView implements SwingItemView {
 		
 		GridBagConstraints c = new GridBagConstraints();
 
-		c.weightx = 0.3;
-		c.weighty = 0.0;
-		
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.anchor = GridBagConstraints.NORTHWEST;
+		Looks.setCommonLabelContraints(c);
 		c.gridx = columnCount++;
 		c.gridy = row;
 		if (selectionInGroup) {
@@ -79,16 +74,11 @@ public class TextFieldView implements SwingItemView {
 			columnCount++;
 		}
 		
-		c.insets = new Insets(3, 3, 3, 20);		 
-
 		container.add(label, c);
 		
-		c.weightx = 1.0;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.anchor = GridBagConstraints.NORTHWEST;
+		Looks.setCommonTextFieldContraints(c);
 		c.gridx = columnCount++;
 		c.gridwidth = GridBagConstraints.REMAINDER;
-		c.insets = new Insets(3, 0, 3, 0);
 		
 		container.add(textField, c);
 				

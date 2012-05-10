@@ -7,7 +7,7 @@ import org.oddjob.arooa.design.screem.FormItem;
 import org.oddjob.arooa.design.screem.TextField;
 
 /**
- * An DesignElement that is an attribute in an objects
+ * A DesignElement that is an attribute in an objects
  * configuration.
  * <p>
  * 
@@ -21,12 +21,22 @@ implements DesignAttributeProperty {
 
 	private final String property;
 	
+	/**
+	 * Constructor.
+	 * 
+	 * @param property The property name.
+	 * @param owner The owning design. The element will be used to 
+	 * 		retrieve the initial attribute value.
+	 */
 	public SimpleTextAttribute(String property, DesignInstance owner) {
 		this.property = property;
 		this.attribute = owner.element().getAttributes().get(property);
 	}
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see org.oddjob.arooa.design.DesignProperty#property()
+	 */
 	public String property() {
 		return property;
 	}
@@ -52,10 +62,18 @@ implements DesignAttributeProperty {
 		}
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.oddjob.arooa.design.DesignProperty#view()
+	 */
 	public FormItem view() {
 		return new TextField(this);
 	}
 		
+	/*
+	 * (non-Javadoc)
+	 * @see org.oddjob.arooa.design.DesignProperty#isPopulated()
+	 */
 	public boolean isPopulated() {
 		return attribute != null && attribute.length() > 0;
 	}

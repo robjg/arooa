@@ -21,13 +21,19 @@ import org.oddjob.arooa.runtime.RuntimeEvent;
 import org.oddjob.arooa.runtime.RuntimeListenerAdaptor;
 import org.oddjob.arooa.xml.XmlHandler2;
 
-class DesignInstanceContext implements ArooaContext {
+/**
+ * An {@link ArooaContext} for a {@link ParsableDesignInstance}
+ * 
+ * @author rob
+ *
+ */
+public class DesignInstanceContext implements ArooaContext {
 
 //	private static final Logger logger = Logger.getLogger(DesignInstanceContext.class);
 	
 	private final ArooaContext parent;
 	
-	private final DesignInstanceBase instance;
+	private final ParsableDesignInstance instance;
 
 	private final ArooaClass classIdentifier;
 	
@@ -133,8 +139,15 @@ class DesignInstanceContext implements ArooaContext {
 	
 	private Map<String, ArooaContext> propertyContexts;
 	
+	/**
+	 * Constructor.
+	 * 
+	 * @param instance
+	 * @param classIdentifier
+	 * @param parent
+	 */
 	public DesignInstanceContext(
-			DesignInstanceBase instance, 
+			ParsableDesignInstance instance, 
 			ArooaClass classIdentifier,
 			ArooaContext parent) {
 		

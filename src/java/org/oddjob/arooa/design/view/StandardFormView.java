@@ -3,16 +3,31 @@ package org.oddjob.arooa.design.view;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 
 import javax.swing.JPanel;
 
 import org.oddjob.arooa.design.screem.StandardForm;
 
+/**
+ * Provides most designer dialogs.
+ * <p>
+ * Provide a panel with the element name, the id if the design
+ * is for a component and then allows the form items to 
+ * {@link SwingItemView#inline(java.awt.Container, int, int, boolean)}
+ * themselves onto a GridBagLayout panel.
+ * 
+ * @author rob
+ *
+ */
 public class StandardFormView implements SwingFormView {
 
 	private final StandardForm standardForm;
 	
+	/**
+	 * Constructor.
+	 * 
+	 * @param form
+	 */
 	public StandardFormView(StandardForm form) {
 		this.standardForm = form;
 	}
@@ -32,10 +47,7 @@ public class StandardFormView implements SwingFormView {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.NORTHWEST;
 
-		c.insets = new Insets(Looks.DETAIL_FORM_BORDER, 
-				Looks.DETAIL_FORM_BORDER, 
-				Looks.DETAIL_FORM_BORDER, 
-				Looks.DETAIL_FORM_BORDER);
+		c.insets = Looks.DETIAL_FORM_INSETS;
 
 		c.gridx = 0;
 		c.gridy = 0;

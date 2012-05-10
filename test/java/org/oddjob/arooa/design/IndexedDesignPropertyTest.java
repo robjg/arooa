@@ -26,7 +26,7 @@ public class IndexedDesignPropertyTest extends XMLTestCase {
 		}
 		
 		@Override
-		protected DesignProperty[] children() {
+		public DesignProperty[] children() {
 			return new DesignProperty[] { test };
 		}
 		

@@ -6,6 +6,7 @@ package org.oddjob.arooa.design.view;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.oddjob.arooa.design.screem.BeanForm;
 import org.oddjob.arooa.design.screem.FileSelection;
 import org.oddjob.arooa.design.screem.Form;
 import org.oddjob.arooa.design.screem.NullForm;
@@ -74,6 +75,13 @@ abstract public class SwingFormFactory<T extends Form> {
 				return new FileSelectionView(form);
 			}	
 		});
+		
+		FACTORIES.put(BeanForm.class, 
+				new SwingFormFactory<BeanForm>() {
+			public SwingFormView onCreate(BeanForm form) {
+				return new BeanFormView(form);
+			}	
+		});		
 	}
 	
 	public abstract SwingFormView onCreate(T form);

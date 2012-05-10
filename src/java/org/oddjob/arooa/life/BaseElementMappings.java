@@ -13,6 +13,7 @@ import org.oddjob.arooa.design.GenericDesignFactory;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.types.BeanType;
+import org.oddjob.arooa.types.BeanTypeDesFa;
 import org.oddjob.arooa.types.IsType;
 
 /**
@@ -71,7 +72,7 @@ public class BaseElementMappings implements ElementMappings {
 			InstantiationContext parentContext) {
 		
 		if (BeanType.ELEMENT.equals(element)) {
-			return new BeanType.ClassDesignFactory();
+			return new BeanTypeDesFa();
 		}
 		
 		if (IsType.ELEMENT.equals(element)) {

@@ -41,7 +41,7 @@ public class ViewHelper {
 				Component form = SwingFormFactory.create(def).dialog();
 
 				ValueDialog valueDialog = new ValueDialog(form);
-				valueDialog.showDialog(button);
+				valueDialog.showDialog(button, true);
 			}
 		});
 		return button;

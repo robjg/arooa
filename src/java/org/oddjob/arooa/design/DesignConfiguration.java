@@ -4,17 +4,26 @@ import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaConfigurationException;
 import org.oddjob.arooa.ArooaConstants;
 import org.oddjob.arooa.ArooaParseException;
+import org.oddjob.arooa.ArooaParser;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.parsing.ArooaHandler;
 import org.oddjob.arooa.parsing.Location;
 
-class DesignConfiguration implements ArooaConfiguration {
+/**
+ * Creates an {@link ArooaConfiguration} out of a 
+ * {@link ParsableDesignInstance} so that a design can be parsed
+ * with an {@link ArooaParser}.
+ *  
+ * @author rob
+ *
+ */
+public class DesignConfiguration implements ArooaConfiguration {
 
-	private final DesignInstanceBase design;
+	private final ParsableDesignInstance design;
 	
-	public DesignConfiguration(DesignInstanceBase design) {
+	public DesignConfiguration(ParsableDesignInstance design) {
 		this.design = design;
 	}
 	

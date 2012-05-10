@@ -173,8 +173,10 @@ public class CutAndPasteSupport {
 	 * @param parentContext
 	 * @param childContext
 	 * @throws ArooaConfigurationException
+	 * 
+	 * @return The index the node was cut from.
 	 */
-	public static void cut(ArooaContext parentContext,
+	public static int cut(ArooaContext parentContext,
 			ArooaContext childContext) 
 	throws ArooaConfigurationException {
 		
@@ -190,6 +192,8 @@ public class CutAndPasteSupport {
 		
 		parentContext.getConfigurationNode().removeChild(
 				index);
+		
+		return index;
 	}
 	
 	/**
