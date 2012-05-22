@@ -2,56 +2,33 @@ package org.oddjob.arooa.parsing.interceptors;
 
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ArooaTools;
-import org.oddjob.arooa.life.ComponentPersister;
-import org.oddjob.arooa.life.ComponentProxyResolver;
-import org.oddjob.arooa.registry.BeanRegistry;
-import org.oddjob.arooa.registry.ComponentPool;
-import org.oddjob.arooa.runtime.PropertyManager;
+import org.oddjob.arooa.parsing.SessionDelegate;
 
-public class DescriptorOverrideSession implements ArooaSession {
+/**
+ * Override the {@link ArooaDescriptor} in an {@link ArooaSession}.
+ * 
+ * @author rob
+ *
+ */
+public class DescriptorOverrideSession extends SessionDelegate {
 
-	private final ArooaSession override;
 	private final ArooaDescriptor descriptor;
 	
+	/**
+	 * Constructor.
+	 * 
+	 * @param delegate Existing session.
+	 * @param descriptor New descriptor.
+	 */
 	public DescriptorOverrideSession(
-			ArooaSession override, ArooaDescriptor descriptor) {
-		this.override = override;
+			ArooaSession delegate, ArooaDescriptor descriptor) {
+		super(delegate);
 		this.descriptor = descriptor;
 	}
 
-	@Override
-	public ComponentPool getComponentPool() {
-		return override.getComponentPool();
-	}
-	
-	@Override
-	public BeanRegistry getBeanRegistry() {
-		return override.getBeanRegistry();
-	}
-
-	@Override
-	public PropertyManager getPropertyManager() {
-		return override.getPropertyManager();
-	}
-	
 	@Override
 	public ArooaDescriptor getArooaDescriptor() {
 		return descriptor;
 	}
 
-	@Override
-	public ArooaTools getTools() {
-		return override.getTools();
-	}
-
-	@Override
-	public ComponentProxyResolver getComponentProxyResolver() {
-		return override.getComponentProxyResolver();
-	}
-	
-	@Override
-	public ComponentPersister getComponentPersister() {
-		return override.getComponentPersister();
-	}
 }

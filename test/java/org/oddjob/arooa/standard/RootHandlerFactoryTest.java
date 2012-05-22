@@ -5,14 +5,9 @@ package org.oddjob.arooa.standard;
 
 import junit.framework.TestCase;
 
-import org.oddjob.arooa.ArooaBeanDescriptor;
-import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ArooaTools;
 import org.oddjob.arooa.ArooaType;
-import org.oddjob.arooa.MockArooaDescriptor;
-import org.oddjob.arooa.MockArooaSession;
 import org.oddjob.arooa.handlers.ElementAction;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaContext;
@@ -21,7 +16,6 @@ import org.oddjob.arooa.parsing.MockArooaContext;
 import org.oddjob.arooa.parsing.MutableAttributes;
 import org.oddjob.arooa.parsing.PrefixMappings;
 import org.oddjob.arooa.reflect.ArooaClass;
-import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
 /**
@@ -30,27 +24,8 @@ import org.oddjob.arooa.runtime.RuntimeConfiguration;
 public class RootHandlerFactoryTest extends TestCase {
 
 	private class MockRoot { }
+
 	
-	private class EmptySession extends MockArooaSession {
-		
-		@Override
-		public ArooaDescriptor getArooaDescriptor() {
-			return new MockArooaDescriptor() {
-				@Override
-				public ArooaBeanDescriptor getBeanDescriptor(
-						ArooaClass forClass, PropertyAccessor accessor) {
-					return null;
-				}
-			};
-		}
-		
-		@Override
-		public ArooaTools getTools() {
-			return new StandardTools();
-		}
-
-	}
-
     private class OurRuntime extends MockInstanceRuntime {
     	final String name;
     	boolean parsetimeInitialised;
@@ -102,7 +77,7 @@ public class RootHandlerFactoryTest extends TestCase {
     	
     	@Override
     	public ArooaSession getSession() {
-    		return new EmptySession();
+    		return new StandardArooaSession();
     	}
     	
     	@Override

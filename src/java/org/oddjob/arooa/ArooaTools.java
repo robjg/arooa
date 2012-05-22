@@ -2,6 +2,7 @@ package org.oddjob.arooa;
 
 import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+import org.oddjob.arooa.runtime.Evaluator;
 import org.oddjob.arooa.runtime.ExpressionParser;
 
 /**
@@ -30,4 +31,12 @@ public interface ArooaTools {
 	 * @return An ExpressionParser. Will not be null.
 	 */
 	public ExpressionParser getExpressionParser();
+		
+	/**
+	 * Get an {@link Evaluator} to use.
+	 * 
+	 * @return An Evaluator. Will not be null.
+	 */
+	public Evaluator getEvaluator();
+	
 }

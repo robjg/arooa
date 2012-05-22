@@ -27,8 +27,10 @@ import org.oddjob.arooa.reflect.MockPropertyAccessor;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.registry.BeanRegistry;
 import org.oddjob.arooa.registry.MockBeanRegistry;
+import org.oddjob.arooa.runtime.Evaluator;
 import org.oddjob.arooa.runtime.ExpressionParser;
 import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
+import org.oddjob.arooa.runtime.PropertyFirstEvaluator;
 import org.oddjob.arooa.runtime.PropertyManager;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
@@ -129,6 +131,11 @@ public class ObjectConfiguationTest extends TestCase {
 				@Override
 				public ArooaConverter getArooaConverter() {
 					return new DefaultConverter();
+				}
+				
+				@Override
+				public Evaluator getEvaluator() {
+					return new PropertyFirstEvaluator();
 				}
 			};
 		}

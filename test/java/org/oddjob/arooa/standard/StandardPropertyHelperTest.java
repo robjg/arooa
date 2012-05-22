@@ -19,26 +19,15 @@ import org.oddjob.arooa.convert.DefaultConverter;
 import org.oddjob.arooa.reflect.MockPropertyAccessor;
 import org.oddjob.arooa.registry.BeanRegistry;
 import org.oddjob.arooa.registry.SimpleBeanRegistry;
+import org.oddjob.arooa.runtime.Evaluator;
 import org.oddjob.arooa.runtime.ParsedExpression;
+import org.oddjob.arooa.runtime.PropertyFirstEvaluator;
 import org.oddjob.arooa.runtime.PropertyManager;
-import org.oddjob.arooa.runtime.SubstitutionException;
-import org.oddjob.arooa.runtime.SubstitutionPolicy;
 
 /**
  * class to look at how we expand properties
  */
 public class StandardPropertyHelperTest extends TestCase {
-
-
-	private class AllowNullSubstitutionPolicy implements SubstitutionPolicy {
-		public <T> T substituteObject(T value) throws SubstitutionException {
-			return value;
-		}
-		public String substituteString(String value) throws SubstitutionException {
-			return value;
-		}
-		
-	}
 	
 	private class NestedPropPropertyAccessor extends MockPropertyAccessor {
 		@Override
@@ -140,8 +129,7 @@ public class StandardPropertyHelperTest extends TestCase {
 	 */
 	public void testisConstant() {
 		
-		StandardPropertyHelper ph = new StandardPropertyHelper( 
-				new AllowNullSubstitutionPolicy());
+		StandardPropertyHelper ph = new StandardPropertyHelper();
 		
 		ParsedExpression evaluator1 = ph.parse("abc");
 		assertTrue(evaluator1.isConstant());
@@ -197,6 +185,10 @@ public class StandardPropertyHelperTest extends TestCase {
 				public ArooaConverter getArooaConverter() {
 					return converter;
 				}
+				@Override
+				public Evaluator getEvaluator() {
+					return new PropertyFirstEvaluator();
+				}
 			};
 		}
 		
@@ -212,8 +204,7 @@ public class StandardPropertyHelperTest extends TestCase {
      */
     private void assertExpandsTo(String source, Object expected) throws ArooaConversionException {
 
-    	StandardPropertyHelper ph = new StandardPropertyHelper( 
-				new AllowNullSubstitutionPolicy());
+    	StandardPropertyHelper ph = new StandardPropertyHelper();
 		
     	ParsedExpression evaluator = ph.parse(source);
     	

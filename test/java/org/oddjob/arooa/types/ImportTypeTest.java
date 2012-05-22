@@ -2,6 +2,7 @@ package org.oddjob.arooa.types;
 
 import junit.framework.TestCase;
 
+import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ConfiguredHow;
@@ -13,6 +14,7 @@ import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.convert.ConversionFailedException;
 import org.oddjob.arooa.convert.DefaultConverter;
 import org.oddjob.arooa.convert.NoConversionAvailableException;
+import org.oddjob.arooa.deploy.NoAnnotations;
 import org.oddjob.arooa.deploy.annotations.ArooaAttribute;
 import org.oddjob.arooa.deploy.annotations.ArooaComponent;
 import org.oddjob.arooa.registry.ComponentPool;
@@ -51,6 +53,11 @@ public class ImportTypeTest extends TestCase {
 		@Override
 		public boolean isAuto(String property) {
 			return false;
+		}
+		
+		@Override
+		public ArooaAnnotations getAnnotations() {
+			return new NoAnnotations();
 		}
 	}
 	

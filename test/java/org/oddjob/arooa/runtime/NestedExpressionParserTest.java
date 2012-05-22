@@ -177,14 +177,25 @@ public class NestedExpressionParserTest extends TestCase {
 		
 		NestedExpressionParser test = new NestedExpressionParser();
 		
-		ParsedExpression evaluator1 = test.parse("abc");
-		assertTrue(evaluator1.isConstant());
+		ParsedExpression expression;
 		
-		ParsedExpression evaluator2 = test.parse("${abc}");
-		assertFalse(evaluator2.isConstant());
+		expression = test.parse("abc");
+		assertTrue(expression.isConstant());
 		
-		ParsedExpression evaluator3 = test.parse("abc${abc}abc");
-		assertFalse(evaluator3.isConstant());
+		expression = test.parse("$abc");
+		assertTrue(expression.isConstant());
+		
+		expression = test.parse("$$abc");
+		assertTrue(expression.isConstant());
+		
+		expression = test.parse("$${abc}");
+		assertTrue(expression.isConstant());
+		
+		expression = test.parse("${abc}");
+		assertFalse(expression.isConstant());
+		
+		expression = test.parse("abc${abc}abc");
+		assertFalse(expression.isConstant());
 	}
 	
     public static class MyArooaValue implements ValueFactory<String> {

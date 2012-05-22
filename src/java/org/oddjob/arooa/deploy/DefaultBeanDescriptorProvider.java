@@ -34,7 +34,8 @@ public class DefaultBeanDescriptorProvider implements BeanDescriptorProvider {
 		
 		String[] properties = beanOverview.getProperties();
 
-		PropertyDefinitionsHelper defs = new PropertyDefinitionsHelper();
+		PropertyDefinitionsHelper defs = 
+				new PropertyDefinitionsHelper(arooaClass);
 		
 		for (int i = 0; i < properties.length; ++i) {
 			

@@ -87,9 +87,13 @@ abstract public class ArooaDescriptorTestBase extends TestCase {
 		assertEquals("days", 
 				new BeanDescriptorHelper(weekDescriptor).getComponentProperty());
 		
-		assertNull(test.getBeanDescriptor(
+		ArooaBeanDescriptor orangeDescriptor = test.getBeanDescriptor(
 				new SimpleArooaClass(Orange.class),
-				new BeanUtilsPropertyAccessor()));
+				new BeanUtilsPropertyAccessor());
+		
+		assertNotNull(orangeDescriptor);
+		assertNull(orangeDescriptor.getTextProperty());
+		assertNull(orangeDescriptor.getComponentProperty());
 	}
 	
 	public void testElements() throws URISyntaxException {

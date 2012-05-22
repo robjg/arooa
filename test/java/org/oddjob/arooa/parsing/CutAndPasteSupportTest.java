@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.custommonkey.xmlunit.XMLTestCase;
+import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
@@ -19,6 +20,7 @@ import org.oddjob.arooa.MockElementMappings;
 import org.oddjob.arooa.ParsingInterceptor;
 import org.oddjob.arooa.convert.ConversionProvider;
 import org.oddjob.arooa.deploy.MappingsSwitch;
+import org.oddjob.arooa.deploy.NoAnnotations;
 import org.oddjob.arooa.life.InstantiationContext;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.reflect.ArooaClass;
@@ -91,6 +93,10 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 				@Override
 				public ConfiguredHow getConfiguredHow(String property) {
 					return ConfiguredHow.ELEMENT;
+				}
+				@Override
+				public ArooaAnnotations getAnnotations() {
+					return new NoAnnotations();
 				}
 			};
 		}

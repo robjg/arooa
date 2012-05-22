@@ -10,11 +10,9 @@ import org.oddjob.arooa.ClassResolver;
 import org.oddjob.arooa.ElementMappings;
 import org.oddjob.arooa.convert.ConversionProvider;
 import org.oddjob.arooa.convert.DefaultConversionProvider;
-import org.oddjob.arooa.deploy.AnnotatedBeanDescriptorProvider;
-import org.oddjob.arooa.deploy.ClassBeanDescriptorProvider;
-import org.oddjob.arooa.deploy.DefaultBeanDescriptorProvider;
 import org.oddjob.arooa.deploy.LinkedClassMapping;
 import org.oddjob.arooa.deploy.MappingsSwitch;
+import org.oddjob.arooa.deploy.SupportedBeanDescriptorProvider;
 import org.oddjob.arooa.life.BaseElementMappings;
 import org.oddjob.arooa.life.ClassLoaderClassResolver;
 import org.oddjob.arooa.reflect.ArooaClass;
@@ -75,19 +73,8 @@ public class StandardArooaDescriptor implements ArooaDescriptor {
 			return beanDescriptor;
 		}		
 			
-		beanDescriptor = new ClassBeanDescriptorProvider(
-		).getBeanDescriptor(arooaClass, accessor);
-
-		if (beanDescriptor == null) {
-			beanDescriptor = 
-				new AnnotatedBeanDescriptorProvider().getBeanDescriptor(
-						arooaClass, accessor);
-		}
-
-		if (beanDescriptor == null) {
-			beanDescriptor = new DefaultBeanDescriptorProvider(
-					).getBeanDescriptor(arooaClass, accessor);
-		}
+		beanDescriptor = new SupportedBeanDescriptorProvider(
+				).getBeanDescriptor(arooaClass, accessor);
 		
 		beanDescriptors.put(arooaClass, beanDescriptor);		
 		

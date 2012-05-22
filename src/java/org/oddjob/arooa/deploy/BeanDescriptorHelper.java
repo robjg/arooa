@@ -1,5 +1,6 @@
 package org.oddjob.arooa.deploy;
 
+import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.ConfiguredHow;
@@ -105,5 +106,15 @@ public class BeanDescriptorHelper implements ArooaBeanDescriptor {
 		}
 		
 		return beanDescriptor.getFlavour(property);
+	}
+	
+	@Override
+	public ArooaAnnotations getAnnotations() {
+		if (beanDescriptor == null) {
+			return null;
+		}
+		else {
+			return beanDescriptor.getAnnotations();
+		}
 	}
 }

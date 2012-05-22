@@ -5,13 +5,8 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ArooaTools;
-import org.oddjob.arooa.ComponentTrinity;
-import org.oddjob.arooa.MockArooaSession;
-import org.oddjob.arooa.deploy.NullArooaDescriptor;
 import org.oddjob.arooa.life.ArooaContextAware;
 import org.oddjob.arooa.life.ArooaLifeAware;
 import org.oddjob.arooa.life.ArooaSessionAware;
@@ -21,10 +16,6 @@ import org.oddjob.arooa.parsing.MockArooaContext;
 import org.oddjob.arooa.parsing.MutableAttributes;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.PropertyAccessor;
-import org.oddjob.arooa.registry.BeanRegistry;
-import org.oddjob.arooa.registry.ComponentPool;
-import org.oddjob.arooa.registry.MockBeanRegistry;
-import org.oddjob.arooa.registry.MockComponentPool;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 import org.oddjob.arooa.runtime.MockConfigurationNode;
 import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
@@ -34,6 +25,9 @@ import org.oddjob.arooa.runtime.RuntimeListener;
 public class LifecycleObligationsTest extends TestCase {
 
 	private List<String> events = new ArrayList<String>();
+	
+	
+	ArooaSession session = new StandardArooaSession();
 	
 	private class ParentContext extends MockArooaContext {
 		RuntimeListener listener;
@@ -61,13 +55,7 @@ public class LifecycleObligationsTest extends TestCase {
 		
 		@Override
 		public ArooaSession getSession() {
-			return new MockArooaSession() {
-				
-				@Override
-				public ArooaTools getTools() {
-					return new StandardTools();
-				}
-			};
+			return session;
 		}
 		
 		@Override
@@ -88,44 +76,9 @@ public class LifecycleObligationsTest extends TestCase {
 		
 		RuntimeConfiguration runtime; 
 		
-		ArooaContext registeredContext;
-		
 		@Override
 		public ArooaSession getSession() {
-			return new MockArooaSession() {
-				@Override
-				public ArooaDescriptor getArooaDescriptor() {
-					return new NullArooaDescriptor();
-				}
-				
-				@Override
-				public ComponentPool getComponentPool() {
-					return new MockComponentPool() {
-						@Override
-						public void registerComponent(ComponentTrinity trinity,
-								String id) {
-							registeredContext = trinity.getTheContext();
-						}
-						@Override
-						public void remove(Object component) {
-						}
-					};
-				}
-				
-				@Override
-				public ArooaTools getTools() {
-					return new StandardTools();
-				}
-				
-				@Override
-				public BeanRegistry getBeanRegistry() {
-					return new MockBeanRegistry() {
-						@Override
-						public void remove(Object component) {
-						}
-					};
-				}
-			};
+			return session;
 		}
 		
 		@Override
@@ -228,11 +181,12 @@ public class LifecycleObligationsTest extends TestCase {
 		
 		assertEquals(0, events.size());
 		
-		assertNull(ourContext.registeredContext);
+		assertNull(session.getComponentPool().contextFor(check));
 
 		ourContext.getRuntime().init();
 		
-		assertTrue(ourContext == ourContext.registeredContext);
+		assertTrue(ourContext == 
+				session.getComponentPool().contextFor(check));
 		
 		assertEquals("Thing initialised", events.get(0));
 		assertEquals("Property set: OurThing", events.get(1));

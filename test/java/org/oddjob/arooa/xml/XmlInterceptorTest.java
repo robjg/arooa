@@ -1,6 +1,7 @@
 package org.oddjob.arooa.xml;
 
 import org.custommonkey.xmlunit.XMLTestCase;
+import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ElementMappings;
@@ -8,6 +9,7 @@ import org.oddjob.arooa.MockArooaBeanDescriptor;
 import org.oddjob.arooa.MockArooaDescriptor;
 import org.oddjob.arooa.ParsingInterceptor;
 import org.oddjob.arooa.convert.ConversionProvider;
+import org.oddjob.arooa.deploy.NoAnnotations;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
@@ -135,6 +137,10 @@ public class XmlInterceptorTest extends XMLTestCase {
 				@Override
 				public String getComponentProperty() {
 					return null;
+				}
+				@Override
+				public ArooaAnnotations getAnnotations() {
+					return new NoAnnotations();
 				}
 			};
 		}

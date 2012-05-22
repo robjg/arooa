@@ -20,11 +20,6 @@ import org.oddjob.arooa.convert.ArooaConverter;
  */
 public class NestedExpressionParser implements ExpressionParser {
 
-	/** Evaluator that does the substitution. Maybe parameterise
-	 * this one day.
-	 */
-	private final Evaluator evaluator = new PropertyFirstEvaluator();
-	
 	/*
 	 * (non-Javadoc)
 	 * @see org.oddjob.arooa.runtime.ExpressionParser#parse(java.lang.String)
@@ -175,7 +170,7 @@ public class NestedExpressionParser implements ExpressionParser {
 		public <T> T evaluate(ArooaSession session, Class<T> type)
 				throws ArooaConversionException {
 			String propertyRef = expression.evaluate(session, String.class);
-			
+			Evaluator evaluator = session.getTools().getEvaluator();
 			return evaluator.evaluate(propertyRef, session, type);
 		}
 		

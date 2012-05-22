@@ -33,4 +33,10 @@ public class MockArooaBeanDescriptor implements ArooaBeanDescriptor {
 		throw new RuntimeException("Unexpected from class: " + 
 				this.getClass().getName());
 	}
+	
+	@Override
+	public ArooaAnnotations getAnnotations() {
+		throw new RuntimeException("Unexpected from class: " + 
+				this.getClass().getName());
+	}
 }

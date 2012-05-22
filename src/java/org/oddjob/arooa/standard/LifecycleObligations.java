@@ -4,6 +4,7 @@ import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.life.ArooaContextAware;
 import org.oddjob.arooa.life.ArooaLifeAware;
 import org.oddjob.arooa.life.ArooaSessionAware;
+import org.oddjob.arooa.life.LifecycleInterfaceFactory;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeEvent;
@@ -44,7 +45,16 @@ class LifecycleObligations {
 	private void honourObligations(final Object object, 
 			RuntimeConfiguration runtime, ArooaContext context) {
 		
-		if (object instanceof ArooaLifeAware) {
+		final ArooaLifeAware lifecycle;
+		if (object instanceof ArooaLifeAware) { 
+			lifecycle = (ArooaLifeAware) object;
+		}
+		else {
+			lifecycle = new LifecycleInterfaceFactory().lifeCycleFor(
+					object, context.getSession());
+		}
+
+		if (lifecycle != null) {
 			runtime.addRuntimeListener(
 					new RuntimeListener(){
 						public void beforeInit(RuntimeEvent event)
@@ -52,18 +62,18 @@ class LifecycleObligations {
 						}
 						public void afterInit(RuntimeEvent event)
 								throws ArooaException {
-							((ArooaLifeAware) object).initialised();
+							lifecycle.initialised();
 						}
 						public void beforeConfigure(RuntimeEvent event)
 								throws ArooaException {
 						}
 						public void afterConfigure(RuntimeEvent event)
 								throws ArooaException {
-							((ArooaLifeAware) object).configured();
+							lifecycle.configured();
 						}
 						public void beforeDestroy(RuntimeEvent event)
 								throws ArooaException {
-							((ArooaLifeAware) object).destroy();
+							lifecycle.destroy();
 						}
 						public void afterDestroy(RuntimeEvent event)
 								throws ArooaException {

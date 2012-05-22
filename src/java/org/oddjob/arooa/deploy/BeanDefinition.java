@@ -50,44 +50,98 @@ public class BeanDefinition {
 	
 	/** 
      * @oddjob.property
-     * @oddjob.description a list of property definitions.
+     * @oddjob.description A list of {@link PropertyDefinition}s
      * @oddjob.required No.
 	 */
 	private final List<PropertyDefinition> properties = 
 		new ArrayList<PropertyDefinition>();
 	
+	/** 
+     * @oddjob.property
+     * @oddjob.description A list of {@link AnnotationDefinition}.
+     * @oddjob.required No.
+	 */
+	private final List<AnnotationDefinition> annotations = 
+		new ArrayList<AnnotationDefinition>();
+	
+	/**
+	 * Setter for interceptor.
+	 * 
+	 * @param parsingInterceptor
+	 */
 	public void setInterceptor(ParsingInterceptor parsingInterceptor) {
 		this.parsingInterceptor = parsingInterceptor;
 	}
 	
+	/**
+	 * Getter for interceptor.
+	 * 
+	 * @return
+	 */
 	public ParsingInterceptor getInterceptor() {
 		return parsingInterceptor;
 	}
 
+	/**
+	 * Getter for class name;
+	 * 
+	 * @return
+	 */
 	public String getClassName() {
 		return className;
 	}
 
+	/**
+	 * Setter for class name.
+	 * 
+	 * @param className
+	 */
 	public void setClassName(String className) {
 		this.className = className;
 	}
 
+	/**
+	 * Getter for design factory.
+	 * 
+	 * @return
+	 */
 	public String getDesignFactory() {
 		return designFactory;
 	}
 
+	/**
+	 * Setter for design factory.
+	 * 
+	 * @param designFactory
+	 */
 	public void setDesignFactory(String designFactory) {
 		this.designFactory = designFactory;
 	}
 
+	/**
+	 * Getter for element.
+	 * 
+	 * @return
+	 */
 	public String getElement() {
 		return element;
 	}
 
+	/**
+	 * Setter for element
+	 * 
+	 * @param element
+	 */
 	public void setElement(String element) {
 		this.element = element;
 	}
 	
+	/**
+	 * Setter for property definitions.
+	 *  
+	 * @param index
+	 * @param property
+	 */
 	public void setProperties(int index, PropertyDefinition property) {
 		if (property == null) {
 			properties.remove(index);
@@ -97,9 +151,38 @@ public class BeanDefinition {
 		}
 	}
 
+	/**
+	 * Convert the property definitions to a collection.
+	 * 
+	 * @return
+	 */
 	public Collection<PropertyDefinition> toPropertyDefinitions() {
 		return properties;
 	}
+	
+	/**
+	 * Setter for annotations.
+	 * 
+	 * @param index
+	 * @param annotation
+	 */
+	public void setAnnotations(int index, AnnotationDefinition annotation) {
+		if (annotation == null) {
+			annotations.remove(index);
+		}
+		else {
+			annotations.add(index, annotation);
+		}
+	}
+
+	/**
+	 * Convert annotations to a collection.
+	 * @return
+	 */
+	public Collection<AnnotationDefinition> toAnnotationDefinitions() {
+		return annotations;
+	}
+	
 	
 	boolean isArooaBeanDescriptor() {
 		

@@ -29,8 +29,10 @@ import org.oddjob.arooa.registry.BeanRegistry;
 import org.oddjob.arooa.registry.ComponentPool;
 import org.oddjob.arooa.registry.MockBeanRegistry;
 import org.oddjob.arooa.registry.MockComponentPool;
+import org.oddjob.arooa.runtime.Evaluator;
 import org.oddjob.arooa.runtime.ExpressionParser;
 import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
+import org.oddjob.arooa.runtime.PropertyFirstEvaluator;
 import org.oddjob.arooa.runtime.PropertyManager;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
@@ -103,6 +105,11 @@ public class ComponentConfigurationTest extends TestCase {
 		@Override
 		public ExpressionParser getExpressionParser() {
 			return new StandardPropertyHelper();
+		}
+		
+		@Override
+		public Evaluator getEvaluator() {
+			return new PropertyFirstEvaluator();
 		}
 		
 	}

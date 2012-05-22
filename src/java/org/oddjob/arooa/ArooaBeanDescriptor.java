@@ -3,6 +3,9 @@
  */
 package org.oddjob.arooa;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+
 
 
 /**
@@ -71,5 +74,13 @@ public interface ArooaBeanDescriptor {
 	 * false otherwise.
 	 */
 	public boolean isAuto(String property);
-	
+		
+	/**
+	 * Provide annotation information about methods. Used to allow
+	 * life cycle methods, and any other custom annotation methods
+	 * to defined separately from the class.
+	 * 
+	 * @return The annotations.
+	 */
+	public ArooaAnnotations getAnnotations();
 }

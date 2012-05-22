@@ -221,11 +221,7 @@ implements ArooaDescriptorFactory {
 				}
 			}
 			
-			if (beanDefinition.isArooaBeanDescriptor()) {
-				if (beanDefinition.isArooaBeanDescriptor()) {
-					definitionsMap.put(classIdentifier, beanDefinition);
-				}
-			}
+			definitionsMap.put(classIdentifier, beanDefinition);
 		}
 	}
 
@@ -237,6 +233,9 @@ implements ArooaDescriptorFactory {
 
 		final Map<ArooaClass, BeanDefinition> beanDefinitions = 
 			new HashMap<ArooaClass, BeanDefinition>();
+		
+		final Map<ArooaClass, ArooaBeanDescriptor> beanDescriptors = 
+				new HashMap<ArooaClass, ArooaBeanDescriptor>();
 		
 		final Mappings componentMappings= new Mappings();
 			
@@ -267,21 +266,34 @@ implements ArooaDescriptorFactory {
 			public ArooaBeanDescriptor getBeanDescriptor(
 					ArooaClass forClass, PropertyAccessor accessor) {
 
+				ArooaBeanDescriptor beanDescriptor = 
+						beanDescriptors.get(forClass);
+
+				if (beanDescriptor != null) {
+					return beanDescriptor;
+				}
+				
 				BeanDefinition beanDefinition = 
 					beanDefinitions.get(forClass);
 				
 				if (beanDefinition == null) {
 					return null;
 				}
-				
-				PropertyDefinitionsHelper compositeDescriptor = 
-					new DefaultBeanDescriptorProvider(
+								
+				beanDescriptor = new SupportedBeanDescriptorProvider(
 							).getBeanDescriptor(
 									forClass, accessor);
 				
-				compositeDescriptor.mergeFromBeanDefinition(beanDefinition);
+				if (beanDescriptor instanceof PropertyDefinitionsHelper) {
+
+					((PropertyDefinitionsHelper) 
+							beanDescriptor).mergeFromBeanDefinition(
+									beanDefinition);
+				}
 				
-				return compositeDescriptor;
+				beanDescriptors.put(forClass, beanDescriptor);
+				
+				return beanDescriptor;
 			}
 
 			@Override

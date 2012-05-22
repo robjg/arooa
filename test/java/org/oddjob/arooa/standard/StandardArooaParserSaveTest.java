@@ -3,27 +3,17 @@ package org.oddjob.arooa.standard;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.custommonkey.xmlunit.XMLTestCase;
-import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaConfiguration;
+import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
-import org.oddjob.arooa.ConfiguredHow;
-import org.oddjob.arooa.ElementMappings;
-import org.oddjob.arooa.MockArooaBeanDescriptor;
-import org.oddjob.arooa.MockArooaDescriptor;
 import org.oddjob.arooa.MockConfigurationHandle;
-import org.oddjob.arooa.MockElementMappings;
-import org.oddjob.arooa.ParsingInterceptor;
-import org.oddjob.arooa.convert.ConversionProvider;
-import org.oddjob.arooa.deploy.MappingsSwitch;
-import org.oddjob.arooa.life.InstantiationContext;
-import org.oddjob.arooa.life.SimpleArooaClass;
+import org.oddjob.arooa.deploy.ConfigurationDescriptorFactory;
+import org.oddjob.arooa.deploy.annotations.ArooaComponent;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.parsing.CutAndPasteSupport;
 import org.oddjob.arooa.parsing.RootContext;
-import org.oddjob.arooa.reflect.ArooaClass;
-import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.registry.ComponentPool;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
@@ -32,6 +22,7 @@ public class StandardArooaParserSaveTest extends XMLTestCase {
 
 	public static class Root {
 		Object child;
+		@ArooaComponent
 		public void setSnack(Object child) {
 			this.child = child;
 		}
@@ -62,60 +53,24 @@ public class StandardArooaParserSaveTest extends XMLTestCase {
 		}
 	}
 	
-	private class OurDescriptor extends MockArooaDescriptor {
-		
-		@Override
-		public ElementMappings getElementMappings() {
-			return new MappingsSwitch(new MockElementMappings() {
-					@Override
-					public ArooaClass mappingFor(ArooaElement element,
-							InstantiationContext parentContext) {
-						if ("apple".equals(element.getTag())) {
-							return new SimpleArooaClass(Apple.class);
-						}
-						else if ("orange".equals(element.getTag())) {
-							return new SimpleArooaClass(Orange.class);
-						}
-						else {
-							throw new RuntimeException("Unexpected.");
-						}
-					}
-				}, null);
-		}
-
-		@Override
-		public ConversionProvider getConvertletProvider() {
-			return null;
-		}
-				
-		@Override
-		public ArooaBeanDescriptor getBeanDescriptor(ArooaClass forClass, 
-				PropertyAccessor accessor) {
-			return new MockArooaBeanDescriptor() {
-				@Override
-				public String getComponentProperty() {
-					return "snack";
-				}
-				@Override
-				public ParsingInterceptor getParsingInterceptor() {
-					return null;
-				}
-				@Override
-				public String getTextProperty() {
-					return null;
-				}
-				@Override
-				public ConfiguredHow getConfiguredHow(String property) {
-					return ConfiguredHow.ELEMENT;
-				}
-			};
-		}
-		
-	}
 
 	String EOL = System.getProperty("line.separator");
 	
 	public void testConfigurationBackToXML() throws Exception {
+
+		String descriptorXML =
+				"<arooa:descriptor xmlns:arooa='http://rgordon.co.uk/oddjob/arooa'>" +
+			    " <components>" +
+			    "  <arooa:bean-def element='apple'" +
+			    "      className='" + Apple.class.getName() + "'/>" +
+			    "  <arooa:bean-def element='orange'" +
+			    "      className='" + Orange.class.getName() + "'/>" +
+        		" </components>" +
+        		"</arooa:descriptor>";
+		
+		ArooaDescriptor descriptor = new ConfigurationDescriptorFactory(
+				new XMLConfiguration("XML", descriptorXML)).createDescriptor(
+								getClass().getClassLoader());
 
 		Root root = new Root();
 
@@ -124,7 +79,7 @@ public class StandardArooaParserSaveTest extends XMLTestCase {
 		XMLConfiguration config = new XMLConfiguration("TEST", xml);
 		
 		StandardArooaParser parser = new StandardArooaParser(root,
-				new OurDescriptor());
+				descriptor);
 		
 		parser.parse(config);
 
@@ -149,12 +104,22 @@ public class StandardArooaParserSaveTest extends XMLTestCase {
 		
 		assertXMLEqual(expected, parser2.getXml());
 	}
-
-	
-	
-	
 	
 	public void testSave() throws Exception {
+
+		String descriptorXML =
+				"<arooa:descriptor xmlns:arooa='http://rgordon.co.uk/oddjob/arooa'>" +
+			    " <components>" +
+			    "  <arooa:bean-def element='apple'" +
+			    "      className='" + Apple.class.getName() + "'/>" +
+			    "  <arooa:bean-def element='orange'" +
+			    "      className='" + Orange.class.getName() + "'/>" +
+        		" </components>" +
+        		"</arooa:descriptor>";
+		
+		ArooaDescriptor descriptor = new ConfigurationDescriptorFactory(
+				new XMLConfiguration("XML", descriptorXML)).createDescriptor(
+								getClass().getClassLoader());
 
 		Root root = new Root();
 
@@ -171,7 +136,7 @@ public class StandardArooaParserSaveTest extends XMLTestCase {
 		});
 		
 		StandardArooaParser parser = new StandardArooaParser(root,
-				new OurDescriptor());
+				descriptor);
 		
 		ConfigurationHandle handle = parser.parse(config);
 		
@@ -198,6 +163,20 @@ public class StandardArooaParserSaveTest extends XMLTestCase {
 	
 	public void testSaveOfAParse() throws Exception {
 
+		String descriptorXML =
+				"<arooa:descriptor xmlns:arooa='http://rgordon.co.uk/oddjob/arooa'>" +
+			    " <components>" +
+			    "  <arooa:bean-def element='apple'" +
+			    "      className='" + Apple.class.getName() + "'/>" +
+			    "  <arooa:bean-def element='orange'" +
+			    "      className='" + Orange.class.getName() + "'/>" +
+        		" </components>" +
+        		"</arooa:descriptor>";
+		
+		ArooaDescriptor descriptor = new ConfigurationDescriptorFactory(
+				new XMLConfiguration("XML", descriptorXML)).createDescriptor(
+								getClass().getClassLoader());
+
 		Root root = new Root();
 
 		String xml = "<root><snack><apple/></snack></root>";
@@ -213,12 +192,12 @@ public class StandardArooaParserSaveTest extends XMLTestCase {
 		});
 		
 		StandardArooaParser parser = new StandardArooaParser(root,
-				new OurDescriptor());
+				descriptor);
 		
 		ConfigurationHandle handle1 = parser.parse(config);
 		
 		StandardArooaParser parser2 = new StandardArooaParser(root,
-				new OurDescriptor());
+				descriptor);
 		
 		ConfigurationHandle handle2 = parser2.parse(
 				parser.getSession().getComponentPool().contextFor(
@@ -252,6 +231,20 @@ public class StandardArooaParserSaveTest extends XMLTestCase {
 	
 	public void testChangeDocAndSave() throws Exception {
 
+		String descriptorXML =
+				"<arooa:descriptor xmlns:arooa='http://rgordon.co.uk/oddjob/arooa'>" +
+			    " <components>" +
+			    "  <arooa:bean-def element='apple'" +
+			    "      className='" + Apple.class.getName() + "'/>" +
+			    "  <arooa:bean-def element='orange'" +
+			    "      className='" + Orange.class.getName() + "'/>" +
+        		" </components>" +
+        		"</arooa:descriptor>";
+		
+		ArooaDescriptor descriptor = new ConfigurationDescriptorFactory(
+				new XMLConfiguration("XML", descriptorXML)).createDescriptor(
+								getClass().getClassLoader());
+
 		Root root = new Root();
 
 		XMLConfiguration config = new XMLConfiguration("TEST", 
@@ -266,12 +259,12 @@ public class StandardArooaParserSaveTest extends XMLTestCase {
 		});
 		
 		StandardArooaParser parser = new StandardArooaParser(root,
-				new OurDescriptor());
+				descriptor);
 		
 		ConfigurationHandle handle1 = parser.parse(config);
 		
 		StandardArooaParser parser2 = new StandardArooaParser(root,
-				new OurDescriptor());
+				descriptor);
 		
 		ConfigurationHandle handle2 = parser2.parse(
 				handle1.getDocumentContext().getConfigurationNode());
@@ -295,5 +288,4 @@ public class StandardArooaParserSaveTest extends XMLTestCase {
 		
 		assertXMLEqual(expected, savedXML.get());
 	}
-
 }

@@ -2,14 +2,11 @@ package org.oddjob.arooa.deploy;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
-import org.oddjob.arooa.ConfiguredHow;
 import org.oddjob.arooa.ParsingInterceptor;
 import org.oddjob.arooa.deploy.annotations.ArooaAttribute;
 import org.oddjob.arooa.deploy.annotations.ArooaComponent;
@@ -28,17 +25,16 @@ import org.oddjob.arooa.utils.ClassesUtils;
  * @author rob
  *
  */
-public class AnnotatedBeanDescriptorProvider {
+public class AnnotatedBeanDescriptorProvider implements BeanDescriptorProvider {
 	
-	public ArooaBeanDescriptor getBeanDescriptor(
+	public PropertyDefinitionsHelper getBeanDescriptor(
 			ArooaClass classIdentifier, PropertyAccessor accessor) {
 		
 		Class<?> cl = classIdentifier.forClass();
 		
-		BeanDefinition beanDescriptor = 
-			new BeanDefinition();
-		
-		beanDescriptor.setClassName(cl.getName());
+		PropertyDefinitionsHelper beanDescriptor = 
+				new DefaultBeanDescriptorProvider().getBeanDescriptor(
+						classIdentifier, accessor);
 		
 		ArooaInterceptor annotation = cl.getAnnotation(ArooaInterceptor.class);
 		if (annotation != null) {
@@ -48,31 +44,17 @@ public class AnnotatedBeanDescriptorProvider {
 				ParsingInterceptor parsingInterceptor = (ParsingInterceptor)
 				ClassesUtils.instantiate(
 						interceptor, cl.getClassLoader());
-				beanDescriptor.setInterceptor(parsingInterceptor);				
+				beanDescriptor.setParsingInterceptor(parsingInterceptor);				
 			}
 		}
 
 		MemberAnnotationFinder finder = new MemberAnnotationFinder(cl);
 		
-		DefinitionResults results = new DefinitionResults(classIdentifier,
-				accessor);
+		DefinitionResults results = new DefinitionResults(beanDescriptor);
 		
 		finder.find(results);
 
-		results.addTo(beanDescriptor);
-		
-		if (beanDescriptor.isArooaBeanDescriptor()) {
-			PropertyDefinitionsHelper compositeDescriptor = 
-				new DefaultBeanDescriptorProvider().getBeanDescriptor(
-								classIdentifier, accessor);
-			
-			compositeDescriptor.mergeFromBeanDefinition(beanDescriptor);
-			
-			return compositeDescriptor;
-		}
-		else {
-			return null;
-		}
+		return beanDescriptor;
 	}
 
 	/**
@@ -81,80 +63,39 @@ public class AnnotatedBeanDescriptorProvider {
 	 */
 	class DefinitionResults implements AnnotationResults {
 		
-		private final ArooaBeanDescriptor base;
+		private final PropertyDefinitionsHelper base;
 		
-		private final Map<String, PropertyDefinition> defs = 
-			new LinkedHashMap<String, PropertyDefinition>();
-
-		private final ArooaClass cl;
-		
-		public DefinitionResults(ArooaClass cl, 
-				PropertyAccessor accessor) {
-			this.cl = cl;
-			this.base = 
-				new DefaultBeanDescriptorProvider(
-						).getBeanDescriptor(cl, accessor);
+		public DefinitionResults(PropertyDefinitionsHelper base) {
+			this.base = base;
 		}
-		
-		/**
-		 * Provide or create a property definition.
-		 * 
-		 * @return PropertyDefinition
-		 */
-		private PropertyDefinition forName(String property) {
-			PropertyDefinition def = defs.get(property);
-			if (def == null) {
-				ConfiguredHow how = base.getConfiguredHow(property); 
-				if (how == null) {
-					throw new NullPointerException(
-							"No configuration information for property [" + 
-							property + "] of class [" + cl + 
-							"] - Is this property defined correctly?");
-				}
-				def = new PropertyDefinition(property, propertyType(how));
-				defs.put(property, def);
-			}
-			return def;
-		}
-		
-		private PropertyDefinition.PropertyType propertyType(
-				ConfiguredHow how) {
-			switch (how) {
-			case ATTRIBUTE:
-				return PropertyDefinition.PropertyType.ATTRIBUTE;
-			default:
-				return PropertyDefinition.PropertyType.ELEMENT;
-			}
-		}
-		
+				
 		public void attributeProperty(String name) {
-			forName(name).setType(PropertyDefinition.PropertyType.ATTRIBUTE);
+			base.setPropertyType(name, 
+					PropertyDefinition.PropertyType.ATTRIBUTE);
 		}
 		public void elementProperty(String name) {
-			forName(name).setType(PropertyDefinition.PropertyType.ELEMENT);
+			base.setPropertyType(name, 
+					PropertyDefinition.PropertyType.ELEMENT);
 		}
 		public void hiddenProperty(String name) {
-			forName(name).setType(PropertyDefinition.PropertyType.HIDDEN);
+			base.setPropertyType(name, 
+					PropertyDefinition.PropertyType.HIDDEN);
 		}
 		public void componentProperty(String name) {
-			forName(name).setType(PropertyDefinition.PropertyType.COMPONENT);
+			base.setPropertyType(name, 
+					PropertyDefinition.PropertyType.COMPONENT);
 		}
 		public void textProperty(String name) {
-			forName(name).setType(PropertyDefinition.PropertyType.TEXT);
+			base.setPropertyType(name, 
+					PropertyDefinition.PropertyType.TEXT);
 		}
 		public void auto(String name, boolean value) {
-			forName(name).setAuto(value);
+			base.setAuto(name);
 		}
 		public void flavour(String name, String flavour) {
-			forName(name).setFlavour(flavour);
+			base.setFlavour(name, flavour);
 		}
 		
-		void addTo(BeanDefinition beanDescriptor) {
-			for (PropertyDefinition def : defs.values()) {
-				beanDescriptor.setProperties(0, def);
-			}
-		}
-
 	}
 	
 	/**

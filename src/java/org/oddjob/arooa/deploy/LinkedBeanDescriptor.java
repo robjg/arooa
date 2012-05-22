@@ -1,9 +1,16 @@
 package org.oddjob.arooa.deploy;
 
+import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ConfiguredHow;
 import org.oddjob.arooa.ParsingInterceptor;
 
+/**
+ * Link together two {@link BeanDescriptor}s.
+ * 
+ * @author rob
+ *
+ */
 public class LinkedBeanDescriptor implements ArooaBeanDescriptor {
 
 	private final ArooaBeanDescriptor primary;
@@ -69,5 +76,15 @@ public class LinkedBeanDescriptor implements ArooaBeanDescriptor {
 		return secondary.isAuto(property);
 	}
 	
+	@Override
+	public ArooaAnnotations getAnnotations() {
+		ArooaAnnotations annotations = primary.getAnnotations();
+		if (annotations == null) {
+			return secondary.getAnnotations();
+		}
+		else {
+			return annotations;
+		}
+	}
 	
 }

@@ -2,6 +2,7 @@ package org.oddjob.arooa.standard;
 
 import junit.framework.TestCase;
 
+import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaParseException;
@@ -10,6 +11,7 @@ import org.oddjob.arooa.MockArooaBeanDescriptor;
 import org.oddjob.arooa.MockArooaDescriptor;
 import org.oddjob.arooa.ParsingInterceptor;
 import org.oddjob.arooa.convert.ConversionProvider;
+import org.oddjob.arooa.deploy.NoAnnotations;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
@@ -122,6 +124,10 @@ public class BespokeBuildTest extends TestCase {
 						return new HandlerOverrideContext(
 								context, handler);						}	
 					};
+				}
+				@Override
+				public ArooaAnnotations getAnnotations() {
+					return new NoAnnotations();
 				}
 			};
 		}

@@ -32,7 +32,8 @@ public class BeanType {
 	/** 
 	 * @oddjob.property class 
 	 * @oddjob.description The class to create. Must have a public zero
-	 * argument constructor.
+	 * argument constructor. Not that this attribute value must be 
+	 * constant - it can not contain ${} property place holders.
 	 * @oddjob.required No, defaults to java.lang.Object.
 	 */
 	public static final String ATTRIBUTE = "class"; 		

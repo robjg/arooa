@@ -20,7 +20,8 @@ public class PropertyDefinitionsHelperTest extends TestCase {
 				new PropertyDefinition("apple", 
 						PropertyDefinition.PropertyType.ATTRIBUTE));
 		
-		PropertyDefinitionsHelper test = new PropertyDefinitionsHelper();
+		PropertyDefinitionsHelper test = new PropertyDefinitionsHelper(
+				new SimpleArooaClass(Object.class));
 		test.mergeFromBeanDefinition(def1);
 		test.mergeFromBeanDefinition(def2);
 

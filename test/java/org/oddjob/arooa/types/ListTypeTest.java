@@ -10,32 +10,19 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;
-import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaConfiguration;
+import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ConfiguredHow;
-import org.oddjob.arooa.ElementMappings;
-import org.oddjob.arooa.MockArooaBeanDescriptor;
-import org.oddjob.arooa.MockArooaDescriptor;
-import org.oddjob.arooa.MockElementMappings;
-import org.oddjob.arooa.ParsingInterceptor;
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.convert.ConversionFailedException;
 import org.oddjob.arooa.convert.ConversionPath;
-import org.oddjob.arooa.convert.ConversionProvider;
-import org.oddjob.arooa.convert.DefaultConversionProvider;
 import org.oddjob.arooa.convert.DefaultConversionRegistry;
 import org.oddjob.arooa.convert.DefaultConverter;
 import org.oddjob.arooa.convert.NoConversionAvailableException;
 import org.oddjob.arooa.convert.convertlets.CollectionConvertlets;
-import org.oddjob.arooa.life.InstantiationContext;
-import org.oddjob.arooa.life.SimpleArooaClass;
-import org.oddjob.arooa.parsing.ArooaElement;
-import org.oddjob.arooa.reflect.ArooaClass;
-import org.oddjob.arooa.reflect.PropertyAccessor;
+import org.oddjob.arooa.deploy.ConfigurationDescriptorFactory;
 import org.oddjob.arooa.standard.StandardArooaParser;
-import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
 /**
@@ -501,73 +488,6 @@ public class ListTypeTest extends TestCase {
 	public static class A {
 	}
 	
-	private class OurArooaDescriptor extends MockArooaDescriptor {
-
-		StandardArooaSession session = new StandardArooaSession();
-		
-		@Override
-		public ConversionProvider getConvertletProvider() {
-			return new DefaultConversionProvider();
-		}
-		
-		@Override
-		public ArooaBeanDescriptor getBeanDescriptor(ArooaClass arooaClass,
-				PropertyAccessor accessor) {
-			if (new SimpleArooaClass(Root1.class).equals(arooaClass)
-					|| new SimpleArooaClass(Root2.class).equals(arooaClass)
-					|| new SimpleArooaClass(Root3.class).equals(arooaClass)) {
-				return new MockArooaBeanDescriptor() {
-					@Override
-					public String getComponentProperty() {
-						return null;
-					}
-					@Override
-					public ParsingInterceptor getParsingInterceptor() {
-						return null;
-					}
-					@Override
-					public ConfiguredHow getConfiguredHow(String property) {
-						return ConfiguredHow.ELEMENT;
-					}
-					@Override
-					public boolean isAuto(String property) {
-						return false;
-					}
-				};
-			}
-			if (new SimpleArooaClass(ListType.class).equals(
-					arooaClass)) {
-				return session.getArooaDescriptor().getBeanDescriptor(
-						arooaClass, accessor);
-			}
-			if (new SimpleArooaClass(ValueType.class).equals(arooaClass)) {
-				return session.getArooaDescriptor().getBeanDescriptor(
-						arooaClass, accessor);
-			}			
-			return null;
-		}
-				
-		@Override
-		public ElementMappings getElementMappings() {
-			return new MockElementMappings() {
-				@Override
-				public ArooaClass mappingFor(ArooaElement element, 
-						InstantiationContext parentContext) {
-					if ("a".equals(element.getTag())) {
-						return new SimpleArooaClass(A.class);
-					}
-					else if ("value".equals(element.getTag())) {
-						return new SimpleArooaClass(ValueType.class);
-					}
-					else if ("list".equals(element.getTag())) {
-						return new SimpleArooaClass(ListType.class);
-					}
-					else throw new RuntimeException("Unexpected: " + 
-							element);
-				}						
-			};
-		}
-	}
 	
 	/**
 	 * Test that a list of mixed types gets resolved.
@@ -575,6 +495,21 @@ public class ListTypeTest extends TestCase {
 	 * @throws Exception
 	 */
 	public void testObjects() throws Exception {
+		
+		String descriptorXML =
+				"<arooa:descriptor xmlns:arooa='http://rgordon.co.uk/oddjob/arooa'>" +
+			    " <values>" +
+			    "  <arooa:bean-def element='a'" +
+			    "      className='" + A.class.getName() + "'>" +
+        		"  </arooa:bean-def>" +
+        		" </values>" +
+        		"</arooa:descriptor>";
+		
+		ArooaDescriptor descriptor = new ConfigurationDescriptorFactory(
+				new XMLConfiguration("XML", descriptorXML)).createDescriptor(
+								getClass().getClassLoader());
+		
+		
 		String EOL = System.getProperty("line.separator");
 		
 		String xml= 
@@ -594,7 +529,7 @@ public class ListTypeTest extends TestCase {
 		ArooaConfiguration config = new XMLConfiguration("Test", xml);
 		
 		StandardArooaParser parser = new StandardArooaParser(
-				root, new OurArooaDescriptor());
+				root, descriptor);
 	    
 		parser.parse(config);
 		
@@ -630,8 +565,7 @@ public class ListTypeTest extends TestCase {
 		
 		ArooaConfiguration config = new XMLConfiguration("Test", xml);
 		
-		StandardArooaParser parser = new StandardArooaParser(
-				root, new OurArooaDescriptor());
+		StandardArooaParser parser = new StandardArooaParser(root);
 	    
 		parser.parse(config);
 		
@@ -662,8 +596,7 @@ public class ListTypeTest extends TestCase {
 
 		ArooaConfiguration config = new XMLConfiguration("Test", xml);
 
-		StandardArooaParser parser = new StandardArooaParser(
-				root, new OurArooaDescriptor());
+		StandardArooaParser parser = new StandardArooaParser(root);
 
 		parser.parse(config);
 		

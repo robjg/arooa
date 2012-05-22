@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
@@ -13,6 +14,7 @@ import org.oddjob.arooa.ConfiguredHow;
 import org.oddjob.arooa.MockArooaBeanDescriptor;
 import org.oddjob.arooa.ParsingInterceptor;
 import org.oddjob.arooa.convert.DefaultConverter;
+import org.oddjob.arooa.deploy.NoAnnotations;
 import org.oddjob.arooa.design.DesignFactory;
 import org.oddjob.arooa.design.DesignInstance;
 import org.oddjob.arooa.design.DesignParser;
@@ -73,6 +75,10 @@ public class XMLTypeTest extends XMLTestCase {
 		@Override
 		public boolean isAuto(String property) {
 			return false;
+		}
+		@Override
+		public ArooaAnnotations getAnnotations() {
+			return new NoAnnotations();
 		}
 	}
 	

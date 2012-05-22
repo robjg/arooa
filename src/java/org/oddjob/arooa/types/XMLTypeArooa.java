@@ -1,5 +1,6 @@
 package org.oddjob.arooa.types;
 
+import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ConfiguredHow;
 import org.oddjob.arooa.ParsingInterceptor;
@@ -29,5 +30,10 @@ public class XMLTypeArooa implements ArooaBeanDescriptor{
 	
 	public boolean isAuto(String property) {
 		return false;
+	}
+	
+	@Override
+	public ArooaAnnotations getAnnotations() {
+		return null;
 	}
 }

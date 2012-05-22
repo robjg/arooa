@@ -2,6 +2,7 @@ package org.oddjob.arooa.parsing.interceptors;
 
 import junit.framework.TestCase;
 
+import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfiguredHow;
@@ -12,6 +13,7 @@ import org.oddjob.arooa.MockElementMappings;
 import org.oddjob.arooa.ParsingInterceptor;
 import org.oddjob.arooa.convert.ConversionProvider;
 import org.oddjob.arooa.deploy.MappingsSwitch;
+import org.oddjob.arooa.deploy.NoAnnotations;
 import org.oddjob.arooa.life.InstantiationContext;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaElement;
@@ -82,6 +84,10 @@ public class AllElementsOnePropertyInterceptorTest extends TestCase {
 					@Override
 					public boolean isAuto(String property) {
 						return false;
+					}
+					@Override
+					public ArooaAnnotations getAnnotations() {
+						return new NoAnnotations();
 					}
 				};
 			}
@@ -175,6 +181,10 @@ public class AllElementsOnePropertyInterceptorTest extends TestCase {
 					@Override
 					public boolean isAuto(String property) {
 						return false;
+					}
+					@Override
+					public ArooaAnnotations getAnnotations() {
+						return new NoAnnotations();
 					}
 				};
 			}

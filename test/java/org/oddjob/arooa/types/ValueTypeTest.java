@@ -14,22 +14,16 @@ import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaValue;
 import org.oddjob.arooa.ConfiguredHow;
-import org.oddjob.arooa.MockArooaBeanDescriptor;
-import org.oddjob.arooa.ParsingInterceptor;
-import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
 import org.oddjob.arooa.convert.ArooaConverter;
-import org.oddjob.arooa.convert.ConversionProvider;
 import org.oddjob.arooa.convert.Convertlet;
 import org.oddjob.arooa.convert.ConvertletException;
-import org.oddjob.arooa.convert.DefaultConversionProvider;
 import org.oddjob.arooa.convert.DefaultConversionRegistry;
 import org.oddjob.arooa.convert.DefaultConverter;
 import org.oddjob.arooa.convert.convertlets.ArooaValueConvertlets;
 import org.oddjob.arooa.convert.convertlets.StringConvertlets;
 import org.oddjob.arooa.deploy.BeanDescriptorHelper;
+import org.oddjob.arooa.deploy.annotations.ArooaComponent;
 import org.oddjob.arooa.life.SimpleArooaClass;
-import org.oddjob.arooa.reflect.ArooaClass;
-import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.standard.StandardArooaDescriptor;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.standard.StandardArooaSession;
@@ -165,6 +159,8 @@ public class ValueTypeTest extends TestCase {
 
 	public static class Root {
 		Object[] sequential = new Object[3];
+		
+		@ArooaComponent
 		public void setSequential(int index, Object value) {
 			sequential[index] = value;
 		}
@@ -176,7 +172,6 @@ public class ValueTypeTest extends TestCase {
 	 */
 	public void testRefWithinMapInOddjob() throws Exception {
 		
-		
 		String xml = "<oddjob>" +
 				"  <sequential>" +
 				"    <bean id='foo' class='"+ Foo.class.getName() + "'/>" +
@@ -187,79 +182,12 @@ public class ValueTypeTest extends TestCase {
 				"    </bean>" +
 				"  </sequential>" +
 				"</oddjob>";
-		
-		class OurArooaDescriptor extends StandardArooaDescriptor {
-						
-			@Override
-			public ConversionProvider getConvertletProvider() {
-				return new DefaultConversionProvider();
-			}
-						
-			@Override
-			public ArooaBeanDescriptor getBeanDescriptor(
-					ArooaClass classIdentifier, PropertyAccessor accessor) {
-				if (new SimpleArooaClass(Root.class).equals(classIdentifier)) {
-					return new MockArooaBeanDescriptor() {
-						@Override
-						public ParsingInterceptor getParsingInterceptor() {
-							return null;
-						}
-						@Override
-						public String getComponentProperty() {
-							return "sequential";
-						}
-						@Override
-						public ConfiguredHow getConfiguredHow(String property) {
-							return ConfiguredHow.ELEMENT;
-						}
-						@Override
-						public boolean isAuto(String property) {
-							return false;
-						}
-					};
-				}
-				if (new SimpleArooaClass(Container.class).equals(classIdentifier)) {
-					return new MockArooaBeanDescriptor() {
-						@Override
-						public ParsingInterceptor getParsingInterceptor() {
-							return null;
-						}
-						@Override
-						public String getComponentProperty() {
-							return null;
-						}
-						@Override
-						public ConfiguredHow getConfiguredHow(String property) {
-							return ConfiguredHow.ELEMENT;
-						}
-						@Override
-						public boolean isAuto(String property) {
-							return false;
-						}
-					};
-				}
-				if (new SimpleArooaClass(Foo.class).equals(classIdentifier)) {
-					return new MockArooaBeanDescriptor() {
-						@Override
-						public ParsingInterceptor getParsingInterceptor() {
-							return null;
-						}
-					};
-				}
-				if (new SimpleArooaClass(ValueType.class).equals(classIdentifier)) {
-					return new StandardArooaDescriptor().getBeanDescriptor(
-							classIdentifier, new BeanUtilsPropertyAccessor());
-				}
-				fail(classIdentifier + " unexpected.");
-				return null;
-			}
-		}
-		
+				
 		Root root = new Root();
 		
 		XMLConfiguration config = new XMLConfiguration("test", xml);
 		StandardArooaParser parser = new StandardArooaParser(root, 
-				new OurArooaDescriptor());
+				new StandardArooaDescriptor());
 		
 		parser.parse(config);
 		

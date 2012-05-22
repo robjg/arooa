@@ -19,6 +19,7 @@ import org.oddjob.arooa.MockArooaTools;
 import org.oddjob.arooa.MockElementMappings;
 import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.convert.DefaultConverter;
+import org.oddjob.arooa.deploy.ConfigurationDescriptorFactory;
 import org.oddjob.arooa.deploy.LinkedDescriptor;
 import org.oddjob.arooa.deploy.MappingsSwitch;
 import org.oddjob.arooa.life.ClassLoaderClassResolver;
@@ -39,11 +40,14 @@ import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.registry.ComponentPool;
 import org.oddjob.arooa.registry.MockComponentPool;
 import org.oddjob.arooa.runtime.ConfigurationNode;
+import org.oddjob.arooa.runtime.Evaluator;
 import org.oddjob.arooa.runtime.ExpressionParser;
 import org.oddjob.arooa.runtime.MockConfigurationNode;
 import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
+import org.oddjob.arooa.runtime.PropertyFirstEvaluator;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeListener;
+import org.oddjob.arooa.xml.XMLConfiguration;
 
 public class ComponentConfigurationCreatorTest extends TestCase {
 
@@ -180,6 +184,11 @@ public class ComponentConfigurationCreatorTest extends TestCase {
 				@Override
 				public ArooaConverter getArooaConverter() {
 					return new DefaultConverter();
+				}
+				
+				@Override
+				public Evaluator getEvaluator() {
+					return new PropertyFirstEvaluator();
 				}
 			};
 		}
@@ -325,20 +334,29 @@ public class ComponentConfigurationCreatorTest extends TestCase {
 	 */
 	public void testComponentFromClassCreate() throws ArooaException {
         
+		String descriptorXML =
+				"<arooa:descriptor xmlns:arooa='http://rgordon.co.uk/oddjob/arooa'>" +
+			    " <components>" +
+			    "  <arooa:bean-def element='whatever'" +
+			    "      className='" + DummyComponent.class.getName() + "'>" +
+        		"  </arooa:bean-def>" +
+        		" </components>" +
+        		"</arooa:descriptor>";
+		
+		ArooaDescriptor descriptor = new ConfigurationDescriptorFactory(
+				new XMLConfiguration("XML", descriptorXML)).createDescriptor(
+								getClass().getClassLoader());
+		
+		StandardArooaSession session = new StandardArooaSession(descriptor) {
+			public ComponentProxyResolver getComponentProxyResolver() {
+				return new OurComponentProxyResolver();
+			}
+		};
+		
 		MutableAttributes atts = new MutableAttributes();
         atts.set("class", DummyComponent.class.getName());
         atts.set("fruit", "Apples");
 		ArooaElement element = new ArooaElement("bean", atts);
-
-		ComponentSession session = new ComponentSession();
-		session.propertyAccessor = new DummyComponentAccessor();
-		
-		ComponentArooaDescriptor descriptor = new ComponentArooaDescriptor();
-		session.postProcessor = new OurComponentProxyResolver();
-		
-		session.arooaDescriptor = new LinkedDescriptor(
-				descriptor,
-				new StandardArooaDescriptor());
 		
 		// Create the runtime.
 
@@ -363,10 +381,21 @@ public class ComponentConfigurationCreatorTest extends TestCase {
 
 		wrapper.init();
 		
+		ComponentTrinity trinity = null;
+		
+		for (ComponentTrinity t : 
+				session.getComponentPool().allTrinities()) {
+			if (trinity == null) {
+				trinity = t;
+			}
+			else {
+				throw new IllegalStateException("only one expected.");
+			}
+		}
 		// check component registered.
-		assertNotNull("The component", session.component);
-		assertNotNull("The Proxy", session.proxy);
-		assertTrue(session.proxy instanceof DummyProxy);
+		assertNotNull("The component", trinity.getTheComponent());
+		assertNotNull("The Proxy", trinity.getTheProxy());
+		assertTrue(trinity.getTheProxy() instanceof DummyProxy);
 
 		// check wrapped object
 		assertEquals("Wrapped object is a proxy", DummyProxy.class, result.getObjectToSet().getClass());
@@ -483,24 +512,37 @@ public class ComponentConfigurationCreatorTest extends TestCase {
 	
 	public void testRestoreProxy() {
 		
+		String descriptorXML =
+				"<arooa:descriptor xmlns:arooa='http://rgordon.co.uk/oddjob/arooa'>" +
+			    " <components>" +
+			    "  <arooa:bean-def element='whatever'" +
+			    "      className='org.oddjob.arooa.standard.ComponentConfigurationCreatorTest$DummyComponent'>" +
+        		"  </arooa:bean-def>" +
+        		" </components>" +
+        		"</arooa:descriptor>";
+		
+		ArooaDescriptor descriptor = new ConfigurationDescriptorFactory(
+				new XMLConfiguration("XML", descriptorXML)).createDescriptor(
+								getClass().getClassLoader());
+		
+		final OurComponentPersister persister = new OurComponentPersister();
+		persister.restore = new DummyProxy(new DummyComponent());
+		
+		StandardArooaSession session = new StandardArooaSession(descriptor) {
+			@Override
+			public ComponentProxyResolver getComponentProxyResolver() {
+				return new OurComponentProxyResolver();
+			}
+			@Override
+			public ComponentPersister getComponentPersister() {
+				return persister;
+			}
+		};
+		
 		MutableAttributes attributes = new MutableAttributes();
         attributes.set("id", "dumdum");
         attributes.set("fruit", "Apples");
 		ArooaElement element = new ArooaElement("whatever", attributes);
-
-		ComponentSession session = new ComponentSession();
-		session.propertyAccessor = new DummyComponentAccessor();
-		
-		session.postProcessor = new OurComponentProxyResolver();
-
-		OurComponentPersister persister = new OurComponentPersister();
-		persister.restore = new DummyProxy(new DummyComponent());
-		
-		session.componentPersister = persister;
-		
-		session.arooaDescriptor = new LinkedDescriptor(
-				new ComponentArooaDescriptor(),
-				new StandardArooaDescriptor());
 		
 		ParentContext parentContext = new ParentContext(session);
 		
@@ -523,10 +565,12 @@ public class ComponentConfigurationCreatorTest extends TestCase {
 
 		wrapper.init();
 		
+		ComponentTrinity trinity = session.getComponentPool().trinityForId(
+				"dumdum");
+		
 		// test component registered.
-		assertEquals("dumdum", session.id);
-		assertNotNull("The component.", session.component);	
-		assertNotNull("The Proxy", session.proxy);		
-		assertTrue(session.proxy instanceof DummyProxy);
+		assertNotNull("The component.", trinity.getTheComponent());	
+		assertNotNull("The Proxy", trinity.getTheProxy());		
+		assertTrue(trinity.getTheProxy() instanceof DummyProxy);
 	}
 }

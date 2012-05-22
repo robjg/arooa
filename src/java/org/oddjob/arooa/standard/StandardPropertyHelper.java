@@ -69,8 +69,6 @@ import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.runtime.Evaluator;
 import org.oddjob.arooa.runtime.ExpressionParser;
 import org.oddjob.arooa.runtime.ParsedExpression;
-import org.oddjob.arooa.runtime.PropertyFirstEvaluator;
-import org.oddjob.arooa.runtime.SubstitutionPolicy;
 
 
 /**
@@ -80,30 +78,6 @@ import org.oddjob.arooa.runtime.SubstitutionPolicy;
  */
 
 public class StandardPropertyHelper implements ExpressionParser {
-
-	private final SubstitutionPolicy substitutionPolicy;
-	
-	private final Evaluator evaluator = new PropertyFirstEvaluator();
-	
-    /**
-     * Default constructor.
-     */
-    public StandardPropertyHelper(
-			SubstitutionPolicy substitutionPolicy) {
-    	this.substitutionPolicy = substitutionPolicy;
-    }
-
-    public StandardPropertyHelper() {
-    	this(new SubstitutionPolicy() {
-				public <T> T substituteObject(T value) {
-					return value;
-				}
-				public String substituteString(String value) {
-					return value;
-				}
-			}
-    	);
-    }
 
     public ParsedExpression parse(String expression) {
 		if (expression == null) {
@@ -235,7 +209,7 @@ public class StandardPropertyHelper implements ExpressionParser {
 		@Override
 		public <T> T evaluate(ArooaSession session, Class<T> type) 
 		throws ArooaConversionException {
-	    	
+	    	Evaluator evaluator = session.getTools().getEvaluator();
 	        StringBuffer sb = new StringBuffer();
 	        
 	        Enumeration<String> i = fragments.elements();
@@ -245,16 +219,12 @@ public class StandardPropertyHelper implements ExpressionParser {
 	            String fragment = (String) i.nextElement();
 	            if (fragment == null) {
 	                String propertyName = (String) j.nextElement();
-	                String converted = evaluator.evaluate(
+	                String replacement = evaluator.evaluate(
 		                		propertyName, session, String.class);
-	                if (converted == null) {
-	                	converted = "";
+	                if (replacement == null) {
+	                	replacement = "";
 	                }
-	                String replacement = substitutionPolicy.substituteString((String) converted); 
-	
-	                fragment = (replacement != null)
-	                        ? replacement.toString()
-	                        : "${" + propertyName + "}";
+	                fragment = replacement;
 	            }
 	            sb.append(fragment);
 	        }
@@ -291,9 +261,9 @@ public class StandardPropertyHelper implements ExpressionParser {
 		public <T> T evaluate(ArooaSession session, Class<T> type) 
 		throws ArooaConversionException {
 			
-			T replacement = evaluator.evaluate(propertyExpression, session, type);
+			Evaluator evaluator = session.getTools().getEvaluator();
 			
-            return substitutionPolicy.substituteObject(replacement);
+			return evaluator.evaluate(propertyExpression, session, type);			
 		}
 		
 		@Override

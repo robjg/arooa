@@ -6,11 +6,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import org.custommonkey.xmlunit.XMLTestCase;
+import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.ConfiguredHow;
 import org.oddjob.arooa.MockArooaBeanDescriptor;
 import org.oddjob.arooa.ParsingInterceptor;
+import org.oddjob.arooa.deploy.NoAnnotations;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.CutAndPasteSupport;
 import org.oddjob.arooa.standard.StandardArooaParser;
@@ -91,6 +93,11 @@ public class XMLConfigurationFileTest extends XMLTestCase {
 		@Override
 		public boolean isAuto(String property) {
 			return false;
+		}
+		
+		@Override
+		public ArooaAnnotations getAnnotations() {
+			return new NoAnnotations();
 		}
 	}
 

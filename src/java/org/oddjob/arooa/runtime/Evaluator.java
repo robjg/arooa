@@ -5,7 +5,9 @@ import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 
 /**
- * Something that's able to evaluate a property expression.
+ * Something that's able to evaluate a property expression. 
+ * <p>
+ * This isn't a very descriptive name, it might change to something better.
  * 
  * @author rob
  *

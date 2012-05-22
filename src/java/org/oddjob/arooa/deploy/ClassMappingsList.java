@@ -14,6 +14,12 @@ import org.oddjob.arooa.life.InstantiationContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaClass;
 
+/**
+ * Amalgamate {@link ElementMappings}. Used by {@link ListDescriptor}
+ *  
+ * @author rob
+ *
+ */
 public class ClassMappingsList implements ElementMappings {
 
 	private final List<ElementMappings> mappingsList = 

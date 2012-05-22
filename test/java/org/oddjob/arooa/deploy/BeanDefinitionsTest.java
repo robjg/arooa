@@ -4,10 +4,8 @@ import junit.framework.TestCase;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
-import org.oddjob.arooa.ConfiguredHow;
 import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
 import org.oddjob.arooa.life.SimpleArooaClass;
-import org.oddjob.arooa.standard.StandardArooaDescriptor;
 
 public class BeanDefinitionsTest extends TestCase {
 
@@ -35,7 +33,7 @@ public class BeanDefinitionsTest extends TestCase {
 				new SimpleArooaClass(Apple.class), 
 				new BeanUtilsPropertyAccessor());
 
-		assertNull(beanDescriptor);
+		assertNotNull(beanDescriptor);
 		
 		beanDef.setProperties(
 				0, new PropertyDefinition(

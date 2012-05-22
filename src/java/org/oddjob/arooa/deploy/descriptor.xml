@@ -8,6 +8,8 @@
 			className="org.oddjob.arooa.deploy.ArooaDescriptorBean"/>
 		<is element="bean-def" 
 			className="org.oddjob.arooa.deploy.BeanDefinition"/>
+        <is element="annotation" 
+            className="org.oddjob.arooa.deploy.AnnotationDefinition"/>
 		<is element="property"
 			className="org.oddjob.arooa.deploy.PropertyDefinition"/>
 		<is element="configuration"

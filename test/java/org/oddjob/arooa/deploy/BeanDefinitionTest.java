@@ -3,6 +3,7 @@ package org.oddjob.arooa.deploy;
 import junit.framework.TestCase;
 
 import org.oddjob.arooa.ConfiguredHow;
+import org.oddjob.arooa.life.SimpleArooaClass;
 
 public class BeanDefinitionTest extends TestCase {
 
@@ -32,7 +33,8 @@ public class BeanDefinitionTest extends TestCase {
 				new PropertyDefinition("description", 
 						PropertyDefinition.PropertyType.TEXT));
 				
-		PropertyDefinitionsHelper defs = new PropertyDefinitionsHelper();
+		PropertyDefinitionsHelper defs = new PropertyDefinitionsHelper(
+				new SimpleArooaClass(Object.class));
 		defs.mergeFromBeanDefinition(test);
 		
 		BeanDescriptorHelper sort = new BeanDescriptorHelper(defs);

@@ -6,6 +6,13 @@ import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 
+/**
+ * A {@link BeanDescriptorProvider} that looks for a class of
+ * the same name as the bean plus Arooa to provide the descriptor.
+ * 
+ * @author rob
+ *
+ */
 public class ClassBeanDescriptorProvider implements BeanDescriptorProvider {
 
 	private static final Logger logger = Logger.getLogger(

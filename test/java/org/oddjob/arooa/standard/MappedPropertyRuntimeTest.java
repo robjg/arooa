@@ -2,6 +2,7 @@ package org.oddjob.arooa.standard;
 
 import junit.framework.TestCase;
 
+import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaException;
@@ -16,6 +17,7 @@ import org.oddjob.arooa.MockArooaTools;
 import org.oddjob.arooa.ParsingInterceptor;
 import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.convert.DefaultConverter;
+import org.oddjob.arooa.deploy.NoAnnotations;
 import org.oddjob.arooa.handlers.ElementAction;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaAttributes;
@@ -33,9 +35,11 @@ import org.oddjob.arooa.reflect.MockPropertyAccessor;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 import org.oddjob.arooa.runtime.ConfigurationNodeListener;
+import org.oddjob.arooa.runtime.Evaluator;
 import org.oddjob.arooa.runtime.ExpressionParser;
 import org.oddjob.arooa.runtime.MockConfigurationNode;
 import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
+import org.oddjob.arooa.runtime.PropertyFirstEvaluator;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeEvent;
 import org.oddjob.arooa.runtime.RuntimeListener;
@@ -120,6 +124,11 @@ public class MappedPropertyRuntimeTest extends TestCase {
 				public ExpressionParser getExpressionParser() {
 					return new StandardPropertyHelper();
 				}
+				
+				@Override
+				public Evaluator getEvaluator() {
+					return new PropertyFirstEvaluator();
+				}
 			};
 		}
 						
@@ -142,6 +151,10 @@ public class MappedPropertyRuntimeTest extends TestCase {
 						@Override
 						public String getComponentProperty() {
 							return null;
+						}
+						@Override
+						public ArooaAnnotations getAnnotations() {
+							return new NoAnnotations();
 						}
 					};
 				}

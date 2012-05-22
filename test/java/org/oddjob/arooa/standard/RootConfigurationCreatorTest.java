@@ -2,6 +2,7 @@ package org.oddjob.arooa.standard;
 
 import junit.framework.TestCase;
 
+import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaSession;
@@ -14,6 +15,7 @@ import org.oddjob.arooa.MockArooaSession;
 import org.oddjob.arooa.ParsingInterceptor;
 import org.oddjob.arooa.convert.ConversionProvider;
 import org.oddjob.arooa.deploy.LinkedDescriptor;
+import org.oddjob.arooa.deploy.NoAnnotations;
 import org.oddjob.arooa.life.ComponentProxyResolver;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaContext;
@@ -43,6 +45,10 @@ public class RootConfigurationCreatorTest extends TestCase {
 				@Override
 				public ParsingInterceptor getParsingInterceptor() {
 					return null;
+				}
+				@Override
+				public ArooaAnnotations getAnnotations() {
+					return new NoAnnotations();
 				}
 			};
 		}

@@ -7,21 +7,10 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaType;
-import org.oddjob.arooa.ClassResolver;
-import org.oddjob.arooa.ConfiguredHow;
-import org.oddjob.arooa.ElementMappings;
-import org.oddjob.arooa.MockArooaBeanDescriptor;
-import org.oddjob.arooa.MockArooaDescriptor;
-import org.oddjob.arooa.ParsingInterceptor;
-import org.oddjob.arooa.convert.ConversionProvider;
-import org.oddjob.arooa.life.ClassLoaderClassResolver;
 import org.oddjob.arooa.life.InstantiationContext;
 import org.oddjob.arooa.life.SimpleArooaClass;
-import org.oddjob.arooa.reflect.ArooaClass;
-import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
@@ -54,66 +43,13 @@ public class IsTypeTest extends TestCase {
 	}
 	// } #simpleBean 
 	
-	private class OurDescriptor extends MockArooaDescriptor {
-		
-		@Override
-		public ElementMappings getElementMappings() {
-			return null;
-		}
-		
-		@Override
-		public ConversionProvider getConvertletProvider() {
-			return null;
-		}
-		
-		@Override
-		public ArooaBeanDescriptor getBeanDescriptor(ArooaClass forClass,
-				PropertyAccessor accessor) {
-			if (new SimpleArooaClass(SnackBean.class).equals(forClass)
-					|| new SimpleArooaClass(IndexedSnack.class).equals(forClass)
-					|| new SimpleArooaClass(MappedSnack.class).equals(forClass)) {
-				return new MockArooaBeanDescriptor() {
-					@Override
-					public ParsingInterceptor getParsingInterceptor() {
-						return null;
-					}
-					@Override
-					public String getComponentProperty() {
-						return null;
-					}
-					@Override
-					public ConfiguredHow getConfiguredHow(String property) {
-						return ConfiguredHow.ELEMENT;
-					}
-					@Override
-					public boolean isAuto(String property) {
-						return false;
-					}
-				};
-			}
-			if (new SimpleArooaClass(FruitBean.class).equals(forClass)) {
-				return null;
-			}
-			if (new SimpleArooaClass(IsType.class).equals(forClass)) {
-				return null;
-			}
-			fail("Unexpected: " + forClass);
-			return null;
-		}
-		
-    	@Override
-    	public ClassResolver getClassResolver() {
-    		return new ClassLoaderClassResolver(
-    				getClass().getClassLoader());
-    	}
-	}
 	
 	public void testSimpleProperty() throws ArooaParseException {
 
 		SnackBean root = new SnackBean();
 		
 		StandardArooaParser parser = new StandardArooaParser(
-				root, new OurDescriptor());
+				root);
 		
 		parser.parse(new XMLConfiguration(
 				"org/oddjob/arooa/types/IsSimple.xml", 
@@ -146,8 +82,7 @@ public class IsTypeTest extends TestCase {
 		
 		MappedSnack root = new MappedSnack();
 		
-		StandardArooaParser parser = new StandardArooaParser(
-				root, new OurDescriptor());
+		StandardArooaParser parser = new StandardArooaParser(root);
 		
 		parser.parse(new XMLConfiguration(
 				"org/oddjob/arooa/types/IsMapped.xml", 
@@ -182,8 +117,7 @@ public class IsTypeTest extends TestCase {
 
 		IndexedSnack root = new IndexedSnack();
 		
-		StandardArooaParser parser = new StandardArooaParser(
-				root, new OurDescriptor());
+		StandardArooaParser parser = new StandardArooaParser(root);
 		
 		parser.parse(new XMLConfiguration(
 				"org/oddjob/arooa/types/IsIndexed.xml", 
