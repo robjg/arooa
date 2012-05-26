@@ -7,7 +7,10 @@ import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ConfiguredHow;
 import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
 import org.oddjob.arooa.deploy.PropertyDefinition.PropertyType;
+import org.oddjob.arooa.deploy.annotations.ArooaElement;
+import org.oddjob.arooa.deploy.annotations.ArooaHidden;
 import org.oddjob.arooa.life.SimpleArooaClass;
+import org.oddjob.arooa.xml.XMLConfiguration;
 
 public class ArooaDescriptorBeanMoreTest extends TestCase {
 
@@ -69,5 +72,51 @@ public class ArooaDescriptorBeanMoreTest extends TestCase {
 				beanDescriptor.getConfiguredHow("fruit"));
 		
 		assertEquals("stuff", beanDescriptor.getComponentProperty());		
+	}
+	
+	
+	public static class OurBean2 {
+		
+		@ArooaHidden
+		public void setFruit(String fruit) {
+			
+		}
+		
+		@ArooaElement
+		public void setColour(String colour) {
+			
+		}
+	}
+	
+	/** Check both get applied but XML Descriptor wins. */
+	public void testBeanDescriptorWithAnnotaitons() {
+		
+		String xml =
+				"<arooa:descriptor xmlns:arooa='http://rgordon.co.uk/oddjob/arooa'>" +
+			    " <values>" +
+			    "  <arooa:bean-def element='my-bean'" +
+			    "      className='org.oddjob.arooa.deploy.ArooaDescriptorBeanMoreTest$OurBean2'>" +
+			    "   <properties>" +
+			    "     <arooa:property name='colour' type='HIDDEN' />" +
+			    "   </properties>" +
+                "  </arooa:bean-def>" +
+                " </values>" +
+                "</arooa:descriptor>";
+		
+		ArooaDescriptor descriptor = 
+				new ConfigurationDescriptorFactory(
+						new XMLConfiguration(
+								"XML", xml)).createDescriptor(
+								getClass().getClassLoader());
+		
+		ArooaBeanDescriptor result = 
+				descriptor.getBeanDescriptor(
+						new SimpleArooaClass(OurBean2.class), 
+						new BeanUtilsPropertyAccessor());
+		
+		assertEquals(ConfiguredHow.HIDDEN, 
+				result.getConfiguredHow("fruit"));
+		assertEquals(ConfiguredHow.HIDDEN, 
+				result.getConfiguredHow("colour"));
 	}
 }
