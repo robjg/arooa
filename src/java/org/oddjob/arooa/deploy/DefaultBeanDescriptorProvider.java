@@ -8,6 +8,14 @@ import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 
+/**
+ * Provide a default descriptor with configured how based on the types of 
+ * the property. String and Primitive type properties are attributes,
+ * everything else is elements.
+ *  
+ * @author rob
+ *
+ */
 public class DefaultBeanDescriptorProvider implements BeanDescriptorProvider {
 
 	private static final Set<Class<?>> ATTRIBUTE_TYPES =

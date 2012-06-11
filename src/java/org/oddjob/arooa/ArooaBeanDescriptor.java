@@ -3,11 +3,6 @@
  */
 package org.oddjob.arooa;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-
-
-
 /**
  * A description of any special types of properties a 
  * class might have.

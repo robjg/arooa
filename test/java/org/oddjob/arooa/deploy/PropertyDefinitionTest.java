@@ -34,7 +34,8 @@ public class PropertyDefinitionTest extends TestCase {
 		assertEquals(ConfiguredHow.ATTRIBUTE, 
 				test.getConfiguredHow());
 		assertEquals("red", test.getFlavour());
-		assertEquals(true, test.isAuto());
+		
+		assertEquals(new Boolean(true), test.getAuto());
 	}
 	
 		

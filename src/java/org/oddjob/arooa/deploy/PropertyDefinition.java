@@ -52,7 +52,14 @@ public class PropertyDefinition {
      * framework. True/False.
      * @oddjob.required No. Defaults to false.
 	 */
-	private boolean auto;
+	private Boolean auto;
+	
+	/** 
+     * @oddjob.property
+     * @oddjob.description An annotation for the property.
+     * @oddjob.required No.
+	 */
+	private String annotation;
 	
 	/**
 	 * No Arg Constructor.
@@ -125,11 +132,19 @@ public class PropertyDefinition {
 		this.flavour = flavour;
 	}
 
-	public boolean isAuto() {
+	public Boolean getAuto() {
 		return auto;
 	}
 
-	public void setAuto(boolean auto) {
+	public void setAuto(Boolean auto) {
 		this.auto = auto;
+	}
+
+	public String getAnnotation() {
+		return annotation;
+	}
+
+	public void setAnnotation(String annotation) {
+		this.annotation = annotation;
 	}
 }

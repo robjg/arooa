@@ -79,7 +79,28 @@ public class PropertyDefinitionsHelper implements ArooaBeanDescriptor {
 			setTextProperty(propertyDefinition.getName());
 		}
 
-		properties.put(propertyDefinition.getName(), propertyDefinition);
+		String propertyName =  propertyDefinition.getName();
+		if (propertyName == null) {
+			throw new NullPointerException("No name for a property definition.");
+		}
+		
+		PropertyDefinition existing = properties.get(propertyName);		
+		if (existing == null) {
+			properties.put(propertyName, propertyDefinition);
+		}
+		else {
+			if (propertyDefinition.getType() != null) {
+				existing.setType(propertyDefinition.getType());
+			}
+			if (propertyDefinition.getFlavour() != null) {
+				existing.setFlavour(propertyDefinition.getFlavour());
+			}
+			if (propertyDefinition.getAuto() != null) {
+				existing.setAuto(propertyDefinition.getAuto());
+			}
+		}
+		
+		annotations.addPropertyDefinition(propertyDefinition);
 	}
 	
 	/**
@@ -184,7 +205,7 @@ public class PropertyDefinitionsHelper implements ArooaBeanDescriptor {
 	 * @param annotation
 	 */
 	public void addAnnotationDefinition(AnnotationDefinition annotation) {
-		this.annotations.add(annotation);
+		this.annotations.addAnnotationDefintion(annotation);
 	}
 	
 	/**
@@ -238,7 +259,8 @@ public class PropertyDefinitionsHelper implements ArooaBeanDescriptor {
 			return false;
 		}
 	
-		return propertyDefinition.isAuto();
+		Boolean auto = propertyDefinition.getAuto(); 
+		return auto == Boolean.TRUE;
 	}
 
 	public ParsingInterceptor getParsingInterceptor() {

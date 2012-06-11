@@ -1,0 +1,12 @@
+<arooa:descriptor xmlns:arooa="http://rgordon.co.uk/oddjob/arooa"
+    namespace="http://rgordon.co.uk/test">
+    <components>
+        <arooa:bean-def element="my-bean"
+            className="org.oddjob.arooa.deploy.ArooaDescriptorAnnotationsTest$MyBean">
+            <properties>
+                <arooa:property name="colour" annotation="org.oddjob.arooa.deploy.annotations.Component"/>
+                <arooa:property name="colour" annotation="org.oddjob.arooa.deploy.test.Special"/>
+            </properties>
+        </arooa:bean-def>
+    </components>
+</arooa:descriptor>

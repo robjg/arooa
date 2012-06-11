@@ -5,11 +5,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.oddjob.arooa.ArooaAnnotations;
+import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
+import org.oddjob.arooa.ConfiguredHow;
 import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.xml.XMLConfiguration;
@@ -30,6 +34,10 @@ public class ArooaDescriptorAnnotationsTest extends TestCase {
 		}
 		
 		public void myDestroy() {
+			
+		}
+		
+		public void setColour(String colour) {
 			
 		}
 	}
@@ -58,4 +66,40 @@ public class ArooaDescriptorAnnotationsTest extends TestCase {
 		assertNull(test.methodFor("idontexist"));
 	}
 	
+	public void testPropertyAnnotations() {
+		
+		ArooaDescriptor descriptor = 
+				new ConfigurationDescriptorFactory(
+						new XMLConfiguration(
+								"org/oddjob/arooa/deploy/ArooaDescriptorAnnotationsTest2.xml",
+								getClass().getClassLoader())).createDescriptor(
+								getClass().getClassLoader());
+
+		BeanUtilsPropertyAccessor accessor = new BeanUtilsPropertyAccessor();
+		
+		ArooaBeanDescriptor beanDescriptor = descriptor.getBeanDescriptor(
+				new SimpleArooaClass(MyBean.class), 
+				accessor);
+		
+		ArooaAnnotations test = beanDescriptor.getAnnotations();
+		
+		ArooaAnnotation[] annotations = test.annotationsForProperty(
+				"colour");
+		
+		assertEquals(2, annotations.length);
+		
+		List<String> results = Arrays.asList(new String[] { 
+				annotations[0].getName(), annotations[1].getName()		
+		});
+		
+		assertTrue(results.contains(
+				"org.oddjob.arooa.deploy.annotations.Component"));
+		assertTrue(results.contains(
+				"org.oddjob.arooa.deploy.test.Special"));
+		
+		// test property annotation still has default type.
+
+		assertEquals(ConfiguredHow.ATTRIBUTE, 
+					beanDescriptor.getConfiguredHow("colour"));
+	}
 }

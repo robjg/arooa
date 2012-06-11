@@ -6,8 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotate that a property should be hidden from the configuration. This
- * annotation must go on the property setter.
+ * Annotate that a property should be hidden from the configuration.
  * 
  * @see ArooaBeanDescriptor#getConfiguredHow(String)
  * 
@@ -15,7 +14,7 @@ import java.lang.annotation.Target;
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
+@Target({ ElementType.METHOD, ElementType.FIELD })
 public @interface ArooaHidden {
 	
 }

@@ -6,8 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotate that a property is a Component property. This must go
- * on the setter method.
+ * Annotate that a property is a Component property. 
  * 
  * @see ArooaBeanDescriptor#getComponentProperty();
  * 
@@ -15,6 +14,6 @@ import java.lang.annotation.Target;
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
+@Target({ ElementType.METHOD, ElementType.FIELD })
 public @interface ArooaComponent {
 }

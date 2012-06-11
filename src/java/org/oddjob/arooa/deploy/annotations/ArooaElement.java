@@ -8,8 +8,7 @@ import java.lang.annotation.Target;
 import org.oddjob.arooa.ArooaBeanDescriptor;
 
 /**
- * Annotate that a property is configured as an XML element. This 
- * annotation must go on the property setter.
+ * Annotate that a property is configured as an XML element.
  * 
  * @see ArooaBeanDescriptor#getConfiguredHow(String)
  * 
@@ -17,7 +16,7 @@ import org.oddjob.arooa.ArooaBeanDescriptor;
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
+@Target({ ElementType.METHOD, ElementType.FIELD })
 public @interface ArooaElement {
 	
 }
