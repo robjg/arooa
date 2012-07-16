@@ -4,6 +4,7 @@
 package org.oddjob.arooa.design.view.multitype;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -389,7 +390,10 @@ public class MultiTypeTableWidget extends JPanel {
 					panel.setBorder(new LineBorder(table.getSelectionBackground()));
 				}
 				if (hasFocus) {
-					panel.setBorder(new LineBorder(table.getSelectionForeground()));
+					// It would be nice to use table.getSelectionForeground()
+					// but on the window look and feel this is so light as to
+					// be indiscernible. 
+					panel.setBorder(new LineBorder(Color.BLACK));
 				}
 				return panel;
 			}

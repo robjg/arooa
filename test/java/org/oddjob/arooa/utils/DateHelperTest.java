@@ -105,6 +105,18 @@ public class DateHelperTest extends TestCase {
 		
 	}
 
+	public void testMoreThan60minutes() throws ParseException {
+		long m;
+		
+		TimeZone.setDefault(null);
+		
+		m = DateHelper.parseTime("00:61");
+		logger.debug("" + new Date(m));	
+		assertEquals(61 * MINUTE, m);
+		
+		
+	}
+	
 	public void testParseDateTime() throws ParseException {
 
 		Calendar expected = Calendar.getInstance();
