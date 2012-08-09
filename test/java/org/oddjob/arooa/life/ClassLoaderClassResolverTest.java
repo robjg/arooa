@@ -20,9 +20,26 @@ public class ClassLoaderClassResolverTest extends TestCase {
 		ClassLoaderClassResolver test = new ClassLoaderClassResolver(
 				getClass().getClassLoader());
 		
-		Class<?> cl = test.findClass(Apple.class.getName());
+		assertEquals(Apple.class, 
+				test.findClass(Apple.class.getName()));
+		assertEquals(String.class, 
+				test.findClass(String.class.getName()));
 		
-		assertNotNull(cl);
+	}
+	
+	public void testFindPrimatives() {
+		
+		ClassLoaderClassResolver test = new ClassLoaderClassResolver(
+				getClass().getClassLoader());
+		
+		assertEquals(boolean.class, test.findClass(boolean.class.getName()));
+		assertEquals(byte.class, test.findClass(byte.class.getName()));
+		assertEquals(short.class, test.findClass(short.class.getName()));
+		assertEquals(char.class, test.findClass(char.class.getName()));
+		assertEquals(int.class, test.findClass(int.class.getName()));
+		assertEquals(long.class, test.findClass(long.class.getName()));
+		assertEquals(float.class, test.findClass(float.class.getName()));
+		assertEquals(double.class, test.findClass(double.class.getName()));
 	}
 	
 	public void testFindClassClassLoader() throws MalformedURLException {
