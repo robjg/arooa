@@ -20,7 +20,7 @@ public class DirectoryServiceFinder implements ServiceFinder {
 		this.directory = directory;
 	}
 	
-	public Object find(Class<?> cl, String flavour) {
+	public <T> T find(Class<T> cl, String flavour) {
 		
 		Iterable<ServiceProvider> providers = 
 			directory.getAllByType(ServiceProvider.class);
@@ -34,7 +34,7 @@ public class DirectoryServiceFinder implements ServiceFinder {
 			
 			String identifier = lookup.serviceNameFor(cl, flavour);
 			if (identifier != null) {
-				return lookup.getService(identifier);
+				return cl.cast(lookup.getService(identifier));
 			}
 		}
 		

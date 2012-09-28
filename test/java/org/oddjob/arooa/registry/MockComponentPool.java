@@ -52,4 +52,10 @@ public class MockComponentPool implements ComponentPool {
 		throw new RuntimeException("Unexpected in " + 
 				this.getClass().getName() + ".");
 	}
+	
+	@Override
+	public ComponentTrinity trinityForContext(ArooaContext context) {
+		throw new RuntimeException("Unexpected in " + 
+				this.getClass().getName() + ".");
+	}
 }

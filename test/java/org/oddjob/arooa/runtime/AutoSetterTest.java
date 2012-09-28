@@ -10,6 +10,7 @@ import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.deploy.annotations.ArooaComponent;
 import org.oddjob.arooa.life.SimpleArooaClass;
+import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.CutAndPasteSupport;
 import org.oddjob.arooa.parsing.MockArooaContext;
 import org.oddjob.arooa.reflect.ArooaClass;
@@ -114,6 +115,11 @@ public class AutoSetterTest extends TestCase {
 		@Override
 		public ArooaSession getSession() {
 			return session;
+		}
+		
+		@Override
+		public ArooaContext getParent() {
+			return null;
 		}
 	}
 	

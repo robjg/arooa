@@ -31,6 +31,7 @@ public class SimpleComponentPool implements ComponentPool {
 
 	private final AllWayIndex index = new AllWayIndex();
 	
+	@Override
 	public void configure(Object component) 
 	throws ArooaConfigurationException {
 		
@@ -49,6 +50,7 @@ public class SimpleComponentPool implements ComponentPool {
 		runtime.configure();
 	}
 
+	@Override
 	public void save(Object component) throws ComponentPersistException {
 		
 		if (component == null) {
@@ -78,6 +80,7 @@ public class SimpleComponentPool implements ComponentPool {
 		persister.persist(id, trinity.getTheProxy(), session);
 	}
 
+	@Override
 	public void remove(Object either) throws ComponentPersistException {
 		if (either == null) {
 			throw new NullPointerException("No component.");
@@ -114,6 +117,7 @@ public class SimpleComponentPool implements ComponentPool {
 				trinity.getTheProxy());
 	}
 	
+	@Override
 	public ArooaContext contextFor(Object either) {
 		ComponentTrinity trinity = index.trinityFor(either);
 		
@@ -124,12 +128,19 @@ public class SimpleComponentPool implements ComponentPool {
 		return trinity.getTheContext();
 	}
 
+	@Override
+	public ComponentTrinity trinityForContext(ArooaContext context) {
+		return index.trinityForContext(context);
+	}
+	
+	@Override
 	public ComponentTrinity trinityForId(String id) {
 		synchronized (index) {
     		return index.trinityForId(id);
 		}    	
 	}
-		
+	
+	@Override
 	public String getIdFor(Object either) {
 		synchronized(index) {
     		return index.idFor(
@@ -144,7 +155,7 @@ public class SimpleComponentPool implements ComponentPool {
 		}
 	}
 	
-	
+	@Override
 	public void registerComponent(ComponentTrinity componentTrinity, String id) {
 		
 		if (id != null) {
@@ -185,15 +196,24 @@ public class SimpleComponentPool implements ComponentPool {
 	
 	static class AllWayIndex {
 		
+		/** ComponentTrinities mapped by proxy object. */
 	    private final Map<Object, ComponentTrinity> proxiesTo = 
-	    	new LinkedHashMap<Object, ComponentTrinity>();
-	    
-	    private final Map<Object, ComponentTrinity> componentsTo = 
 	    	new HashMap<Object, ComponentTrinity>();
+	    
+	    /** ComponentTrinities mapped by the component. 
+	     * Not this map maintains order added for iteration. */
+	    private final Map<Object, ComponentTrinity> componentsTo = 
+	    	new LinkedHashMap<Object, ComponentTrinity>();
 	        
+		/** ComponentTrinities mapped by contexts. */
+	    private final Map<ArooaContext, ComponentTrinity> contextsTo = 
+	    	new HashMap<ArooaContext, ComponentTrinity>();
+	    
+	    /** Id's mapped by ComponentTrinity. */
 	    private final Map<ComponentTrinity, String> ids= 
 	    	new HashMap<ComponentTrinity, String>();
 	        
+	    /** ComponentTrinities mapped by id. */
 	    private final Map<String, ComponentTrinity> trinities = 
 	    	new HashMap<String, ComponentTrinity>();
 	        
@@ -202,6 +222,7 @@ public class SimpleComponentPool implements ComponentPool {
 	    	
 			componentsTo.put(trinity.getTheComponent(), trinity);
 			proxiesTo.put(trinity.getTheProxy(), trinity);
+			contextsTo.put(trinity.getTheContext(), trinity);
 			
 			if (id != null) {
 				ids.put(trinity, id);
@@ -218,6 +239,7 @@ public class SimpleComponentPool implements ComponentPool {
 	    	return componentsTo.values();
 	    }
 	    
+	    
 	    synchronized ComponentTrinity trinityFor(Object either) {
 			if (proxiesTo.containsKey(either)) {
 				return proxiesTo.get(either);
@@ -227,11 +249,21 @@ public class SimpleComponentPool implements ComponentPool {
 			}
 			return null;
 		}
+	    
+	    synchronized ComponentTrinity trinityForContext(
+	    		ArooaContext arooaContext) {
+			return contextsTo.get(arooaContext); 
+		}
 		
 	    synchronized void remove(ComponentTrinity trinity) {
 
-			ComponentTrinity real = componentsTo.remove(trinity.getTheComponent());
+	    	// When is this not real?
+			ComponentTrinity real = 
+					componentsTo.remove(trinity.getTheComponent());
+			
 			proxiesTo.remove(real.getTheProxy());
+			contextsTo.remove(real.getTheContext());
+			
 			String id = ids.remove(real);
 			if (id != null) {
 				trinities.remove(id);

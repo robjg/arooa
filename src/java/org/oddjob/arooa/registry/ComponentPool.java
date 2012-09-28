@@ -5,6 +5,7 @@ import org.oddjob.arooa.ComponentTrinity;
 import org.oddjob.arooa.life.ComponentPersistException;
 import org.oddjob.arooa.life.ComponentPersister;
 import org.oddjob.arooa.parsing.ArooaContext;
+import org.oddjob.arooa.runtime.InstanceRuntimeConfiguration;
 
 /**
  * A ComponentPool provides access to the Components created by parsing
@@ -33,12 +34,14 @@ public interface ComponentPool {
 	 * was registered with an id then the ComponentPersister is 
 	 * invoked with the component. 
 	 * 
-	 * @param either or it's proxy.
+	 * @param either A component or it's proxy.
 	 */
 	public void save(Object either) throws ComponentPersistException;
 	
 	/**
 	 * Remove a component.
+	 * 
+	 * @param either A component or it's proxy.
 	 */
 	public void remove(Object either) throws ComponentPersistException;
 	
@@ -51,6 +54,20 @@ public interface ComponentPool {
 	 * in this pool.
 	 */
 	public ArooaContext contextFor(Object either);
+	
+	/**
+	 * Get the {@link ComponentTrinity} for the given {@link ArooaContext}.
+	 * <p>
+	 * This was required for {@link ContextHierarchyServiceFinder} before
+	 * {@link InstanceRuntimeConfiguration} was used. 
+	 * 
+	 * @param context A context;
+	 * 
+	 * @return The trinity or null.
+	 * 
+	 * @since 1.3
+	 */
+	public ComponentTrinity trinityForContext(ArooaContext context);
 	
 	/**
 	 * Register a {@link ComponentTrinity}.

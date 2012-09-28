@@ -12,16 +12,16 @@ public class CompositeServiceFinderTest extends TestCase {
 			new ServiceFinder() {
 				
 				@Override
-				public Object find(Class<?> cl, String flavour) {
+				public <T> T find(Class<T> cl, String flavour) {
 					assertEquals(Cheese.class, cl);
 					assertEquals("smelly", flavour);
-					return new Cheese();
+					return cl.cast(new Cheese());
 				}
 			},
 			new ServiceFinder() {
 				
 				@Override
-				public Object find(Class<?> cl, String flavour) {
+				public <T> T find(Class<T> cl, String flavour) {
 					throw new RuntimeException("Unexpected");
 				}
 			}
@@ -36,7 +36,7 @@ public class CompositeServiceFinderTest extends TestCase {
 			new ServiceFinder() {
 				
 				@Override
-				public Object find(Class<?> cl, String flavour) {
+				public <T> T find(Class<T> cl, String flavour) {
 					assertEquals(Cheese.class, cl);
 					assertEquals("smelly", flavour);
 					return null;
@@ -45,10 +45,10 @@ public class CompositeServiceFinderTest extends TestCase {
 			new ServiceFinder() {
 				
 				@Override
-				public Object find(Class<?> cl, String flavour) {
+				public <T> T find(Class<T> cl, String flavour) {
 					assertEquals(Cheese.class, cl);
 					assertEquals("smelly", flavour);
-					return new Cheese();
+					return cl.cast(new Cheese());
 				}
 			}
 		});
@@ -62,7 +62,7 @@ public class CompositeServiceFinderTest extends TestCase {
 			new ServiceFinder() {
 				
 				@Override
-				public Object find(Class<?> cl, String flavour) {
+				public <T> T find(Class<T> cl, String flavour) {
 					assertEquals(Cheese.class, cl);
 					assertEquals("smelly", flavour);
 					return null;
@@ -71,7 +71,7 @@ public class CompositeServiceFinderTest extends TestCase {
 			new ServiceFinder() {
 				
 				@Override
-				public Object find(Class<?> cl, String flavour) {
+				public <T> T find(Class<T> cl, String flavour) {
 					assertEquals(Cheese.class, cl);
 					assertEquals("smelly", flavour);
 					return null;

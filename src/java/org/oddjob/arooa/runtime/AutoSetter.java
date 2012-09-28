@@ -13,6 +13,7 @@ import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.registry.ComponentsServiceFinder;
 import org.oddjob.arooa.registry.CompositeServiceFinder;
+import org.oddjob.arooa.registry.ContextHierarchyServiceFinder;
 import org.oddjob.arooa.registry.DirectoryServiceFinder;
 import org.oddjob.arooa.registry.ServiceFinder;
 
@@ -85,6 +86,7 @@ public class AutoSetter {
 			}
 			
 			ServiceFinder finder = new CompositeServiceFinder(
+					new ContextHierarchyServiceFinder(context),
 					new DirectoryServiceFinder(session.getBeanRegistry()),
 					new ComponentsServiceFinder(session.getComponentPool())
 				);

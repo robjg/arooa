@@ -10,9 +10,10 @@ import org.oddjob.arooa.ParsingInterceptor;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.parsing.ArooaHandler;
-import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.ArooaClass;
+import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+import org.oddjob.arooa.runtime.InstanceRuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeEvent;
 import org.oddjob.arooa.runtime.RuntimeListener;
@@ -24,7 +25,7 @@ import org.oddjob.arooa.runtime.RuntimeListener;
  * @author rob
  */
 abstract class InstanceRuntime extends StandardRuntime 
-implements RuntimeConfiguration {		
+implements InstanceRuntimeConfiguration {		
 	
 	private final Map<ArooaElement, ArooaContext> childContexts =
 		new HashMap<ArooaElement, ArooaContext>();
@@ -105,6 +106,11 @@ implements RuntimeConfiguration {
 		return instance;
 	}
 
+	@Override
+	public Object getWrappedInstance() {
+		return instance.getWrappedObject();
+	}
+	
 	void setContext(ArooaContext suggestedContext) 
 	throws ArooaConfigurationException {
 	

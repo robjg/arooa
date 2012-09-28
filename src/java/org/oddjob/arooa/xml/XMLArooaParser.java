@@ -92,6 +92,11 @@ class XMLParserSession implements ArooaSession {
 			public ComponentTrinity trinityForId(String id) {
 				throw new UnsupportedOperationException("Not required for XMLParser.");
 			}
+
+			@Override
+			public ComponentTrinity trinityForContext(ArooaContext context) {
+				throw new UnsupportedOperationException("Not required for XMLParser.");
+			}
 			
 			@Override
 			public void registerComponent(ComponentTrinity trinity, String id) {

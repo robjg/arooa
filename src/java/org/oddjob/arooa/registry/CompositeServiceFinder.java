@@ -16,9 +16,9 @@ public class CompositeServiceFinder implements ServiceFinder {
 	}
 	
 	@Override
-	public Object find(Class<?> cl, String flavour) {
+	public <T> T find(Class<T> cl, String flavour) {
 		for (ServiceFinder finder : finders) {
-			Object service = finder.find(cl, flavour);
+			T service = finder.find(cl, flavour);
 			if (service != null) {
 				return service;
 			}
