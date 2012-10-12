@@ -45,7 +45,26 @@ public class HandleConfigurationSession implements ConfigurationSession {
 		}
 	}
 	
-	public HandleConfigurationSession(ArooaSession session, ConfigurationHandle handle) {
+	/**
+	 * Create a new instance. The underlying session is taken from the
+	 * document context of the handle.
+	 * 
+	 * @param handle
+	 */
+	public HandleConfigurationSession(ConfigurationHandle handle) {
+		this(handle.getDocumentContext().getSession(), handle);
+	}
+	
+	/**
+	 * Create a new Instance. This constructor allows a different session
+	 * to be specified - not sure now why this was required.
+	 * 
+	 * @param session The underlying session to use.
+	 * @param handle The configuration handle.
+	 */
+	public HandleConfigurationSession(ArooaSession session, 
+			ConfigurationHandle handle) {
+		
 		this.session = session;
 		this.handle = handle;
 		
