@@ -1,10 +1,12 @@
 package org.oddjob.arooa.deploy;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.types.IsType;
+import org.oddjob.arooa.utils.ListSetterHelper;
 
 /**
  * @oddjob.description An Arooa Descriptor Factory that is a container
@@ -35,8 +37,32 @@ public class ListDescriptorBean implements ArooaDescriptorFactory {
 	private final List<ArooaDescriptorFactory> descriptors =
 		new ArrayList<ArooaDescriptorFactory>();
 	
-	public void setDescriptors(int ignored, ArooaDescriptorFactory descriptor) {
-		descriptors.add(descriptor);
+	/**
+	 * Create an empty instance.
+	 */
+	public ListDescriptorBean() {
+	}
+	
+	/**
+	 * Create an instance from an existing collection of 
+	 * {@link ArooaDescriptorFactory}s.
+	 * 
+	 * @param collection
+	 */
+	public ListDescriptorBean(
+			Collection<? extends ArooaDescriptorFactory> collection) {
+		descriptors.addAll(collection);
+	}
+	
+	/**
+	 * Indexed setter.
+	 * 
+	 * @param index
+	 * @param descriptor
+	 */
+	public void setDescriptors(int index, ArooaDescriptorFactory descriptor) {
+		new ListSetterHelper<ArooaDescriptorFactory>(descriptors).set(
+				index, descriptor);
 	}
 	
 	public ArooaDescriptor createDescriptor(ClassLoader loader) {
