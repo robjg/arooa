@@ -8,6 +8,8 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import org.apache.log4j.Logger;
+
 /**
  * Utility class that tracks the selected tree node and moves it when
  * the node is deleted.
@@ -16,7 +18,8 @@ import javax.swing.tree.TreePath;
  *
  */
 public class TreeChangeFollower {
-
+	private static final Logger logger = Logger.getLogger(TreeChangeFollower.class);
+	
 	private final JTree tree;
 		
 	private TreeNode lastSelected;
@@ -39,14 +42,21 @@ public class TreeChangeFollower {
 				lastRemovedParentPath = e.getTreePath();
 				lastRemovedIndex = e.getChildIndices()[0];
 				
-				if (lastRemovedIndex == 0) {
-					tree.setSelectionPath(lastRemovedParentPath);
+				try {
+					if (lastRemovedIndex == 0) {
+						tree.setSelectionPath(lastRemovedParentPath);
+					}
+					else {
+						TreeNode parentNode = (TreeNode) lastRemovedParentPath.getLastPathComponent();
+						TreeNode previousSibling = parentNode.getChildAt(lastRemovedIndex-1);
+						TreePath newPath = lastRemovedParentPath.pathByAddingChild(previousSibling);
+						tree.setSelectionPath(newPath);
+					}
 				}
-				else {
-					TreeNode parentNode = (TreeNode) lastRemovedParentPath.getLastPathComponent();
-					TreeNode previousSibling = parentNode.getChildAt(lastRemovedIndex-1);
-					TreePath newPath = lastRemovedParentPath.pathByAddingChild(previousSibling);
-					tree.setSelectionPath(newPath);
+				catch (Exception exception) {
+					// If the node we are moving too is also destroyed we 
+					// will get an exception.
+					logger.debug("Failed to set new tree selection after tree node removed: " + exception.getMessage());
 				}
 			}
 			else { 
