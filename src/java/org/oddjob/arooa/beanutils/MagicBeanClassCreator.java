@@ -1,5 +1,6 @@
 package org.oddjob.arooa.beanutils;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.beanutils.DynaClass;
@@ -14,20 +15,41 @@ import org.oddjob.arooa.reflect.ArooaClass;
  */
 public class MagicBeanClassCreator {
 
+	private final String name;
+	
+	private final Map<String, Class<?>> propertyNamesAndTypes = 
+			new LinkedHashMap<String, Class<?>>();
+	
 	/**
-	 * Create an ArooaClass.
+	 * Create an instance of the creator with the given class name.
 	 * 
-	 * @param name
-	 * @param propertyNamesAndTypes
-	 * @return
+	 * @param name The name.
 	 */
-	public ArooaClass create(String name,
-			Map<String, Class<?>> propertyNamesAndTypes) {
-		
+	public MagicBeanClassCreator(String name) {
 		if (name == null) {
 			throw new IllegalStateException(
 					"A Magic Bean Definition must have a name.");
 		}
+		
+		this.name = name;
+	}
+	
+	/**
+	 * Add a property.
+	 * 
+	 * @param name The name of the property.
+	 * @param type The type of the property.
+	 */
+	public void addProperty(String name, Class<?> type) {
+		propertyNamesAndTypes.put(name, type);
+	}
+	
+	/**
+	 * Create an ArooaClass.
+	 * 
+	 * @return
+	 */
+	public ArooaClass create() {
 		
 		DynaProperty[] dynas = new DynaProperty[propertyNamesAndTypes.size()];
 		
@@ -41,8 +63,5 @@ public class MagicBeanClassCreator {
 		DynaClass dynaClass = new MagicBeanClass(dynas, name);
 		
 		return new DynaArooaClass(dynaClass, MagicBean.class);
-
-	}
-	
-	
+	}	
 }

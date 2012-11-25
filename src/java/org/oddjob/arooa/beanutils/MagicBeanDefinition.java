@@ -1,9 +1,7 @@
 package org.oddjob.arooa.beanutils;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.oddjob.arooa.reflect.ArooaClass;
 
@@ -56,12 +54,8 @@ public class MagicBeanDefinition {
 	}
 	
 	public ArooaClass createMagic(ClassLoader loader) {
-		if (name == null) {
-			throw new IllegalStateException(
-					"A Magic Bean Definition must have a name.");
-		}
 
-		Map<String, Class<?>> types = new LinkedHashMap<String, Class<?>>();
+		MagicBeanClassCreator classCreator = new MagicBeanClassCreator(name);
 		
 		for (MagicBeanProperty prop : properties) {
 						
@@ -79,9 +73,9 @@ public class MagicBeanDefinition {
 				}
 			}
 			
-			types.put(prop.getName(), cl);
+			classCreator.addProperty(prop.getName(), cl);
 		}
 				
-		return new MagicBeanClassCreator().create(name, types);
+		return classCreator.create();
 	}
 }
