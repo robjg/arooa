@@ -6,14 +6,16 @@ import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.convert.ConversionFailedException;
 import org.oddjob.arooa.convert.ConversionLookup;
+import org.oddjob.arooa.convert.ConversionPath;
+import org.oddjob.arooa.convert.ConversionProvider;
+import org.oddjob.arooa.convert.ConversionRegistry;
 import org.oddjob.arooa.convert.ConversionStep;
 import org.oddjob.arooa.convert.Convertlet;
 import org.oddjob.arooa.convert.ConvertletException;
-import org.oddjob.arooa.convert.DefaultConverter;
 import org.oddjob.arooa.convert.DefaultConversionRegistry;
+import org.oddjob.arooa.convert.DefaultConverter;
 import org.oddjob.arooa.convert.Joker;
 import org.oddjob.arooa.convert.NoConversionAvailableException;
-import org.oddjob.arooa.convert.jokers.EnumConversions;
 
 public class EnumConversionsTest extends TestCase {
 
@@ -35,6 +37,13 @@ public class EnumConversionsTest extends TestCase {
 		assertEquals("BAD", converter.convert(Deed.BAD, String.class));
 	}
 	
+	/**
+	 * What's a Shadow Joker? I think this means something the masks the
+	 * default conversion.
+	 * 
+	 * @throws NoConversionAvailableException
+	 * @throws ConversionFailedException
+	 */
 	public void testShadowJoker() throws NoConversionAvailableException, ConversionFailedException {
 		
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
@@ -134,5 +143,50 @@ public class EnumConversionsTest extends TestCase {
 		
 		assertEquals("BAD: -5", converter.convert(GradedDeed.BAD, String.class));
 	}
+	
+	interface Colour {
+	}
 
+	enum Colours implements Colour {
+		
+		RED,
+		BLUE,
+		GREEN,
+	}
+	
+	class ColourConversions implements ConversionProvider {
+		
+		@Override
+		public void registerWith(ConversionRegistry registry) {
+			registry.register(String.class, Colours.class, new Convertlet<String, Colours>() {
+				@Override
+				public Colours convert(String from) throws ConvertletException {
+					return Colours.valueOf(from);
+				}
+			});
+		}
+	}
+	
+	/**
+	 * Showing special conversion is necessary otherwise the default converter
+	 * has no idea which enum to convert to, to match the interface.
+	 * 
+	 * @throws NoConversionAvailableException
+	 * @throws ConversionFailedException
+	 */
+	public void testAnEnumThatImplementsAnInterface() throws NoConversionAvailableException, ConversionFailedException {
+		
+		DefaultConversionRegistry registry = new DefaultConversionRegistry();
+
+		new ColourConversions().registerWith(registry);
+		
+		ArooaConverter converter = new DefaultConverter(registry);
+		
+		ConversionPath<String, Colour> path = converter.findConversion(
+				String.class, Colour.class);
+		
+		assertEquals("String-Colours", path.toString());
+		
+		assertEquals(Colours.RED, converter.convert("RED", Colour.class));
+	}
 }
