@@ -11,26 +11,26 @@ public class ArooaPropertyException extends ArooaConfigurationException {
 	private final String property;
 	
 	public ArooaPropertyException(String property) {		
-		super("Property [" + property + "]");
-		this.property = property;
+		this(property, null, null);
 	}
 
+	public ArooaPropertyException(String property,  Throwable t) {
+		this(property, null, t);
+	}
+	
 	public ArooaPropertyException(String property, String message) {
-		super(message);
-		this.property = property;
+		this(property, message, null);
 	}
 	
-	public ArooaPropertyException(String property, String message, Throwable t) {
-		super(message, t);
-		this.property = property;
-	}
-	
-	public ArooaPropertyException(String property, Throwable t) {
-		super(t);
+	public ArooaPropertyException(String property, String message, 
+			Throwable t) {
+		super(message == null ?
+				"Property [" + property + "]" : 
+					message, t);
 		this.property = property;
 	}
 	
 	public String getProperty() {
 		return property;
-	}
+	}	
 }

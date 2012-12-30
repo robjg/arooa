@@ -27,6 +27,7 @@ import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyAccessException;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+import org.oddjob.arooa.reflect.PropertySetException;
 
 /**
  * BeanUtilsBean with bespoke conversion and ArooaExceptions.
@@ -227,7 +228,7 @@ public class BeanUtilsPropertyAccessor implements PropertyAccessor {
 					convert(value, type));
 		} 
 		catch (Exception e) {
-			throw new PropertyAccessException(bean, name, e);
+			throw new PropertySetException(bean, name, type, value, e);
 		}
 	}	
 	
