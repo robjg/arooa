@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.BeanAccessLanguageException;
 import org.apache.commons.beanutils.DynaBean;
+import org.apache.commons.beanutils.DynaClass;
 import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.beanutils.PropertyUtilsBean;
@@ -325,12 +326,20 @@ public class BeanUtilsPropertyAccessor implements PropertyAccessor {
 	throws ArooaPropertyException {
 		
         if (bean instanceof DynaBean) {
+        	
+        	DynaClass dynaClass = ((DynaBean) bean).getDynaClass();
+        	
             DynaProperty descriptor =
-                    ((DynaBean) bean).getDynaClass().getDynaProperty(name);
+                    dynaClass.getDynaProperty(name);
+            
             if (descriptor == null) {
-                throw new ArooaNoPropertyException(name, bean.getClass());
+                throw new ArooaNoPropertyException(name, 
+                		bean.getClass(), 
+                		new DynaBeanOverview(dynaClass).getProperties());
             }
+            
             Class<?> type = descriptor.getContentType();
+            
             if (type != null) {
             	return type;
             }
@@ -344,7 +353,7 @@ public class BeanUtilsPropertyAccessor implements PropertyAccessor {
             } 
             return type;
         }
-
+        
 		Class<?> type = null;
 		try {			
 			type = propertyUtilsBean.getPropertyType(bean, name);
@@ -354,7 +363,9 @@ public class BeanUtilsPropertyAccessor implements PropertyAccessor {
 		}
 		
 		if (type == null) {
-			throw new ArooaNoPropertyException(name, bean.getClass());
+			throw new ArooaNoPropertyException(name, 
+					bean.getClass(), 
+					getClassName(bean).getBeanOverview(this).getProperties());
 		}
 		return type;
 	}
@@ -371,16 +382,23 @@ public class BeanUtilsPropertyAccessor implements PropertyAccessor {
 	throws ArooaPropertyException {
 		try {
 			return propertyUtilsBean.getProperty(bean, property);
-		} catch (IndexOutOfBoundsException e) {
+		} 
+		catch (IndexOutOfBoundsException e) {
 			// Return null if index access is out of bounds.
 			return null;
-		} catch (BeanAccessLanguageException e) {
+		} 
+		catch (BeanAccessLanguageException e) {
 			throw new ArooaPropertyException(property, e);
-		} catch (IllegalAccessException e) {
+		} 
+		catch (IllegalAccessException e) {
 			throw new ArooaPropertyException(property, e);
-		} catch (NoSuchMethodException e) {
-			throw new ArooaNoPropertyException(property, bean.getClass(), e);
-		} catch (InvocationTargetException e) {
+		} 
+		catch (NoSuchMethodException e) {
+			throw new ArooaNoPropertyException(property, bean.getClass(), 
+					getClassName(bean).getBeanOverview(this).getProperties(),
+					e);
+		} 
+		catch (InvocationTargetException e) {
 			throw new ArooaPropertyException(property, e);
 		}
 	}

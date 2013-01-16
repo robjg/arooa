@@ -92,7 +92,8 @@ class BeanUtilsBeanOverview implements BeanOverview {
 	public Class<?> getPropertyType(String property) throws ArooaNoPropertyException {
 		PropertyDescriptor propertyDescriptor = descriptors.get(property);
 		if (propertyDescriptor == null) {
-			throw new ArooaNoPropertyException(property, beanClass);
+			throw new ArooaNoPropertyException(property, beanClass, 
+					getProperties());
 		}
 		if (propertyDescriptor instanceof IndexedPropertyDescriptor) {
 			return ((IndexedPropertyDescriptor) 
@@ -155,7 +156,8 @@ class BeanUtilsBeanOverview implements BeanOverview {
 	public boolean isIndexed(String property) throws ArooaNoPropertyException {
 		PropertyDescriptor propertyDescriptor = descriptors.get(property);
 		if (propertyDescriptor == null) {
-			throw new ArooaNoPropertyException(property, beanClass);
+			throw new ArooaNoPropertyException(property, beanClass,
+					getProperties());
 		}
 		return propertyDescriptor instanceof IndexedPropertyDescriptor;
 	}
@@ -163,7 +165,8 @@ class BeanUtilsBeanOverview implements BeanOverview {
 	public boolean isMapped(String property) throws ArooaNoPropertyException {
 		PropertyDescriptor propertyDescriptor = descriptors.get(property);
 		if (propertyDescriptor == null) {
-			throw new ArooaNoPropertyException(property, beanClass);
+			throw new ArooaNoPropertyException(property, beanClass,
+					getProperties());
 		}
 		return propertyDescriptor instanceof MappedPropertyDescriptor;
 	}

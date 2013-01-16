@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.beanutils.DynaBean;
-import org.apache.commons.beanutils.DynaClass;
 import org.apache.commons.beanutils.DynaProperty;
 
 /**
@@ -18,12 +17,12 @@ import org.apache.commons.beanutils.DynaProperty;
 public class MagicBean implements Serializable, DynaBean {
 	private static final long serialVersionUID = 2010030100L;
 	
-	private final DynaClass beanClass;
+	private final MagicBeanClass beanClass;
 
 	private final Map<String, Object> values = 
 		Collections.synchronizedMap(new HashMap<String, Object>());
 	
-	public MagicBean(DynaClass beanClass) {
+	public MagicBean(MagicBeanClass beanClass) {
 		this.beanClass = beanClass;
 	}
 	
@@ -93,7 +92,13 @@ public class MagicBean implements Serializable, DynaBean {
 	}
 	
 	@Override
-	public DynaClass getDynaClass() {
+	public MagicBeanClass getDynaClass() {
 		return beanClass;
+	}
+	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + ":" + beanClass.getMagicBeanName() + 
+				"@" + Integer.toHexString(hashCode());
 	}
 }

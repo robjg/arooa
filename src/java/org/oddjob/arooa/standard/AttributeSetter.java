@@ -100,7 +100,8 @@ class AttributeSetter {
 			
 			if (!beanOverview.hasWriteableProperty(propertyName)) {
 				throw new ArooaNoPropertyException(propertyName, 
-						classIdentifier.forClass());
+						classIdentifier.forClass(),
+						beanOverview.getProperties());
 			}
 			
 			ConfiguredHow configuredHow = new BeanDescriptorHelper(

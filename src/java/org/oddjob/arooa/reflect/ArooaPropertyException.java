@@ -3,7 +3,9 @@ package org.oddjob.arooa.reflect;
 import org.oddjob.arooa.ArooaConfigurationException;
 
 /**
- * An exception used when creation fails.
+ * An exception used when property access fails.
+ * 
+ * @author rob
  */
 public class ArooaPropertyException extends ArooaConfigurationException {
 	private static final long serialVersionUID = 20090130L;

@@ -21,7 +21,7 @@ public class MagicBeanClass implements Serializable, DynaClass {
 	public MagicBeanClass(DynaProperty[] properties, 
 			String name) {
 		this.properties = properties;
-		this.name = MagicBeanClass.class.getSimpleName() + name;
+		this.name = name;
 		
 		for (DynaProperty property : properties) {
 			map.put(property.getName(), property);
@@ -40,12 +40,16 @@ public class MagicBeanClass implements Serializable, DynaClass {
 	
 	@Override
 	public String getName() {
-		return name;
+		return MagicBean.class.getName() + ":" + name;
 	}
 	
 	@Override
 	public DynaBean newInstance() throws IllegalAccessException,
 			InstantiationException {
 		return new MagicBean(this);
+	}
+	
+	public String getMagicBeanName() {
+		return name;
 	}
 }

@@ -38,4 +38,15 @@ public class MagicBeanTest extends TestCase {
 		
 		assertEquals("apple", fruit);
 	}
+	
+	public void testToString() {
+		
+		MagicBeanClass beanClass = new MagicBeanClass(
+				new DynaProperty[] { }, "snack");
+		
+		MagicBean test = new MagicBean(beanClass);
+		
+		assertEquals("MagicBean:snack@" + Integer.toHexString(test.hashCode()), 
+				test.toString());
+	}
 }

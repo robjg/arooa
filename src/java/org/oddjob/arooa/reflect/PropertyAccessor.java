@@ -56,7 +56,7 @@ public interface PropertyAccessor {
 	throws ArooaPropertyException;
 
 	/**
-	 * Get the class name that can be used with getBeanOverview().
+	 * Get the {@link ArooaClass} for a bean.
 	 * 
 	 * @param bean
 	 * @return
@@ -64,7 +64,10 @@ public interface PropertyAccessor {
 	public ArooaClass getClassName(Object bean);
 	
 	/**
-	 * Provide {@link org.oddjob.arooo.BeanOverview}.
+	 * Provide {@link org.oddjob.arooo.BeanOverview}. Note that this
+	 * will provide the overview for the Java class. If using a bean
+	 * that might be a dynabean then use 
+	 * <code>getArooaClass(bean).getBeanOverview()</code> instead.
 	 * 
 	 * @param forClassCl
 	 * @return
