@@ -56,6 +56,33 @@ public class ArooaObject implements ArooaValue, Serializable {
 	}
 	
 	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof ArooaObject)) {
+			return false;
+		}
+		
+		ArooaObject other = (ArooaObject) obj;
+		
+		if (this.value == null) {
+			return other.value == null;
+		}
+		
+		return this.value.equals(other.value);
+	}
+
+	@Override
+	public int hashCode() {
+		if (value == null) {
+			return 0;
+		}
+		return value.hashCode();
+	}
+	
+	@Override
 	public String toString() {
 		if (value == null) {
 			return "null";
