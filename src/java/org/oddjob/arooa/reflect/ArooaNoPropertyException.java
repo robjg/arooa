@@ -27,6 +27,12 @@ public class ArooaNoPropertyException extends ArooaPropertyException {
 	}
 	
 	public ArooaNoPropertyException(String property, 
+			String message, Throwable e) {
+		
+		super(property, message, e); 		
+	}
+	
+	public ArooaNoPropertyException(String property, 
 			String tag, Location location, 
 			Class<?> clazz, String[] validProperties, 
 			Throwable e) {

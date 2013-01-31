@@ -258,7 +258,7 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
     }
     	
 	public void testNestedSet() {
-		OuterBean subject = new OuterBean();
+		OuterBeanForSetters subject = new OuterBeanForSetters();
 		PropertyAccessor test = 
 			new BeanUtilsPropertyAccessor().accessorWithConversions(CONVERTER);
 		
@@ -293,19 +293,27 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
 	}	
     
 	public void testNestedGet() {
-		OuterBean subject = new OuterBean();
+		OuterBeanForGetters subject = new OuterBeanForGetters();
 		PropertyAccessor test = 
 			new BeanUtilsPropertyAccessor().accessorWithConversions(CONVERTER);
 		
-        // test setting null
-        subject.nested.five = "five";
+        assertEquals("test", test.getProperty(subject, "nested.five"));
         
-        assertEquals("five", test.getProperty(subject, "nested.five"));
-        
-        subject.nested.nine = new File[] { new File("nine.txt") };
-        
-        assertEquals(new File("nine.txt"), 
+        assertEquals(new File("hello.txt"), 
         		test.getProperty(subject, "nested.nine[0]"));
+        
+	}
+
+	public void testSecondLevelNestedGet() {
+		
+		SecondLevelGetters subject = new SecondLevelGetters();
+		PropertyAccessor test = 
+			new BeanUtilsPropertyAccessor().accessorWithConversions(CONVERTER);
+		
+        assertEquals("test", test.getProperty(subject, "more.nested.five"));
+        
+        assertEquals(new File("hello.txt"), 
+        		test.getProperty(subject, "more.nested.nine[0]"));
 	}
 	
 	/**
@@ -368,13 +376,28 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
      * Fixture - For test nested properties.
      * 
      */
-	public static class OuterBean {
+	public static class OuterBeanForSetters {
 		ThingWithSetters nested = new ThingWithSetters();
 		public ThingWithSetters getNested() {
 			return nested; 
 		}
 	}
 
+	public static class OuterBeanForGetters {
+		ThingWithGetters nested = new ThingWithGetters();
+		public ThingWithGetters getNested() {
+			return nested; 
+		}
+	}
+	
+    public static class SecondLevelGetters {
+    	
+    	OuterBeanForGetters more = new OuterBeanForGetters();
+    	
+    	public OuterBeanForGetters getMore() {
+			return more;
+		}
+    }
     
     /**
      * Fixture - Object with lots of different types

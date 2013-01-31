@@ -4,6 +4,7 @@
 package org.oddjob.arooa.beanutils;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +29,7 @@ import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyAccessException;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+import org.oddjob.arooa.reflect.PropertyExceptionBuilder;
 import org.oddjob.arooa.reflect.PropertySetException;
 
 /**
@@ -36,8 +38,7 @@ import org.oddjob.arooa.reflect.PropertySetException;
 public class BeanUtilsPropertyAccessor implements PropertyAccessor {
 	private static final Logger logger = Logger.getLogger(BeanUtilsPropertyAccessor.class);
 	
-	private static final Map<Class<?>, Class<?>> PRIMITIVE_TYPE_MAP = 
-		new HashMap<Class<?>, Class<?>>(8);
+	public static final Map<Class<?>, Class<?>> PRIMITIVE_TYPE_MAP;
 	
 	// Set up PRIMITIVE_TYPE_MAP
 	static {
@@ -47,9 +48,12 @@ public class BeanUtilsPropertyAccessor implements PropertyAccessor {
 	    Class<?>[] wrappers = {Boolean.class, Byte.class, Character.class,
 	                        Short.class, Integer.class, Long.class,
 	                        Float.class, Double.class};
+		Map<Class<?>, Class<?>> map = 
+				new HashMap<Class<?>, Class<?>>(8);
 	    for (int i = 0; i < primitives.length; i++) {
-	        PRIMITIVE_TYPE_MAP.put (primitives[i], wrappers[i]);
+	        map.put (primitives[i], wrappers[i]);
 	    }
+	    PRIMITIVE_TYPE_MAP = Collections.unmodifiableMap(map);
 	}
 	
 	static {
@@ -394,9 +398,12 @@ public class BeanUtilsPropertyAccessor implements PropertyAccessor {
 			throw new ArooaPropertyException(property, e);
 		} 
 		catch (NoSuchMethodException e) {
-			throw new ArooaNoPropertyException(property, bean.getClass(), 
-					getClassName(bean).getBeanOverview(this).getProperties(),
-					e);
+			
+			throw new PropertyExceptionBuilder(
+					).forBean(bean
+					).withOverview(getClassName(bean).getBeanOverview(this)
+					).causedBy(e
+					).failedReadingPropertyException(property);
 		} 
 		catch (InvocationTargetException e) {
 			throw new ArooaPropertyException(property, e);

@@ -41,6 +41,12 @@ public class MagicBeanClassCreator {
 	 * @param type The type of the property.
 	 */
 	public void addProperty(String name, Class<?> type) {
+		if (type.isPrimitive()) {
+			type = BeanUtilsPropertyAccessor.PRIMITIVE_TYPE_MAP.get(type);
+		}
+		if (type == null) {
+			throw new IllegalArgumentException("No Type.");
+		}
 		propertyNamesAndTypes.put(name, type);
 	}
 	

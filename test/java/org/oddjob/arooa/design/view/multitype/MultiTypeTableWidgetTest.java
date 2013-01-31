@@ -59,7 +59,7 @@ public class MultiTypeTableWidgetTest extends XMLTestCase {
 		
 	public static class Snack {
 		
-		public void setFruit(String name, Fruit fruit) {
+		public void setFruit(String name, Object fruit) {
 			
 		}
 	}

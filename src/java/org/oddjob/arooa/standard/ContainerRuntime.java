@@ -118,8 +118,11 @@ abstract class ContainerRuntime extends StandardRuntime {
 			throw new ArooaPropertyException(
 					getPropertyDefinition().getPropertyName(), e);
 		} catch (ConversionFailedException e) {
+			String propertyName = getPropertyDefinition(
+					).getPropertyName();
 			throw new ArooaPropertyException(
-					getPropertyDefinition().getPropertyName(), e);
+					propertyName, "Property, [" + propertyName + 
+					"] value [" + from + "]", e);
 		}
     }
 }

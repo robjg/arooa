@@ -6,8 +6,6 @@ package org.oddjob.arooa.design.view;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -28,6 +26,8 @@ public class TabGroupView implements SwingItemView {
 	
 	private final JTabbedPane tabbedPane;
 	
+	private boolean resizable;
+	
 	public TabGroupView(TabGroup fieldGroup) {
 		
 		tabbedPane = new JTabbedPane();
@@ -37,31 +37,29 @@ public class TabGroupView implements SwingItemView {
 			FormItem designDefinition = fieldGroup.get(i); 
 			SwingItemView viewProducer = SwingItemFactory.create(designDefinition);
 
-			JPanel form = new JPanel();
-			form.setLayout(new GridBagLayout());
-			
-			GridBagConstraints c = new GridBagConstraints();
-			c.weightx = 1.0;
-			c.weighty = 0.0;
-			c.fill = GridBagConstraints.HORIZONTAL;
-			c.anchor = GridBagConstraints.NORTHWEST;
-			
-			c.insets = new Insets(Looks.DETAIL_FORM_BORDER, 
-					Looks.DETAIL_FORM_BORDER, 
-					Looks.DETAIL_FORM_BORDER, 
-					Looks.DETAIL_FORM_BORDER);
-			
-			c.gridx = 0;
-			c.gridy = 0;
+			FormPanel form = new FormPanel();
 			
 			panelRow = viewProducer.inline(form, panelRow, 0, 
 					false);
 			
-			c.gridy = panelRow;
-			
-			// pad the bottom.
-			c.weighty = 1.0;
-			form.add(new JPanel(), c);
+			if (form.isVerticallyResizable()) {
+				resizable = true;
+			}
+			else {
+				GridBagConstraints c = new GridBagConstraints();
+				
+				c.weightx = 1.0;
+				c.weighty = 0.0;
+				c.fill = GridBagConstraints.BOTH;
+				c.anchor = GridBagConstraints.NORTHWEST;
+				
+				c.gridx = 0;
+				c.gridy = panelRow;
+				
+				// pad the bottom.
+				c.weighty = 1.0;
+				form.add(new JPanel(), c);
+			}
 			
 			tabbedPane.addTab(designDefinition.getTitle(), form);
 			
@@ -85,14 +83,19 @@ public class TabGroupView implements SwingItemView {
 		GridBagConstraints c = new GridBagConstraints();
 
 		c.weightx = 1.0;
-		c.weighty = 0.0;
-		
-		// label.
-		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.NORTHWEST;
 		c.gridx = column;
 		c.gridy = row;
 		c.gridwidth = GridBagConstraints.REMAINDER;
+		
+		if (resizable) {
+			c.weighty = 1.0;
+			c.fill = GridBagConstraints.BOTH;
+		}
+		else {
+			c.weighty = 0.0;
+			c.fill = GridBagConstraints.HORIZONTAL;
+		}
 		
 		container.add(tabbedPane, c);
 		

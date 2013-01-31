@@ -15,6 +15,7 @@ import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.oddjob.arooa.reflect.ArooaNoPropertyException;
 import org.oddjob.arooa.reflect.BeanOverview;
+import org.oddjob.arooa.reflect.PropertyExceptionBuilder;
 
 class BeanUtilsBeanOverview implements BeanOverview {
 
@@ -92,8 +93,10 @@ class BeanUtilsBeanOverview implements BeanOverview {
 	public Class<?> getPropertyType(String property) throws ArooaNoPropertyException {
 		PropertyDescriptor propertyDescriptor = descriptors.get(property);
 		if (propertyDescriptor == null) {
-			throw new ArooaNoPropertyException(property, beanClass, 
-					getProperties());
+			throw new PropertyExceptionBuilder(
+					).forClass(beanClass
+					).withOverview(this
+					).noPropertyException(property);
 		}
 		if (propertyDescriptor instanceof IndexedPropertyDescriptor) {
 			return ((IndexedPropertyDescriptor) 

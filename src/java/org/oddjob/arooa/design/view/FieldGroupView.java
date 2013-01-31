@@ -6,12 +6,9 @@ package org.oddjob.arooa.design.view;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.swing.JPanel;
 
 import org.oddjob.arooa.design.screem.BorderedGroup;
 import org.oddjob.arooa.design.screem.FieldGroup;
@@ -25,12 +22,11 @@ public class FieldGroupView implements SwingItemView {
 	private final List<SwingItemView> childViews = 
 		new ArrayList<SwingItemView>();
 	
-	private final JPanel panel;
+	private final FormPanel panel;
 	
 	public FieldGroupView(FieldGroup fieldGroup) {
 		
-		panel = new JPanel();
-		panel.setLayout(new GridBagLayout());
+		panel = new FormPanel();
 		if (fieldGroup instanceof BorderedGroup) {
 			panel.setBorder(Looks.groupBorder(fieldGroup.getTitle()));
 		}
@@ -63,14 +59,19 @@ public class FieldGroupView implements SwingItemView {
 		GridBagConstraints c = new GridBagConstraints();
 
 		c.weightx = 1.0;
-		c.weighty = 0.0;
-		
-		// label.
-		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.NORTHWEST;
 		c.gridx = column;
 		c.gridy = row;
 		c.gridwidth = GridBagConstraints.REMAINDER;
+		
+		if (panel.isVerticallyResizable()) {
+			c.weighty = 1.0;
+			c.fill = GridBagConstraints.BOTH;
+		}
+		else {
+			c.weighty = 0.0;
+			c.fill = GridBagConstraints.HORIZONTAL;
+		}
 		
 		container.add(panel, c);
 		

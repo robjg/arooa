@@ -44,9 +44,9 @@ public class MultiTypeTableView implements SwingItemView {
 		GridBagConstraints c = new GridBagConstraints();
 		
 		c.weightx = 1.0;
-		c.weighty = 0.0;
+		c.weighty = 0.5;
 		
-		c.fill = GridBagConstraints.HORIZONTAL;
+		c.fill = GridBagConstraints.BOTH;
 		c.anchor = GridBagConstraints.NORTHWEST;
 		
 		c.gridx = column;

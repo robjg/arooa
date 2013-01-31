@@ -56,26 +56,37 @@ public class StandardFormView implements SwingFormView {
 					standardForm.getDesign()),
 				c);
 
+		FormPanel panel = new FormPanel();
+		c.gridx = 0;
+		c.gridy = 1;
+		
+		int row = 0;
 		int items = standardForm.size();
+		
 		for (int i = 0; i < items ; ++i) {
-			c.gridx = 0;
-			c.gridy = i + 1;
-
-			JPanel panel = new JPanel();
-			panel.setLayout(new GridBagLayout());
 			
 			SwingItemView itemView = SwingItemFactory.create(
 					standardForm.getFormItem(i));
 			
-			itemView.inline(panel, 0, 0, false);
+			row = itemView.inline(panel, row, 0, false);
 
-			form.add(panel, c);
 		}
 
-		// pad the bottom.
-		c.weighty = 1.0;
-		form.add(new JPanel(), c);
+		if (panel.isVerticallyResizable()) {
+			c.weighty = 1.0;
+			c.fill = GridBagConstraints.BOTH;
+		}
+		
+		form.add(panel, c);
+		
+		if (!panel.isVerticallyResizable()) {
+			// pad the bottom.
+			c.gridy = 2;
+			c.weighty = 1.0;
+			form.add(new JPanel(), c);
+		}
 		
 		return form;
-	}	
+	}
+	
 }

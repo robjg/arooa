@@ -33,7 +33,7 @@ public class BeanFormView implements SwingFormView {
 
 	private final JComponent form;
 	
-	private final JComponent subForm;
+	private final FormPanel subForm;
 	
 	/**
 	 * Constructor.
@@ -68,21 +68,17 @@ public class BeanFormView implements SwingFormView {
 		
 		form.add(classNamePanel(), c);
 		
-		subForm = new JPanel(new GridBagLayout());
+		subForm = new FormPanel();
 		subForm.setBorder(Looks.groupBorder(null));
 		
 		populateSubForm();
 		
+		c.fill = GridBagConstraints.BOTH;
 		c.gridy = 2;
+		c.weighty = 1.0;
 		
 		form.add(subForm, c);
-		
-		// Pad the bottom.
-		c.gridy = 3;
-		c.weighty = 1.0;
-		form.add(new JPanel(), c);
-		
-		
+				
 		beanForm.addPropertyChangeListener(BeanForm.SUBFORM_PROPERTY, 
 				new PropertyChangeListener() {
 					@Override
@@ -150,8 +146,8 @@ public class BeanFormView implements SwingFormView {
 		c.gridx = 0;
 		c.gridy = 0;
 		c.weightx = 1.0;
-		c.weighty = 0;
-		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weighty = 1.0;
+		c.fill = GridBagConstraints.BOTH;
 		c.anchor = GridBagConstraints.NORTHWEST;
 		
 		subForm.add(subFormView.dialog(), c);
@@ -225,8 +221,8 @@ public class BeanFormView implements SwingFormView {
 				component.add(label, BorderLayout.CENTER);
 			}
 			else {
-				component = new JPanel(new GridBagLayout());
-							
+				FormPanel formPanel = new FormPanel();
+				
 				int row = 0;
 				
 				for (int i = 0; i < form.size(); ++i) {
@@ -234,9 +230,25 @@ public class BeanFormView implements SwingFormView {
 					SwingItemView itemView = SwingItemFactory.create(
 							form.getFormItem(i));
 					
-					row = itemView.inline(component, row, 0, false);
+					row = itemView.inline(formPanel, row, 0, false);
 				}
+				
+				if (!formPanel.isVerticallyResizable()) {
+					
+					GridBagConstraints c = new GridBagConstraints();
+					c.gridx = 0;
+					c.gridy = row;
+					c.weightx = 1.0;
+					c.weighty = 1.0;
+					c.fill = GridBagConstraints.BOTH;
+					c.anchor = GridBagConstraints.NORTHWEST;
+					
+					formPanel.add(new JPanel(), c);
+				}
+				
+				component = formPanel;
 			}
+			
 		}
 		
 		@Override

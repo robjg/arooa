@@ -17,6 +17,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
@@ -102,7 +103,10 @@ public class ValueDialog {
 		
 		JPanel all = new JPanel(new BorderLayout());
 				
-		all.add(form, BorderLayout.CENTER);	
+		JScrollPane scroll = new JScrollPane();
+		scroll.setViewportView(form);
+		
+		all.add(scroll, BorderLayout.CENTER);	
 
 		JPanel selection = new JPanel();
 		

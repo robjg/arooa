@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.EtchedBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -115,7 +116,7 @@ public class TextInputView implements SwingItemView, SwingFormView {
 		form.add(scroll, BorderLayout.CENTER);
 		
 		form.setPreferredSize(new Dimension(
-				300, 200));
+				400, 200));
 		
 		return form;	
 	}
@@ -154,16 +155,19 @@ public class TextInputView implements SwingItemView, SwingFormView {
 	public int inline(Container container, int row, int column,
 			boolean selectionInGroup) {
 		
-		Component form = dialog();
-		form.setPreferredSize(new Dimension(
+		textArea.setPreferredSize(new Dimension(
 				Looks.DETAIL_USABLE_WIDTH - 30, 200));
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.setBorder(new EtchedBorder());
+		
+		panel.add(textArea, BorderLayout.CENTER);
 		
 		GridBagConstraints c = new GridBagConstraints();
 
 		c.weightx = 1.0;
-		c.weighty = 0.0;
+		c.weighty = 1.0;
 		
-		c.fill = GridBagConstraints.HORIZONTAL;
+		c.fill = GridBagConstraints.BOTH;
 		c.anchor = GridBagConstraints.NORTHWEST;
 		
 		c.gridx = column;
@@ -173,7 +177,7 @@ public class TextInputView implements SwingItemView, SwingFormView {
 				
 		c.insets = new Insets(3, 3, 3, 3);		 
 
-		container.add(form, c);
+		container.add(textArea, c);
 		
 		return row + 1;
 	}
