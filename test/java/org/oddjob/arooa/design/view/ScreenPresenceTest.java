@@ -20,6 +20,19 @@ public class ScreenPresenceTest extends TestCase {
 		assertEquals(650.0, point.getY());
 	}
 	
+	public void testCenterNotOffScreen() {
+		
+		ScreenPresence test = new ScreenPresence(
+				new Point(0, 0),
+				new Dimension(100, 200));
+		
+		Point point = test.locationToCenter(
+				new Dimension(150, 280));
+		
+		assertEquals(0.0, point.getX(), 0.01);
+		assertEquals(0.0, point.getY(), 0.01);
+	}
+	
 	public void testSmaller() {
 		
 		ScreenPresence test = new ScreenPresence(

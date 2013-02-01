@@ -66,6 +66,13 @@ public class ScreenPresence implements Serializable {
 		int y = (int) (location.getY() + 
 				(this.size.getHeight() - height) / 2);
 		
+		if (x < 0) {
+			x = 0;
+		}
+		if (y < 0) {
+			y = 0;
+		}
+		
 		return new Point(x, y);
 	}
 	

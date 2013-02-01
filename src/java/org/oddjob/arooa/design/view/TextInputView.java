@@ -3,7 +3,6 @@
  */
 package org.oddjob.arooa.design.view;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -22,7 +21,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.border.EtchedBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -112,13 +110,10 @@ public class TextInputView implements SwingItemView, SwingFormView {
 		JScrollPane scroll = new JScrollPane();
 		scroll.setViewportView(textArea);
 
-		JPanel form = new JPanel(new BorderLayout());
-		form.add(scroll, BorderLayout.CENTER);
+		scroll.setPreferredSize(new Dimension(
+				400, 400));
 		
-		form.setPreferredSize(new Dimension(
-				400, 200));
-		
-		return form;	
+		return scroll;	
 	}
 	
 	public Component cell() {
@@ -155,12 +150,11 @@ public class TextInputView implements SwingItemView, SwingFormView {
 	public int inline(Container container, int row, int column,
 			boolean selectionInGroup) {
 		
-		textArea.setPreferredSize(new Dimension(
-				Looks.DETAIL_USABLE_WIDTH - 30, 200));
-		JPanel panel = new JPanel(new BorderLayout());
-		panel.setBorder(new EtchedBorder());
+		JScrollPane scroll = new JScrollPane();
+		scroll.setViewportView(textArea);
 		
-		panel.add(textArea, BorderLayout.CENTER);
+		scroll.setPreferredSize(new Dimension(
+				Looks.DETAIL_USABLE_WIDTH - 30, 200));
 		
 		GridBagConstraints c = new GridBagConstraints();
 
@@ -177,7 +171,7 @@ public class TextInputView implements SwingItemView, SwingFormView {
 				
 		c.insets = new Insets(3, 3, 3, 3);		 
 
-		container.add(textArea, c);
+		container.add(scroll, c);
 		
 		return row + 1;
 	}
