@@ -1,13 +1,21 @@
 package org.oddjob.arooa.beanutils;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import junit.framework.TestCase;
 
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
+import org.oddjob.arooa.ArooaType;
+import org.oddjob.arooa.ArooaValue;
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.convert.DefaultConverter;
 import org.oddjob.arooa.deploy.ArooaDescriptorDescriptorFactory;
+import org.oddjob.arooa.life.InstantiationContext;
+import org.oddjob.arooa.life.SimpleArooaClass;
+import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.BeanOverview;
@@ -31,10 +39,24 @@ public class MagicBeanDescriptorFactoryTest extends TestCase {
 		}
 	}
 
-	private void testSimpleShared(String definition) throws ArooaParseException, ArooaPropertyException, ArooaConversionException {
+	public void testSimpleDefinition() throws ArooaParseException, ArooaPropertyException, ArooaConversionException, URISyntaxException {
 		
+		String definition =
+				"<arooa:magic-beans xmlns:arooa='http://rgordon.co.uk/oddjob/arooa'" +
+				"   namespace='oddjob:magic' prefix='magic'>" +
+				" <definitions>" +
+				"  <is element='person'>" +
+				"   <properties>" +
+				"    <is name='name' type='java.lang.String'/>" +
+				"    <is name='age' type='java.lang.Integer'/>" +
+				"   </properties>" +
+				"  </is>" +
+				" </definitions>" +
+				"</arooa:magic-beans>";
+			
+
 		String xml = 
-			"<test id='t' xmlns:magic='http://rgordon.co.uk/oddjob/magic'>" +
+			"<test id='t' xmlns:magic='oddjob:magic'>" +
 			" <person>" +
 			"  <magic:person name='John' age='22'/>" +
 			" </person>" +
@@ -56,6 +78,36 @@ public class MagicBeanDescriptorFactoryTest extends TestCase {
 		ArooaDescriptor descriptor = mbdf.createDescriptor(
 				getClass().getClassLoader());
 		
+		// Check element support
+		InstantiationContext instantiationContext = 
+				new InstantiationContext(
+						ArooaType.VALUE, 
+						new SimpleArooaClass(Object.class));
+		
+		ArooaElement[] elements = descriptor.getElementMappings(
+				).elementsFor(instantiationContext);
+		
+		assertEquals(new ArooaElement(
+				new URI("oddjob:magic"), 
+				"person"), elements[0]);
+		assertEquals(1, elements.length);
+		
+		instantiationContext = 
+				new InstantiationContext(
+						ArooaType.VALUE, 
+						new SimpleArooaClass(ArooaValue.class), 
+						null,
+						new DefaultConverter());
+		
+		elements = descriptor.getElementMappings(
+				).elementsFor(instantiationContext);
+		
+		assertEquals(new ArooaElement(
+				new URI("oddjob:magic"), 
+				"person"), elements[0]);
+		assertEquals(1, elements.length);
+		
+		// Parse		
 		Stuff stuff = new Stuff();
 		
 		StandardArooaParser parser2 = new StandardArooaParser(
@@ -76,51 +128,17 @@ public class MagicBeanDescriptorFactoryTest extends TestCase {
 		assertEquals("John", name);
 	}
 	
-	public void testSimple() throws ArooaParseException, ArooaPropertyException, ArooaConversionException {
-		
-		String magic =
-			"<bean class='org.oddjob.arooa.beanutils.MagicBeanDescriptorFactory'>" +
-			" <definitions>" +
-			"  <is name='person'>" +
-			"   <properties>" +
-			"    <is name='name' type='java.lang.String'/>" +
-			"    <is name='age' type='java.lang.Integer'/>" +
-			"   </properties>" +
-			"  </is>" +
-			" </definitions>" +
-			"</bean>";
-		
-		testSimpleShared(magic);
-	}
-	
-	public void testSimpleWithMagicElements() throws ArooaParseException, ArooaPropertyException, ArooaConversionException {
-		
-		String magic =
-			"<arooa:magic-beans xmlns:arooa='http://rgordon.co.uk/oddjob/arooa'>" +
-			" <definitions>" +
-			"  <arooa:magic-bean name='person'>" +
-			"   <properties>" +
-			"    <arooa:magic-property name='name' type='java.lang.String'/>" +
-			"    <arooa:magic-property name='age' type='java.lang.Integer'/>" +
-			"   </properties>" +
-			"  </arooa:magic-bean>" +
-			" </definitions>" +
-			"</arooa:magic-beans>";
-		
-		testSimpleShared(magic);
-	}
-	
 	public void testWithPropertyAccessor() 
 	throws IllegalAccessException, InstantiationException {
 		
 		MagicBeanDefinition def = new MagicBeanDefinition();
-		def.setName("OurMagicBean");
+		def.setElement("OurMagicBean");
 
-		MagicBeanProperty prop1 = new MagicBeanProperty();
+		MagicBeanDescriptorProperty prop1 = new MagicBeanDescriptorProperty();
 		prop1.setName("fruit");
 		prop1.setType(String.class.getName());
 		
-		MagicBeanProperty prop2 = new MagicBeanProperty();
+		MagicBeanDescriptorProperty prop2 = new MagicBeanDescriptorProperty();
 		prop2.setName("quantity");
 		prop2.setType(Integer.class.getName());
 		
@@ -145,13 +163,13 @@ public class MagicBeanDescriptorFactoryTest extends TestCase {
 	public void testClassIdentifier() throws IllegalAccessException, InstantiationException {
 		
 		MagicBeanDefinition def = new MagicBeanDefinition();
-		def.setName("OurMagicBean");
+		def.setElement("OurMagicBean");
 		
-		MagicBeanProperty prop1 = new MagicBeanProperty();
+		MagicBeanDescriptorProperty prop1 = new MagicBeanDescriptorProperty();
 		prop1.setName("fruit");
 		prop1.setType(String.class.getName());
 		
-		MagicBeanProperty prop2 = new MagicBeanProperty();
+		MagicBeanDescriptorProperty prop2 = new MagicBeanDescriptorProperty();
 		prop2.setName("quantity");
 		prop2.setType(Integer.class.getName());
 		

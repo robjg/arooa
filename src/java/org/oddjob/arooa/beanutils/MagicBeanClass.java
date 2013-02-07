@@ -8,6 +8,14 @@ import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.DynaClass;
 import org.apache.commons.beanutils.DynaProperty;
 
+/**
+ * A {@link DynaClass} for {@link MagicBean}s.
+ * 
+ * @see MagicBeanClassCreator
+ * 
+ * @author rob
+ *
+ */
 public class MagicBeanClass implements Serializable, DynaClass {
 	private static final long serialVersionUID = 2010030100L;
 	

@@ -6,8 +6,14 @@ package org.oddjob.arooa.beanutils;
  * @author rob
  *
  */
-public class MagicBeanProperty {
+public class MagicBeanDescriptorProperty {
 
+	public enum PropertyType {
+		ATTRIBUTE,
+		ELEMENT,
+		TEXT
+	}
+	
 	/**
 	 * @oddjob.property
 	 * @oddjob.description The name of the property.
@@ -22,6 +28,8 @@ public class MagicBeanProperty {
 	 */
 	private String type;
 
+	private PropertyType configured;
+	
 	public String getName() {
 		return name;
 	}
@@ -36,6 +44,18 @@ public class MagicBeanProperty {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public PropertyType getConfigured() {
+		return configured;
+	}
+
+	/**
+	 * 
+	 * @param type
+	 */
+	public void setConfigured(PropertyType type) {
+		this.configured = type;
 	}
 	
 }

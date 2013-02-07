@@ -17,11 +17,11 @@ import org.oddjob.arooa.deploy.BeanDescriptorHelper;
 import org.oddjob.arooa.parsing.ArooaAttributes;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.MutableAttributes;
-import org.oddjob.arooa.reflect.ArooaNoPropertyException;
+import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.BeanOverview;
-import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+import org.oddjob.arooa.reflect.PropertyExceptionBuilder;
 import org.oddjob.arooa.runtime.ExpressionParser;
 import org.oddjob.arooa.runtime.ParsedExpression;
 import org.oddjob.arooa.types.BeanType;
@@ -99,9 +99,10 @@ class AttributeSetter {
 			}
 			
 			if (!beanOverview.hasWriteableProperty(propertyName)) {
-				throw new ArooaNoPropertyException(propertyName, 
-						classIdentifier.forClass(),
-						beanOverview.getProperties());
+				throw new PropertyExceptionBuilder().forBean(
+						instance.getWrappedObject())
+						.withOverview(beanOverview)
+						.failedWritingPropertyException(propertyName);
 			}
 			
 			ConfiguredHow configuredHow = new BeanDescriptorHelper(

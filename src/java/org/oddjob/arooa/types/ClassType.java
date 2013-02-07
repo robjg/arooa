@@ -1,10 +1,18 @@
 package org.oddjob.arooa.types;
 
+import javax.inject.Inject;
+
 import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.convert.ArooaConversionException;
+import org.oddjob.arooa.ArooaValue;
+import org.oddjob.arooa.convert.ConversionProvider;
+import org.oddjob.arooa.convert.ConversionRegistry;
+import org.oddjob.arooa.convert.Convertlet;
+import org.oddjob.arooa.convert.ConvertletException;
 import org.oddjob.arooa.deploy.annotations.ArooaHidden;
 import org.oddjob.arooa.life.ArooaSessionAware;
+import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaElement;
+import org.oddjob.arooa.reflect.ArooaClass;
 
 /**
  * @oddjob.description Returns a Class for the given name.
@@ -16,9 +24,43 @@ import org.oddjob.arooa.parsing.ArooaElement;
  * @author rob
  *
  */
-public class ClassType implements ValueFactory<Class<?>>, ArooaSessionAware {
+public class ClassType implements ArooaValue, ArooaSessionAware {
 
 	public static final ArooaElement ELEMENT = new ArooaElement("class");
+	
+	public static class Conversions implements ConversionProvider {
+		
+		@SuppressWarnings("rawtypes")
+		@Override
+		public void registerWith(ConversionRegistry registry) {
+			
+			registry.register(ClassType.class, ArooaClass.class, 
+					new Convertlet<ClassType, ArooaClass>() {
+				@Override
+				public ArooaClass convert(ClassType from)
+				throws ConvertletException {
+					try {
+						return new SimpleArooaClass(from.toClass());
+					} catch (ClassNotFoundException e) {
+						throw new ConvertletException(e);
+					}
+				}
+			});
+			
+			registry.register(ClassType.class, Class.class, 
+					new Convertlet<ClassType, Class>() {
+				@Override
+				public Class<?> convert(ClassType from)
+				throws ConvertletException {
+					try {
+						return from.toClass();
+					} catch (ClassNotFoundException e) {
+						throw new ConvertletException(e);
+					}
+				}
+			});
+		}
+	}
 	
 	/**
 	 * @oddjob.property 
@@ -43,28 +85,21 @@ public class ClassType implements ValueFactory<Class<?>>, ArooaSessionAware {
 		this.session = session;
 	}
 	
-	@Override
-	public Class<?> toValue() throws ArooaConversionException {
+	public Class<?> toClass() throws ClassNotFoundException {
 		if (name == null) {
 			return null;
 		}
 		
 		ClassLoader loader = this.classLoader;
 		if (loader != null) {
-			try {
-				return Class.forName(name, true, loader);
-			}
-			catch (ClassNotFoundException e) {
-				throw new ArooaConversionException(e);
-			}
+			return Class.forName(name, true, loader);
 		} 
 		
 		Class<?> result = 
 			session.getArooaDescriptor().getClassResolver().findClass(name);
 
 		if (result == null) {
-			throw new ArooaConversionException(
-					new ClassNotFoundException(name));
+			throw new ClassNotFoundException(name);
 		}
 		return result;
 	}
@@ -81,6 +116,7 @@ public class ClassType implements ValueFactory<Class<?>>, ArooaSessionAware {
 		return classLoader;
 	}
 
+	@Inject
 	public void setClassLoader(ClassLoader classLoader) {
 		this.classLoader = classLoader;
 	}

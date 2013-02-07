@@ -4,13 +4,16 @@ import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaValue;
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.convert.ArooaConverter;
+import org.oddjob.arooa.convert.ConversionFailedException;
 import org.oddjob.arooa.convert.ConversionLookup;
 import org.oddjob.arooa.convert.ConversionProvider;
 import org.oddjob.arooa.convert.ConversionRegistry;
 import org.oddjob.arooa.convert.ConversionStep;
 import org.oddjob.arooa.convert.Joker;
+import org.oddjob.arooa.convert.NoConversionAvailableException;
 import org.oddjob.arooa.deploy.annotations.ArooaHidden;
 import org.oddjob.arooa.life.ArooaSessionAware;
+import org.oddjob.arooa.life.Configured;
 import org.oddjob.arooa.parsing.ArooaElement;
 
 /**
@@ -71,7 +74,15 @@ public class ConvertType<T> implements ArooaValue, ArooaSessionAware {
 	 * @oddjob.required No. If missing the result of the conversion will be
 	 * null.
 	 */
-	private Object value;
+	private ArooaValue value;
+	
+	
+	/**
+	 * @oddjob.property
+	 * @oddjob.description The result of the conversion.
+	 * @oddjob.required Read Only.
+	 */
+	private T is;
 	
 	/** The session, automatically set. */
 	private ArooaSession session;
@@ -82,11 +93,31 @@ public class ConvertType<T> implements ArooaValue, ArooaSessionAware {
 		this.session = session;
 	}
 	
-	public T convert() throws ArooaConversionException {
+	@Configured
+	public void configured() throws NoConversionAvailableException, ConversionFailedException {
 		
+		is = convert();
+
+	}
+	
+	/**
+	 * Proivde the conversion.
+	 * 
+	 * @return
+	 * @throws ConversionFailedException 
+	 * @throws NoConversionAvailableException 
+	 */
+	@SuppressWarnings("unchecked")
+	public T convert() throws NoConversionAvailableException, ConversionFailedException {
+		
+		Class<?> to = this.to;
+		if (to == null) {
+			to = Object.class;
+		}
+
 		ArooaConverter converter = session.getTools().getArooaConverter();
 		
-		return converter.convert(value, to);
+		return (T) converter.convert(value, to);
 	}
 
 	public Class<T> getTo() {
@@ -97,11 +128,21 @@ public class ConvertType<T> implements ArooaValue, ArooaSessionAware {
 			this.to = to;
 	}
 
-	public Object getValue() {
+	public ArooaValue getValue() {
 		return value;
 	}
 
-	public void setValue(Object from) {
+	public void setValue(ArooaValue from) {
 		this.value = from;
+	}
+
+	public Object getIs() {
+		return is;
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + ": [" + value + "] to [" +
+				to + "] is [" + is + "]";
 	}
 }

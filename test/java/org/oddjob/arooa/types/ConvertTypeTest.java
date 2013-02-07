@@ -13,7 +13,7 @@ public class ConvertTypeTest extends TestCase {
 		
 		ConvertType<Integer> test = new ConvertType<Integer>();
 		test.setArooaSession(new StandardArooaSession());
-		test.setValue("42");
+		test.setValue(new ArooaObject("42"));
 		test.setTo(Integer.class);
 				
 		assertEquals(new Integer(42), test.convert());
@@ -30,7 +30,7 @@ public class ConvertTypeTest extends TestCase {
 		
 		ConvertType<String[]> test = new ConvertType<String[]>();
 		test.setArooaSession(session);
-		test.setValue("a, b, c");
+		test.setValue(new ArooaObject("a, b, c"));
 		test.setTo(String[].class);
 				
 		ArooaConverter converter = session.getTools().getArooaConverter();

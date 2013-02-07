@@ -12,13 +12,13 @@ public class MagicBeanDefinitionTest extends TestCase {
 		
 		MagicBeanDefinition def = new MagicBeanDefinition();
 		
-		def.setName("SnackBean");
+		def.setElement("SnackBean");
 		
-		MagicBeanProperty prop1 = new MagicBeanProperty();
+		MagicBeanDescriptorProperty prop1 = new MagicBeanDescriptorProperty();
 		prop1.setName("fruit");
 		prop1.setType("java.lang.String");
 		
-		MagicBeanProperty prop2 = new MagicBeanProperty();
+		MagicBeanDescriptorProperty prop2 = new MagicBeanDescriptorProperty();
 		prop2.setName("quantity");
 		prop2.setType("java.lang.Integer");
 		

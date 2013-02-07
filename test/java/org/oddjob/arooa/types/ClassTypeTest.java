@@ -11,7 +11,7 @@ import org.oddjob.arooa.standard.StandardArooaSession;
 
 public class ClassTypeTest extends TestCase {
 
-	public void testClassForWithNoLoader() throws ArooaConversionException {
+	public void testClassForWithNoLoader() throws ArooaConversionException, ClassNotFoundException {
 		
 		ArooaSession session = new StandardArooaSession();
 		
@@ -20,7 +20,7 @@ public class ClassTypeTest extends TestCase {
 		test.setArooaSession(session);
 		test.setName(String.class.getName());
 		
-		assertEquals(String.class, test.toValue());
+		assertEquals(String.class, test.toClass());
 	}
 	
 	public void testClassForWithBadLoader() {
@@ -32,16 +32,15 @@ public class ClassTypeTest extends TestCase {
 				new URLClassLoader(new URL[0], null));
 		
 		try {
-			test.toValue();
+			test.toClass();
 			fail("Exception expected.");
 		}
-		catch (ArooaConversionException e) {
-			assertEquals(ClassNotFoundException.class,
-					e.getCause().getClass());
+		catch (ClassNotFoundException e) {
+			// expected
 		}
 	}
 	
-	public void testLoadingStringType() throws ArooaConversionException {
+	public void testLoadingStringType() throws ArooaConversionException, ClassNotFoundException {
 		
 		ClassType test = new ClassType();
 		
@@ -49,7 +48,7 @@ public class ClassTypeTest extends TestCase {
 		
 		test.setClassLoader(getClass().getClassLoader());
 		
-		Class<?> result = test.toValue();
+		Class<?> result = test.toClass();
 		
 		assertEquals(String[].class, result);
 	}	

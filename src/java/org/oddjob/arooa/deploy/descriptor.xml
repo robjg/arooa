@@ -16,9 +16,5 @@
 			className="org.oddjob.arooa.types.XMLConfigurationType"/>
 		<is element="magic-beans"
 			className="org.oddjob.arooa.beanutils.MagicBeanDescriptorFactory"/>
-		<is element="magic-bean"
-			className="org.oddjob.arooa.beanutils.MagicBeanDefinition"/>
-		<is element="magic-property"
-			className="org.oddjob.arooa.beanutils.MagicBeanProperty"/>
 	</values>
 </bean>

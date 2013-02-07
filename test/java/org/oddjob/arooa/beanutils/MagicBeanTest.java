@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.apache.commons.beanutils.DynaProperty;
-
 import junit.framework.TestCase;
+
+import org.apache.commons.beanutils.DynaProperty;
 
 public class MagicBeanTest extends TestCase {
 
@@ -49,4 +49,5 @@ public class MagicBeanTest extends TestCase {
 		assertEquals("MagicBean:snack@" + Integer.toHexString(test.hashCode()), 
 				test.toString());
 	}
+	
 }

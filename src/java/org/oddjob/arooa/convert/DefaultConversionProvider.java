@@ -20,6 +20,7 @@ import org.oddjob.arooa.convert.convertlets.URLConvertlets;
 import org.oddjob.arooa.convert.jokers.ArrayConversions;
 import org.oddjob.arooa.convert.jokers.EnumConversions;
 import org.oddjob.arooa.types.ArooaObject;
+import org.oddjob.arooa.types.ClassType;
 import org.oddjob.arooa.types.ConvertType;
 import org.oddjob.arooa.types.IdentifiableValueType;
 import org.oddjob.arooa.types.ImportType;
@@ -100,6 +101,7 @@ public class DefaultConversionProvider implements ConversionProvider {
 		new XMLType.Conversions().registerWith(registry);
 		new ImportType.Conversions().registerWith(registry);
 		new ListType.Conversions().registerWith(registry);
+		new ClassType.Conversions().registerWith(registry);
 		new ConvertType.Conversions().registerWith(registry);
 		// Some general conversions.
 		new EnumConversions().registerWith(registry);

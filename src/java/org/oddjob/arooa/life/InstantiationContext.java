@@ -149,4 +149,12 @@ public class InstantiationContext {
 	public ArooaConverter getArooaConverter() {
 		return converter;
 	}
+	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + ": arooaClass=" + arooaClass +
+				", arooaType=" + arooaType + 
+				", classResolver=" + classResolver + 
+				", converter=" + converter;
+	}
 }

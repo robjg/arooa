@@ -1,7 +1,9 @@
 package org.oddjob.arooa.types;
 
 import org.custommonkey.xmlunit.XMLTestCase;
+import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaParseException;
+import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.design.DesignFactory;
 import org.oddjob.arooa.design.DesignInstance;
@@ -101,5 +103,26 @@ public class BeanTypeTest extends XMLTestCase {
 		
 		assertEquals(3, friends.length);
 		
+	}
+	
+	// Class can't be a runtime property!!!
+	public void testClassAtRuntime() throws ArooaParseException {
+		
+		String xml = 
+				"<bean class='${the-class}' name='John'/>";
+
+		ArooaSession session = new StandardArooaSession();
+		
+		session.getBeanRegistry().register("the-class", PersonBean.class);
+		
+		StandardFragmentParser parser = new StandardFragmentParser();
+		
+		try {
+			parser.parse(new XMLConfiguration("TEST", xml));
+		}
+		catch (ArooaParseException e) {
+			ArooaException e2 = (ArooaException) e.getCause();
+			assertEquals("Can't find class ${the-class}", e2.getMessage());
+		}
 	}
 }
