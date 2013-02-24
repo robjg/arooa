@@ -56,8 +56,11 @@ public class AnnotatedBeanDescriptorTest extends TestCase {
 		
 		assertNotNull(beanDescriptor);
 		
-		assertNotNull(beanDescriptor.getParsingInterceptor());
-
+		ParsingInterceptor interceptor = 
+				beanDescriptor.getParsingInterceptor();
+		
+		assertEquals(OurInterceptor.class, interceptor.getClass());
+		
 		assertEquals("myText", beanDescriptor.getTextProperty());
 		
 		assertEquals("myComp", beanDescriptor.getComponentProperty());

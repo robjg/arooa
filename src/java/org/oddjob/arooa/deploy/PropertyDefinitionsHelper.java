@@ -224,7 +224,9 @@ public class PropertyDefinitionsHelper implements ArooaBeanDescriptor {
 			addAnnotationDefinition(def);
 		}
 		
-		setParsingInterceptor(beanDef.getInterceptor());
+		if (beanDef.getInterceptor() != null) {
+			setParsingInterceptor(beanDef.getInterceptor());
+		}
 	}
 	
 	public String getComponentProperty() {

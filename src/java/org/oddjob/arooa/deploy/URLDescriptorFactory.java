@@ -1,6 +1,7 @@
 package org.oddjob.arooa.deploy;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
@@ -30,6 +31,14 @@ implements ArooaDescriptorFactory {
 		this.urls = urls;
 	}
 	
+	/**
+	 * Constructor for individual URLs.
+	 * 
+	 * @param urls The urls.
+	 */
+	public URLDescriptorFactory(URL... urls) {
+		this(Arrays.asList(urls));
+	}
 	
 	public ArooaDescriptor createDescriptor(ClassLoader classLoader) {
 

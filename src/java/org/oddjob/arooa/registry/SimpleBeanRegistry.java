@@ -5,6 +5,7 @@ package org.oddjob.arooa.registry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -41,7 +42,7 @@ public class SimpleBeanRegistry implements BeanRegistry {
 
 	/** Maps components to ids. */
 	private final Map<Object, String> components = 
-		new HashMap<Object, String>();
+		new LinkedHashMap<Object, String>();
 	
 	private final PropertyAccessor propertyAcessor;
 	

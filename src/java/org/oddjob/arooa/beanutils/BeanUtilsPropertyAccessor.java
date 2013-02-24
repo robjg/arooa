@@ -16,6 +16,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.apache.log4j.Logger;
 import org.oddjob.arooa.ArooaException;
+import org.oddjob.arooa.ArooaValue;
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.convert.ConversionFailedException;
@@ -57,17 +58,16 @@ public class BeanUtilsPropertyAccessor implements PropertyAccessor {
 	}
 	
 	static {
-		ArooaClasses.register(Object.class, 
-				new ArooaClassFactory<Object>() {
-			
+		
+		final ArooaClassFactory<Object> simple = new ArooaClassFactory<Object>() {
 			@Override
 			public ArooaClass classFor(Object instance) {
 				
 				return new SimpleArooaClass(instance.getClass());
 			}
-		});		
-		ArooaClasses.register(DynaBean.class, 
-				new ArooaClassFactory<DynaBean>() {
+		};
+		
+		final ArooaClassFactory<DynaBean> dyna = new ArooaClassFactory<DynaBean>() {
 			
 			@Override
 			public ArooaClass classFor(DynaBean instance) {
@@ -76,7 +76,28 @@ public class BeanUtilsPropertyAccessor implements PropertyAccessor {
 						instance.getDynaClass(),
 						DynaBean.class);
 			}
-		});
+		};
+
+		ArooaClasses.register(Object.class, simple);		
+		ArooaClasses.register(DynaBean.class, dyna);
+		
+		// this is because the underlying implementation uses converter
+		// which shouldn't be this classes fault!		
+		ArooaClassFactory<ArooaValue> arooa = new ArooaClassFactory<ArooaValue>() {
+			
+			@Override
+			public ArooaClass classFor(ArooaValue instance) {
+	
+				if (instance instanceof DynaClass) {
+					return dyna.classFor((DynaBean) instance);
+				}
+				else {
+					return simple.classFor(instance);
+				}
+			}
+		};
+		
+		ArooaClasses.register(ArooaValue.class, arooa);
 	}
 	
 	private final PropertyUtilsBean propertyUtilsBean;

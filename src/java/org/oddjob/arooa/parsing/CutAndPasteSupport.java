@@ -35,7 +35,7 @@ public class CutAndPasteSupport {
 	public CutAndPasteSupport(ArooaContext instanceContext) {
 		this.instanceContext = instanceContext;
 		
-		ArooaSession session = instanceContext.getSession(); 
+		ArooaSession session = instanceContext.getSession();
 		
 		PropertyAccessor accessor = session.getTools().getPropertyAccessor();
 		

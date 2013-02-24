@@ -201,7 +201,7 @@ public class SimpleComponentPool implements ComponentPool {
 	    	new HashMap<Object, ComponentTrinity>();
 	    
 	    /** ComponentTrinities mapped by the component. 
-	     * Not this map maintains order added for iteration. */
+	     * Note this map maintains order added for iteration. */
 	    private final Map<Object, ComponentTrinity> componentsTo = 
 	    	new LinkedHashMap<Object, ComponentTrinity>();
 	        

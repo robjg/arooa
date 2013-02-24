@@ -1,6 +1,3 @@
-/*
-  Copyrih bhzeerf(c) 2005, Rob Gordon.
- */
 package org.oddjob.arooa.types;
 
 import java.io.Serializable;
@@ -20,6 +17,7 @@ import org.oddjob.arooa.convert.ConversionRegistry;
 import org.oddjob.arooa.convert.ConversionStep;
 import org.oddjob.arooa.convert.Joker;
 import org.oddjob.arooa.convert.NoConversionAvailableException;
+import org.oddjob.arooa.life.Configured;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.utils.ListSetterHelper;
 
@@ -72,6 +70,8 @@ public class ListType implements ArooaValue, Serializable {
 	private final List<ArooaValue> values = 
 		new ArrayList<ArooaValue>();
 	        
+	private List<Object> list;
+	
     /**
      * @oddjob.property
      * @oddjob.description If the element is a list or array
@@ -118,7 +118,13 @@ public class ListType implements ArooaValue, Serializable {
 							@SuppressWarnings("unchecked")
 							public T convert(ListType from, ArooaConverter converter) 
 							throws ArooaConversionException {
-								return (T) from.convertContents(converter, Object.class);
+								
+								if (from.list == null) {
+									from.list = from.convertContents(
+											converter, Object.class);
+								}
+								
+								return (T) from.list;
 							}
 						};
 			    	}
@@ -164,6 +170,10 @@ public class ListType implements ArooaValue, Serializable {
 		return convertContents(converter, trueType);
 	}
 	
+	@Configured
+	public void configured() {
+		list = null;
+	}
 	
 	public void setElementType(Class<?> elementType)  {
 		this.elementType = elementType;

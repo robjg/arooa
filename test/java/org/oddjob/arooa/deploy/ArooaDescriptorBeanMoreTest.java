@@ -3,13 +3,19 @@ package org.oddjob.arooa.deploy;
 import junit.framework.TestCase;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
+import org.oddjob.arooa.ArooaConfigurationException;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ConfiguredHow;
+import org.oddjob.arooa.ParsingInterceptor;
 import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
 import org.oddjob.arooa.deploy.PropertyDefinition.PropertyType;
+import org.oddjob.arooa.deploy.annotations.ArooaComponent;
 import org.oddjob.arooa.deploy.annotations.ArooaElement;
 import org.oddjob.arooa.deploy.annotations.ArooaHidden;
+import org.oddjob.arooa.deploy.annotations.ArooaInterceptor;
+import org.oddjob.arooa.deploy.annotations.ArooaText;
 import org.oddjob.arooa.life.SimpleArooaClass;
+import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
 public class ArooaDescriptorBeanMoreTest extends TestCase {
@@ -74,7 +80,15 @@ public class ArooaDescriptorBeanMoreTest extends TestCase {
 		assertEquals("stuff", beanDescriptor.getComponentProperty());		
 	}
 	
+	public static class OurBean2Interceptor implements ParsingInterceptor {
+		@Override
+		public ArooaContext intercept(ArooaContext suggestedContext)
+				throws ArooaConfigurationException {
+			return null;
+		}
+	}
 	
+	@ArooaInterceptor("org.oddjob.arooa.deploy.ArooaDescriptorBeanMoreTest$OurBean2Interceptor")
 	public static class OurBean2 {
 		
 		@ArooaHidden
@@ -84,6 +98,16 @@ public class ArooaDescriptorBeanMoreTest extends TestCase {
 		
 		@ArooaElement
 		public void setColour(String colour) {
+			
+		}
+		
+		@ArooaComponent
+		public void setComponent(Object component) {
+			
+		}
+		
+		@ArooaText
+		public void setText(String text) {
 			
 		}
 	}
@@ -118,5 +142,12 @@ public class ArooaDescriptorBeanMoreTest extends TestCase {
 				result.getConfiguredHow("fruit"));
 		assertEquals(ConfiguredHow.HIDDEN, 
 				result.getConfiguredHow("colour"));
+		assertEquals("component", 
+				result.getComponentProperty());
+		assertEquals("text", 
+				result.getTextProperty());
+		
+		assertEquals(OurBean2Interceptor.class, 
+				result.getParsingInterceptor().getClass());
 	}
 }

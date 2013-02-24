@@ -10,9 +10,16 @@ import org.oddjob.arooa.xml.XMLArooaParser;
 /**
  * A {@link ConfigurationSession} for an {@link ArooaConfiguration}.
  * <p>
- * This need some work because saving is straight through from 
- * editor so this doesn't support modification notifications or the
- * ability to save.
+ * This {@code ConfigurationSession} doesn't support component by component 
+ * {@link DragPoint}s. Only the {@code DragPoint} for the root node is 
+ * returned.
+ * <p>
+ * To support saving the configuration to the underlying configuration
+ * structure - not directly to source of the configuration (to the file)
+ * an intermediate the configuration is parsed and an intermediate 
+ * {@link HandleConfigurationSession} is used.
+ * 
+ * @see HandleConfigurationSession
  * 
  * @author rob
  *
