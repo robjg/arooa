@@ -2,7 +2,13 @@ package org.oddjob.arooa.runtime;
 
 import org.oddjob.arooa.ArooaException;
 
-public class RuntimeListenerAdaptor implements RuntimeListener {
+/**
+ * Provide empty methods for {@link RuntimeListener}s.
+ * 
+ * @author rob
+ *
+ */
+public class RuntimeListenerAdapter implements RuntimeListener {
 
 	public void afterConfigure(RuntimeEvent event) throws ArooaException {
 	}

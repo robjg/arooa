@@ -134,6 +134,11 @@ public class SimpleComponentPool implements ComponentPool {
 	}
 	
 	@Override
+	public ComponentTrinity trinityFor(Object either) {
+		return index.trinityFor(either);
+	}
+	
+	@Override
 	public ComponentTrinity trinityForId(String id) {
 		synchronized (index) {
     		return index.trinityForId(id);

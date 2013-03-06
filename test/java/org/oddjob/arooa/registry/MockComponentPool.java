@@ -42,11 +42,6 @@ public class MockComponentPool implements ComponentPool {
 				this.getClass().getName() + ".");
 	}
 
-	public void close() {
-		throw new RuntimeException("Unexpected in " + 
-				this.getClass().getName() + ".");
-	}
-	
 	@Override
 	public Iterable<ComponentTrinity> allTrinities() {
 		throw new RuntimeException("Unexpected in " + 
@@ -55,6 +50,12 @@ public class MockComponentPool implements ComponentPool {
 	
 	@Override
 	public ComponentTrinity trinityForContext(ArooaContext context) {
+		throw new RuntimeException("Unexpected in " + 
+				this.getClass().getName() + ".");
+	}
+	
+	@Override
+	public ComponentTrinity trinityFor(Object either) {
 		throw new RuntimeException("Unexpected in " + 
 				this.getClass().getName() + ".");
 	}

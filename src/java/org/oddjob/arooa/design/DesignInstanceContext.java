@@ -18,7 +18,7 @@ import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeEvent;
-import org.oddjob.arooa.runtime.RuntimeListenerAdaptor;
+import org.oddjob.arooa.runtime.RuntimeListenerAdapter;
 import org.oddjob.arooa.xml.XmlHandler2;
 
 /**
@@ -210,7 +210,7 @@ public class DesignInstanceContext implements ArooaContext {
 					
 					ArooaContext xmlContext = handler.onStartElement(element, parentContext);
 
-					xmlContext.getRuntime().addRuntimeListener(new RuntimeListenerAdaptor() {
+					xmlContext.getRuntime().addRuntimeListener(new RuntimeListenerAdapter() {
 						@Override
 						public void afterInit(RuntimeEvent event)
 								throws ArooaException {

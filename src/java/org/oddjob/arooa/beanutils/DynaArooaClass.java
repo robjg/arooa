@@ -6,6 +6,12 @@ import org.oddjob.arooa.reflect.ArooaInstantiationException;
 import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 
+/**
+ * An {@link ArooaClass} for {@link DynaClass}es.
+ * 
+ * @author rob
+ *
+ */
 public class DynaArooaClass implements ArooaClass {
 	
 	private final DynaClass dynaClass;
@@ -13,6 +19,13 @@ public class DynaArooaClass implements ArooaClass {
 	private final Class<?> forClass;
 	
 	public DynaArooaClass(DynaClass dynaClass, Class<?> forClass) {
+		if (dynaClass == null) {
+			throw new NullPointerException("No dynaClass.");
+		}
+		if (forClass == null) {
+			throw new NullPointerException("No forClass.");
+		}
+		
 		this.dynaClass = dynaClass;
 		this.forClass = forClass;
 	}
@@ -56,5 +69,11 @@ public class DynaArooaClass implements ArooaClass {
 	
 	public DynaClass getDynaClass() {
 		return dynaClass;
+	}
+	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + ": dynaClassName=" + 
+				dynaClass.getName() + ", forClass=" + forClass;
 	}
 }

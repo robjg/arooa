@@ -10,6 +10,7 @@ import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.deploy.annotations.ArooaComponent;
 import org.oddjob.arooa.design.DesignFactory;
+import org.oddjob.arooa.life.ArooaContextAware;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.registry.ChangeHow;
 import org.oddjob.arooa.standard.StandardArooaParser;
@@ -18,21 +19,28 @@ import org.xml.sax.SAXException;
 
 public class ContextConfigurationSessionTest extends XMLTestCase {
 
-	public static interface Fruit {
+	public static class Pip {
 		
 	}
 	
-	public static class Apple implements Fruit {
+	public static class Apple implements ArooaContextAware {
+		ContextConfigurationSession test;
 		
-	}
-	
-	public static class Orange implements Fruit {
+		@Override
+		public void setArooaContext(ArooaContext context) {
+			test = new ContextConfigurationSession(context);
+				
+		}
 		
+		@ArooaComponent
+		public void setPip(int index, Pip pip) {
+			
+		}
 	}
 	
 	public static class Snack implements ConfigurationOwner {
 		
-		Fruit fruit;
+		Apple fruit;
 
 		ConfigurationOwnerSupport support = new ConfigurationOwnerSupport(this);
 		
@@ -61,12 +69,12 @@ public class ContextConfigurationSessionTest extends XMLTestCase {
 			throw new RuntimeException("Unexpected");
 		}
 		
-		public Fruit getFruit() {
+		public Apple getFruit() {
 			return fruit;
 		}
 
 		@ArooaComponent
-		public void setFruit(Fruit fruit) {
+		public void setFruit(Apple fruit) {
 			this.fruit = fruit;
 		}
 	}
@@ -110,16 +118,13 @@ public class ContextConfigurationSessionTest extends XMLTestCase {
 		
 		ArooaSession session = handle.getDocumentContext().getSession();
 		
-		Object fruit = session.getBeanRegistry().lookup("fruit");
+		Apple fruit = (Apple) session.getBeanRegistry().lookup("fruit");
 
-		ArooaContext fruitContext = session.getComponentPool().contextFor(fruit);
-		
-		ContextConfigurationSession test = 
-			new ContextConfigurationSession(fruitContext);
-		
 		root.support.setConfigurationSession(new HandleConfigurationSession(handle));
 		
 		OurListener listener = new OurListener();
+		
+		ContextConfigurationSession test = fruit.test;
 		
 		test.addSessionStateListener(listener);
 		
@@ -129,42 +134,33 @@ public class ContextConfigurationSessionTest extends XMLTestCase {
 		DragPoint dragPoint = test.dragPointFor(fruit);
 		
 		DragTransaction trn = dragPoint.beginChange(ChangeHow.FRESH);
-		dragPoint.cut();
-		trn.commit();
-		
-		assertTrue(test.isModified());
-		assertTrue(listener.modified);
-		
-		test.save();
-		
-		assertFalse(test.isModified());
-		assertFalse(listener.modified);
-		
-		DragPoint rootPoint = test.dragPointFor(
-				root);
-		
-		trn = rootPoint.beginChange(ChangeHow.FRESH);
-		rootPoint.paste(0, 
-				"  <bean id='fruit' class='" + Orange.class.getName() + "'/>");
-		trn.commit();
-		
-		assertTrue(test.isModified());
-		assertTrue(listener.modified);
-		
-		test.save();
-		
-		assertFalse(test.isModified());
-		assertFalse(listener.modified);
-		
-		XMLUnit.setIgnoreWhitespace(true);
+		dragPoint.paste(0, 
+				"  <bean class='" + Pip.class.getName() + "'/>");
 
+		trn.commit();
+		
+		assertTrue(test.isModified());
+		assertTrue(listener.modified);
+		
+		test.save();
+		
+		assertFalse(test.isModified());
+		assertFalse(listener.modified);
+		
+		String EOL = System.getProperty("line.separator");
+		
 		String expected = 
-			"<snack>" +
-			" <fruit>" +
-			"  <bean id='fruit' class='" + Orange.class.getName() + "'/>" +
-			" </fruit>" +
+			"<snack>" + EOL +
+			" <fruit>" + EOL +
+			"  <bean id='fruit' class='" + Apple.class.getName() + "'>" + EOL +
+			"   <pip>" + EOL +
+			"    <bean class='" + Pip.class.getName() + "'/>" + EOL +
+			"   </pip>" + EOL +
+			"  </bean>" + EOL +
+			" </fruit>" + EOL +
 			"</snack>";
 		
+		XMLUnit.setIgnoreWhitespace(true);
 		assertXMLEqual(expected, savedXML.get());
 	}
 

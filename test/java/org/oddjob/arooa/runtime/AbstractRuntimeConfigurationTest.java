@@ -52,7 +52,7 @@ public class AbstractRuntimeConfigurationTest extends TestCase {
 
 		final OurRuntime test = new OurRuntime();
 		
-		test.addRuntimeListener(new RuntimeListenerAdaptor() {
+		test.addRuntimeListener(new RuntimeListenerAdapter() {
 			@Override
 			public void afterDestroy(RuntimeEvent event) throws ArooaException {
 				test.removeRuntimeListener(this);

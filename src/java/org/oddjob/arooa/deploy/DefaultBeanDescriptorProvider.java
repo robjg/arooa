@@ -63,6 +63,13 @@ public class DefaultBeanDescriptorProvider implements BeanDescriptorProvider {
 			else {
 				Class<?> propertyType = beanOverview.getPropertyType(property);
 	
+				// this happens with Proxies. It's a bug Oddjob isn't
+				// affected by it, so fix later.
+				if (propertyType == null) {
+					throw new NullPointerException("No property type for [" + 
+							property + "] of " + arooaClass);
+				}
+				
 				if (propertyType.isPrimitive() || 
 						propertyType.isEnum() ||
 						ATTRIBUTE_TYPES.contains(propertyType)) {					

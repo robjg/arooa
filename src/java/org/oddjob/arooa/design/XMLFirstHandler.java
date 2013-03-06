@@ -12,7 +12,7 @@ import org.oddjob.arooa.parsing.ArooaHandler;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.runtime.RuntimeEvent;
 import org.oddjob.arooa.runtime.RuntimeListener;
-import org.oddjob.arooa.runtime.RuntimeListenerAdaptor;
+import org.oddjob.arooa.runtime.RuntimeListenerAdapter;
 
 abstract class XMLFirstHandler implements ArooaHandler {
 
@@ -33,7 +33,7 @@ abstract class XMLFirstHandler implements ArooaHandler {
 				xmlDesign = new UnknownInstance(element, parentContext);
 			}
 
-			RuntimeListener listener = new RuntimeListenerAdaptor() {
+			RuntimeListener listener = new RuntimeListenerAdapter() {
 
 				@Override
 				public void beforeInit(RuntimeEvent event)
