@@ -27,7 +27,7 @@ public class ContextConfigurationSession implements ConfigurationSession {
 
 	private final ArooaSession session;
 	
-	private final ConfigurationSessionSupport propertySupport;
+	private final ConfigurationSessionSupport sessionSupport;
 	
 	private boolean modified;
 		
@@ -88,7 +88,7 @@ public class ContextConfigurationSession implements ConfigurationSession {
 			public void beforeDestroy(RuntimeEvent event)
 					throws ArooaException {
 				
-				// Will this every be true becaue destroy will have removed
+				// Will this every be true because destroy will have removed
 				// the owner first?
 				if (parentSession != null) {
 					parentSession.removeSessionStateListener(
@@ -121,26 +121,52 @@ public class ContextConfigurationSession implements ConfigurationSession {
 		
 		RuntimeConfiguration runtime = root.getRuntime();
 		
-		runtime.addRuntimeListener(new RuntimeListenerAdapter() {
-			@Override
-			public void afterInit(RuntimeEvent event)
-					throws ArooaConfigurationException {
+		final ComponentPool componentPool =
+				finalRoot.getSession().getComponentPool();
 				
-				ComponentPool componentPool =
-						finalRoot.getSession().getComponentPool();
-						
-				ComponentTrinity trinity = componentPool.trinityForContext(
-						finalRoot);
-				
-				Object proxy = trinity.getTheProxy();
-				
-				ConfigurationOwner owner = (ConfigurationOwner) proxy;
-			
-				owner.addOwnerStateListener(ownerStateListener);
-			}
-		});
+		final ComponentTrinity trinity = componentPool.trinityForContext(
+				finalRoot);
 		
-		this.propertySupport = new ConfigurationSessionSupport(this);
+		this.sessionSupport = new ConfigurationSessionSupport(this);
+		
+		// has the root been initialised? If not this is the result
+		// of a paste.
+		if (trinity == null) {
+			
+			runtime.addRuntimeListener(new RuntimeListenerAdapter() {
+				@Override
+				public void afterInit(RuntimeEvent event)
+						throws ArooaConfigurationException {
+					
+					ComponentTrinity trinity = componentPool.trinityForContext(
+							finalRoot);
+					
+					Object proxy = trinity.getTheProxy();
+					
+					parentOwner = (ConfigurationOwner) proxy;
+				
+					parentOwner.addOwnerStateListener(ownerStateListener);
+				}
+			});
+		}
+		else {
+			
+			Object proxy = trinity.getTheProxy();
+			
+			parentOwner = (ConfigurationOwner) proxy;
+		
+			parentOwner.addOwnerStateListener(ownerStateListener);			
+			
+			// This shouldn't be null because session is in play.
+			parentSession = parentOwner.provideConfigurationSession();
+			
+			parentSession.addSessionStateListener(
+					sessionStateListener);
+			
+			if (parentSession.isModified()) {
+				setModified(true);
+			}
+		}
 	}
 		
 	@Override
@@ -158,7 +184,7 @@ public class ContextConfigurationSession implements ConfigurationSession {
 	
 	protected void setModified(boolean modified) {
 		// are we still in the constructor building the node listeners?
-		if (propertySupport == null) {
+		if (sessionSupport == null) {
 			return;
 		}
 		
@@ -169,10 +195,10 @@ public class ContextConfigurationSession implements ConfigurationSession {
 		this.modified = modified;
 		
 		if (modified) {
-			propertySupport.modified();
+			sessionSupport.modified();
 		}
 		else {
-			propertySupport.saved();
+			sessionSupport.saved();
 		}
 	}
 	
@@ -181,10 +207,10 @@ public class ContextConfigurationSession implements ConfigurationSession {
 	}
 	
 	public void addSessionStateListener(SessionStateListener listener) {
-		propertySupport.addSessionStateListener(listener);
+		sessionSupport.addSessionStateListener(listener);
 	}
 	public void removeSessionStateListener(SessionStateListener listener) {
-		propertySupport.removeSessionStateListener(listener);
+		sessionSupport.removeSessionStateListener(listener);
 	}
 		
 	public void save() throws ArooaParseException {

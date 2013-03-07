@@ -162,6 +162,80 @@ public class ContextConfigurationSessionTest extends XMLTestCase {
 		
 		XMLUnit.setIgnoreWhitespace(true);
 		assertXMLEqual(expected, savedXML.get());
+		
+		handle.getDocumentContext().getRuntime().destroy();
+		
 	}
 
+	public void testModifiedWhenPastingIntoExistingConfiguration() 
+	throws ArooaParseException, SAXException, 
+			IOException, ArooaPropertyException {
+		
+		XMLConfiguration config = new XMLConfiguration("TEST", 
+				"<snack/>");
+
+		final AtomicReference<String > savedXML = 
+				new AtomicReference<String>();
+		
+		config.setSaveHandler(new XMLConfiguration.SaveHandler() {
+			@Override
+			public void acceptXML(String xml) {
+				savedXML.set(xml);
+			}
+		});
+		
+		Snack root = new Snack();
+		
+		StandardArooaParser parser = new StandardArooaParser(root);
+
+		ConfigurationHandle handle = parser.parse(config);
+		
+		ArooaSession session = handle.getDocumentContext().getSession();
+		
+		root.support.setConfigurationSession(new HandleConfigurationSession(handle));
+		
+		// Paste in Fruit.
+		
+		DragPoint dragPoint = root.support.provideConfigurationSession(
+				).dragPointFor(root);
+		
+		DragTransaction trn = dragPoint.beginChange(ChangeHow.FRESH);
+		dragPoint.paste(0, 
+				"  <bean id='fruit' class='" + Apple.class.getName() + "'/>");
+
+		trn.commit();
+				
+		// Check test session.
+		
+		Apple fruit = (Apple) session.getBeanRegistry().lookup("fruit");
+
+		OurListener listener = new OurListener();
+		
+		ContextConfigurationSession test = fruit.test;
+		
+		test.addSessionStateListener(listener);
+		
+		assertTrue(test.isModified());
+		assertFalse(listener.modified);
+		
+		test.save();
+		
+		assertFalse(test.isModified());
+		assertFalse(listener.modified);
+		
+		String EOL = System.getProperty("line.separator");
+		
+		String expected = 
+			"<snack>" + EOL +
+			" <fruit>" + EOL +
+			"  <bean id='fruit' class='" + Apple.class.getName() + "'/>" + EOL +
+			" </fruit>" + EOL +
+			"</snack>";
+		
+		XMLUnit.setIgnoreWhitespace(true);
+		assertXMLEqual(expected, savedXML.get());
+		
+		handle.getDocumentContext().getRuntime().destroy();
+		
+	}
 }
