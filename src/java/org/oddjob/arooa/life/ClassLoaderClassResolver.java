@@ -48,7 +48,12 @@ public class ClassLoaderClassResolver implements ClassResolver {
 		
 		try {
 			return Class.forName(className, true, classLoader);
-		} catch (ClassNotFoundException e) {
+		} 
+		catch (ClassNotFoundException e) {
+			return null;
+		}
+		catch (NoClassDefFoundError e) {
+			// When the case doesn't match on Windows.
 			return null;
 		}
 	}
