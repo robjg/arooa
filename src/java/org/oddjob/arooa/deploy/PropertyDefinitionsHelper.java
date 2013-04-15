@@ -229,14 +229,17 @@ public class PropertyDefinitionsHelper implements ArooaBeanDescriptor {
 		}
 	}
 	
+	@Override
 	public String getComponentProperty() {
 		return componentProperty;
 	}
 	
+	@Override
 	public String getTextProperty() {
 		return textProperty;
 	}
 
+	@Override
 	public ConfiguredHow getConfiguredHow(String property) {
 		PropertyDefinition propertyDefinition = properties.get(property);
 		if (propertyDefinition == null) {
@@ -246,6 +249,7 @@ public class PropertyDefinitionsHelper implements ArooaBeanDescriptor {
 		return propertyDefinition.getConfiguredHow();
 	}
 	
+	@Override
 	public String getFlavour(String property) {
 		PropertyDefinition propertyDefinition = properties.get(property);
 		if (propertyDefinition == null) {
@@ -255,6 +259,7 @@ public class PropertyDefinitionsHelper implements ArooaBeanDescriptor {
 		return propertyDefinition.getFlavour();
 	}
 	
+	@Override
 	public boolean isAuto(String property) {
 		PropertyDefinition propertyDefinition = properties.get(property);
 		if (propertyDefinition == null) {
@@ -265,6 +270,7 @@ public class PropertyDefinitionsHelper implements ArooaBeanDescriptor {
 		return auto == Boolean.TRUE;
 	}
 
+	@Override
 	public ParsingInterceptor getParsingInterceptor() {
 		return parsingInterceptor;
 	}
@@ -272,6 +278,11 @@ public class PropertyDefinitionsHelper implements ArooaBeanDescriptor {
 	@Override
 	public ArooaAnnotations getAnnotations() {
 		return annotations;
+	}
+	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + " for " + classIdentifier;
 	}
 	
 }

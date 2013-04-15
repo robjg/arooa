@@ -205,4 +205,10 @@ public class ArooaAnnotationsHelper implements ArooaAnnotations {
 		return annotations.get(annotationName);
 	}
 	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + 
+				": num method annotations=" + methodsFor.size() + 
+				", num property annotations=" + propertyAnnotations.size();
+	}	
 }
