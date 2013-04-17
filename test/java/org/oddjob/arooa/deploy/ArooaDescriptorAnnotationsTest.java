@@ -26,6 +26,12 @@ public class ArooaDescriptorAnnotationsTest extends TestCase {
 
 	}
 	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.METHOD)
+	public @interface MoreStuff {
+
+	}
+	
 	public static class MyBean {
 		
 		@DoStuff
@@ -38,6 +44,14 @@ public class ArooaDescriptorAnnotationsTest extends TestCase {
 		}
 		
 		public void setColour(String colour) {
+			
+		}
+		
+		public void acceptSpecial(String special, int factor) {
+			
+		}
+		
+		public void acceptSpecial(String special, String other) {
 			
 		}
 	}
@@ -62,6 +76,11 @@ public class ArooaDescriptorAnnotationsTest extends TestCase {
 		
 		Method destroy = test.methodFor("org.oddjob.arooa.life.ArooaDestroy");
 		assertEquals("myDestroy", destroy.getName());
+		
+		Method acceptSpecial = test.methodFor(
+				"org.oddjob.arooa.deploy.test.Special");
+		assertEquals("acceptSpecial", acceptSpecial.getName());
+		assertEquals(2, acceptSpecial.getParameterTypes().length);
 		
 		assertNull(test.methodFor("idontexist"));
 	}

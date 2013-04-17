@@ -6,6 +6,9 @@
             <annotations>
                 <arooa:annotation name="org.oddjob.arooa.life.ArooaDestroy"
                         method="myDestroy"/>
+                <arooa:annotation name="org.oddjob.arooa.deploy.test.Special"
+                        method="acceptSpecial" 
+                        parameterTypes="java.lang.String, int"/>
             </annotations>
         </arooa:bean-def>
     </components>
