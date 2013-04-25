@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.commons.beanutils.DynaClass;
 import org.apache.commons.beanutils.DynaProperty;
 import org.oddjob.arooa.reflect.ArooaClass;
+import org.oddjob.arooa.utils.ClassUtils;
 
 /**
  * Creates new Magic Bean {@link ArooaClass}.
@@ -42,7 +43,7 @@ public class MagicBeanClassCreator {
 	 */
 	public void addProperty(String name, Class<?> type) {
 		if (type.isPrimitive()) {
-			type = BeanUtilsPropertyAccessor.PRIMITIVE_TYPE_MAP.get(type);
+			type = ClassUtils.wrapperClassForPrimitive(type);
 		}
 		if (type == null) {
 			throw new IllegalArgumentException("No Type.");

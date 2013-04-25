@@ -12,7 +12,7 @@ import java.util.Set;
 
 import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.reflect.ArooaClass;
-import org.oddjob.arooa.utils.ClassesUtils;
+import org.oddjob.arooa.utils.ClassUtils;
 
 /**
  * A simple implementation {@link ArooaAnnotations}.
@@ -147,7 +147,7 @@ public class ArooaAnnotationsHelper implements ArooaAnnotations {
 				String[] types = parameterTypeList.split("\\s*,\\s*");
 				parameterTypes = new Class<?>[types.length];
 				for (int i = 0; i < types.length; ++i)
-					parameterTypes[i] = ClassesUtils.classFor(types[i],
+					parameterTypes[i] = ClassUtils.classFor(types[i],
 							theClass.getClassLoader());
 			}
 

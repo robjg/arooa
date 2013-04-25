@@ -2,24 +2,24 @@ package org.oddjob.arooa.utils;
 
 import junit.framework.TestCase;
 
-public class ClassesUtilsTest extends TestCase {
+public class ClassUtilsTest extends TestCase {
 
 	public void testClassFor() throws ClassNotFoundException {
 		
 		assertEquals(String.class,
-				ClassesUtils.classFor(
+				ClassUtils.classFor(
 						"java.lang.String", getClass().getClassLoader()));
 		
 		assertEquals(int.class,
-				ClassesUtils.classFor(
+				ClassUtils.classFor(
 						int.class.getName(), getClass().getClassLoader()));
 		
 		assertEquals(int[].class,
-				ClassesUtils.classFor(
+				ClassUtils.classFor(
 						int[].class.getName(), getClass().getClassLoader()));
 		
 		assertEquals(int[][].class,
-				ClassesUtils.classFor(
+				ClassUtils.classFor(
 						int[][].class.getName(), getClass().getClassLoader()));
 	}
 }

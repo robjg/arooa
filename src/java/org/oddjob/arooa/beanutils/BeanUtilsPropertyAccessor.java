@@ -4,7 +4,6 @@
 package org.oddjob.arooa.beanutils;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,25 +37,7 @@ import org.oddjob.arooa.reflect.PropertySetException;
  */
 public class BeanUtilsPropertyAccessor implements PropertyAccessor {
 	private static final Logger logger = Logger.getLogger(BeanUtilsPropertyAccessor.class);
-	
-	public static final Map<Class<?>, Class<?>> PRIMITIVE_TYPE_MAP;
-	
-	// Set up PRIMITIVE_TYPE_MAP
-	static {
-	    Class<?>[] primitives = {Boolean.TYPE, Byte.TYPE, Character.TYPE,
-	                          Short.TYPE, Integer.TYPE, Long.TYPE,
-	                          Float.TYPE, Double.TYPE};
-	    Class<?>[] wrappers = {Boolean.class, Byte.class, Character.class,
-	                        Short.class, Integer.class, Long.class,
-	                        Float.class, Double.class};
-		Map<Class<?>, Class<?>> map = 
-				new HashMap<Class<?>, Class<?>>(8);
-	    for (int i = 0; i < primitives.length; i++) {
-	        map.put (primitives[i], wrappers[i]);
-	    }
-	    PRIMITIVE_TYPE_MAP = Collections.unmodifiableMap(map);
-	}
-	
+		
 	static {
 		
 		final ArooaClassFactory<Object> simple = new ArooaClassFactory<Object>() {

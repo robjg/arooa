@@ -11,26 +11,73 @@ import org.oddjob.arooa.ArooaException;
  * 
  * @author Rob Gordon.
  */
-public class ClassesUtils {
-	private static Logger logger = Logger.getLogger(ClassesUtils.class);
+public class ClassUtils {
+	private static Logger logger = Logger.getLogger(ClassUtils.class);
 	
 	/**
-	 * Map with primitive type name as key and corresponding primitive
-	 * type as value, for example: "int" -> "int.class".
+	 * Primitive type class names to types.
 	 */
-	private static final Map<String, Class<?>> primitiveTypeNameMap = 
+	private static final Map<String, Class<?>> primitiveNameToTypeMap = 
 			new HashMap<String, Class<?>>(8);
+	
+	/**
+	 * Primitive type to wrapper class type.
+	 */
+	private static final Map<Class<?>, Class<?>> primitiveTypeToWrapperMap = 
+			new HashMap<Class<?>, Class<?>>(8);
+
+	/**
+	 * Wrapper class type to primitive type.
+	 */
+	private static final Map<Class<?>, Class<?>> wrapperToPrimitiveTypeMap = 
+			new HashMap<Class<?>, Class<?>>(8);
 	
 	static {
 		Class<?>[] primatives = {
 				boolean.class, byte.class, char.class, double.class,
 				float.class, int.class, long.class, short.class };
 
-		for (Class<?> primative : primatives) {
-			primitiveTypeNameMap.put(primative.getName(), primative);
+		Class<?>[] wrappers = {
+				Boolean.class, Byte.class, Character.class, Double.class,
+				Float.class, Integer.class, Long.class, Short.class };
+		
+		for (int i = 0; i < 8; ++i) {
+			primitiveNameToTypeMap.put(primatives[i].getName(), 
+					primatives[i]);
+		}		
+		
+		for (int i = 0; i < 8; ++i) {
+			primitiveTypeToWrapperMap.put(primatives[i], wrappers[i]);
+		}		
+		
+		for (int i = 0; i < 8; ++i) {
+			wrapperToPrimitiveTypeMap.put(wrappers[i], primatives[i]);
 		}		
 	}
+
+	/**
+	 * Provide the wrapper class for a primitive type.
+	 * 
+	 * @param primitiveType
+	 * 
+	 * @return The wrapper class or null if the provided class is not
+	 * a primitive type.
+	 */
+	public static Class<?> wrapperClassForPrimitive(Class<?> primitiveType) {
+		return primitiveTypeToWrapperMap.get(primitiveType);
+	}
 	
+	/**
+	 * Provide the primiative type for a wrapper class.
+	 * 
+	 * @param wrapperType
+	 * 
+	 * @return The primitive type or null if the provided class is not 
+	 * a wrapper class.
+	 */
+	public static Class<?> primiativeTypeForWrapper(Class<?> wrapperType) {
+		return wrapperToPrimitiveTypeMap.get(wrapperType);
+	}
 	
 	/**
 	 * Same as Class.forName exception logs the class loader stack before
@@ -47,8 +94,8 @@ public class ClassesUtils {
 			throw new NullPointerException("No class name.");
 		}
 		
-		if (primitiveTypeNameMap.containsKey(className)) {
-			return primitiveTypeNameMap.get(className);
+		if (primitiveNameToTypeMap.containsKey(className)) {
+			return primitiveNameToTypeMap.get(className);
 		}
 		
 		try {

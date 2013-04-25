@@ -30,7 +30,7 @@ import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.standard.StandardArooaParser;
-import org.oddjob.arooa.utils.ClassesUtils;
+import org.oddjob.arooa.utils.ClassUtils;
 import org.oddjob.arooa.utils.ListSetterHelper;
 
 /**
@@ -190,7 +190,7 @@ implements ArooaDescriptorFactory {
 			SimpleArooaClass classIdentifier = null;
 				
 			try {
-				Class<?> theClass = ClassesUtils.classFor(
+				Class<?> theClass = ClassUtils.classFor(
 						beanDefinition.getClassName(),
 						classLoader);
 
@@ -209,7 +209,7 @@ implements ArooaDescriptorFactory {
 				
 				try {
 					mappings.designs.put(element, 
-							(DesignFactory) ClassesUtils.classFor(
+							(DesignFactory) ClassUtils.classFor(
 									beanDefinition.getDesignFactory(),
 									classLoader).newInstance());
 				}
@@ -306,7 +306,7 @@ implements ArooaDescriptorFactory {
 								continue;
 							}
 							ConversionProvider convertletProvider = (ConversionProvider)
-								ClassesUtils.instantiate(className, classLoader);
+								ClassUtils.instantiate(className, classLoader);
 							convertletProvider.registerWith(registry);
 						}
 					}

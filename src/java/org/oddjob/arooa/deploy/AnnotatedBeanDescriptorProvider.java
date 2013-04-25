@@ -14,7 +14,7 @@ import org.oddjob.arooa.deploy.annotations.ArooaInterceptor;
 import org.oddjob.arooa.deploy.annotations.ArooaText;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.PropertyAccessor;
-import org.oddjob.arooa.utils.ClassesUtils;
+import org.oddjob.arooa.utils.ClassUtils;
 
 /**
  * Attempts to provide a {@link ArooaBeanDescriptor} from an annotated
@@ -40,7 +40,7 @@ public class AnnotatedBeanDescriptorProvider implements BeanDescriptorProvider {
 			String interceptor = annotation.value();
 			if (interceptor.length() > 0) {
 				ParsingInterceptor parsingInterceptor = (ParsingInterceptor)
-				ClassesUtils.instantiate(
+				ClassUtils.instantiate(
 						interceptor, cl.getClassLoader());
 				beanDescriptor.setParsingInterceptor(parsingInterceptor);				
 			}
