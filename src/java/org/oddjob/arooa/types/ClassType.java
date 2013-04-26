@@ -1,5 +1,7 @@
 package org.oddjob.arooa.types;
 
+import java.io.Serializable;
+
 import javax.inject.Inject;
 
 import org.oddjob.arooa.ArooaSession;
@@ -16,6 +18,9 @@ import org.oddjob.arooa.reflect.ArooaClass;
 
 /**
  * @oddjob.description Returns a Class for the given name.
+ * <p>
+ * This class is not {@link Serializable} because it requires a ClassLoader
+ * so it can not be used to set a property on a server from an Odjdob Client.
  * 
  * @oddjob.example
  * 
@@ -24,8 +29,9 @@ import org.oddjob.arooa.reflect.ArooaClass;
  * @author rob
  *
  */
-public class ClassType implements ArooaValue, ArooaSessionAware {
-
+public class ClassType 
+implements ArooaValue, ArooaSessionAware {
+	
 	public static final ArooaElement ELEMENT = new ArooaElement("class");
 	
 	public static class Conversions implements ConversionProvider {
@@ -77,7 +83,7 @@ public class ClassType implements ArooaValue, ArooaSessionAware {
 	private ClassLoader classLoader;
 	
 	/** Session from which to get the descriptor. */
-	private transient ArooaSession session;
+	private ArooaSession session;
 	
 	@ArooaHidden
 	@Override
@@ -121,4 +127,8 @@ public class ClassType implements ArooaValue, ArooaSessionAware {
 		this.classLoader = classLoader;
 	}
 	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + ": " + name;
+	}
 }

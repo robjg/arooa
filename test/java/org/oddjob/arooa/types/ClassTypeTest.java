@@ -20,6 +20,8 @@ public class ClassTypeTest extends TestCase {
 		test.setArooaSession(session);
 		test.setName(String.class.getName());
 		
+		assertEquals("ClassType: java.lang.String", test.toString());
+		
 		assertEquals(String.class, test.toClass());
 	}
 	
