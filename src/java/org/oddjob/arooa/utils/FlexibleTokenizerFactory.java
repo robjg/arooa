@@ -16,7 +16,7 @@ public class FlexibleTokenizerFactory implements ArooaTokenizerFactory {
 
 	private String delimiter;
 	
-	private String regexp;
+	private boolean regexp;
 	
 	private Character quote;
 	
@@ -24,12 +24,16 @@ public class FlexibleTokenizerFactory implements ArooaTokenizerFactory {
 	
 	public ArooaTokenizer newTokenizer() {
 		
-		String regexp = this.regexp;
-		if (delimiter != null) {
-			regexp = Pattern.quote(delimiter);
-		}
-		if (regexp == null) {
+		if (delimiter == null) {
 			throw new IllegalStateException("No Delimiter.");
+		}
+		
+		String regexp;
+		if (this.regexp) {
+			regexp = delimiter;
+		}
+		else {
+			regexp = Pattern.quote(delimiter);
 		}
 		
 		if (quote == null) {
@@ -63,11 +67,11 @@ public class FlexibleTokenizerFactory implements ArooaTokenizerFactory {
 		this.delimiter = delimiter;
 	}
 
-	public String getRegexp() {
+	public boolean isRegexp() {
 		return regexp;
 	}
 
-	public void setRegexp(String regexp) {
+	public void setRegexp(boolean regexp) {
 		this.regexp = regexp;
 	}
 

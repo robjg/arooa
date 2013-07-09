@@ -1,6 +1,13 @@
 package org.oddjob.arooa.reflect;
 
-
+/**
+ * A default {@link BeanView} that just uses property names.
+ * <p>
+ * Note this returns class as a property. This probably shouldn't happen.
+ * 
+ * @author rob
+ *
+ */
 public class FallbackBeanView 
 implements BeanView {
 	
@@ -8,6 +15,7 @@ implements BeanView {
 	
 	public FallbackBeanView(PropertyAccessor accessor, 
 			Object bean) {
+		
 		BeanOverview overview = accessor.getClassName(
 				bean).getBeanOverview(accessor);
 		

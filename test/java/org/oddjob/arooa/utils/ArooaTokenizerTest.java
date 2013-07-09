@@ -27,7 +27,8 @@ public class ArooaTokenizerTest extends TestCase {
 	public void testEscapedTokenizer() throws ParseException {
 		
 		FlexibleTokenizerFactory test = new FlexibleTokenizerFactory();
-		test.setRegexp("\\s+");
+		test.setDelimiter("\\s+");
+		test.setRegexp(true);
 		test.setEscape('~');
 		
 		ArooaTokenizer tokenizer = test.newTokenizer();
@@ -44,7 +45,8 @@ public class ArooaTokenizerTest extends TestCase {
 	public void testQuoteAndEscapedTokenizer() throws ParseException {
 		
 		FlexibleTokenizerFactory test = new FlexibleTokenizerFactory();
-		test.setRegexp("\\s+");
+		test.setDelimiter("\\s+");
+		test.setRegexp(true);
 		test.setEscape('~');
 		test.setQuote('\'');
 		
@@ -63,7 +65,8 @@ public class ArooaTokenizerTest extends TestCase {
 	public void testQuoteQuoteTokenizer() throws ParseException {
 		
 		FlexibleTokenizerFactory test = new FlexibleTokenizerFactory();
-		test.setRegexp("\\s+");
+		test.setDelimiter("\\s+");
+		test.setRegexp(true);
 		test.setQuote('\'');
 		
 		ArooaTokenizer tokenizer = test.newTokenizer();
