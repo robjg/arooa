@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 /**
  * Provide an {@link ArooaTokenizer} dependent on the properties set. The
  * delimiter can be provided either as a plain string or as a regular
- * expression. The quote and escape characters are optional. It quote is
+ * expression. The quote and escape characters are optional. If quote is
  * provided but escape isn't, then the quote character will also be used as 
  * the escape character.
  * 

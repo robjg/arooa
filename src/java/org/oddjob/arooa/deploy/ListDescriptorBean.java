@@ -67,12 +67,17 @@ public class ListDescriptorBean implements ArooaDescriptorFactory {
 	
 	public ArooaDescriptor createDescriptor(ClassLoader loader) {
 		
-		ListDescriptor descriptor = new ListDescriptor();
+		ListDescriptor listDescriptor = new ListDescriptor();
 		
 		for (ArooaDescriptorFactory factory : descriptors) {
-			descriptor.addDescriptor(factory.createDescriptor(loader));
+			
+			ArooaDescriptor descriptor = factory.createDescriptor(loader);
+			
+			if (descriptor != null) {
+				listDescriptor.addDescriptor(descriptor);
+			}
 		}
 		
-		return descriptor;
+		return listDescriptor;
 	}
 }
