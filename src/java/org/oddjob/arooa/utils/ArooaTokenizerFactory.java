@@ -1,7 +1,7 @@
 package org.oddjob.arooa.utils;
 
 /**
- * Something capable of providing a tokenizer.
+ * Something capable of providing an {@link ArooaTokenizer}.
  * 
  * @author rob
  *

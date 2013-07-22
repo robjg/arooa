@@ -2,7 +2,7 @@ package org.oddjob.arooa.utils;
 
 import junit.framework.TestCase;
 
-public class DelimitedWriterFactoryTest extends TestCase {
+public class FlexibleDelimiterFactoryTest extends TestCase {
 
 	Object[] line = new Object[] { 
 			"Apple", "Crisp, 'Sweet' Sometimes", 22.7 };
@@ -10,13 +10,13 @@ public class DelimitedWriterFactoryTest extends TestCase {
 	
 	public void testQuotedNumbersAndText() {
 		
-		DelimitedFormatterFactory test = new DelimitedFormatterFactory();
+		FlexibleDelimiterFactory test = new FlexibleDelimiterFactory();
 		test.setDelimiter(",");
 		test.setQuote('\'');
 		
-		DelimitedFormatter formatter = test.newWriter();
+		ArooaDelimiter formatter = test.newDelimiter();
 		
-		String result = formatter.format(line);
+		String result = formatter.delimit(line);
 
 		assertEquals("Apple,'Crisp, ''Sweet'' Sometimes',22.7", 
 				result);
@@ -24,14 +24,14 @@ public class DelimitedWriterFactoryTest extends TestCase {
 	
 	public void testQuotedAndEscapedNumbersAndText() {
 		
-		DelimitedFormatterFactory test = new DelimitedFormatterFactory();
+		FlexibleDelimiterFactory test = new FlexibleDelimiterFactory();
 		test.setDelimiter(",");
 		test.setQuote('\'');
 		test.setEscape('\\');
 		
-		DelimitedFormatter formatter = test.newWriter();
+		ArooaDelimiter formatter = test.newDelimiter();
 		
-		String result = formatter.format(line);
+		String result = formatter.delimit(line);
 
 		assertEquals("Apple,'Crisp, \\'Sweet\\' Sometimes',22.7", 
 				result);
@@ -39,15 +39,15 @@ public class DelimitedWriterFactoryTest extends TestCase {
 	
 	public void testAlwaysQuotedAndEscapedNumbersAndText() {
 		
-		DelimitedFormatterFactory test = new DelimitedFormatterFactory();
+		FlexibleDelimiterFactory test = new FlexibleDelimiterFactory();
 		test.setDelimiter(",");
 		test.setQuote('\'');
 		test.setEscape('\\');
 		test.setAlwaysQuote(true);
 		
-		DelimitedFormatter formatter = test.newWriter();
+		ArooaDelimiter formatter = test.newDelimiter();
 		
-		String result = formatter.format(line);
+		String result = formatter.delimit(line);
 
 		assertEquals("'Apple','Crisp, \\'Sweet\\' Sometimes',22.7", 
 				result);
@@ -56,12 +56,12 @@ public class DelimitedWriterFactoryTest extends TestCase {
 	
 	public void testNoQuoteNumbersAndText() {
 		
-		DelimitedFormatterFactory test = new DelimitedFormatterFactory();
+		FlexibleDelimiterFactory test = new FlexibleDelimiterFactory();
 		test.setDelimiter(",");
 		
-		DelimitedFormatter formatter = test.newWriter();
+		ArooaDelimiter formatter = test.newDelimiter();
 		
-		String result = formatter.format(line);
+		String result = formatter.delimit(line);
 
 		assertEquals("Apple,Crisp, 'Sweet' Sometimes,22.7", 
 				result);
@@ -69,12 +69,12 @@ public class DelimitedWriterFactoryTest extends TestCase {
 	
 	public void testNulls() {
 		
-		DelimitedFormatterFactory test = new DelimitedFormatterFactory();
+		FlexibleDelimiterFactory test = new FlexibleDelimiterFactory();
 		test.setDelimiter(",");
 		
-		DelimitedFormatter formatter = test.newWriter();
+		ArooaDelimiter formatter = test.newDelimiter();
 		
-		String result = formatter.format(new Object[] { null, null, null });
+		String result = formatter.delimit(new Object[] { null, null, null });
 
 		assertEquals(",,", result);
 	}

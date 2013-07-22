@@ -6,7 +6,7 @@ package org.oddjob.arooa.utils;
  * @author rob
  *
  */
-public interface DelimitedFormatter {
+public interface ArooaDelimiter {
 
 	/**
 	 * Format the array.
@@ -15,5 +15,5 @@ public interface DelimitedFormatter {
 	 * 
 	 * @return The formatted text.
 	 */
-	public String format(Object[] values);
+	public String delimit(Object[] values);
 }
