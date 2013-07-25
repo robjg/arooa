@@ -22,4 +22,16 @@ public class ClassUtilsTest extends TestCase {
 				ClassUtils.classFor(
 						int[][].class.getName(), getClass().getClassLoader()));
 	}
+	
+	// To visually check the error message.
+	public void testError() {
+		
+		try {
+			ClassUtils.classFor("A.Flying.Pig", getClass().getClassLoader());
+			fail("Should fail.");
+		}
+		catch (ClassNotFoundException e) {
+			// expected.
+		}
+	}
 }

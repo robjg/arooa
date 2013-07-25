@@ -15,6 +15,7 @@ import org.oddjob.arooa.life.ArooaSessionAware;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaClass;
+import org.oddjob.arooa.utils.ClassUtils;
 
 /**
  * @oddjob.description Returns a Class for the given name.
@@ -98,7 +99,7 @@ implements ArooaValue, ArooaSessionAware {
 		
 		ClassLoader loader = this.classLoader;
 		if (loader != null) {
-			return Class.forName(name, true, loader);
+			return ClassUtils.classFor(name, loader);
 		} 
 		
 		Class<?> result = 

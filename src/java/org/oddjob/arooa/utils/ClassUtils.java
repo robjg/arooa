@@ -56,6 +56,17 @@ public class ClassUtils {
 	}
 
 	/**
+	 * Provide the primitive class for the name. The name being int, short
+	 * etc.
+	 * 
+	 * @param className The class name.
+	 * @return The primitive type. Null if no type exists.
+	 */
+	public static Class<?> primitiveTypeForName(String className) {
+		return primitiveNameToTypeMap.get(className);
+	}
+	
+	/**
 	 * Provide the wrapper class for a primitive type.
 	 * 
 	 * @param primitiveType
@@ -68,14 +79,14 @@ public class ClassUtils {
 	}
 	
 	/**
-	 * Provide the primiative type for a wrapper class.
+	 * Provide the primitive type for a wrapper class.
 	 * 
 	 * @param wrapperType
 	 * 
 	 * @return The primitive type or null if the provided class is not 
 	 * a wrapper class.
 	 */
-	public static Class<?> primiativeTypeForWrapper(Class<?> wrapperType) {
+	public static Class<?> primitiveTypeForWrapper(Class<?> wrapperType) {
 		return wrapperToPrimitiveTypeMap.get(wrapperType);
 	}
 	
@@ -112,10 +123,18 @@ public class ClassUtils {
 		}
 	}
 	
+	/**
+	 * Report an exception and print the class loader stack to the logger.
+	 * 
+	 * @param classLoader The classLoader. May be null.
+	 * @param t The exception. May not be null.
+	 */
 	private static void errorMessage(ClassLoader classLoader, Throwable t) {
-		logger.error(t.toString() + " on it's way. Here's the ClassLoader stack:");
+		logger.error("Exception [" + t.toString() + "] on it's way. " + 
+			(classLoader == null ? "The class loader is null, maybe that's why." :
+				"Here's the class loader stack:"));
     	for (ClassLoader next = classLoader; next != null; next = next.getParent()) {
-    		logger.error("  " + next);
+    		logger.error("\t" + next);
     	}
 	}
 	
