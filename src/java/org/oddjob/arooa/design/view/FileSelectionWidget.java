@@ -17,6 +17,8 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 
 import org.oddjob.arooa.design.screem.FileSelectionOptions;
 
@@ -158,6 +160,15 @@ public class FileSelectionWidget extends JPanel {
 	public void setEnabled(boolean enabled) {
 		textField.setEditable(enabled);
 		detailButton.setEnabled(enabled);
+		
+		if (!enabled) {
+			Document doc = textField.getDocument();
+			try {
+				doc.remove(0, doc.getLength());
+			} catch (BadLocationException e) {
+				throw new RuntimeException(e);
+			}
+		}
 	}
 
 	public void setSelectedFile(String file) {

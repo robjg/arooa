@@ -66,8 +66,9 @@ public class MultiTypeTableView implements SwingItemView {
 	 */
 	public void setEnabled(boolean enabled) {
 		component.setEnabled(enabled);
+		
 		if (!enabled) {
-			while (model.getRowCount() > 1) {
+			while (model.getRowCount() > 0) {
 				model.removeRow(0);
 			}
 		}

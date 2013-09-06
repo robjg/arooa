@@ -11,8 +11,19 @@ package org.oddjob.arooa.reflect;
  */
 public interface BeanView {
 
+	/**
+	 * Get the names of the readable properties.
+	 * 
+	 * @return An array. Never null and never containing null elements.
+	 */
 	public String[] getProperties();
 	
+	/**
+	 * For a given property name, provide the title for the property.
+	 * 
+	 * @param property The property name. Must not be null.
+	 * @return The title. Which may be the same as the property. Never null.
+	 */
 	public String titleFor(String property);
 	
 }

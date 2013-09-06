@@ -23,6 +23,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
 
 import org.oddjob.arooa.design.screem.TextInput;
 
@@ -31,9 +32,16 @@ import org.oddjob.arooa.design.screem.TextInput;
  */
 public class TextInputView implements SwingItemView, SwingFormView {
 		
+	/** The model */
 	private final TextInput textInput;
+	
+	/** The field when a cell or selection item i.e. for XML. */
 	private final JTextField text;
+	
+	/** The text box when a dialogue or in line as a text property. */
 	private final JTextArea textArea;
+	
+	/** The button when a cell. */
 	private final JButton button;
 	
 	/**
@@ -181,9 +189,17 @@ public class TextInputView implements SwingItemView, SwingFormView {
 	 */
 	public void setEnabled(boolean enabled) {
 		text.setEnabled(enabled);
+		textArea.setEnabled(enabled);
+		
 		if (!enabled) {
-			textInput.setText("");
+			try {
+				text.getDocument().remove(0, 
+						text.getDocument().getLength());
+				textArea.getDocument().remove(0, 
+						textArea.getDocument().getLength());
+			} catch (BadLocationException e) {
+				throw new RuntimeException(e);
+			}
 		}
-	}
-	
+	}	
 }

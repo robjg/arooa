@@ -12,6 +12,8 @@ import org.oddjob.arooa.design.DesignValueBase;
 import org.oddjob.arooa.design.IndexedDesignProperty;
 import org.oddjob.arooa.design.SimpleDesignProperty;
 import org.oddjob.arooa.design.SimpleTextAttribute;
+import org.oddjob.arooa.design.SimpleTextProperty;
+import org.oddjob.arooa.design.etc.FileAttribute;
 import org.oddjob.arooa.design.screem.BorderedGroup;
 import org.oddjob.arooa.design.screem.FieldSelection;
 import org.oddjob.arooa.design.screem.Form;
@@ -56,6 +58,10 @@ public class FieldSelectionViewTest extends TestCase {
 		
 		private final SimpleTextAttribute five; 
 		
+		private final SimpleTextProperty six; 
+		
+		private final FileAttribute seven;
+		
 		public MyDesign(ArooaElement element, ArooaContext parentContext) {
 			super(element, new SimpleArooaClass(Thing.class), parentContext);
 			
@@ -70,11 +76,16 @@ public class FieldSelectionViewTest extends TestCase {
 			four = new SimpleTextAttribute("four", this);
 			
 			five = new SimpleTextAttribute("five", this);
+			
+			six = new SimpleTextProperty("six");
+			
+			seven = new FileAttribute("seven", this);
 		}
 		
 		@Override
 		public DesignProperty[] children() {
-			return new DesignProperty[] { one, two, three, four, five };
+			return new DesignProperty[] { 
+					one, two, three, four, five, six, seven };
 		}
 		
 		public Form detail() {
@@ -86,9 +97,11 @@ public class FieldSelectionViewTest extends TestCase {
 						.add(three.view())
 						.add(new BorderedGroup()
 							.add(four.view())
-							.add(five.view())
+							.add(five.view()))
+						.add(six.view())
+						.add(seven.view())
 					)
-			));
+			);
 		}
 	}
 	

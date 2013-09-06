@@ -103,11 +103,6 @@ public class FileSelectionView implements SwingItemView, SwingFormView {
 	public void setEnabled(boolean enabled) {
 		label.setEnabled(enabled);
 		widget.setEnabled(enabled);
-
-		// Why do we need this?
-		if (!enabled) {
-			fileSelection.setFile(null);
-		}
 	}
 	
 }

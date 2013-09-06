@@ -7,6 +7,9 @@ package org.oddjob.arooa.design.screem;
 /**
  * A DesignDefintion that is intended to be rendered as a selection between
  * the child DesignDefinitions.
+ * <p>
+ * Note that this type can not be nested in itself - this will throw an
+ * exception at runtime.
  * 
  *  @author Rob Gordon.
  */
