@@ -2,6 +2,7 @@ package org.oddjob.arooa.utils;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -33,6 +34,18 @@ public class Iterables {
 	 * Convert an Iterable into an array.
 	 * 
 	 * @param iterable The iterable.
+	 * 
+	 * @return An array.
+	 */
+	public static Object[] toArray(Iterable<?> iterable) {
+
+		return toList(iterable).toArray();
+	}
+	
+	/**
+	 * Convert an Iterable into an array.
+	 * 
+	 * @param iterable The iterable.
 	 * @param type The type of the array to create.
 	 * 
 	 * @return An array of the given type.
@@ -43,6 +56,17 @@ public class Iterables {
 		List<T> list = toList(iterable);
 				
 		return list.toArray((T[]) Array.newInstance(type, list.size()));
+	}
+	
+	/**
+	 * Convert an Iterable to a String.
+	 * 
+	 * @param iterable The Iterable.
+	 * @return The String.
+	 */
+	public static String toString(Iterable<?> iterable) {
+
+		return Arrays.toString(toArray(iterable));
 	}
 	
 }
