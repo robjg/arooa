@@ -3,14 +3,30 @@ package org.oddjob.arooa.registry;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 
+/**
+ * A {@link BeanRegistry} that will attempt to find a bean value in an
+ * existing {@link BeanDirectory} if it hasn't been registered with this
+ * registry.
+ * 
+ * @author rob
+ *
+ */
 public class LinkedBeanRegistry extends SimpleBeanRegistry {
 
 	private final BeanDirectory existingDirectory;    	
     	    	
+	/**
+	 * Constructor.
+	 * 
+	 * @param existingDirectory
+	 * @param propertyAccessor
+	 * @param converter
+	 */
 	public LinkedBeanRegistry (BeanDirectory existingDirectory,
 			PropertyAccessor propertyAccessor,
 			ArooaConverter converter) {
@@ -19,6 +35,18 @@ public class LinkedBeanRegistry extends SimpleBeanRegistry {
 		this.existingDirectory = existingDirectory;
 	}
 
+	/**
+	 * A constructor that takes takes the existing directory and tools
+	 * from the given session.
+	 * 
+	 * @param existingSession
+	 */
+	public LinkedBeanRegistry(ArooaSession existingSession) {
+		this(existingSession.getBeanRegistry(), 
+				existingSession.getTools().getPropertyAccessor(),
+				existingSession.getTools().getArooaConverter());
+	}
+	
 	/**
 	 * First try our local registry then the parent.
 	 * 

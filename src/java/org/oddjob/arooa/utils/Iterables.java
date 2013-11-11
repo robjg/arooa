@@ -46,7 +46,7 @@ public class Iterables {
 	 * Convert an Iterable into an array.
 	 * 
 	 * @param iterable The iterable.
-	 * @param type The type of the array to create.
+	 * @param type The component type of the array to create.
 	 * 
 	 * @return An array of the given type.
 	 */
