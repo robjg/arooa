@@ -17,6 +17,7 @@ import org.oddjob.arooa.convert.ConversionRegistry;
 import org.oddjob.arooa.convert.ConversionStep;
 import org.oddjob.arooa.convert.Joker;
 import org.oddjob.arooa.convert.NoConversionAvailableException;
+import org.oddjob.arooa.deploy.annotations.ArooaHidden;
 import org.oddjob.arooa.life.Configured;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.utils.ListSetterHelper;
@@ -31,28 +32,54 @@ import org.oddjob.arooa.utils.ListSetterHelper;
  * 
  * @oddjob.example
  * 
- * A simple list of things.
+ * A simple list of things. The list contains 3 things two Strings and a 
+ * nested list that contains one String.
  * 
- * <pre>
- * &lt;list id="list"&gt;
- *  &lt;values&gt;
- *   &lt;value value="Hello World"/&gt;
- *   &lt;value value="Goodbye World"/&gt;
- *   &lt;list&gt;
- *    &lt;values&gt;
- *     &lt;value value="I'm in another list"/&gt;
- *    &lt;/values&gt;
- *   &lt;/list&gt;
- *  &lt;/values&gt;
- * &lt;/list&gt;
- * </pre>
+ * {@oddjob.xml.resource org/oddjob/arooa/types/ListSimpleWithNestedList.xml}
+ * 
+ * The output is:
+ * 
+ * {@oddjob.text.resource org/oddjob/arooa/types/ListSimpleWithNestedListOut.txt}
  * 
  * @oddjob.example
  * 
  * A Merged list. This list merges a plain value, a sub list and
- * and array which is Oddjobs command line arguments.
+ * and array into a list of 5 separate values.
  * 
  * {@oddjob.xml.resource org/oddjob/arooa/types/ListTypeMergeExample.xml}
+ * 
+ * The output is:
+ * 
+ * {@oddjob.text.resource org/oddjob/arooa/types/ListTypeMergeExampleOut.txt}
+ * 
+ * @oddjob.example
+ * 
+ * A Converted list. The elements of the list are converted to an array of
+ * Strings.
+ * 
+ * {@oddjob.xml.resource org/oddjob/arooa/types/ListWithConversion.xml}
+ * 
+ * The output is:
+ * 
+ * {@oddjob.text.resource org/oddjob/arooa/types/ListWithConversionOut.txt}
+ * 
+ * Although it can't be seen in the output, but can be seen when this
+ * example is run in Oddjob Explorer, the list contains to String array 
+ * elements.
+ * 
+ * @oddjob.example
+ * 
+ * Add to a list the fly. This example demonstrates setting the 
+ * hidden 'add' property. The property is hidden so that it can't be set
+ * via configuration which could be confusing. A side affect of this is that 
+ * it is also hidden from the Reference Guide generator.
+ * 
+ * {@oddjob.xml.resource org/oddjob/arooa/types/ListTypeAddWithSet.xml}
+ * 
+ * The output is:
+ * 
+ * {@oddjob.text.resource org/oddjob/arooa/types/ListTypeAddWithSetOut.txt}
+ * 
  * 
  * 
  * @author Rob Gordon.
@@ -70,7 +97,9 @@ public class ListType implements ArooaValue, Serializable {
 	private final List<ArooaValue> values = 
 		new ArrayList<ArooaValue>();
 	        
-	private List<Object> list;
+	/** Values added after configuration. */
+	private final List<ArooaValue> extras = 
+		new ArrayList<ArooaValue>();
 	
     /**
      * @oddjob.property
@@ -118,13 +147,9 @@ public class ListType implements ArooaValue, Serializable {
 							@SuppressWarnings("unchecked")
 							public T convert(ListType from, ArooaConverter converter) 
 							throws ArooaConversionException {
-								
-								if (from.list == null) {
-									from.list = from.convertContents(
-											converter, Object.class);
-								}
-								
-								return (T) from.list;
+																
+								return (T) from.convertContents(
+										converter, Object.class);
 							}
 						};
 			    	}
@@ -160,6 +185,15 @@ public class ListType implements ArooaValue, Serializable {
 		}
 	}
 		
+	/**
+	 * Converts to a list of a given generic type.
+	 * 
+	 * @param converter
+	 * @param required
+	 * @return
+	 * 
+	 * @throws ArooaConversionException
+	 */
 	private <X> List<X> convertContentsGenericType(ArooaConverter converter, 
 			Class<?> required) 
 	throws ArooaConversionException {
@@ -172,7 +206,9 @@ public class ListType implements ArooaValue, Serializable {
 	
 	@Configured
 	public void configured() {
-		list = null;
+		synchronized (values) {
+			extras.clear();
+		}
 	}
 	
 	public void setElementType(Class<?> elementType)  {
@@ -187,11 +223,15 @@ public class ListType implements ArooaValue, Serializable {
 	 * Set the values.
 	 */
 	public void setValues(int index, ArooaValue element) {	
-		new ListSetterHelper<ArooaValue>(values).set(index, element);
+		synchronized (values) {
+			new ListSetterHelper<ArooaValue>(values).set(index, element);
+		}
 	}
 
 	public ArooaValue getValues(int index) {
-		return values.get(index);
+		synchronized (values) {
+			return values.get(index);
+		}
 	}
 	
     /**
@@ -224,7 +264,13 @@ public class ListType implements ArooaValue, Serializable {
 			required = (Class<T>) elementType;
 		}
 		
-    	for (Object element : values) {
+		List<ArooaValue> valuesAndExtras = new ArrayList<ArooaValue>();
+		synchronized (values) {
+			valuesAndExtras.addAll(values);
+			valuesAndExtras.addAll(extras);
+		}
+		
+    	for (Object element : valuesAndExtras) {
     		if (merge) {
  
     			List<T> thingsToMerge = new ToListConverter<T>(
@@ -297,7 +343,7 @@ public class ListType implements ArooaValue, Serializable {
 	}
 	
     public String toString() {
-    	return "List of " + values.size() + " things.";
+    	return "List of " + (values.size() + extras.size()) + " things.";
     }
     
 	/**
@@ -327,6 +373,13 @@ public class ListType implements ArooaValue, Serializable {
 	
 	public boolean isUnique() {
 		return unique;
+	}
+	
+	@ArooaHidden
+	public void setAdd(ArooaValue value) {
+		synchronized (values) {
+			this.extras.add(value);
+		}
 	}
 	
 	

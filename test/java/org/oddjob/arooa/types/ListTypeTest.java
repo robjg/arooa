@@ -658,4 +658,37 @@ public class ListTypeTest extends TestCase {
 		
 	    assertNull(root.results);
 	}
+	
+	public void testAddingValues() throws NoConversionAvailableException, ConversionFailedException {
+		
+		ListType test = new ListType();
+		test.setAdd(new ArooaObject("Apple"));
+		test.setAdd(new ArooaObject("Pear"));
+		
+		DefaultConverter converter = new DefaultConverter();
+		
+		List<?> listResult = converter.convert(
+				test, List.class);
+
+		assertEquals(2, listResult.size());
+		
+		assertEquals("Apple", listResult.get(0));
+		assertEquals("Pear", listResult.get(1));		
+		
+		test.configured();
+		
+		listResult = converter.convert(
+				test, List.class);
+
+		assertEquals(0, listResult.size());
+		
+		test.setAdd(new ArooaObject("Orange"));
+		
+		listResult = converter.convert(
+				test, List.class);
+
+		assertEquals(1, listResult.size());
+		
+		assertEquals("Orange", listResult.get(0));
+	}
 }
