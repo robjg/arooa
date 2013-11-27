@@ -8,7 +8,7 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import org.oddjob.TestHelper;
+import org.oddjob.ArooaTestHelper;
 
 public class ArooaElementTest extends TestCase {
 
@@ -69,7 +69,7 @@ public class ArooaElementTest extends TestCase {
 		ArooaElement test = new ArooaElement(
 				new URL("http://rgordon.co.uk/oddjob/test").toURI(), "foo");
 		
-		ArooaElement copy = TestHelper.copy(test);
+		ArooaElement copy = ArooaTestHelper.copy(test);
 		
 		assertEquals(test, copy);
 	}

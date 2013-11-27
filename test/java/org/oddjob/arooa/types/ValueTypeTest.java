@@ -9,8 +9,10 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.oddjob.ArooaTestHelper;
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
+import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaValue;
 import org.oddjob.arooa.ConfiguredHow;
@@ -27,6 +29,7 @@ import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.standard.StandardArooaDescriptor;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.standard.StandardArooaSession;
+import org.oddjob.arooa.standard.StandardFragmentParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
 /**
@@ -225,5 +228,41 @@ public class ValueTypeTest extends TestCase {
 		
 		assertEquals(ConfiguredHow.ATTRIBUTE, 
 				sort.getConfiguredHow("value"));
+	}
+	
+	public void testSimpleValueExample() throws ArooaParseException {
+		
+		Object value = ArooaTestHelper.createValueFromConfiguration(
+				new XMLConfiguration("org/oddjob/arooa/types/ValueTypeExample1.xml",
+						getClass().getClassLoader()));
+		
+		assertEquals(ValueType.class, value.getClass());
+		
+		assertEquals("apple", value.toString());
+	}
+		
+	public static class Vars {
+		public String getFruit() {
+			return "apple";
+		}
+	}
+	
+	public void testReferenceValueExample() throws ArooaParseException {
+		
+		ArooaSession session = new StandardArooaSession();
+		session.getBeanRegistry().register("vars", new Vars());
+		
+		StandardFragmentParser parser = new StandardFragmentParser(session);
+		
+		parser.parse(new XMLConfiguration(
+				"org/oddjob/arooa/types/ValueTypeExample2.xml",
+				getClass().getClassLoader()));
+		
+		Object value = parser.getRoot();
+		
+		ValueType test = ((ValueType) value);
+		
+		assertEquals("apple", ((ArooaObject) test.getValue()).getValue());
+		
 	}
 }

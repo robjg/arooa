@@ -123,7 +123,7 @@ implements ArooaValue, ArooaSessionAware, ArooaLifeAware {
 			// ArooaObject must only have been as the result of
 			// a conversion from a basic bean.
 			if (value instanceof ArooaObject) {
-				toRegister = ((ArooaObject) value).toValue();
+				toRegister = ((ArooaObject) value).getValue();
 			}
 			else {
 				toRegister = value;

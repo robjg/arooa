@@ -31,22 +31,35 @@ import org.oddjob.arooa.parsing.ArooaElement;
  * <li>It can also be a reference to any other type somewhere else. i.e.
  * value can contain a ${someid.anyvalue} reference.</li>
  * </ul>
+ * <p>
+ * The ValueType value is expected to be an {@link ArooaValue}. This ensures
+ * that references to other types aren't converted until the ValueType 
+ * itself is converted. Because of this, simple values will be wrapped
+ * as an {@link ArooaObject} by the automatic internal conversion. For
+ * normal use this is entirely transparent. An example below demonstrates
+ * this.
  * 
  * @oddjob.example
  *
  * A value that is a constant string value.
  * 
- * <pre>
- * &lt;value value="apple"/&gt;
- * </pre>
+ * {@oddjob.xml.resource org/oddjob/arooa/types/ValueTypeExample1.xml}
  * 
  * @oddjob.example
  *
  * A value that is a reference to a property.
  * 
- * <pre>
- * &lt;value value="${vars.fruit}"/&gt;
- * </pre>
+ * {@oddjob.xml.resource org/oddjob/arooa/types/ValueTypeExample2.xml}
+ * 
+ * @oddjob.example
+ * 
+ * Examining the internals of a value in Oddjob.
+ * 
+ * {@oddjob.xml.resource org/oddjob/arooa/types/ValueTypeInternalsExample.xml}
+ * 
+ * The output is:
+ * 
+ * {@oddjob.text.resource org/oddjob/arooa/types/ValueTypeInternalsExampleOut.txt}
  * 
  * 
  * @author Rob Gordon.

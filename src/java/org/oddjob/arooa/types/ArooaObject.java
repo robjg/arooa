@@ -51,7 +51,7 @@ public class ArooaObject implements ArooaValue, Serializable {
 		this.value = value;
 	}
 
-	public Object toValue() {
+	public Object getValue() {
 		return value;
 	}
 	

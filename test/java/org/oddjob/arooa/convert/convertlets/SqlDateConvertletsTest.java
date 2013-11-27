@@ -78,7 +78,7 @@ public class SqlDateConvertletsTest extends TestCase {
 				
 		ArooaValue result = path.convert(new java.sql.Date(0), null);
 		
-		assertEquals(new java.sql.Date(0), ((ArooaObject) result).toValue());
+		assertEquals(new java.sql.Date(0), ((ArooaObject) result).getValue());
 	}
 
 	
