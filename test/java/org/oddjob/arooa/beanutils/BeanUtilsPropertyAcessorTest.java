@@ -86,12 +86,8 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
         assertEquals("hello.txt", subject.five);
         
         // test setting null
-        try {
-        	bubh.setProperty(subject, "six", null);
-        	fail("can't set an int null");
-        } catch (ArooaConfigurationException e) {
-        	// null
-        }
+    	bubh.setProperty(subject, "six", null);
+    	assertEquals(0, subject.six);
         
         // set Integer on int
         bubh.setProperty(subject, "six", new Integer(2));

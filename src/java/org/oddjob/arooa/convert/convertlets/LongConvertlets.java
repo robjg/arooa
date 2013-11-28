@@ -22,7 +22,13 @@ public class LongConvertlets implements ConversionProvider {
 		registry.register(String.class, Long.class, 
 				new Convertlet<String, Long>() {
 			public Long convert(String from) {
-				return new Long(from);
+				String stringValue = from.trim();
+				if (stringValue.length() == 0) {
+					return null;
+				}
+				else {
+					return new Long(stringValue);
+				}
 			}
 		});
 		

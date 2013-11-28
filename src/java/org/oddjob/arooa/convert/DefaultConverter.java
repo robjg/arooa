@@ -4,6 +4,7 @@
 package org.oddjob.arooa.convert;
 
 
+
 /**
  * The Default {@link ArooaConverter}. This converter uses
  * a {@link ConversionLookup} to provide the 
@@ -13,8 +14,6 @@ package org.oddjob.arooa.convert;
  * @author rob
  */
 public class DefaultConverter implements ArooaConverter {
-	
-	
 	
 	/** ConvertletRegistry. */
 	private final ConversionLookup convertlets;
@@ -67,8 +66,9 @@ public class DefaultConverter implements ArooaConverter {
 		if (required == null) {
 			throw new NullPointerException("Required class must not be null");
 		}
+		
 		if (from == null) {
-			return null;
+			return NullConversions.nullConversionFor(required);
 		}
 		
 		Class<F> fromClass = (Class<F>) from.getClass();
@@ -76,7 +76,13 @@ public class DefaultConverter implements ArooaConverter {
 		ConversionPath<F, T> conversionPath = findConversion(fromClass, required);
 		
 		if (conversionPath !=  null) {
-			return conversionPath.convert(from, this);
+			T conversion = conversionPath.convert(from, this);
+			if (conversion == null) {
+				return NullConversions.nullConversionFor(required);
+			}
+			else {
+				return conversion;
+			}
 		}
 		else {
 			throw new NoConversionAvailableException(

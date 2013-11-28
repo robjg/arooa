@@ -22,7 +22,13 @@ public class FloatConvertlets implements ConversionProvider {
 		registry.register(String.class, Float.class, 
 				new Convertlet<String, Float>() {
 			public Float convert(String from) {
-				return new Float(from);
+				String stringValue = from.trim();
+				if (stringValue.length() == 0) {
+					return null;
+				}
+				else {
+					return new Float(stringValue);
+				}
 			}
 		});
 		

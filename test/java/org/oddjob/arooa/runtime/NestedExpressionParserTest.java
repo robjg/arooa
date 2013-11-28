@@ -4,7 +4,6 @@ import junit.framework.TestCase;
 
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.convert.ArooaConversionException;
-import org.oddjob.arooa.convert.ConversionFailedException;
 import org.oddjob.arooa.reflect.ArooaNoPropertyException;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.types.ValueFactory;
@@ -130,13 +129,8 @@ public class NestedExpressionParserTest extends TestCase {
 		checker.assertExpandsTo("${unassigned}", null);
 		checker.assertExpandsTo("${unassigned.property}", null);
 
-		try {
-			checker.assertExpandsTo("", new Integer(0), Integer.class);
-			fail("Expected to fail");
-		}
-		catch (ConversionFailedException e) {
-			// expected.
-		}
+		checker.assertExpandsTo("", null, Integer.class);
+		checker.assertExpandsTo("", 0, int.class);
 	}
     
     public static class NestedProp {

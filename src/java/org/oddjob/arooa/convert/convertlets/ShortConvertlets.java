@@ -22,7 +22,13 @@ public class ShortConvertlets implements ConversionProvider {
 		registry.register(String.class, Short.class, 
 				new Convertlet<String, Short>() {
 			public Short convert(String from) {
-				return new Short(from);
+				String stringValue = from.trim();
+				if (stringValue.length() == 0) {
+					return null;
+				}
+				else {
+					return new Short(stringValue);
+				}
 			}
 		});
 		

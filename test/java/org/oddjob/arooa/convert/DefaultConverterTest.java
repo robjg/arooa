@@ -119,14 +119,37 @@ public class DefaultConverterTest extends TestCase {
 	}
 	
 	/**
-	 * Test that null in is null out.
+	 * Test that null in is null out, except for primatives.
 	 * 
 	 * @throws NoConversionAvailableException
 	 */
-	public void testNull() throws ArooaConversionException {
+	public void testNullFrom() throws ArooaConversionException {
 		DefaultConverter test = new DefaultConverter(null);
 
 		assertNull(test.convert(null, String.class));
+		
+		assertEquals(false, (boolean) test.convert(null, boolean.class));
+		assertEquals((byte) 0, (byte) test.convert(null, byte.class));
+		assertEquals('\0', (char) test.convert(null, char.class));
+		assertEquals(0, (short) test.convert(null, short.class));
+		assertEquals(0, (int) test.convert(null, int.class));
+		assertEquals(0L, (long) test.convert(null, long.class));
+		assertEquals(0.0F, (float) test.convert(null, float.class));
+		assertEquals(0.0, (double) test.convert(null, double.class));
+	}
+	
+	public void testEmptyStringConversions() throws NoConversionAvailableException, ConversionFailedException {
+		
+		DefaultConverter test = new DefaultConverter();
+		
+		assertEquals(false, (boolean) test.convert(" ", boolean.class));
+		assertEquals((byte) 0, (byte) test.convert(" ", byte.class));
+		assertEquals('\0', (char) test.convert(" ", char.class));
+		assertEquals(0, (short) test.convert(" ", short.class));
+		assertEquals(0, (int) test.convert(" ", int.class));
+		assertEquals(0L, (long) test.convert(" ", long.class));
+		assertEquals(0.0F, (float) test.convert(" ", float.class));
+		assertEquals(0.0, (double) test.convert(" ", double.class));
 	}
 	
 	/**

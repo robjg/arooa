@@ -15,10 +15,13 @@ public class CharacterConvertlets implements ConversionProvider {
 		registry.register(String.class, Character.class, 
 				new Convertlet<String, Character>() {
 			public Character convert(String from) {
-				if (from.length() == 0) {
+				String stringValue = from.trim();
+				if (stringValue.length() == 0) {
 					return null;
 				}
-				return new Character(from.charAt(0));
+				else {
+					return new Character(from.charAt(0));
+				}
 			}
 		});
 				

@@ -40,6 +40,12 @@ public class IntegerConvertletsTest extends TestCase {
 		assertEquals(new Integer(2009090900), result);  
 	}
 	
+	public void testNullIntegerToInConversion() {
+		DefaultConversionRegistry registry = new DefaultConversionRegistry();
+		new IntegerConvertlets().registerWith(registry);
+		
+	}
+	
 	public void testIntegerToString() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new DefaultConversionProvider().registerWith(registry);

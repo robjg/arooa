@@ -4,12 +4,12 @@
 package org.oddjob.arooa.convert;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.oddjob.arooa.ArooaValue;
+import org.oddjob.arooa.utils.ClassUtils;
 
 /**
  * Implementation of a ConvertletRegistry.
@@ -19,20 +19,6 @@ import org.oddjob.arooa.ArooaValue;
  */
 public class DefaultConversionRegistry implements ConversionRegistry, ConversionLookup {
 	
-	private static final Map<Class<?>, Class<?>> PRIMATIVES
-	= new HashMap<Class<?>, Class<?>>();
-
-	static {
-		PRIMATIVES.put(Boolean.TYPE, Boolean.class);
-		PRIMATIVES.put(Byte.TYPE, Byte.class);
-		PRIMATIVES.put(Character.TYPE, Character.class);
-		PRIMATIVES.put(Short.TYPE, Short.class);
-		PRIMATIVES.put(Integer.TYPE, Integer.class);
-		PRIMATIVES.put(Long.TYPE, Long.class);
-		PRIMATIVES.put(Float.TYPE, Float.class);
-		PRIMATIVES.put(Double.TYPE, Double.class);
-	}
-
 	/** Map of from class to possible Map of to class to Convertlet.
 	 *  This is linked to preserve registration order during searches. */
 	private final Map<Class<?>, Map<Class<?>, Convertlet<?, ?>>> fromMap = 
@@ -72,7 +58,7 @@ public class DefaultConversionRegistry implements ConversionRegistry, Conversion
 	@SuppressWarnings("unchecked")
 	public <F, T> ConversionPath<F, T> findConversion(Class<F> from, Class<T> to) {
 		if (to.isPrimitive()) {
-			to = (Class<T>) PRIMATIVES.get(to);
+			to = (Class<T>) ClassUtils.wrapperClassForPrimitive(to);
 		}
 		
 		return best(from, from, to, DefaultConversionPath.instance(from), 0);

@@ -9,6 +9,7 @@ import java.util.Date;
 import org.oddjob.arooa.convert.ConversionProvider;
 import org.oddjob.arooa.convert.ConversionRegistry;
 import org.oddjob.arooa.convert.Convertlet;
+import org.oddjob.arooa.convert.ConvertletException;
 import org.oddjob.arooa.convert.FinalConvertlet;
 import org.oddjob.arooa.utils.DateHelper;
 
@@ -25,11 +26,17 @@ public class DateConvertlets implements ConversionProvider {
 		
 		registry.register(String.class, Date.class, 
 				new Convertlet<String, Date>() {
-			public Date convert(String from) {
-				try {
-					return DateHelper.parseDateTime(from);
-				} catch (ParseException e) {
-					throw new RuntimeException(e);
+			public Date convert(String from) throws ConvertletException {
+				String stringValue = from.trim();
+				if (stringValue.length() == 0) {
+					return null;
+				}
+				else {
+					try {
+						return DateHelper.parseDateTime(stringValue);
+					} catch (ParseException e) {
+						throw new ConvertletException(e);
+					}
 				}
 			};
 		});

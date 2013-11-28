@@ -22,7 +22,13 @@ public class DoubleConvertlets implements ConversionProvider {
 		registry.register(String.class, Double.class, 
 				new Convertlet<String, Double>() {
 			public Double convert(String from) {
-				return new Double(from);
+				String stringValue = from.trim();
+				if (stringValue.length() == 0) {
+					return null;
+				}
+				else {
+					return new Double(from);
+				}
 			}
 		});
 		

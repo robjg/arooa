@@ -22,7 +22,13 @@ public class IntegerConvertlets implements ConversionProvider {
 		registry.register(String.class, Integer.class, 
 				new Convertlet<String, Integer>() {
 			public Integer convert(String from) {
-				return new Integer(from);
+				String stringValue = from.trim();
+				if (stringValue.length() == 0) {
+					return null;
+				}
+				else {
+					return new Integer(stringValue);
+				}
 			}
 		});
 		

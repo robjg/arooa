@@ -22,7 +22,13 @@ public class ByteConvertlets implements ConversionProvider {
 		registry.register(String.class, Byte.class, 
 				new Convertlet<String, Byte>() {
 			public Byte convert(String from) {
-				return new Byte(from);
+				String stringValue = from.trim();
+				if (stringValue.length() == 0) {
+					return new Byte((byte) 0);
+				}
+				else {
+					return new Byte(stringValue);
+				}
 			}
 		});
 		
