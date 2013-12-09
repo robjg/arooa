@@ -9,7 +9,6 @@ import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.deploy.annotations.ArooaComponent;
-import org.oddjob.arooa.design.DesignFactory;
 import org.oddjob.arooa.life.ArooaContextAware;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.registry.ChangeHow;
@@ -60,7 +59,7 @@ public class ContextConfigurationSessionTest extends XMLTestCase {
 		}
 
 		@Override
-		public DesignFactory rootDesignFactory() {
+		public SerializableDesignFactory rootDesignFactory() {
 			throw new RuntimeException("Unexpected");
 		}
 		

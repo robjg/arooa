@@ -1,6 +1,5 @@
 package org.oddjob.arooa.parsing;
 
-import org.oddjob.arooa.design.DesignFactory;
 
 public class MockConfigurationOwner implements ConfigurationOwner {
 
@@ -20,7 +19,7 @@ public class MockConfigurationOwner implements ConfigurationOwner {
 	}
 	
 	@Override
-	public DesignFactory rootDesignFactory() {
+	public SerializableDesignFactory rootDesignFactory() {
 		throw new RuntimeException("Unexpected from class " +
 				getClass().getName());
 	}

@@ -1,6 +1,5 @@
 package org.oddjob.arooa.parsing;
 
-import org.oddjob.arooa.design.DesignFactory;
 
 
 /**
@@ -36,11 +35,14 @@ public interface ConfigurationOwner {
 	/**
 	 * Get the design factory for the configuration. If this is null
 	 * the Oddjob Explorer won't show a DesignInside action.
+	 * <p>
+	 * Note that this is a {@link SerializableDesignFactory} so that 
+	 * this interface can be represented remotely.
 	 * 
-	 * @return A DesignFactory. Must not be null if a 
-	 * ConfigurationSession is available.
+	 * @return A DesignFactory. Must not be null if a {@link ConfigurationSession} 
+	 * is available.
 	 */
-	public DesignFactory rootDesignFactory();
+	public SerializableDesignFactory rootDesignFactory();
 	
 	/**
 	 * Get the root element.
