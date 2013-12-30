@@ -17,11 +17,34 @@ import org.oddjob.arooa.life.Configured;
 import org.oddjob.arooa.parsing.ArooaElement;
 
 /**
- * @oddjob.description Convert a value to the given Java Class. 
+ * @oddjob.description Convert a value to the given Java Class. Most of
+ * the time Oddjob's own automatic conversions are fine for setting
+ * job properties but occasionally it can be useful to force a conversion
+ * to a different type. 
+ * <p>
+ * This type uses Oddjob's internal converters itself to perform the 
+ * conversion. 
+ * <p>
+ * The <code>is</code> property can provide direct access to the converted
+ * value. This can be useful for gaining access to a Java type from Oddjob's
+ * wrapper types.
  * 
  * @oddjob.example Convert a delimited list to an array of Strings.
  * 
  * {@oddjob.xml.resource org/oddjob/arooa/types/ConvertDelimitedTextToArray.xml}
+ * 
+ * The output is:
+ * 
+ * {@oddjob.text.resource org/oddjob/arooa/types/ConvertDelimitedTextToArray.txt}
+ * 
+ * @oddjob.example Demonstrate the use of the is property.
+ * 
+ * {@oddjob.xml.resource org/oddjob/arooa/types/ConvertIsPropertyUsage.xml}
+ * 
+ * The output is:
+ * 
+ * {@oddjob.text.resource org/oddjob/arooa/types/ConvertIsPropertyUsage.txt}
+ * 
  * 
  * @author rob
  *

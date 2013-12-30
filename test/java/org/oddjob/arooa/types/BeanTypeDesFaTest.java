@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.oddjob.arooa.ArooaParseException;
@@ -26,7 +27,18 @@ import org.xml.sax.SAXException;
 
 public class BeanTypeDesFaTest extends XMLTestCase {
 
+	private static final Logger logger = 
+			Logger.getLogger(BeanTypeDesFa.class);
+	
 	DesignInstance design;
+	
+	@Override
+	protected void setUp() throws Exception {
+		super.setUp();
+		
+		logger.info("-----------------------------------  " +
+				getName() + "  ----------------------------------");
+	}
 	
 	public void testDesign() throws Exception {
 		
@@ -189,7 +201,11 @@ public class BeanTypeDesFaTest extends XMLTestCase {
 		XMLArooaParser xmlParser = new XMLArooaParser();
 		xmlParser.parse(top.getArooaContext().getConfigurationNode());
 
-		assertXMLEqual(expected, xmlParser.getXml());
+		String actual = xmlParser.getXml();
+		
+		logger.info(actual);
+		
+		assertXMLEqual(expected, actual);
 	}
 	
 	
