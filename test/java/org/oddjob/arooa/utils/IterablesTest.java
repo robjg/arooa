@@ -5,7 +5,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-public class IterableTest extends TestCase {
+public class IterablesTest extends TestCase {
 
 	public void testToArray() {
 
@@ -29,5 +29,34 @@ public class IterableTest extends TestCase {
 		List<Integer>[] result = Iterables.toArray(list, List.class);
 
 		assertEquals(2, result.length);
+	}
+	
+	public void testToArrayWhenNull() {
+		
+		try {
+			Iterables.toArray(null, List.class);
+			fail("Should throw NPE.");
+		}
+		catch (NullPointerException e) {
+			// expected
+		}
+	}
+	
+	public void testToString() {
+		
+		List<Integer> list = new ArrayList<Integer>();
+		list.add(new Integer(2));
+		list.add(new Integer(3));
+		
+		String result = Iterables.toString(list);
+
+		assertEquals("[2, 3]", result);
+	}
+	
+	public void testToStringWhenNull() {
+		
+		String result = Iterables.toString(null);
+
+		assertEquals("null", result);
 	}
 }

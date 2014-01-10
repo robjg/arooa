@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Helper for working with Iterables.
+ * Helper for working with {@link java.lang.Iterable}s.
  * 
  * @author rob
  *
@@ -59,14 +59,19 @@ public class Iterables {
 	}
 	
 	/**
-	 * Convert an Iterable to a String.
+	 * Convert an {link java.lang.Iterable} to a String.
 	 * 
 	 * @param iterable The Iterable.
 	 * @return The String.
 	 */
 	public static String toString(Iterable<?> iterable) {
 
-		return Arrays.toString(toArray(iterable));
+		if (iterable == null) {
+			return Arrays.toString((Object[]) null);
+		}
+		else {
+			return Arrays.toString(toArray(iterable));
+		}
 	}
 	
 }
