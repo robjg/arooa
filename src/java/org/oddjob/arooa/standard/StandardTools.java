@@ -4,7 +4,14 @@ import org.oddjob.arooa.ArooaTools;
 import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
 import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.convert.DefaultConverter;
+import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+import org.oddjob.arooa.registry.ComponentsServiceFinder;
+import org.oddjob.arooa.registry.CompositeServiceFinder;
+import org.oddjob.arooa.registry.ContextHierarchyServiceFinder;
+import org.oddjob.arooa.registry.DirectoryServiceFinder;
+import org.oddjob.arooa.registry.ServiceFinder;
+import org.oddjob.arooa.registry.ServiceHelper;
 import org.oddjob.arooa.runtime.Evaluator;
 import org.oddjob.arooa.runtime.ExpressionParser;
 import org.oddjob.arooa.runtime.NestedExpressionParser;
@@ -71,5 +78,22 @@ public class StandardTools implements ArooaTools {
 	@Override
 	public Evaluator getEvaluator() {
 		return evaluator;
+	}
+	
+	@Override
+	public ServiceHelper getServiceHelper() {
+		return new ServiceHelper() {
+			
+			@Override
+			public ServiceFinder serviceFinderFor(ArooaContext context) {
+				return new CompositeServiceFinder(
+						new ContextHierarchyServiceFinder(context),
+						new DirectoryServiceFinder(
+								context.getSession().getBeanRegistry()),
+						new ComponentsServiceFinder(
+								context.getSession().getComponentPool())
+					);
+			}
+		};
 	}
 }

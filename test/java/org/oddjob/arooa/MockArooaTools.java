@@ -2,6 +2,7 @@ package org.oddjob.arooa;
 
 import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+import org.oddjob.arooa.registry.ServiceHelper;
 import org.oddjob.arooa.runtime.Evaluator;
 import org.oddjob.arooa.runtime.ExpressionParser;
 
@@ -30,4 +31,10 @@ public class MockArooaTools implements ArooaTools {
 		throw new RuntimeException("Unexpected from class: " + 
 				this.getClass().getName());
 	}		
+	
+	@Override
+	public ServiceHelper getServiceHelper() {
+		throw new RuntimeException("Unexpected from class: " + 
+				this.getClass().getName());
+	}
 }

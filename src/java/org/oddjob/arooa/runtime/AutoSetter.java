@@ -11,10 +11,6 @@ import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyAccessor;
-import org.oddjob.arooa.registry.ComponentsServiceFinder;
-import org.oddjob.arooa.registry.CompositeServiceFinder;
-import org.oddjob.arooa.registry.ContextHierarchyServiceFinder;
-import org.oddjob.arooa.registry.DirectoryServiceFinder;
 import org.oddjob.arooa.registry.ServiceFinder;
 
 /**
@@ -85,11 +81,9 @@ public class AutoSetter {
 						property + " of " + classIdentifier);
 			}
 			
-			ServiceFinder finder = new CompositeServiceFinder(
-					new ContextHierarchyServiceFinder(context),
-					new DirectoryServiceFinder(session.getBeanRegistry()),
-					new ComponentsServiceFinder(session.getComponentPool())
-				);
+			ServiceFinder finder = 
+					context.getSession().getTools().getServiceHelper(
+							).serviceFinderFor(context);
 			
 			Object value = finder.find(
 					overview.getPropertyType(property), 

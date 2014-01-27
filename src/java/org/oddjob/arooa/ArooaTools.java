@@ -2,6 +2,7 @@ package org.oddjob.arooa;
 
 import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+import org.oddjob.arooa.registry.ServiceHelper;
 import org.oddjob.arooa.runtime.Evaluator;
 import org.oddjob.arooa.runtime.ExpressionParser;
 
@@ -39,4 +40,10 @@ public interface ArooaTools {
 	 */
 	public Evaluator getEvaluator();
 	
+	/**
+	 * Get a {@link ServiceHelper}.
+	 * 
+	 * @return A Service Helper. Will not be null.
+	 */
+	public ServiceHelper getServiceHelper();
 }

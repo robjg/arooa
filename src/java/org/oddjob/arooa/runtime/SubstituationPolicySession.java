@@ -5,6 +5,7 @@ import org.oddjob.arooa.ArooaTools;
 import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.parsing.SessionDelegate;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+import org.oddjob.arooa.registry.ServiceHelper;
 
 /**
  * Create an {@link ArooaSession} with an {@link SubstitutionPolicy} 
@@ -56,6 +57,11 @@ implements ArooaSession {
 			@Override
 			public ArooaConverter getArooaConverter() {
 				return toolsDelegate.getArooaConverter();
+			}
+			
+			@Override
+			public ServiceHelper getServiceHelper() {
+				return toolsDelegate.getServiceHelper();
 			}
 		};
 	}
