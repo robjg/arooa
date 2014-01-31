@@ -1,10 +1,23 @@
 package org.oddjob.arooa.registry;
 
+import org.apache.log4j.Logger;
+
 import junit.framework.TestCase;
 
 public class CompositeServiceFinderTest extends TestCase {
 
+	private static final Logger logger = 
+			Logger.getLogger(CompositeServiceFinderTest.class);
+	
 	private static class Cheese {}
+	
+	@Override
+	protected void setUp() throws Exception {
+		super.setUp();
+		
+		logger.info("-----------------------  " + getClass().getName() + 
+				"#" + getName() + "  -----------------------"); 
+	}
 	
 	public void testFirstHasService() {
 		

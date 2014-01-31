@@ -3,13 +3,11 @@ package org.oddjob.arooa.registry;
 import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;
-import org.oddjob.arooa.ComponentTrinity;
-import org.oddjob.arooa.parsing.MockArooaContext;
 
-public class ComponentsServiceFinderTest extends TestCase {
+public class DirectoryServiceFinderTest extends TestCase {
 
 	private static final Logger logger = 
-			Logger.getLogger(ComponentsServiceFinderTest.class);
+			Logger.getLogger(DirectoryServiceFinderTest.class);
 	
 	interface FruitService {}
 	
@@ -67,24 +65,19 @@ public class ComponentsServiceFinderTest extends TestCase {
 	
 	public void testTwoMatches() {
 		
-		SimpleComponentPool components = new SimpleComponentPool();
+		SimpleBeanRegistry directory = new SimpleBeanRegistry();
 		
 		AppleService appleService = new AppleService();
 		
 		OrangeService orangeService = new OrangeService();
 		
-		components.registerComponent(
-				new ComponentTrinity(appleService, 
-						appleService, new MockArooaContext()), 
-				null);
 		
-		components.registerComponent(
-				new ComponentTrinity(orangeService, 
-						orangeService, new MockArooaContext()), 
-				null);
+		directory.register("apples", appleService);
 		
-		ComponentsServiceFinder test = new ComponentsServiceFinder(
-				components);
+		directory.register("oranges", orangeService);
+		
+		DirectoryServiceFinder test = new DirectoryServiceFinder(
+				directory);
 		
 		Object result = test.find(FruitService.class, null);
 		

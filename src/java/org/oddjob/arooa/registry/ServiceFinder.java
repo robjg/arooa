@@ -12,10 +12,10 @@ public interface ServiceFinder {
 	 * Find a service.
 	 * 
 	 * @param cl The class of the service.
-	 * @param flavour The flavour of the service. Not yet implemented.
+	 * @param qualifier The flavour of the service. Not yet implemented.
 	 * 
 	 * @return
 	 */
-	public <T> T find(Class<T> cl, String flavour);
+	public <T> T find(Class<T> cl, String qualifier);
 
 }

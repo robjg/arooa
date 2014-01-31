@@ -1,5 +1,7 @@
 package org.oddjob.arooa.registry;
 
+import org.apache.log4j.Logger;
+
 /**
  * A {@link ServiceFinder} that looks through a {@link BeanDirectory}
  * for services.
@@ -9,6 +11,9 @@ package org.oddjob.arooa.registry;
  */
 public class DirectoryServiceFinder implements ServiceFinder {
 
+	private static final Logger logger = 
+			Logger.getLogger(DirectoryServiceFinder.class);
+		
 	private final BeanDirectory directory;
 	
 	/**
@@ -33,9 +38,26 @@ public class DirectoryServiceFinder implements ServiceFinder {
 			}
 			
 			String identifier = lookup.serviceNameFor(cl, flavour);
-			if (identifier != null) {
-				return cl.cast(lookup.getService(identifier));
+			if (identifier == null) {
+				continue;
 			}
+			
+			T service = cl.cast(lookup.getService(identifier));
+			
+			if (logger.isDebugEnabled()) {
+				logger.debug("Found Service [" + service + "] for " + 
+						cl.getName() + ( flavour == null ? "" : ", " + flavour) +
+						" from provider [" + provider + 
+						"] in the Bean Directory.");
+			}
+			
+			return service;
+		}
+		
+		if (logger.isDebugEnabled()) {
+			logger.debug("No Service for " + 
+					cl.getName() + ( flavour == null ? "" : ", " + flavour) +
+					" found from providers in the Bean Directory.");
 		}
 		
 		return null;

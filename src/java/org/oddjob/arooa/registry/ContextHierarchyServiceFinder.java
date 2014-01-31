@@ -1,5 +1,6 @@
 package org.oddjob.arooa.registry;
 
+import org.apache.log4j.Logger;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.runtime.InstanceRuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
@@ -13,6 +14,9 @@ import org.oddjob.arooa.runtime.RuntimeConfiguration;
  */
 public class ContextHierarchyServiceFinder implements ServiceFinder {
 
+	private static final Logger logger = 
+			Logger.getLogger(ContextHierarchyServiceFinder.class);
+	
 	private final ArooaContext arooaContext;
 	
 	/**
@@ -26,7 +30,6 @@ public class ContextHierarchyServiceFinder implements ServiceFinder {
 	
 	@Override
 	public <T> T find(Class<T> cl, String flavour) {
-		
 		
 		for (ArooaContext context = this.arooaContext; 
 				context != null; context = context.getParent()) {
@@ -56,9 +59,26 @@ public class ContextHierarchyServiceFinder implements ServiceFinder {
 			}
 			
 			String identifier = lookup.serviceNameFor(cl, flavour);
-			if (identifier != null) {
-				return cl.cast(lookup.getService(identifier));
+			if (identifier == null) {
+				continue;
 			}
+			
+			T service = cl.cast(lookup.getService(identifier));
+			
+			if (logger.isDebugEnabled()) {
+				logger.debug("Found Service [" + service + "] for " + 
+						cl.getName() + ( flavour == null ? "" : ", " + flavour) +
+						" from provider [" + provider + 
+						"] in the Context Hierarchy.");
+			}
+			
+			return service;
+		}
+		
+		if (logger.isDebugEnabled()) {
+			logger.debug("No Service for " + 
+					cl.getName() + ( flavour == null ? "" : ", " + flavour) +
+					" found from providers in the Context Hierarchy.");
 		}
 		
 		return null;

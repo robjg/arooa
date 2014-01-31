@@ -1,5 +1,6 @@
 package org.oddjob.arooa.registry;
 
+import org.apache.log4j.Logger;
 import org.oddjob.arooa.ComponentTrinity;
 
 /**
@@ -10,6 +11,9 @@ import org.oddjob.arooa.ComponentTrinity;
  */
 public class ComponentsServiceFinder implements ServiceFinder {
 
+	private static final Logger logger = 
+			Logger.getLogger(ComponentsServiceFinder.class);
+	
 	private final ComponentPool directory;
 	
 	public ComponentsServiceFinder(ComponentPool directory) {
@@ -37,9 +41,27 @@ public class ComponentsServiceFinder implements ServiceFinder {
 			}
 			
 			String identifier = lookup.serviceNameFor(cl, flavour);
-			if (identifier != null) {
-				return cl.cast(lookup.getService(identifier));
+			
+			if (identifier == null) {
+				continue;
 			}
+			
+			T service = cl.cast(lookup.getService(identifier));
+
+			if (logger.isDebugEnabled()) {
+				logger.debug("Found Service [" + service + "] for " + 
+						cl.getName() + ( flavour == null ? "" : ", " + flavour) +
+						" from provider [" + provider + 
+						"] in the Component Pool.");
+			}
+			
+			return service;
+		}
+		
+		if (logger.isDebugEnabled()) {
+			logger.debug("No Service for " + 
+					cl.getName() + ( flavour == null ? "" : ", " + flavour) +
+					" found from providers in the Component Pool.");
 		}
 		
 		return null;
