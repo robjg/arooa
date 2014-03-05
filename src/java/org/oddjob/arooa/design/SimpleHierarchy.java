@@ -87,6 +87,7 @@ public class SimpleHierarchy<T> {
 		return this;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void iterate(HierarchyVisitor<T> v) {
 		for (Iterator<Object> it = parts.iterator(); it.hasNext(); ) {
 			Object o = it.next();

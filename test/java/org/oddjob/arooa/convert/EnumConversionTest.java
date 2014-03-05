@@ -45,9 +45,9 @@ public class EnumConversionTest extends TestCase {
 	
 	public void testStringToEnumConversion2() {
 	
-		Class<?> enumClass = Colours.class;
+		Class<Colours> enumClass = Colours.class;
 		
-		Colours colour = (Colours) Enum.valueOf((Class<Colours>) enumClass, "RED");
+		Colours colour = (Colours) Enum.valueOf(enumClass, "RED");
 		
 		assertEquals(Colours.RED, colour);
 	}

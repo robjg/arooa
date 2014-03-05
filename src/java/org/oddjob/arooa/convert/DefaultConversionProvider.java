@@ -25,6 +25,7 @@ import org.oddjob.arooa.types.ConvertType;
 import org.oddjob.arooa.types.IdentifiableValueType;
 import org.oddjob.arooa.types.ImportType;
 import org.oddjob.arooa.types.ListType;
+import org.oddjob.arooa.types.MapType;
 import org.oddjob.arooa.types.ValueFactory;
 import org.oddjob.arooa.types.ValueType;
 import org.oddjob.arooa.types.XMLType;
@@ -56,6 +57,8 @@ import org.oddjob.arooa.types.XMLType;
  *  <li>{@link XMLType}</li>
  *  <li>{@link ImportType}</li>
  *  <li>{@link ListType}</li>
+ *  <li>{@link MapType}</li>
+
  * </ul>
  * Some general conversions:
  * <ul>
@@ -101,6 +104,7 @@ public class DefaultConversionProvider implements ConversionProvider {
 		new XMLType.Conversions().registerWith(registry);
 		new ImportType.Conversions().registerWith(registry);
 		new ListType.Conversions().registerWith(registry);
+		new MapType.Conversions().registerWith(registry);
 		new ClassType.Conversions().registerWith(registry);
 		new ConvertType.Conversions().registerWith(registry);
 		// Some general conversions.

@@ -29,11 +29,13 @@ public class DefaultConvertletRegistryTest extends TestCase {
 	public void testRegistrationOrder() {
 		class CP implements ConversionProvider {
 			public void registerWith(ConversionRegistry registry) {
-				registry.register(Long.class, java.sql.Date.class, new Convertlet() {
-					public Object convert(Object from) { return null; }
+				registry.register(Long.class, java.sql.Date.class, 
+						new Convertlet<Long, java.sql.Date>() {
+					public java.sql.Date convert(Long from) { return null; }
 				});
-				registry.register(Long.class, java.util.Date.class, new Convertlet() {
-					public Object convert(Object from) { return null; }
+				registry.register(Long.class, java.util.Date.class, 
+						new Convertlet<Long, java.util.Date>() {
+					public java.util.Date convert(Long from) { return null; }
 				});
 			}
 		}
@@ -41,7 +43,8 @@ public class DefaultConvertletRegistryTest extends TestCase {
 		DefaultConversionRegistry test = new DefaultConversionRegistry();
 		new CP().registerWith(test);
 		
-		ConversionPath result = test.findConversion(Long.class, java.util.Date.class);
+		ConversionPath<Long, java.util.Date> result = 
+				test.findConversion(Long.class, java.util.Date.class);
 
 		assertEquals(1, result.length());
 		
@@ -57,14 +60,23 @@ public class DefaultConvertletRegistryTest extends TestCase {
 		// the first registerd. Long -> Date should win.
 		class CP implements ConversionProvider {
 			public void registerWith(ConversionRegistry registry) {
-				registry.register(Long.class, String.class, new Convertlet() {
-					public Object convert(Object from) { return null; }
+				registry.register(Long.class, String.class, 
+						new Convertlet<Long, String>() {
+					public String convert(Long from) { 
+						return null; 
+					}
 				});
-				registry.register(String.class, java.util.Date.class, new Convertlet() {
-					public Object convert(Object from) { return null; }
+				registry.register(String.class, java.util.Date.class, 
+						new Convertlet<String, java.util.Date>() {
+					public java.util.Date convert(String from) { 
+						return null; 
+					}
 				});
-				registry.register(Long.class, java.util.Date.class, new Convertlet() {
-					public Object convert(Object from) { return null; }
+				registry.register(Long.class, java.util.Date.class, 
+						new Convertlet<Long, java.util.Date>() {
+					public java.util.Date convert(Long from) { 
+						return null; 
+					}
 				});
 			}
 		}
@@ -72,7 +84,8 @@ public class DefaultConvertletRegistryTest extends TestCase {
 		DefaultConversionRegistry test = new DefaultConversionRegistry();
 		new CP().registerWith(test);
 		
-		ConversionPath result = test.findConversion(Long.class, java.util.Date.class);
+		ConversionPath<Long, java.util.Date> result = 
+				test.findConversion(Long.class, java.util.Date.class);
 
 		assertEquals(1, result.length());
 		
@@ -120,7 +133,8 @@ public class DefaultConvertletRegistryTest extends TestCase {
 		ConversionLookup test = new DefaultConversionRegistry();
 		
 		// sql.Date is already an instanceof util.data
-		ConversionPath result = test.findConversion(java.sql.Date.class, java.util.Date.class);
+		ConversionPath<?, ?> result = 
+				test.findConversion(java.sql.Date.class, java.util.Date.class);
 		assertEquals(0, result.length());
 		
 		// but the converse is not true.
@@ -151,7 +165,7 @@ public class DefaultConvertletRegistryTest extends TestCase {
 
 		new ArooaValueConvertlets().registerWith(test);
 
-		ConversionPath result = test.findConversion(String.class, ArooaValue.class);
+		ConversionPath<?, ?> result = test.findConversion(String.class, ArooaValue.class);
 		assertEquals(2, result.length());
 		
 	}
@@ -307,7 +321,7 @@ public class DefaultConvertletRegistryTest extends TestCase {
 			
 			++index;
 			
-			ConversionPath result = super.best(
+			ConversionPath<F, T> result = super.best(
 					from, from, to, stepsSoFar, maxLevels);
 			
 			return result;
@@ -337,13 +351,15 @@ public class DefaultConvertletRegistryTest extends TestCase {
 	public void testOrderWithSuper() {
 		ConversionTracker2 test = new ConversionTracker2();
 
-		test.register(Fruit.class, Colour.class, new Convertlet() {
-			public Object convert(Object from) throws ConvertletException {
+		test.register(Fruit.class, Colour.class, 
+				new Convertlet<Fruit, Colour>() {
+			public Colour convert(Fruit from) throws ConvertletException {
 				return new Colour(((Fruit) from).getColour());
 			}
 		});
 				
-		ConversionPath result = test.findConversion(RedApple.class, Colour.class);
+		ConversionPath<?, ?> result = 
+				test.findConversion(RedApple.class, Colour.class);
 		
 		assertEquals(2, result.length());
 	}
@@ -369,7 +385,7 @@ public class DefaultConvertletRegistryTest extends TestCase {
 			++index;
 			++level;
 
-			ConversionPath result = super.best(
+			ConversionPath<F, T> result = super.best(
 					from, from, to, stepsSoFar, maxLevels);
 
 			--level;
@@ -387,7 +403,7 @@ public class DefaultConvertletRegistryTest extends TestCase {
 		new ArooaValueConvertlets().registerWith(diagnose);
 		
 		Class<String> from = String.class;
-		ConversionPath result = diagnose.findConversion(from, ArooaValue.class);
+		ConversionPath<?, ?> result = diagnose.findConversion(from, ArooaValue.class);
 		System.out.print("Result: " + from.getName());
 		for (int i = 0; i < result.length(); ++i) {
 			System.out.print("->" + result.getStep(i).getToClass().getName());

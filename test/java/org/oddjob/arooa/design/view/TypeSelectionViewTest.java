@@ -186,7 +186,7 @@ public class TypeSelectionViewTest extends TestCase {
 		assertEquals(JComboBox.class, c2.getClass());
 		assertEquals(JPanel.class, c3.getClass());
 		
-		JComboBox comboBox = (JComboBox) c2;
+		JComboBox<?> comboBox = (JComboBox<?>) c2;
 		JPanel cell = (JPanel) c3;
 		
 		assertEquals(TypeSelectionView.NULL_TAG, comboBox.getSelectedItem());

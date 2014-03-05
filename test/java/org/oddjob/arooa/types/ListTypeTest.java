@@ -5,6 +5,7 @@ package org.oddjob.arooa.types;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -34,17 +35,36 @@ public class ListTypeTest extends TestCase {
 	
 	@Override
 	protected void setUp() throws Exception {
-		logger.debug("Running test: " + getName());
+		logger.info("-----------------------  " + getName() + 
+				"  ----------------------------");
 	}
 
-	public void testDefaultConverstion() 
+	public void testDefaultConversions() 
 	throws NoConversionAvailableException, ConversionFailedException {
 		
 		ListType test = new ListType();
 		
-		Object o = new DefaultConverter().convert(test, Object.class);
+		ArooaConverter converter = new DefaultConverter();
+		
+		// Check conversion to Object is a List.
+		Object o = converter.convert(test, Object.class);
 		
 		assertTrue(List.class.isAssignableFrom(o.getClass()));
+		
+		// Check Conversion to Iterable.
+		@SuppressWarnings("rawtypes")
+		ConversionPath<ListType, Iterable> conversion = 
+				converter.findConversion(ListType.class, Iterable.class);
+		assertEquals("ListType-Iterable", conversion.toString());
+		
+		Iterable<?> iterable = converter.convert(test, Iterable.class);
+		Iterator<?> it = iterable.iterator();
+		assertEquals(false, it.hasNext());
+		
+		// Is lack of conversion to String a problem?
+		ConversionPath<ListType, String> conversionToString = 
+				converter.findConversion(ListType.class, String.class);
+		assertEquals(null, conversionToString);
 	}
 	
 	public void testConvertContents() throws Exception {

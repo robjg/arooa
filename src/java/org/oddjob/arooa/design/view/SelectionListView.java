@@ -24,7 +24,7 @@ public class SelectionListView implements SwingItemView {
 		
 	private final SelectionList selectionList;
 	
-	private final JComboBox comboBox;
+	private final JComboBox<String> comboBox;
 	private final JLabel label;
 	
 	/**
@@ -38,7 +38,7 @@ public class SelectionListView implements SwingItemView {
 		label = new JLabel(ViewHelper.padLabel(selectionList.getTitle()), 
 				SwingConstants.LEADING);
 
-		comboBox = new JComboBox();
+		comboBox = new JComboBox<String>();
 		comboBox.addItem("");
 		String[] types = selection.getOptions();
 		for (int i = 0; i < types.length; ++i) {
@@ -50,7 +50,8 @@ public class SelectionListView implements SwingItemView {
 		
 		comboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JComboBox cb = (JComboBox)e.getSource();
+				@SuppressWarnings("unchecked")
+				JComboBox<String> cb = (JComboBox<String>)e.getSource();
 		        selectionList.setSelected((String)cb.getSelectedItem());
 			}
 		});		

@@ -1,11 +1,16 @@
 package org.oddjob.arooa.convert.convertlets;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.convert.ConversionFailedException;
+import org.oddjob.arooa.convert.ConversionPath;
 import org.oddjob.arooa.convert.Convertlet;
 import org.oddjob.arooa.convert.ConvertletException;
 import org.oddjob.arooa.convert.DefaultConversionProvider;
@@ -13,7 +18,6 @@ import org.oddjob.arooa.convert.DefaultConversionRegistry;
 import org.oddjob.arooa.convert.DefaultConverter;
 import org.oddjob.arooa.convert.Joker;
 import org.oddjob.arooa.convert.MockConvertletRegistry;
-import org.oddjob.arooa.convert.NoConversionAvailableException;
 
 public class CollectionConvertletsTest extends TestCase {
 	
@@ -39,6 +43,7 @@ public class CollectionConvertletsTest extends TestCase {
 		OurConvertletRegistry reg = new OurConvertletRegistry();
 		new CollectionConvertlets().registerWith(reg);
 		
+		@SuppressWarnings("unchecked")
 		Convertlet<List<String>, Object[]> test = 
 			(Convertlet<List<String>, Object[]>) reg.getConvertlet(0);
 
@@ -58,7 +63,9 @@ public class CollectionConvertletsTest extends TestCase {
 		OurConvertletRegistry reg = new OurConvertletRegistry();
 		new CollectionConvertlets().registerWith(reg);
 		
-		Convertlet test = reg.getConvertlet(1);
+		@SuppressWarnings("unchecked")
+		Convertlet<String[], List<String>> test = 
+				(Convertlet<String[], List<String>>) reg.getConvertlet(1);
 		
 		String[] from = { "a", "b" };
 		
@@ -83,4 +90,25 @@ public class CollectionConvertletsTest extends TestCase {
 		assertEquals("b", result[1]);		
 	}
 	
+	public void testMapToIterableConversion() throws ConversionFailedException {
+		
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("apples", new Integer(12));
+		
+		ArooaConverter converter = new DefaultConverter();
+		
+		@SuppressWarnings("rawtypes")
+		ConversionPath<Map, Iterable> conversion = 
+				converter.findConversion(Map.class, Iterable.class);
+		
+		assertNotNull(conversion);
+		
+		@SuppressWarnings("unchecked")
+		Iterable<Map.Entry<String, Integer>> iterable = 
+				(Iterable<Map.Entry<String, Integer>>) conversion.convert(map, converter);
+		
+		Iterator<Map.Entry<String, Integer>> it = iterable.iterator();
+
+		assertTrue(it.hasNext());
+	}
 }

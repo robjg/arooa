@@ -13,6 +13,7 @@ import org.oddjob.arooa.types.BeanType;
 import org.oddjob.arooa.types.ClassType;
 import org.oddjob.arooa.types.IsType;
 import org.oddjob.arooa.types.ListType;
+import org.oddjob.arooa.types.MapType;
 
 public class SessionArooaDocFactoryTest extends TestCase {
 
@@ -31,7 +32,7 @@ public class SessionArooaDocFactoryTest extends TestCase {
 			results.put(beanDoc.getClassName(), beanDoc);
 		}
 		
-		assertEquals(9, results.size());
+		assertEquals(10, results.size());
 		
 		// Is
 		
@@ -126,6 +127,36 @@ public class SessionArooaDocFactoryTest extends TestCase {
 				listUniquePropertyDoc.getAccess());
 		assertEquals(ConfiguredHow.ATTRIBUTE,
 				listUniquePropertyDoc.getConfiguredHow());
+		
+		// Map
+
+		WriteableBeanDoc mapDoc = results.get(MapType.class.getName());
+
+		Map<String, WriteablePropertyDoc> mapProperties = 
+				new HashMap<String, WriteablePropertyDoc>();
+
+		for (WriteablePropertyDoc propertyDoc: mapDoc.getPropertyDocs()) {
+			mapProperties.put(propertyDoc.getPropertyName(), propertyDoc);
+		}
+
+
+		WriteablePropertyDoc mapValuesPropertyDoc = 
+				mapProperties.get("values");
+		assertEquals(PropertyDoc.Multiplicity.MAPPED,
+				mapValuesPropertyDoc.getMultiplicity());
+		assertEquals(PropertyDoc.Access.READ_WRITE,
+				mapValuesPropertyDoc.getAccess());
+		assertEquals(ConfiguredHow.ELEMENT,
+				mapValuesPropertyDoc.getConfiguredHow());
+
+		WriteablePropertyDoc mapElementTypePropertyDoc = 
+				mapProperties.get("elementType");
+		assertEquals(PropertyDoc.Multiplicity.SIMPLE,
+				mapElementTypePropertyDoc.getMultiplicity());
+		assertEquals(PropertyDoc.Access.READ_WRITE,
+				mapElementTypePropertyDoc.getAccess());
+		assertEquals(ConfiguredHow.ELEMENT,
+				mapElementTypePropertyDoc.getConfiguredHow());
 	}
-	
+
 }

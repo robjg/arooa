@@ -432,6 +432,7 @@ public class BeanUtilsPropertyAccessor implements PropertyAccessor {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static void validateSimplePropertyName(String name) 
 	throws IllegalArgumentException {
 		

@@ -38,7 +38,7 @@ public class TypeSelectionView implements SwingItemView {
 	
 	private final DesignElementProperty designProperty;
 	
-	final JComboBox comboBox;
+	final JComboBox<QTag> comboBox;
 	final JLabel label;
 	final JPanel cell;
 	
@@ -60,7 +60,7 @@ public class TypeSelectionView implements SwingItemView {
 		label = new JLabel(ViewHelper.padLabel(selection.getTitle()), 
 				SwingConstants.LEADING);
 
-		comboBox = new JComboBox();
+		comboBox = new JComboBox<QTag>();
 		QTag[] types = getOptions();
 		for (int i = 0; i < types.length; ++i) {
 			comboBox.addItem(types[i]);				
@@ -76,8 +76,9 @@ public class TypeSelectionView implements SwingItemView {
 		cell.add(dummy, BorderLayout.CENTER);
 		
 		comboBox.addActionListener(new ActionListener() {
+			@SuppressWarnings("unchecked")
 			public void actionPerformed(ActionEvent e) {
-				JComboBox cb = (JComboBox)e.getSource();
+				JComboBox<QTag> cb = (JComboBox<QTag>)e.getSource();
 		        QTag type = (QTag) cb.getSelectedItem();
 		        try {
 		        	setSelected(type);

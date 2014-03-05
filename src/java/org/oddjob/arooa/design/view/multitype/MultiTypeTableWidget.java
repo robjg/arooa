@@ -114,7 +114,7 @@ public class MultiTypeTableWidget extends JPanel {
 		Object[] optionsPlus = new Object[options.length + 1];
 		optionsPlus[0] = model.getDeleteOption();
 			System.arraycopy(options, 0, optionsPlus, 1, options.length);
-		JComboBox typeChooser = new JComboBox(optionsPlus);
+		JComboBox<Object> typeChooser = new JComboBox<Object>(optionsPlus);
 		typeCol.setCellEditor(new DefaultCellEditor(typeChooser));
 
 		// Set the value renderer and editor.

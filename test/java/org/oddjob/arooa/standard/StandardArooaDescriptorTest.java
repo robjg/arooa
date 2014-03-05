@@ -116,7 +116,7 @@ public class StandardArooaDescriptorTest extends TestCase {
 						null,
 						new DefaultConverter()));
 		
-		assertEquals(9, elements.length);
+		assertEquals(10, elements.length);
 		
 		Set<ArooaElement> set = new HashSet<ArooaElement>(Arrays.asList(elements));
 		
@@ -128,5 +128,6 @@ public class StandardArooaDescriptorTest extends TestCase {
 		assertTrue(set.contains(new ArooaElement("value")));
 		assertTrue(set.contains(new ArooaElement("xml")));
 		assertTrue(set.contains(new ArooaElement("list")));
+		assertTrue(set.contains(new ArooaElement("map")));
 	}
 }

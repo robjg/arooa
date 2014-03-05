@@ -6,9 +6,11 @@ package org.oddjob.arooa.convert.convertlets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.oddjob.arooa.convert.ConversionProvider;
 import org.oddjob.arooa.convert.ConversionRegistry;
+import org.oddjob.arooa.convert.Convertlet;
 import org.oddjob.arooa.convert.FinalConvertlet;
 
 /**
@@ -40,6 +42,14 @@ public class CollectionConvertlets implements ConversionProvider {
 				new FinalConvertlet<Object[], List>() {
 			public List<Object> convert(Object[] from) {
 				return Arrays.asList(from);
+			};
+		});
+		
+		registry.register(Map.class, Collection.class, 
+				new Convertlet<Map, Collection>() {
+			@SuppressWarnings("unchecked")
+			public Collection<Map.Entry> convert(Map from) {
+				return from.entrySet();
 			};
 		});
 	}	

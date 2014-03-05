@@ -26,7 +26,7 @@ public class LabelledComboBoxView<T> implements SwingItemView {
 		
 	private final LabelledComboBox<T> formItem;
 	
-	final JComboBox comboBox;
+	final JComboBox<T> comboBox;
 	final JLabel label;
 	
 	final JPanel form;
@@ -49,18 +49,18 @@ public class LabelledComboBoxView<T> implements SwingItemView {
 		label = new JLabel(ViewHelper.padLabel(title), 
 					SwingConstants.LEADING);
 		
-		comboBox = new JComboBox();
+		comboBox = new JComboBox<T>();
 		
-		Object[] types = formItem.getSelections();
+		T[] types = formItem.getSelections();
 		for (int i = 0; i < types.length; ++i) {
 			comboBox.addItem(types[i]);				
 		}
 		comboBox.setSelectedItem(formItem.getSelected());	
 				
 		comboBox.addActionListener(new ActionListener() {
+	        @SuppressWarnings("unchecked")
 			public void actionPerformed(ActionEvent e) {
-				JComboBox cb = (JComboBox) e.getSource();
-		        @SuppressWarnings("unchecked")
+				JComboBox<T> cb = (JComboBox<T>) e.getSource();
 				T type = (T) cb.getSelectedItem();
 		        LabelledComboBoxView.this.formItem.setSelected(type);
 			}

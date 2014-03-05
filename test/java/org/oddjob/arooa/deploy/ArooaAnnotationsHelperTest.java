@@ -16,7 +16,6 @@ public class ArooaAnnotationsHelperTest extends TestCase {
 
 	public static class MyBase {
 		
-		@SuppressWarnings("unused")
 		@ArooaAttribute
 		private String shape;
 
@@ -28,7 +27,6 @@ public class ArooaAnnotationsHelperTest extends TestCase {
 	
 	public static class MyBean extends MyBase {
 		
-		@SuppressWarnings("unused")
 		@ArooaHidden
 		private String colour;
 		
