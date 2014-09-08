@@ -10,6 +10,13 @@ import java.util.Set;
  */
 public interface PropertyLookup {
 
+	public static final PropertySource SYSTEM_PROPERTY_SOURCE = 
+			new PropertySource() {
+		public String toString() {
+			return "SYSTEM";
+		}
+	};
+	
 	/**
 	 * Return the value of a property, or null if it doesn't exist.
 	 * 

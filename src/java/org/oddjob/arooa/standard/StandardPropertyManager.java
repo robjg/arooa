@@ -125,12 +125,6 @@ public class StandardPropertyManager implements PropertyManager {
 
 class SystemLookup implements PropertyLookup {
 	
-	final PropertySource SOURCE = new PropertySource() {
-		public String toString() {
-			return "SYSTEM";
-		}
-	};
-	
 	@Override
 	public String lookup(String propertyName) {
 		return System.getProperty(propertyName);
@@ -144,7 +138,7 @@ class SystemLookup implements PropertyLookup {
 	@Override
 	public PropertySource sourceFor(String propertyName) {
 		if (System.getProperties().containsKey(propertyName)) {
-			return SOURCE;
+			return SYSTEM_PROPERTY_SOURCE;
 		}
 		else {
 			return null;
