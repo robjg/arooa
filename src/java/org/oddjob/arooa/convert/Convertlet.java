@@ -30,8 +30,8 @@ public interface Convertlet<F, T> {
 	 * @param from The from object, never null.
 	 * @return The conversion. Can be null.
 	 * 
-	 * @throws ConvertletException If conversion failed - for instance
+	 * @throws ArooaConversionException If conversion failed - for instance
 	 * a number or date can't be parsed.
 	 */
-	public T convert(F from) throws ConvertletException;
+	public T convert(F from) throws ArooaConversionException;
 }

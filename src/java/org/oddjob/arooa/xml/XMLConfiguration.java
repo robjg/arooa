@@ -199,7 +199,7 @@ public class XMLConfiguration implements ArooaConfiguration {
 	 */
 	public XMLConfiguration(final String systemId, final InputStream in) {
 		if (in == null) {
-			throw new NullPointerException();
+			throw new NullPointerException("No Input Stream for XML Configuration.");
 		}
 		sourceFactory = new SourceFactory() {
 			public CloseableInputSource createInput() throws IOException {

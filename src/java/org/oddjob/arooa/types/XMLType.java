@@ -8,7 +8,6 @@ import org.oddjob.arooa.ArooaValue;
 import org.oddjob.arooa.convert.ConversionProvider;
 import org.oddjob.arooa.convert.ConversionRegistry;
 import org.oddjob.arooa.convert.Convertlet;
-import org.oddjob.arooa.convert.ConvertletException;
 import org.oddjob.arooa.design.DesignFactory;
 import org.oddjob.arooa.design.DesignInstance;
 import org.oddjob.arooa.design.etc.UnknownInstance;
@@ -51,16 +50,14 @@ public class XMLType implements ArooaContextAware, ArooaValue, Serializable {
 
 			registry.register(XMLType.class, String.class, 
 					new Convertlet<XMLType, String>() {
-				public String convert(XMLType from)
-						throws ConvertletException {
+				public String convert(XMLType from) {
 	    			return from.xml;
 				}
 			});
 			
 			registry.register(XMLType.class, ArooaConfiguration.class, 
 					new Convertlet<XMLType, ArooaConfiguration>() {
-				public ArooaConfiguration convert(XMLType from)
-						throws ConvertletException {
+				public ArooaConfiguration convert(XMLType from) {
 					
 					ArooaContext childContext = 
 						new ChildCatcher(from.arooaContext, 0).getChild();

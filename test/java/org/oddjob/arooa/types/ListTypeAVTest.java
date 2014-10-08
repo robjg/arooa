@@ -15,7 +15,6 @@ import org.oddjob.arooa.convert.ConversionFailedException;
 import org.oddjob.arooa.convert.ConversionProvider;
 import org.oddjob.arooa.convert.ConversionRegistry;
 import org.oddjob.arooa.convert.Convertlet;
-import org.oddjob.arooa.convert.ConvertletException;
 import org.oddjob.arooa.convert.NoConversionAvailableException;
 import org.oddjob.arooa.life.ClassLoaderClassResolver;
 import org.oddjob.arooa.reflect.ArooaClass;
@@ -50,8 +49,7 @@ public class ListTypeAVTest extends TestCase {
 		public void registerWith(ConversionRegistry registry) {
 			registry.register(FruitAV.class, Fruit.class, 
 					new Convertlet<FruitAV, Fruit>() {
-				public Fruit convert(final FruitAV from)
-						throws ConvertletException {
+				public Fruit convert(final FruitAV from) {
 					return new Fruit() {
 						public String getColour() {
 							return from.colour;
@@ -61,8 +59,7 @@ public class ListTypeAVTest extends TestCase {
 			});
 			registry.register(FruitAV.class, String.class, 
 					new Convertlet<FruitAV, String>() {
-				public String convert(final FruitAV from)
-						throws ConvertletException {
+				public String convert(final FruitAV from) {
 					return from.colour;
 				}
 			});

@@ -8,11 +8,11 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.convert.ConversionFailedException;
 import org.oddjob.arooa.convert.ConversionPath;
 import org.oddjob.arooa.convert.Convertlet;
-import org.oddjob.arooa.convert.ConvertletException;
 import org.oddjob.arooa.convert.DefaultConversionProvider;
 import org.oddjob.arooa.convert.DefaultConversionRegistry;
 import org.oddjob.arooa.convert.DefaultConverter;
@@ -39,7 +39,7 @@ public class CollectionConvertletsTest extends TestCase {
 		}
 	}
 
-	public void testCollection2ObjectArray() throws ConvertletException {
+	public void testCollection2ObjectArray() throws ArooaConversionException {
 		OurConvertletRegistry reg = new OurConvertletRegistry();
 		new CollectionConvertlets().registerWith(reg);
 		
@@ -59,7 +59,7 @@ public class CollectionConvertletsTest extends TestCase {
 		assertEquals("b", result[1]);
 	}
 	
-	public void testArray2List() throws ConvertletException {
+	public void testArray2List() throws ArooaConversionException {
 		OurConvertletRegistry reg = new OurConvertletRegistry();
 		new CollectionConvertlets().registerWith(reg);
 		

@@ -26,4 +26,21 @@ public class ClassPathDescriptorFactoryTest extends TestCase {
 		assertEquals("arooa", descriptor.getPrefixFor(
 				new URI("http://rgordon.co.uk/oddjob/arooa")));
 	}
+
+	public void testMissingResource() {
+		
+		ClassPathDescriptorFactory test = new ClassPathDescriptorFactory();
+
+		String resource = "some/missing/thing.xml";
+		
+		assertNull(getClass().getClassLoader().getResource(resource));
+		
+		test.setResource(resource);
+		
+		ArooaDescriptor descriptor = test.createDescriptor(
+				getClass().getClassLoader());
+		
+		assertEquals(null, descriptor);
+	}
+	
 }

@@ -31,7 +31,7 @@ public class DefaultConverterTest extends TestCase {
 		assertTrue(Cloneable.class.isAssignableFrom(Object[].class));
 	}
 	
-	public void testPrimitiveAssumptions() throws ConvertletException {
+	public void testPrimitiveAssumptions() throws ArooaConversionException {
 
 		// doesn't take into account auto-boxing
 		assertFalse(boolean.class.isAssignableFrom(Boolean.class));
@@ -39,7 +39,7 @@ public class DefaultConverterTest extends TestCase {
 		Convertlet<String, Boolean> convertlet = new Convertlet<String, Boolean>() {
 			
 			@Override
-			public Boolean convert(String from) throws ConvertletException {
+			public Boolean convert(String from) {
 				return true;
 			}
 		};

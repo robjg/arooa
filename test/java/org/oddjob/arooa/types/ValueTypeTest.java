@@ -18,7 +18,6 @@ import org.oddjob.arooa.ArooaValue;
 import org.oddjob.arooa.ConfiguredHow;
 import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.convert.Convertlet;
-import org.oddjob.arooa.convert.ConvertletException;
 import org.oddjob.arooa.convert.DefaultConversionRegistry;
 import org.oddjob.arooa.convert.DefaultConverter;
 import org.oddjob.arooa.convert.convertlets.ArooaValueConvertlets;
@@ -114,7 +113,7 @@ public class ValueTypeTest extends TestCase {
 	}
 	
 	class OurConvertlet implements Convertlet<MockValueType, String> {
-		public String convert(MockValueType from) throws ConvertletException {
+		public String convert(MockValueType from) {
 			return from.value;
 		}
 	}

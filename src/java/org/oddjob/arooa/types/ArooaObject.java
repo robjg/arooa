@@ -11,6 +11,14 @@ import org.oddjob.arooa.convert.ConversionProvider;
 import org.oddjob.arooa.convert.ConversionRegistry;
 import org.oddjob.arooa.convert.Joker;
 
+/**
+ * Provide a conversion from any Java Object to an {@link ArooaValue}.
+ * 
+ * @see ValueType
+ * 
+ * @author rob
+ *
+ */
 public class ArooaObject implements ArooaValue, Serializable {
 	private static final long serialVersionUID = 2009011100L;
 	

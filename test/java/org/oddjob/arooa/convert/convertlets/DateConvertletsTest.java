@@ -8,8 +8,8 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
+import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.convert.Convertlet;
-import org.oddjob.arooa.convert.ConvertletException;
 import org.oddjob.arooa.convert.convertlets.CheckingConvertletRegistry.Check;
 import org.oddjob.arooa.utils.DateHelper;
 
@@ -29,7 +29,7 @@ public class DateConvertletsTest extends TestCase {
 			new CheckingConvertletRegistry(	new Check[] {
 					new Check() {
 						public <F, T>void check(Class<F> from, Class<T> to, 
-								Convertlet<F, T> convertlet) throws ConvertletException{
+								Convertlet<F, T> convertlet) throws ArooaConversionException {
 							assertEquals(Date.class, from);
 							assertEquals(String.class, to);
 							assertEquals("2007-12-25 12:57:00.000", 
@@ -40,7 +40,7 @@ public class DateConvertletsTest extends TestCase {
 					},
 					new Check() {
 						public <F, T>void check(Class<F> from, Class<T> to, 
-								Convertlet<F, T> convertlet) throws ConvertletException{
+								Convertlet<F, T> convertlet) throws ArooaConversionException {
 							assertEquals(String.class, from);
 							assertEquals(Date.class, to);
 							assertEquals(parse("2007-12-25 12:57"), 
@@ -51,7 +51,7 @@ public class DateConvertletsTest extends TestCase {
 					},
 					new Check() {
 						public <F, T>void check(Class<F> from, Class<T> to, 
-								Convertlet<F, T> convertlet) throws ConvertletException{
+								Convertlet<F, T> convertlet) throws ArooaConversionException {
 							assertEquals(Long.class, from);
 							assertEquals(Date.class, to);
 							assertEquals(new Date(100),
@@ -60,7 +60,7 @@ public class DateConvertletsTest extends TestCase {
 					},
 					new Check() {
 						public <F, T>void check(Class<F> from, Class<T> to, 
-								Convertlet<F, T> convertlet) throws ConvertletException{
+								Convertlet<F, T> convertlet) throws ArooaConversionException {
 							assertEquals(Date.class, from);
 							assertEquals(Long.class, to);
 							assertEquals(new Long(100), 
