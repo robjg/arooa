@@ -17,6 +17,7 @@ import junit.framework.TestCase;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.MappedPropertyDescriptor;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.log4j.Logger;
 
 /**
  * Test our assumptions about BeanUtils.
@@ -27,6 +28,17 @@ import org.apache.commons.beanutils.PropertyUtils;
  */
 public class BeanUtilsAssumptionsTest extends TestCase {
 
+	private static final Logger logger = Logger.getLogger(
+			BeanUtilsAssumptionsTest.class);
+
+	@Override
+	protected void setUp() throws Exception {
+		super.setUp();
+		
+		logger.info("-------------------  " + getName() + 
+				"  ------------------");
+	}
+	
 	public static class BeanWithMappedProp {
 		Map<String, File> map = new HashMap<String, File>();
 
@@ -246,8 +258,22 @@ public class BeanUtilsAssumptionsTest extends TestCase {
 				new Class[] { Thing1.class, Thing2.class }, 
 				new MyHandler());
 		
-		PropertyDescriptor pd = PropertyUtils.getPropertyDescriptor(proxy, "thing1");
-		assertEquals(String.class, pd.getPropertyType());
+		PropertyDescriptor[] descriptors = 
+				PropertyUtils.getPropertyDescriptors(proxy);
+		for (PropertyDescriptor descriptor : descriptors) {
+			logger.info(descriptor);
+		}	
+		
+		PropertyDescriptor propertyDescriptor1 = 
+				PropertyUtils.getPropertyDescriptor(proxy, "thing1");
+		assertEquals(String.class, propertyDescriptor1.getPropertyType());
+		
+		assertEquals("getThing1", 
+				PropertyUtils.getProperty(proxy, "thing1"));		
+		
+		PropertyDescriptor propertyDescriptor2 = 
+				PropertyUtils.getPropertyDescriptor(proxy, "thing2");
+		assertEquals(String.class, propertyDescriptor2.getPropertyType());
 		
 		assertEquals("getThing2", 
 				PropertyUtils.getProperty(proxy, "thing2"));		
