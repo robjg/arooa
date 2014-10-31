@@ -205,6 +205,8 @@ public class BeanTypeDesFaTest extends XMLTestCase {
 		
 		logger.info(actual);
 		
+		XMLUnit.setIgnoreWhitespace(true);
+		
 		assertXMLEqual(expected, actual);
 	}
 	
