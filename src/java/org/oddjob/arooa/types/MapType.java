@@ -1,9 +1,9 @@
 package org.oddjob.arooa.types;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.oddjob.arooa.ArooaValue;
 import org.oddjob.arooa.convert.ArooaConversionException;
@@ -62,11 +62,11 @@ public class MapType implements ArooaValue, Serializable {
      * @oddjob.required No.
      */
 	private final Map<String, ArooaValue> values = 
-		new ConcurrentHashMap<String, ArooaValue>();
+		new LinkedHashMap<String, ArooaValue>();
 	        
 	/** Values added after configuration. */
 	private final Map<String, ArooaValue> extras = 
-		new ConcurrentHashMap<String, ArooaValue>();
+		new LinkedHashMap<String, ArooaValue>();
 	
     /**
      * @oddjob.property
@@ -117,7 +117,7 @@ public class MapType implements ArooaValue, Serializable {
 	}
 		
 	@Configured
-	public void configured() {
+	public synchronized void configured() {
 		extras.clear();
 	}
 	
@@ -132,7 +132,7 @@ public class MapType implements ArooaValue, Serializable {
 	/*
 	 * Set the values.
 	 */
-	public void setValues(String key, ArooaValue element) {	
+	public synchronized void setValues(String key, ArooaValue element) {
 		if (element == null) {
 			values.remove(key);
 		}
@@ -141,7 +141,7 @@ public class MapType implements ArooaValue, Serializable {
 		}
 	}
 
-	public ArooaValue getValues(String key) {
+	public synchronized ArooaValue getValues(String key) {
 		return values.get(key);
 	}
 	
@@ -159,7 +159,7 @@ public class MapType implements ArooaValue, Serializable {
 	<T> Map<String, T> convertContents(ArooaConverter converter, Class<T> required) 
     throws ArooaConversionException {
 		
-    	Map<String, T> results= new ConcurrentHashMap<String, T>();
+    	Map<String, T> results= new LinkedHashMap<String, T>();
     	
 		if (this.elementType != null) {
 			
@@ -175,9 +175,11 @@ public class MapType implements ArooaValue, Serializable {
 			required = (Class<T>) elementType;
 		}
 		
-		Map<String, ArooaValue> valuesAndExtras = new HashMap<String, ArooaValue>();
-		valuesAndExtras.putAll(values);
-		valuesAndExtras.putAll(extras);
+		Map<String, ArooaValue> valuesAndExtras = new LinkedHashMap<String, ArooaValue>();
+		synchronized (this) {
+			valuesAndExtras.putAll(values);
+			valuesAndExtras.putAll(extras);
+		}
 		
     	for (Map.Entry<String, ArooaValue> entry: valuesAndExtras.entrySet()) {
     		
@@ -189,15 +191,15 @@ public class MapType implements ArooaValue, Serializable {
     		}
     	}
 
-    	return results;
+    	return Collections.synchronizedMap(results);
     }
 	
 	@ArooaHidden
-	public void setAdd(String key, ArooaValue value) {
+	public synchronized void setAdd(String key, ArooaValue value) {
 		this.extras.put(key, value);
 	}
 		
-	public ArooaValue getElement(String key) {
+	public synchronized ArooaValue getElement(String key) {
 		ArooaValue value = values.get(key);
 		if (value == null) {
 			value = extras.get(key);
@@ -206,7 +208,7 @@ public class MapType implements ArooaValue, Serializable {
 	}
 	
 	@Override
-    public String toString() {
+    public synchronized String toString() {
     	return "Map of " + (values.size() + extras.size()) + " things.";
     }    
 }

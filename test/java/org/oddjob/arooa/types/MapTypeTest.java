@@ -1,6 +1,8 @@
 package org.oddjob.arooa.types;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -30,6 +32,35 @@ public class MapTypeTest extends TestCase {
 				"  ----------------------------");
 	}
 
+	public void testMapAssumptions() {
+		
+		Map<String, String> test = new LinkedHashMap<String, String>();
+		test.put("A", "Apple");
+		test.put("B", "Ball");
+		test.put("C", "Cat");
+		
+		Iterator<Map.Entry<String, String>> it = 
+				new ArrayList<Map.Entry<String, String>>(test.entrySet()
+						).iterator();
+		
+		Map.Entry<String, String> entry = it.next();		
+		assertEquals("Apple", entry.getValue());
+		
+		test.put("B", "Bag");
+		
+		entry = it.next();		
+		assertEquals("Bag", entry.getValue());
+		
+		test.remove("C");
+		
+		test.put("D", "Dog");
+		
+		entry = it.next();		
+		assertEquals("Cat", entry.getValue());
+		
+		assertEquals(false, it.hasNext());
+	}
+	
 	public void testDefaultConversions() 
 	throws NoConversionAvailableException, ConversionFailedException {
 		

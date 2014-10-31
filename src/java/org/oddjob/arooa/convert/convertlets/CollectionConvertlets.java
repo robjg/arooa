@@ -3,6 +3,7 @@
  */
 package org.oddjob.arooa.convert.convertlets;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -49,7 +50,7 @@ public class CollectionConvertlets implements ConversionProvider {
 				new Convertlet<Map, Collection>() {
 			@SuppressWarnings("unchecked")
 			public Collection<Map.Entry> convert(Map from) {
-				return from.entrySet();
+				return new ArrayList<Map.Entry>(from.entrySet());
 			};
 		});
 	}	
