@@ -1,0 +1,30 @@
+<ivy-module version="2.0">
+  <info organisation="uk.co.rgordon" module="arooa" status="integration"/>
+
+	<configurations>
+        <conf name="default" visibility="public"></conf>
+        <conf name="compile" visibility="public"></conf>
+        <conf name="test" visibility="public"></conf>
+	</configurations>  
+        
+	<publications>
+		<artifact name="arooa" conf="default"/>
+		<artifact name="arooa-tests" conf="test"/>
+	</publications>  
+
+	<dependencies>
+	    <dependency org="log4j" name="log4j" rev="1.2.17"
+	    	conf="default->default" />
+	    <dependency org="commons-beanutils" name="commons-beanutils"
+	    	rev="1.9.2" conf="default->default" />
+		<dependency org="javax.inject" name="javax.inject" rev="1"
+			conf="default->default" />
+		<dependency org="junit" name="junit" rev="3.8.2" 
+			conf="test->default"/>
+		<dependency org="org.mockito" name="mockito-all" rev="1.10.19"
+			conf="test->default" />
+		<dependency org="xmlunit" name="xmlunit" rev="1.6" 
+			conf="test->default"/>
+	</dependencies>
+  
+</ivy-module>

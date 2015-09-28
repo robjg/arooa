@@ -1,16 +1,21 @@
 <!-- ===========================================================================
 
-	Build file for Oddjob
+	Build file for Arooa
 	=====================
 
 ============================================================================ -->
 
 <project xmlns:artifact="antlib:org.apache.maven.artifact.ant"
+	xmlns:ivy="antlib:org.apache.ivy.ant"
 	default="jar" basedir="." name="Arooa">
 
 	<taskdef uri="antlib:org.apache.maven.artifact.ant"
 	            resource="org/apache/maven/artifact/ant/antlib.xml"
 		classpath="../oj-assembly/antlibs/maven-ant-tasks-2.1.3.jar"/>
+	
+	<taskdef resource="org/apache/ivy/ant/antlib.xml"
+	                 uri="antlib:org.apache.ivy.ant" 
+		classpath="../oj-assembly/antlibs/ivy-2.4.0.jar"/>
 	
 	<!-- =================================================================== -->
 	<!-- Initialization target                                               -->
@@ -24,9 +29,11 @@
 		<!-- Properties                                                          -->
 		<!-- =================================================================== -->
 
+		<property file="../oj-assembly/version.properties"/>
+		
 		<property name="Name"     value="Arooa"/>
 		<property name="name"     value="arooa"/>
-		<property name="build.version"  value="0.0.0"/>
+		<property name="build.version"  value="${project.version}"/>
 
 		<property name="oddjob.src" value="../oddjob"/>
 		
@@ -52,12 +59,12 @@
 		<property name="test.lib"     value="${test.dir}/lib"/>
 		<property name="packages"     value="org.oddjob"/>
 
-		<property name="build.dir"      value="./build"/>
-		<property name="build.src"      value="${build.dir}/src"/>
-		<property name="build.test"      value="${build.dir}/test"/>
-		<property name="build.classes"     value="${build.dir}/classes"/>
-		<property name="build.lib"     value="${build.dir}/lib"/>
-		<property name="build.javadocs" value="${build.dir}/javadocs"/>
+		<property name="build.dir"        value="./build"/>
+		<property name="build.src"        value="${build.dir}/src"/>
+		<property name="build.test"       value="${build.dir}/test"/>
+		<property name="build.classes"    value="${build.dir}/classes"/>
+		<property name="build.lib"        value="${build.dir}/lib"/>
+		<property name="build.javadocs"   value="${build.dir}/javadocs"/>
 
 		<property name="test.reports" value="${build.test}/reports"/>
 		
@@ -72,33 +79,26 @@
 		<filter token="log"     value="true"/>
 		<filter token="verbose" value="true"/>
 
-		<!-- =================================================================== -->
-		<!-- Identify Classpath                                                 -->
-		<!-- =================================================================== -->
-
-		<path id="classpath">
-			<fileset dir="${lib.dir}">
-				<include name="*.jar"/>
-			</fileset>
-		</path>
-
-		<path id="test-classpath">
-			<pathelement path="${build.classes}" />
-			<path refid="classpath"/>
-			<fileset dir="${test.lib}">
-				<include name="*.jar"/>
-			</fileset>
-		</path>
-	
 	</target>
 
 	<!-- =================================================================== -->
-	<!-- Prepares the build directory                                        -->
+	<!-- Prepare for the build                                               -->
 	<!-- =================================================================== -->
 	<target name="prepare" depends="init">
 
+		<ivy:resolve />
+		        		
+		<ivy:cachepath pathid="classpath" conf="default" />
+		
+		<ivy:cachepath pathid="test-cachepath" conf="default, test" />
+			
+		<path id="test-classpath">
+			<pathelement path="${build.classes}" />
+			<path refid="test-cachepath"/>
+		</path>
+	
 		<mkdir dir="${build.dir}"/>
-
+		
 	</target>
 
 	<!-- =================================================================== -->
@@ -157,41 +157,26 @@
 		</javac>
 	</target>
 
-	<!-- =================================================================== 
-	Creates the jar file 
-    - But it doesn't really because at the moment there is no Arooa Jar.
-      It copies the src to oddjob. 
-	=================================================================== -->
+	<!-- =================================================================== -->
+	<!-- Creates the jar file                                                -->
+	<!-- =================================================================== -->
 
-	<target name="jar" depends="compile-tests" description="Generates the jar packages">
+	<target name="jar" depends="compile" 
+		description="Generates the jar packages">
 
-		<mkdir dir="${build.lib}"/>
-		
-	    <jar destfile="${lib.dir}/${jar.name}"
+	    <jar destfile="${build.lib}/${jar.name}"
 	         basedir="${build.classes}">
 	    </jar>
-		
-	    <jar destfile="${build.lib}/${name}-tests.jar"
-	         basedir="${build.test}">
-	    </jar>
-		
-		<copy file="${build.lib}/${name}-tests.jar"
-			todir="${oddjob.src}/test/lib"/>
-				
-		<copy todir="${oddjob.src}/lib">
-			<fileset dir="${lib.dir}">
-				<include name="*.jar"/>
-			</fileset>
-		</copy>
-			
-		<copy todir="${oddjob.src}/test/lib">
-			<fileset dir="${test.dir}/lib/">
-				<include name="*.jar"/>
-			</fileset>
-		</copy>
-	
 	</target>
 
+	<target name="jar-tests" depends="compile-tests" 
+		description="Generates the jar packages">
+
+	    <jar destfile="${build.lib}/${name}-tests-${build.version}.jar"
+	         basedir="${build.test}">
+	    </jar>
+	</target>
+	         	
 	<!-- =================================================================== -->
 	<!-- Set a variable if javadoc is already up-to-date.                    -->
 	<!-- =================================================================== -->
@@ -275,11 +260,11 @@
 
 	</target>
 
-	<target name="all-tests" depends="jar" description="Perform jUnit tests">
+	<target name="all-tests" depends="install" description="Perform jUnit tests">
 		<mkdir dir="${test.reports}"/>
 		
 		<junit printsummary="yes" haltonfailure="no" 
-				failureproperty="junit.failure" fork="yes">
+				failureproperty="junit.failure" fork="yes" forkmode="once">
 			<classpath>
 				<pathelement location="${build.test}" />
 			</classpath>
@@ -324,6 +309,17 @@
 	</target>
 	
 	<!-- =================================================================== -->
+	<!-- Install in the source distribution                                    -->
+	<!-- =================================================================== -->
+	<target name="install" depends="jar, jar-tests">
+		
+		<ivy:publish resolver="local" pubrevision="${build.version}" overwrite="true">
+		   <artifacts pattern="${build.lib}/[artifact]-[revision].[ext]" />
+		</ivy:publish>
+		
+	</target>
+	
+	<!-- =================================================================== -->
 	<!-- Prepares the source distribution                                    -->
 	<!-- =================================================================== -->
 	<target name="dist-src" depends="init" if="dist.src.dir"
@@ -356,6 +352,9 @@
 	<!-- =================================================================== -->
 	<target name="dist-bin" depends="init">
 		
+		<!-- Oddjob retrieves Arooa as one if its dependencies and copies it
+		     to the distribution dir. -->
+			
 		<echo message="Nothing to do."/>
 
 	</target>
