@@ -230,12 +230,12 @@ public class BeanUtilsAssumptionsTest extends TestCase {
 		assertEquals(2, cb.nested.prop);
 	}
 
-	interface Thing1 {
+	public interface Thing1 {
 		
 		public String getThing1();
 	}
 	
-	interface Thing2 {
+	public interface Thing2 {
 		
 		public String getThing2();
 	}
