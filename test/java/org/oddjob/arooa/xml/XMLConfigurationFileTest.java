@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.apache.log4j.Logger;
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaParseException;
@@ -20,23 +21,48 @@ import org.xml.sax.SAXException;
 
 
 public class XMLConfigurationFileTest extends XMLTestCase {
-
-	File workDir = new File("work");
 	
-	File file = new File(workDir, "XMLConfigurationFileText.xml");
+	private static final Logger logger = Logger.getLogger(XMLConfigurationFileTest.class);
 
-	protected void setUp() throws IOException {
+	final File workDir;
+	
+	final File file;
+
+	public XMLConfigurationFileTest() throws IOException {
+		this.workDir = new File("work").getCanonicalFile();
+		this.file = new File(workDir, "XMLConfigurationFileText.xml");
+	}
+	
+	protected void setUp() {
+		
+		logger.info("----------------------   " + getName() + "   -------------------------");
+		
 		if (!workDir.exists()) {
+			logger.info("Creating directory " + workDir);
 			workDir.mkdir();
 		}
 		
-		PrintWriter writer = new PrintWriter(
-				new FileWriter(file));
-		writer.println("<snack/>");
-		writer.close();
+		// For some reason occasionally the file is left open?
+		logger.info("Check file exists: " + file.exists());
+		
+		for (int i = 0; i < 3; ++i) {
+			logger.info("Try Creating file " + file);
+			try {
+				PrintWriter writer = new PrintWriter(
+						new FileWriter(file));
+				writer.println("<snack/>");
+				writer.close();
+				return;
+			}
+			catch (IOException e) {
+				logger.error("Failed creating " + file, e);
+			}
+		}
+		throw new RuntimeException("Failed attempting to create " + file);
 	}
 	
 	protected void tearDown() {
+		logger.info("Deleting file " + file);
 		file.delete();
 	}
 	

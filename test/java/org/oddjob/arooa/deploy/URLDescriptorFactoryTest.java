@@ -27,7 +27,7 @@ public class URLDescriptorFactoryTest extends TestCase {
 
 		OurDirs ourDirs = new OurDirs();
 		
-		File classes = new File(ourDirs.base(), "build/test");
+		File classes = new File(ourDirs.base(), "build/test/classes");
 		if (!classes.exists()) {
 			classes = new File(ourDirs.base(), "classes");
 		}
@@ -51,7 +51,8 @@ public class URLDescriptorFactoryTest extends TestCase {
 			urls.add(url);
 		}
 		
-		assertEquals(1, urls.size());
+		assertEquals("Resource not found with class loader " + classLoader,
+				1, urls.size());
 
 		URLDescriptorFactory test = new URLDescriptorFactory(urls);
 		

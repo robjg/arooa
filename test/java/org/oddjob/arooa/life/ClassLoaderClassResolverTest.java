@@ -45,7 +45,7 @@ public class ClassLoaderClassResolverTest extends TestCase {
 	public void testFindClassClassLoader() throws MalformedURLException {
 		OurDirs ourDirs = new OurDirs();
 		
-		File classes = new File(ourDirs.base(), "build/test");
+		File classes = new File(ourDirs.base(), "build/test/classes");
 		if (!classes.exists()) {
 			classes = new File(ourDirs.base(), "classes");
 		}
@@ -61,6 +61,8 @@ public class ClassLoaderClassResolverTest extends TestCase {
 			new ClassLoaderClassResolver(classLoader);
 		
 		Class<?> cl = test.findClass(Apple.class.getName());
+		
+		assertNotNull("Class found with classloader " + test, cl);
 		
 		assertEquals(classLoader, cl.getClassLoader());
 	}
