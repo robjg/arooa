@@ -88,7 +88,7 @@
 		        		
 		<ivy:cachepath pathid="classpath" conf="default" />
 		
-		<ivy:cachepath pathid="test-cachepath" conf="default, test" />
+		<ivy:cachepath pathid="test-cachepath" conf="test" />
 			
 		<path id="test-classpath">
 			<pathelement path="${build.classes}" />

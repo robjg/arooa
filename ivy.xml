@@ -3,8 +3,7 @@
 
 	<configurations>
         <conf name="default" visibility="public"></conf>
-        <conf name="compile" visibility="public"></conf>
-        <conf name="test" visibility="public"></conf>
+        <conf name="test" extends="default" visibility="public"></conf>
 	</configurations>  
         
 	<publications>
