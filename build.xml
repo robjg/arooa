@@ -61,7 +61,6 @@
 		<property name="build.classes"    	value="${build.dir}/classes"/>
 		<property name="build.test"       	value="${build.dir}/test"/>
 		<property name="build.test.classes" value="${build.test}/classes"/>
-		<property name="build.lib"        	value="${build.dir}/lib"/>
 		<property name="build.javadocs"   	value="${build.dir}/javadocs"/>
 
 		<property name="test.reports" value="${build.test}/reports"/>
@@ -163,7 +162,7 @@
 	<target name="jar" depends="compile" 
 		description="Generates the jar packages">
 
-	    <jar destfile="${build.lib}/${jar.name}"
+	    <jar destfile="${build.dir}/${jar.name}"
 	         basedir="${build.classes}">
 	    </jar>
 	</target>
@@ -171,7 +170,7 @@
 	<target name="jar-tests" depends="compile-tests" 
 		description="Generates the jar packages">
 
-	    <jar destfile="${build.lib}/${name}-tests-${build.version}.jar"
+	    <jar destfile="${build.dir}/${name}-tests-${build.version}.jar"
 	         basedir="${build.test.classes}">
 	    </jar>
 	</target>
@@ -313,7 +312,7 @@
 	<target name="install" depends="jar, jar-tests">
 		
 		<ivy:publish resolver="local" pubrevision="${build.version}" overwrite="true">
-		   <artifacts pattern="${build.lib}/[artifact]-[revision].[ext]" />
+		   <artifacts pattern="${build.dir}/[artifact]-[revision].[ext]" />
 		</ivy:publish>
 		
 	</target>
@@ -369,7 +368,7 @@
 		<property name="maven.version" 		value="${version}" />
 
 	    <!-- define artifacts' name, which follows the convention of Maven -->
-		<property name="maven.jar" 			value="${basedir}/lib/${jar.name}" />
+		<property name="maven.jar" 			value="${basedir}/build/${jar.name}" />
 		<property name="maven.javadoc.jar" 	value="${basedir}/build/${javadoc.jar.name}" />
 		<property name="maven.sources.jar" 	value="${basedir}/build/${sources.jar.name}" />
 		<property name="maven.pom" 			value="${basedir}/build/pom.xml" />
@@ -448,12 +447,6 @@
 	<!-- =================================================================== -->
 	<target name="clean" depends="init" description="Cleans the build directories">
 		<delete dir="${build.dir}"/>
-		<delete>
-			<fileset dir="${lib.dir}">
-				<include name="${name}*.jar"/>
-				<include name="${name}*.jar.asc"/>
-			</fileset>
-		</delete>
 	</target>
 
 </project>
