@@ -329,10 +329,6 @@
 			<fileset dir="${src.dir}"/>
 		</copy>
 
-		<copy todir="${to.dir}/lib" filtering="off">
-			<fileset dir="${lib.dir}"/>
-		</copy>
-
 		<copy todir="${to.dir}/test" filtering="off">
 			<fileset dir="${test.dir}"/>
 		</copy>
