@@ -336,6 +336,9 @@
 		<copy todir="${to.dir}">
 			<fileset dir=".">
 				<include name="build.xml"/>
+                <include name="ivy.xml"/>
+			    <include name="ivysettings.xml"/>
+                <include name="LICENSE.txt"/>
 			</fileset>
 		</copy>
 

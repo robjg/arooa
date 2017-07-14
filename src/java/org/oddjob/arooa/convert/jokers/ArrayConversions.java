@@ -84,6 +84,10 @@ public class ArrayConversions implements ConversionProvider {
 						}
 					};
 				}
+				if (from.isArray() && to.isAssignableFrom(String.class)) {
+					
+					return (ConversionStep<Object, T>) toStringConversion(from, conversions);
+				}
 				if (to.isArray()) {
 					
 					Class<?> toComponent = to.getComponentType();
@@ -126,6 +130,47 @@ public class ArrayConversions implements ConversionProvider {
 				return null;
 			}
 		});
+	}
+	
+	static <T> ConversionStep<? extends Object, String> toStringConversion(
+			final Class<? extends Object> fromType, ConversionLookup conversions) {
+		
+		@SuppressWarnings("unchecked")
+		Class<T> fromComponent = (Class<T>) fromType.getComponentType();
+
+		final ConversionPath<T, String> componentConversion = 
+				conversions.findConversion(fromComponent, String.class);
+
+		return new ConversionStep<Object, String>() {
+
+			@Override
+			public Class<Object> getFromClass() {
+				return Object.class;
+			}
+
+			@Override
+			public Class<String> getToClass() {
+				return String.class;
+			}
+			
+			@Override
+			public String convert(Object from, ArooaConverter converter) throws ArooaConversionException {
+				
+				Object[] fromArray = (Object[]) from;
+				
+				StringBuilder builder = new StringBuilder();
+				for (Object element : fromArray) {
+					if (builder.length() > 0) {
+						builder.append(", ");
+					}
+					
+					@SuppressWarnings("unchecked")
+					String elementStr = componentConversion.convert((T) element, converter);
+					builder.append(String.valueOf(elementStr));
+				}
+				return builder.toString();
+			}
+		};
 	}
 	
 }

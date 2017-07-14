@@ -98,7 +98,7 @@ public class FileConvertlets implements ConversionProvider {
 		});
 	}
 
-	public String filesToPath(File[] from) {
+	public String filesToPath(File... from) {
 		StringBuilder path = new StringBuilder();
 		for (File file : from) {
 			if (path.length() > 0) {

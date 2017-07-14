@@ -45,5 +45,15 @@ public class ArrayConvertletsTest extends TestCase {
 		assertEquals("b", results[1]);
 	}
 	
+	public void testToString() throws NoConversionAvailableException, ConversionFailedException {
+		
+		DefaultConverter converter = new DefaultConverter();
+		
+		String[] array = { "a", "b" };
+		
+		String result = converter.convert(array, String.class);
+
+		assertEquals("a, b", result);
+	}
 	
 }

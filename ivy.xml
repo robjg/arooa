@@ -18,7 +18,7 @@
 	    	rev="1.9.2" conf="default->default" />
 		<dependency org="javax.inject" name="javax.inject" rev="1"
 			conf="default->default" />
-		<dependency org="junit" name="junit" rev="3.8.2" 
+		<dependency org="junit" name="junit" rev="3.8.2"
 			conf="test->default"/>
 		<dependency org="org.mockito" name="mockito-all" rev="1.10.19"
 			conf="test->default" />
