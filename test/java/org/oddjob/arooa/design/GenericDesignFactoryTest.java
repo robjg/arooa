@@ -1,6 +1,8 @@
 package org.oddjob.arooa.design;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.design.view.ViewMainHelper;
@@ -8,7 +10,7 @@ import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.standard.StandardArooaSession;
 
-public class GenericDesignFactoryTest extends TestCase {
+public class GenericDesignFactoryTest extends Assert {
 
 	
 	public static class Primatives {
@@ -26,6 +28,7 @@ public class GenericDesignFactoryTest extends TestCase {
 	
 	DesignInstance design;
 	
+   @Test
 	public void testPrimatives() {
 		
 		GenericDesignFactory test = new GenericDesignFactory(
@@ -75,6 +78,7 @@ public class GenericDesignFactoryTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testThingWithAnElement() {
 		
 		GenericDesignFactory factory = new GenericDesignFactory(

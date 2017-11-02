@@ -1,6 +1,8 @@
 package org.oddjob.arooa.standard;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaSession;
@@ -22,7 +24,7 @@ import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeEvent;
 import org.oddjob.arooa.runtime.RuntimeListener;
 
-public class SimplePropertyRuntimeTest extends TestCase {
+public class SimplePropertyRuntimeTest extends Assert {
 
 	ArooaSession session = new StandardArooaSession();
 	
@@ -136,6 +138,7 @@ public class SimplePropertyRuntimeTest extends TestCase {
 	}
 	
 	
+   @Test
 	public void testAll() {
 
 		ParentContext parentContext = new ParentContext();

@@ -3,11 +3,13 @@
  */
 package org.oddjob.arooa.types;
 
+import org.junit.Test;
+
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.ArooaTestHelper;
 import org.oddjob.arooa.ArooaBeanDescriptor;
@@ -34,13 +36,14 @@ import org.oddjob.arooa.xml.XMLConfiguration;
 /**
  * Tests for ValueType.
  */
-public class ValueTypeTest extends TestCase {
+public class ValueTypeTest extends Assert {
 
 	/**
 	 * Test first principles.
 	 * 
 	 * @throws Exception
 	 */
+   @Test
 	public void testText() throws Exception {
 		ValueType test = new ValueType();
 		test.setValue(new ArooaObject("Hello World"));
@@ -64,6 +67,7 @@ public class ValueTypeTest extends TestCase {
 	 * 
 	 * @throws Exception
 	 */
+   @Test
 	public void testConversions() throws Exception {
 		ValueType test = new ValueType();
 		
@@ -79,6 +83,7 @@ public class ValueTypeTest extends TestCase {
 				converter.convert(test, InputStream.class)));
 	}
 	
+   @Test
 	public void testAsNumbers() throws Exception {
 		
 		DefaultConverter converter = new DefaultConverter();
@@ -95,6 +100,7 @@ public class ValueTypeTest extends TestCase {
 		assertEquals(new Float(123.4), f);
 	}
 	
+   @Test
 	public void testAsObject() throws Exception {
 		Object o = new Object();
 		
@@ -124,6 +130,7 @@ public class ValueTypeTest extends TestCase {
 	 * 
 	 * @throws Exception
 	 */
+   @Test
 	public void testAsArooaValues() throws Exception {
 		MockValueType inner = new MockValueType();
 		
@@ -172,6 +179,7 @@ public class ValueTypeTest extends TestCase {
 	 * Test that a value can be used as a reference within a map element.
 	 *
 	 */
+   @Test
 	public void testRefWithinMapInOddjob() throws Exception {
 		
 		String xml = "<oddjob>" +
@@ -214,6 +222,7 @@ public class ValueTypeTest extends TestCase {
 		assertTrue(conversion instanceof Foo);
 	}
 	
+   @Test
 	public void testValueIsAnAttriubte() {
 
 		StandardArooaSession session = new StandardArooaSession();
@@ -229,6 +238,7 @@ public class ValueTypeTest extends TestCase {
 				sort.getConfiguredHow("value"));
 	}
 	
+   @Test
 	public void testSimpleValueExample() throws ArooaParseException {
 		
 		Object value = ArooaTestHelper.createValueFromConfiguration(
@@ -246,6 +256,7 @@ public class ValueTypeTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testReferenceValueExample() throws ArooaParseException {
 		
 		ArooaSession session = new StandardArooaSession();

@@ -1,6 +1,8 @@
 package org.oddjob.arooa.design;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.design.screem.Form;
@@ -10,7 +12,7 @@ import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.standard.StandardArooaSession;
 
-public class DesignPropertyBaseTest extends TestCase {
+public class DesignPropertyBaseTest extends Assert {
 
 	public static interface Fruit {
 		
@@ -77,6 +79,7 @@ public class DesignPropertyBaseTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testConstructor() {
 		
 		DesignSeedContext context = new DesignSeedContext(

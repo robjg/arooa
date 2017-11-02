@@ -1,5 +1,7 @@
 package org.oddjob.arooa.design.view;
 
+import org.junit.Test;
+
 import java.awt.Component;
 import java.awt.GridBagLayout;
 import java.net.URI;
@@ -9,7 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
@@ -54,7 +56,7 @@ import org.oddjob.arooa.runtime.MockConfigurationNode;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class MultiTypeTableViewTest extends TestCase {
+public class MultiTypeTableViewTest extends Assert {
 	
 	private Component view;
 
@@ -214,6 +216,7 @@ public class MultiTypeTableViewTest extends TestCase {
 	/**
 	 * Test inserting and changing cells in the table.
 	 */
+   @Test
 	public void testIndexed() {
 		
 		IndexedDesignProperty property = new IndexedDesignProperty(
@@ -235,6 +238,7 @@ public class MultiTypeTableViewTest extends TestCase {
 	
 	String EOL = System.getProperty("line.separator"); 
 
+   @Test
 	public void testMapped() throws Exception {
 		
 		MappedDesignProperty property = new MappedDesignProperty(
@@ -292,6 +296,7 @@ public class MultiTypeTableViewTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testViewStartUp() throws ArooaParseException {
 		
 		String xml = 

@@ -1,17 +1,20 @@
 package org.oddjob.arooa.registry;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
 import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.convert.DefaultConverter;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 
-public class LinkedBeanRegistyTest extends TestCase {
+public class LinkedBeanRegistyTest extends Assert {
 
+   @Test
 	public void testAddAndRetrieve() {
 		
 		PropertyAccessor accessor = new BeanUtilsPropertyAccessor();

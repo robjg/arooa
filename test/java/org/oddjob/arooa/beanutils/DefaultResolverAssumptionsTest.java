@@ -1,8 +1,10 @@
 package org.oddjob.arooa.beanutils;
 
+import org.junit.Test;
+
 import org.apache.commons.beanutils.expression.DefaultResolver;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 /**
  * Learning how the Resolver works.
@@ -10,8 +12,9 @@ import junit.framework.TestCase;
  * @author rob
  *
  */
-public class DefaultResolverAssumptionsTest extends TestCase {
+public class DefaultResolverAssumptionsTest extends Assert {
 
+   @Test
 	public void testGetProperty() {
 		
 		DefaultResolver test = new DefaultResolver();
@@ -22,6 +25,7 @@ public class DefaultResolverAssumptionsTest extends TestCase {
 		assertEquals("fruit", test.getProperty("fruit(cox).apple(cox)"));
 	}
 	
+   @Test
 	public void testNext() {
 		
 		DefaultResolver test = new DefaultResolver();
@@ -32,6 +36,7 @@ public class DefaultResolverAssumptionsTest extends TestCase {
 		assertEquals("fruit(cox)", test.next("fruit(cox).apple(cox)"));
 	}
 	
+   @Test
 	public void testRemove() {
 		
 		DefaultResolver test = new DefaultResolver();
@@ -44,6 +49,7 @@ public class DefaultResolverAssumptionsTest extends TestCase {
 		assertEquals("apple(cox)", test.remove("fruit(cox).apple(cox)"));
 	}
 	
+   @Test
 	public void testIsIndexed() {
 		
 		DefaultResolver test = new DefaultResolver();
@@ -54,6 +60,7 @@ public class DefaultResolverAssumptionsTest extends TestCase {
 		assertFalse(test.isIndexed("fruit.apple(cox)"));
 	}
 	
+   @Test
 	public void testIsMapped() {
 		
 		DefaultResolver test = new DefaultResolver();

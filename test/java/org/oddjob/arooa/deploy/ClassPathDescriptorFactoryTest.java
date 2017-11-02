@@ -1,14 +1,17 @@
 package org.oddjob.arooa.deploy;
 
+import org.junit.Test;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaDescriptor;
 
-public class ClassPathDescriptorFactoryTest extends TestCase {
+public class ClassPathDescriptorFactoryTest extends Assert {
 
+   @Test
 	public void testCreate() throws URISyntaxException {
 		ClassPathDescriptorFactory test = new ClassPathDescriptorFactory();
 		
@@ -27,6 +30,7 @@ public class ClassPathDescriptorFactoryTest extends TestCase {
 				new URI("http://rgordon.co.uk/oddjob/arooa")));
 	}
 
+   @Test
 	public void testMissingResource() {
 		
 		ClassPathDescriptorFactory test = new ClassPathDescriptorFactory();

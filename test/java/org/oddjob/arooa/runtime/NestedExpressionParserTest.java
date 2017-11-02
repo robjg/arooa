@@ -1,6 +1,8 @@
 package org.oddjob.arooa.runtime;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.convert.ArooaConversionException;
@@ -8,7 +10,7 @@ import org.oddjob.arooa.reflect.ArooaNoPropertyException;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.types.ValueFactory;
 
-public class NestedExpressionParserTest extends TestCase {
+public class NestedExpressionParserTest extends Assert {
 
 	class TextExpressionChecker {
 
@@ -34,6 +36,7 @@ public class NestedExpressionParserTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testNewNestedParsing() throws ArooaConversionException {
 		
 		TextExpressionChecker checker = new TextExpressionChecker();
@@ -81,6 +84,7 @@ public class NestedExpressionParserTest extends TestCase {
      * run through the test cases of expansion
      * @throws ArooaConversionException 
      */
+   @Test
     public void testPropertyExpansion() throws ArooaConversionException {
     	
 		TextExpressionChecker checker = new TextExpressionChecker();
@@ -103,6 +107,7 @@ public class NestedExpressionParserTest extends TestCase {
      * new things we want
      * @throws ArooaConversionException 
      */
+   @Test
     public void testDollarPassthru() throws ArooaConversionException {
     	
 		TextExpressionChecker checker = new TextExpressionChecker();
@@ -120,6 +125,7 @@ public class NestedExpressionParserTest extends TestCase {
 	 * Object replacement
 	 * @throws ArooaConversionException 
 	 */
+   @Test
 	public void testObjectReplacement() throws ArooaConversionException {
 		TextExpressionChecker checker = new TextExpressionChecker();
 		checker.session.getBeanRegistry().register("an-int",new Integer(2));
@@ -147,6 +153,7 @@ public class NestedExpressionParserTest extends TestCase {
 	 * Test nested expansion
 	 * @throws ArooaConversionException 
 	 */
+   @Test
 	public void testNestedExpansion() throws ArooaConversionException {
 		
 		TextExpressionChecker checker = new TextExpressionChecker();
@@ -167,6 +174,7 @@ public class NestedExpressionParserTest extends TestCase {
 	/**
 	 * Test isConstant method.
 	 */
+   @Test
 	public void testIsConstant() {
 		
 		NestedExpressionParser test = new NestedExpressionParser();
@@ -198,6 +206,7 @@ public class NestedExpressionParserTest extends TestCase {
     	}
     }
     
+   @Test
 	public void testArooaValueExpansion() throws ArooaConversionException {
 		TextExpressionChecker checker = new TextExpressionChecker();		
 		checker.session.getBeanRegistry().register(
@@ -206,6 +215,7 @@ public class NestedExpressionParserTest extends TestCase {
 		checker.assertExpandsTo("${fruit}s and pairs", "apples and pairs");
 	}
 	
+   @Test
 	public void testNullExpansionInString() throws ArooaConversionException {
 		TextExpressionChecker checker = new TextExpressionChecker();
 		

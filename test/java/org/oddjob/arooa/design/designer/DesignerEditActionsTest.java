@@ -1,11 +1,13 @@
 package org.oddjob.arooa.design.designer;
 
+import org.junit.Test;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.Action;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaParseException;
@@ -37,7 +39,7 @@ import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class DesignerEditActionsTest extends TestCase {
+public class DesignerEditActionsTest extends Assert {
 
 	public static class Stuff {
 		
@@ -144,6 +146,7 @@ public class DesignerEditActionsTest extends TestCase {
 	}
 
 	
+   @Test
 	public void testRootActions() throws ArooaParseException {
 	
 		DesignParser parser = new DesignParser(
@@ -183,6 +186,7 @@ public class DesignerEditActionsTest extends TestCase {
 		assertFalse(delete .isEnabled());
 	}
 	
+   @Test
 	public void testRootActionsWithChildren() throws ArooaParseException {
 		
 		MyDescriptor descriptor = new MyDescriptor();
@@ -226,6 +230,7 @@ public class DesignerEditActionsTest extends TestCase {
 	}
 	
 	
+   @Test
 	public void testUnknownActions() throws ArooaParseException {
 
 		DesignParser parser = new DesignParser(

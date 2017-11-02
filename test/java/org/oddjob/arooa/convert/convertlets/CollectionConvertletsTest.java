@@ -1,12 +1,14 @@
 package org.oddjob.arooa.convert.convertlets;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.convert.ArooaConverter;
@@ -19,7 +21,7 @@ import org.oddjob.arooa.convert.DefaultConverter;
 import org.oddjob.arooa.convert.Joker;
 import org.oddjob.arooa.convert.MockConvertletRegistry;
 
-public class CollectionConvertletsTest extends TestCase {
+public class CollectionConvertletsTest extends Assert {
 	
 	class OurConvertletRegistry extends MockConvertletRegistry {
 		List<Convertlet<?, ?>> convertlets = 
@@ -39,6 +41,7 @@ public class CollectionConvertletsTest extends TestCase {
 		}
 	}
 
+   @Test
 	public void testCollection2ObjectArray() throws ArooaConversionException {
 		OurConvertletRegistry reg = new OurConvertletRegistry();
 		new CollectionConvertlets().registerWith(reg);
@@ -59,6 +62,7 @@ public class CollectionConvertletsTest extends TestCase {
 		assertEquals("b", result[1]);
 	}
 	
+   @Test
 	public void testArray2List() throws ArooaConversionException {
 		OurConvertletRegistry reg = new OurConvertletRegistry();
 		new CollectionConvertlets().registerWith(reg);
@@ -75,6 +79,7 @@ public class CollectionConvertletsTest extends TestCase {
 		assertEquals("b", result.get(1));
 	}
 	
+   @Test
 	public void testInStandardConverter() throws Exception {
 		List<String> from = new ArrayList<String>();
 		from.add("a");
@@ -90,6 +95,7 @@ public class CollectionConvertletsTest extends TestCase {
 		assertEquals("b", result[1]);		
 	}
 	
+   @Test
 	public void testMapToIterableConversion() throws ConversionFailedException {
 		
 		Map<String, Integer> map = new HashMap<String, Integer>();

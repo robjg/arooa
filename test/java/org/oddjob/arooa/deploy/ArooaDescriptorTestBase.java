@@ -3,10 +3,12 @@
  */
 package org.oddjob.arooa.deploy;
 
+import org.junit.Test;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
@@ -32,7 +34,7 @@ import org.oddjob.arooa.standard.StandardTools;
 /**
  * 
  */
-abstract public class ArooaDescriptorTestBase extends TestCase {
+abstract public class ArooaDescriptorTestBase extends Assert {
 
 	public static class Week {
 		
@@ -52,6 +54,7 @@ abstract public class ArooaDescriptorTestBase extends TestCase {
 	
 	abstract ArooaDescriptor getTest(ClassLoader loader);
 	
+   @Test
 	public void testMappings() throws ArooaParseException, URISyntaxException {
 		
 		
@@ -67,6 +70,7 @@ abstract public class ArooaDescriptorTestBase extends TestCase {
 				result.forClass());
 	}
 
+   @Test
 	public void testBeanDescriptor() {
 
 		ArooaDescriptor test = getTest(getClass().getClassLoader());
@@ -96,6 +100,7 @@ abstract public class ArooaDescriptorTestBase extends TestCase {
 		assertNull(orangeDescriptor.getComponentProperty());
 	}
 	
+   @Test
 	public void testElements() throws URISyntaxException {
 		
 		ArooaElement[] elements = getTest(
@@ -136,6 +141,7 @@ abstract public class ArooaDescriptorTestBase extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testConversions() throws NoConversionAvailableException, ConversionFailedException {
 		
 		ArooaTools tools = new ExtendedTools(new StandardTools(),

@@ -1,8 +1,10 @@
 package org.oddjob.arooa.standard;
 
+import org.junit.Test;
+
 import java.net.URISyntaxException;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
@@ -33,8 +35,9 @@ import org.oddjob.arooa.types.ArooaObject;
 import org.oddjob.arooa.types.ValueType;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class StandardArooaSessionTest extends TestCase {
+public class StandardArooaSessionTest extends Assert {
 
+   @Test
 	public void testNoDescriptor() {
 		
 		final StandardArooaSession test = new StandardArooaSession();
@@ -60,6 +63,7 @@ public class StandardArooaSessionTest extends TestCase {
 		assertEquals(Object.class, arooaClass.forClass());
 	}
 	
+   @Test
 	public void testSimpleConversion() throws NoConversionAvailableException, ConversionFailedException {
 	
 		StandardArooaSession test = new StandardArooaSession();
@@ -107,6 +111,7 @@ public class StandardArooaSessionTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testWithDescriptor() 
 	throws NoConversionAvailableException, ConversionFailedException {
 		
@@ -183,6 +188,7 @@ public class StandardArooaSessionTest extends TestCase {
 		"  </components>" + EOL +
 		"</arooa:descriptor>" + EOL;
 
+   @Test
 	public void testWithRealDescriptor() throws URISyntaxException, ArooaParseException {
 
 		StandardFragmentParser descriptorParser = new StandardFragmentParser(

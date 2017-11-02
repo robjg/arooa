@@ -1,10 +1,12 @@
 package org.oddjob.arooa.standard;
 
+import org.junit.Test;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaType;
@@ -26,7 +28,7 @@ import org.oddjob.arooa.types.ListType;
 import org.oddjob.arooa.types.ValueType;
 import org.oddjob.arooa.types.XMLType;
 
-public class StandardArooaDescriptorTest extends TestCase {
+public class StandardArooaDescriptorTest extends Assert {
 
 	public static class Bean {
 		
@@ -34,6 +36,7 @@ public class StandardArooaDescriptorTest extends TestCase {
 		public void setMyText(Object ignored) {}
 	}
 	
+   @Test
 	public void testUsesAnotated() {
 		
 		StandardArooaDescriptor test = new StandardArooaDescriptor();
@@ -47,6 +50,7 @@ public class StandardArooaDescriptorTest extends TestCase {
 		assertEquals("myText", sort.getTextProperty());
 	}
 		
+   @Test
 	public void testDeafultValueMappings() {
 		
 		StandardArooaDescriptor descriptor = new StandardArooaDescriptor();
@@ -104,6 +108,7 @@ public class StandardArooaDescriptorTest extends TestCase {
 								getClass().getClassLoader()))));
 	}
 	
+   @Test
 	public void testAllElements() {
 		
 		StandardArooaDescriptor descriptor = new StandardArooaDescriptor();

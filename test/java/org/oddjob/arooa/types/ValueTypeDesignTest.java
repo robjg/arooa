@@ -1,5 +1,10 @@
 package org.oddjob.arooa.types;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
+
 import java.awt.Component;
 import java.io.IOException;
 
@@ -9,8 +14,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 
 import org.apache.log4j.Logger;
-import org.custommonkey.xmlunit.XMLTestCase;
-import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.design.DesignFactory;
@@ -26,19 +30,18 @@ import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.xml.sax.SAXException;
 
-public class ValueTypeDesignTest extends XMLTestCase {
+public class ValueTypeDesignTest {
 	private static final Logger logger = Logger.getLogger(ValueTypeDesignTest.class);
 	
 	Component comp; 
 
 	DesignInstance design;
 	
+   @Test
 	public void testChangingCellText() 
 	throws BadLocationException, ArooaParseException, 
 			SAXException, IOException {
 	
-		XMLUnit.setIgnoreWhitespace(true);
-		
 		DesignFactory desFa = new ValueType.ValueDesignFactory();
 		
 		ArooaContext context = new DesignSeedContext(
@@ -79,20 +82,20 @@ public class ValueTypeDesignTest extends XMLTestCase {
 		XMLArooaParser parser = new XMLArooaParser();
 		parser.parse(design.getArooaContext().getConfigurationNode());
 		
-		assertXMLEqual("<value value='Some More Text'/>", parser.getXml());
+		assertThat(parser.getXml(), isSimilarTo("<value value='Some More Text'/>"));
 		
 		
 		text.setText("This Text");
 		
 		parser.parse(design.getArooaContext().getConfigurationNode());
 		
-		assertXMLEqual("<value value='This Text'/>", parser.getXml());		
+		assertThat(parser.getXml(), isSimilarTo("<value value='This Text'/>"));		
 		
 		text.getDocument().remove(4, 5);
 		
 		parser.parse(design.getArooaContext().getConfigurationNode());
 		
-		assertXMLEqual("<value value='This'/>", parser.getXml());		
+		assertThat(parser.getXml(), isSimilarTo("<value value='This'/>"));		
 	}
 	
 	public static void  main(String[] args) throws Exception {

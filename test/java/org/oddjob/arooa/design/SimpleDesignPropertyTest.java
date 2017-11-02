@@ -1,6 +1,10 @@
 package org.oddjob.arooa.design;
 
-import org.custommonkey.xmlunit.XMLTestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
+
+import org.junit.Test;
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaParseException;
@@ -28,7 +32,7 @@ import org.oddjob.arooa.runtime.MockConfigurationNode;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class SimpleDesignPropertyTest extends XMLTestCase {
+public class SimpleDesignPropertyTest {
 
 	public static class Fruit {
 		
@@ -69,6 +73,7 @@ public class SimpleDesignPropertyTest extends XMLTestCase {
 		}
 	}
 	
+   @Test
 	public void testAddClassElement() throws ArooaParseException {
 		
 		ArooaSession standardSession = new StandardArooaSession();
@@ -156,6 +161,7 @@ public class SimpleDesignPropertyTest extends XMLTestCase {
 	}		
 
 	
+   @Test
 	public void testAddRubbishElement() throws Exception {
 
 		ArooaDescriptor descriptor = new OurDescriptor();
@@ -182,7 +188,7 @@ public class SimpleDesignPropertyTest extends XMLTestCase {
 		
 		Unknown result = (Unknown) test.instanceAt(0);
 		
-		assertXMLEqual(xml, result.getXml());
+		assertThat(result.getXml(), isSimilarTo(xml));
 	}
 	
 }

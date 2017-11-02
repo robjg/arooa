@@ -1,8 +1,10 @@
 package org.oddjob.arooa.standard;
 
+import org.junit.Test;
+
 import javax.inject.Inject;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
@@ -11,7 +13,7 @@ import org.oddjob.arooa.registry.ServiceProvider;
 import org.oddjob.arooa.registry.Services;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class AutoConfigurationTest extends TestCase {
+public class AutoConfigurationTest extends Assert {
 
 	public static class Snack {
 		
@@ -53,6 +55,7 @@ public class AutoConfigurationTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testAutoSet() throws ArooaParseException, InvalidIdException {
 
 		ArooaSession session = new StandardArooaSession();
@@ -94,6 +97,7 @@ public class AutoConfigurationTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testAutoSetNested() throws ArooaParseException, InvalidIdException {
 
 		ArooaSession session = new StandardArooaSession();

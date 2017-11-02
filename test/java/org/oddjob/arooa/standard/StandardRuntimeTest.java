@@ -1,13 +1,15 @@
 package org.oddjob.arooa.standard;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.deploy.annotations.ArooaElement;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class StandardRuntimeTest extends TestCase {
+public class StandardRuntimeTest extends Assert {
 
 	public static class Component {
 		
@@ -20,6 +22,7 @@ public class StandardRuntimeTest extends TestCase {
 	}
 	
 	
+   @Test
 	public void testManySave() throws ArooaParseException {
 
 		Component root = new Component();

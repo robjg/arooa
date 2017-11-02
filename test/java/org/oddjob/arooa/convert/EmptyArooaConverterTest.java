@@ -1,11 +1,14 @@
 package org.oddjob.arooa.convert;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.types.ArooaObject;
 
-public class EmptyArooaConverterTest extends TestCase {
+public class EmptyArooaConverterTest extends Assert {
 
+   @Test
 	public void testSimple() throws NoConversionAvailableException, ConversionFailedException {
 		
 		EmptyArooaConverter converter = new EmptyArooaConverter();
@@ -20,6 +23,7 @@ public class EmptyArooaConverterTest extends TestCase {
 		assertEquals(new Integer(5), number);
 	}
 	
+   @Test
 	public void testNoConversion() throws ConversionFailedException {
 		
 		EmptyArooaConverter converter = new EmptyArooaConverter();
@@ -37,6 +41,7 @@ public class EmptyArooaConverterTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testPrimitive() throws NoConversionAvailableException, ConversionFailedException {
 		
 		EmptyArooaConverter converter = new EmptyArooaConverter();
@@ -46,6 +51,7 @@ public class EmptyArooaConverterTest extends TestCase {
 		assertEquals(5, number);
 	}
 	
+   @Test
 	public void testArooaValue() throws ConversionFailedException {
 		
 		EmptyArooaConverter converter = new EmptyArooaConverter();

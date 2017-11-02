@@ -1,9 +1,11 @@
 package org.oddjob.arooa.convert;
 
+import org.junit.Test;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 /**
  * Possible options for Enum conversion.
@@ -11,7 +13,7 @@ import junit.framework.TestCase;
  * @author rob
  *
  */
-public class EnumConversionTest extends TestCase {
+public class EnumConversionTest extends Assert {
 
 	enum Colours {
 		RED,
@@ -19,6 +21,7 @@ public class EnumConversionTest extends TestCase {
 		GREEN
 	}
 	
+   @Test
 	public void testStringToEnumConversion() 
 	throws 
 			IllegalArgumentException, 
@@ -43,6 +46,7 @@ public class EnumConversionTest extends TestCase {
 		assertEquals(Colours.RED, colour);
 	}
 	
+   @Test
 	public void testStringToEnumConversion2() {
 	
 		Class<Colours> enumClass = Colours.class;

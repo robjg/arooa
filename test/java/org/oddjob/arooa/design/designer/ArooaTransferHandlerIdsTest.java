@@ -1,5 +1,7 @@
 package org.oddjob.arooa.design.designer;
 
+import org.junit.Test;
+
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -11,7 +13,7 @@ import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 import javax.swing.TransferHandler.TransferSupport;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.oddjob.arooa.ArooaConfigurationException;
@@ -27,7 +29,7 @@ import org.oddjob.arooa.registry.ComponentPool;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class ArooaTransferHandlerIdsTest extends TestCase {
+public class ArooaTransferHandlerIdsTest extends Assert {
 	private static final Logger logger = Logger.getLogger(ArooaTransferHandlerIdsTest.class);
 	
 	public static class Component {
@@ -66,6 +68,7 @@ public class ArooaTransferHandlerIdsTest extends TestCase {
 	}
 	
 		
+   @Test
 	public void testSimulatedDrag() throws ArooaConfigurationException, ArooaParseException, ArooaConversionException {
 		
 		ArooaTransferHandler test = new ArooaTransferHandler();
@@ -177,6 +180,7 @@ public class ArooaTransferHandlerIdsTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testSimulatedPaste() throws ArooaConfigurationException, ArooaParseException, ArooaConversionException {
 		
 		ArooaTransferHandler test = new ArooaTransferHandler();

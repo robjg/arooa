@@ -1,9 +1,11 @@
 package org.oddjob.arooa.deploy;
 
+import org.junit.Test;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ConfiguredHow;
@@ -17,7 +19,7 @@ import org.oddjob.arooa.deploy.annotations.ArooaText;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaContext;
 
-public class AnnotatedBeanDescriptorTest extends TestCase {
+public class AnnotatedBeanDescriptorTest extends Assert {
 
 	public static class OurInterceptor implements ParsingInterceptor {
 		public ArooaContext intercept(ArooaContext suggestedContext) {
@@ -44,6 +46,7 @@ public class AnnotatedBeanDescriptorTest extends TestCase {
 
 	}
 	
+   @Test
 	public void testDescriptor() {
 		
 		AnnotatedBeanDescriptorProvider test= 

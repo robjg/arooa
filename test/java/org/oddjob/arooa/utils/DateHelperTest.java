@@ -3,13 +3,15 @@
  */
 package org.oddjob.arooa.utils;
 
+import org.junit.Test;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.oddjob.arooa.ArooaConstants;
@@ -17,9 +19,10 @@ import org.oddjob.arooa.ArooaConstants;
 /**
  * 
  */
-public class DateHelperTest extends TestCase {
+public class DateHelperTest extends Assert {
 	private static final Logger logger = Logger.getLogger(DateHelperTest.class);
 
+   @Test
 	public void testShowWhyWeNeedThreeTimeFormats() {
 		
 		SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
@@ -37,6 +40,7 @@ public class DateHelperTest extends TestCase {
 	final long MINUTE = SECOND * 60;
 	final long HOUR = MINUTE * 60; 
 	
+   @Test
 	public void testParseTime() throws ParseException {
 		long m; 
 
@@ -68,6 +72,7 @@ public class DateHelperTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testSeconds() throws ParseException {
 		long m;
 		
@@ -92,6 +97,7 @@ public class DateHelperTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testMoreThan24Hours() throws ParseException {
 		long m;
 		
@@ -105,6 +111,7 @@ public class DateHelperTest extends TestCase {
 		
 	}
 
+   @Test
 	public void testMoreThan60minutes() throws ParseException {
 		long m;
 		
@@ -117,6 +124,7 @@ public class DateHelperTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testParseDateTime() throws ParseException {
 
 		Calendar expected = Calendar.getInstance();
@@ -127,6 +135,7 @@ public class DateHelperTest extends TestCase {
 				DateHelper.parseDateTime("2005-12-25 10:47", (TimeZone) null));
 	}
 	
+   @Test
 	public void testDate() throws ParseException {
 		Date d = DateHelper.parseDate("2005-12-25", TimeZone.getDefault());
 
@@ -134,6 +143,7 @@ public class DateHelperTest extends TestCase {
 		assertEquals("2005-12-25", result);
 	}
 	
+   @Test
 	public void testDateWithTimezone() throws ParseException {
 		
 		Date there = DateHelper.parseDate("2005-12-25", "GMT+02");
@@ -147,6 +157,7 @@ public class DateHelperTest extends TestCase {
 		assertEquals(here.getTime() - offset, there.getTime());
 	}
 	
+   @Test
 	public void testDateTimeWithTimezone() throws ParseException {
 		
 		Date there = DateHelper.parseDateTime("2005-12-25 12:00", "GMT+02");
@@ -160,6 +171,7 @@ public class DateHelperTest extends TestCase {
 		assertEquals(here.getTime() - offset, there.getTime());
 	}
 	
+   @Test
 	public void testDateOnlyDateTimeWithTimezone() throws ParseException {
 		
 		Date there = DateHelper.parseDateTime("2005-12-25", "GMT+02");
@@ -173,6 +185,7 @@ public class DateHelperTest extends TestCase {
 		assertEquals(here.getTime() - offset, there.getTime());
 	}
 
+   @Test
 	public void testFormatMilliseconds() {
 		
 		assertEquals("0 seconds", 
@@ -215,6 +228,7 @@ public class DateHelperTest extends TestCase {
 						17 * oneDay + 4 * oneHour + 35 * oneMinute));
 	}
 	
+   @Test
 	public void testSesibleErrorMessage() {
 		
 		try {

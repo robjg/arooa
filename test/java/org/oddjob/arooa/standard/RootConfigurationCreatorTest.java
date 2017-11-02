@@ -1,6 +1,8 @@
 package org.oddjob.arooa.standard;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaBeanDescriptor;
@@ -29,7 +31,7 @@ import org.oddjob.arooa.registry.MockComponentPool;
 import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
-public class RootConfigurationCreatorTest extends TestCase {
+public class RootConfigurationCreatorTest extends Assert {
 	
 	private class OurDescriptor extends MockArooaDescriptor {
 
@@ -156,6 +158,7 @@ public class RootConfigurationCreatorTest extends TestCase {
 	 * be a document element.
 	 *
 	 */
+   @Test
 	public void testCreateRootRuntime() {
 		
 		MutableAttributes atts = new MutableAttributes();

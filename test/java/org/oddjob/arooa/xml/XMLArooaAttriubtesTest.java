@@ -1,11 +1,14 @@
 package org.oddjob.arooa.xml;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.xml.sax.helpers.AttributesImpl;
 
-public class XMLArooaAttriubtesTest extends TestCase {
+public class XMLArooaAttriubtesTest extends Assert {
 
+   @Test
 	public void testGet() {
 		
         AttributesImpl atts = new AttributesImpl();

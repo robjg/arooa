@@ -1,12 +1,16 @@
 package org.oddjob.arooa.types;
+import static org.junit.Assert.assertThat;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.custommonkey.xmlunit.XMLTestCase;
-import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.design.DesignElementProperty;
@@ -25,21 +29,29 @@ import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 import org.xml.sax.SAXException;
 
-public class BeanTypeDesFaTest extends XMLTestCase {
+public class BeanTypeDesFaTest {
 
+	static final String EOL = System.getProperty("line.separator");
+	
 	private static final Logger logger = 
 			Logger.getLogger(BeanTypeDesFa.class);
 	
+	@Rule public TestName name = new TestName();
+
+	public String getName() {
+        return name.getMethodName();
+    }
+
 	DesignInstance design;
 	
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+   @Before
+   public void setUp() throws Exception {
 		
 		logger.info("-----------------------------------  " +
 				getName() + "  ----------------------------------");
 	}
 	
+   @Test
 	public void testDesign() throws Exception {
 		
 		DesignParser parser = new DesignParser(
@@ -62,19 +74,20 @@ public class BeanTypeDesFaTest extends XMLTestCase {
 		xmlParser.parse(design.getArooaContext().getConfigurationNode());
 		
 		String expected = 
-				"<bean class='org.oddjob.arooa.deploy.ArooaDescriptorBean'>" +
-				" <components>" +
-				"  <is/>" +
-				" </components>" +
-				"</bean>";
+				"<bean class='org.oddjob.arooa.deploy.ArooaDescriptorBean'>" + EOL +
+				"    <components>" + EOL +
+				"        <is/>" + EOL +
+				"    </components>" + EOL +
+				"</bean>" + EOL;
 		
-		XMLUnit.setIgnoreWhitespace(true);
 		
-		assertXMLEqual(expected, xmlParser.getXml());
+		
+		assertThat(xmlParser.getXml(), isSimilarTo(expected));
 		
 	}
 	
 	
+   @Test
 	public void testDesignComponent() throws Exception {
 		
 		DesignParser parser = new DesignParser(
@@ -86,9 +99,9 @@ public class BeanTypeDesFaTest extends XMLTestCase {
 		String xml = 
 				"<bean class='org.oddjob.arooa.deploy.ArooaDescriptorBean'" +
 				"      id='mybean'>" +
-				" <components>" +
-				"  <is/>" +
-				" </components>" +
+				"    <components>" +
+				"        <is/>" +
+				"    </components>" +
 				"</bean>";
 		
 		parser.parse(new XMLConfiguration("TEST", xml));
@@ -101,17 +114,16 @@ public class BeanTypeDesFaTest extends XMLTestCase {
 		
 		String expected = 
 				"<bean class='org.oddjob.arooa.deploy.ArooaDescriptorBean'" +
-				"      id='mybean'>" +
-				" <components>" +
-				"  <is/>" +
-				" </components>" +
-				"</bean>";
+				"      id='mybean'>" + EOL +
+				"    <components>" + EOL +
+				"        <is/>" + EOL +
+				"    </components>" + EOL +
+				"</bean>" + EOL;
 		
-		XMLUnit.setIgnoreWhitespace(true);
-		
-		assertXMLEqual(expected, xmlParser.getXml());
+		assertThat(xmlParser.getXml(), isSimilarTo(expected));
 	}
 	
+    @Test
 	public void testNoSettableProperties() throws Exception {
 		
 		DesignParser parser = new DesignParser(
@@ -133,12 +145,10 @@ public class BeanTypeDesFaTest extends XMLTestCase {
 		xmlParser.parse(design.getArooaContext().getConfigurationNode());
 		
 		String expected = 
-				"<bean class='java.lang.Object'" +
-				"      id='mybean'/>";
+				"<bean class='java.lang.Object'" + EOL +
+				"      id='mybean'/>" + EOL;
 		
-		XMLUnit.setIgnoreWhitespace(true);
-		
-		assertXMLEqual(expected, xmlParser.getXml());
+		assertThat(xmlParser.getXml(), isSimilarTo(expected));
 	}
 	
 	public static class Stuff {
@@ -159,6 +169,7 @@ public class BeanTypeDesFaTest extends XMLTestCase {
 		}
 	}	
 	
+    @Test
 	public void testMappedProperties() throws ArooaParseException, SAXException, IOException {
 		
 		String xml =
@@ -192,11 +203,11 @@ public class BeanTypeDesFaTest extends XMLTestCase {
 		test.setClassName("java.lang.String");
 		
 		String expected =
-				"<stuff>" +
-				" <things>" +
-				"  <bean key='something' class='java.lang.String'/>" +
-				" </things>" +
-				"</stuff>";
+				"<stuff>" + EOL +
+				"    <things>" + EOL +
+				"        <bean key='something' class='java.lang.String'/>" + EOL +
+				"    </things>" + EOL +
+				"</stuff>" + EOL;
 		
 		XMLArooaParser xmlParser = new XMLArooaParser();
 		xmlParser.parse(top.getArooaContext().getConfigurationNode());
@@ -205,9 +216,7 @@ public class BeanTypeDesFaTest extends XMLTestCase {
 		
 		logger.info(actual);
 		
-		XMLUnit.setIgnoreWhitespace(true);
-		
-		assertXMLEqual(expected, actual);
+		assertThat(actual, isSimilarTo(expected));
 	}
 	
 	

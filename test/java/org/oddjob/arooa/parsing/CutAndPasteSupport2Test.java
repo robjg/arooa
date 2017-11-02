@@ -1,11 +1,13 @@
 package org.oddjob.arooa.parsing;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
@@ -21,7 +23,7 @@ import org.oddjob.arooa.xml.XMLConfiguration;
  * @author rob
  *
  */
-public class CutAndPasteSupport2Test extends TestCase {
+public class CutAndPasteSupport2Test extends Assert {
 
 	public static class Component {
 		
@@ -37,6 +39,7 @@ public class CutAndPasteSupport2Test extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testRegisterAndRemove() throws ArooaParseException {
 		
 		Component root = new Component();
@@ -129,6 +132,7 @@ public class CutAndPasteSupport2Test extends TestCase {
 	 * 
 	 * @throws ArooaParseException
 	 */
+   @Test
 	public void testRegisterAndRemove2() throws ArooaParseException {
 		
 		Component root = new Component();
@@ -195,6 +199,7 @@ public class CutAndPasteSupport2Test extends TestCase {
 	 * 
 	 * @throws ArooaParseException
 	 */
+   @Test
 	public void testRegisterAndRemove3() throws ArooaParseException {
 		
 		Component root = new Component();
@@ -240,6 +245,7 @@ public class CutAndPasteSupport2Test extends TestCase {
 		assertNull(root.children.get(1));
 	}
 	
+   @Test
 	public void testSameWitReplace() throws ArooaParseException {
 		
 		Component root = new Component();
@@ -300,6 +306,7 @@ public class CutAndPasteSupport2Test extends TestCase {
 		assertNull(root.children.get(3));
 	}
 
+   @Test
 	public void testSameWitReplace2() throws ArooaParseException {
 		
 		Component root = new Component();

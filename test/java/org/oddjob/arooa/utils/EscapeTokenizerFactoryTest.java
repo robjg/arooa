@@ -1,11 +1,14 @@
 package org.oddjob.arooa.utils;
 
+import org.junit.Test;
+
 import java.text.ParseException;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class EscapeTokenizerFactoryTest extends TestCase {
+public class EscapeTokenizerFactoryTest extends Assert {
 
+   @Test
 	public void testPattern() {
 		
 		EscapeTokenizerFactory test = new EscapeTokenizerFactory(",", '~');
@@ -16,6 +19,7 @@ public class EscapeTokenizerFactoryTest extends TestCase {
 				test.getPattern());
 	}
 	
+   @Test
 	public void testSimple() throws ParseException {
 		
 		EscapeTokenizerFactory test = new EscapeTokenizerFactory(",", '~');
@@ -63,6 +67,7 @@ public class EscapeTokenizerFactoryTest extends TestCase {
 		assertEquals(3, results.length);
 	}
 	
+   @Test
 	public void testEscapes() throws ParseException {
 		
 		EscapeTokenizerFactory test = new EscapeTokenizerFactory(",", '\\');
@@ -106,6 +111,7 @@ public class EscapeTokenizerFactoryTest extends TestCase {
 		assertEquals(3, results.length);
 	}
 	
+   @Test
 	public void testWhilteSpaceDelimiter() throws ParseException {
 		
 		EscapeTokenizerFactory test = new EscapeTokenizerFactory("\\s+", '\\');

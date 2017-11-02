@@ -1,11 +1,17 @@
 package org.oddjob.arooa.xml;
 
-import org.custommonkey.xmlunit.XMLTestCase;
+import static org.junit.Assert.assertThat;
+import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo;
+
+import org.junit.Test;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.parsing.ArooaContext;
 
-public class XMLArooaParserTest extends XMLTestCase {
+public class XMLArooaParserTest {
 
+	static final String EOL = System.getProperty("line.separator");
+	
+   @Test
 	public void testRoundTrip() throws Exception {
 
 		String xml = "<comp>" +
@@ -16,27 +22,26 @@ public class XMLArooaParserTest extends XMLTestCase {
 		XMLArooaParser parser = new XMLArooaParser();
 		ConfigurationHandle handle = parser.parse(new XMLConfiguration("Test", xml));
 		
-		String ls = System.getProperty("line.separator");
+		String expected = "<?xml version='1.0' encoding='UTF-8' standalone='no'?>" + EOL +
+				"<comp>" + EOL +
+				"    <a>" + EOL + 
+				"        <b/>" + EOL + 
+				"    </a>" + EOL + 
+				"    <x>" + EOL + 
+				"        <y/>" + EOL + 
+				"    </x>" + EOL +
+				"</comp>" + EOL;
 		
-		String expected = 
-				"<comp>" + ls +
-				"    <a>" + ls + 
-				"        <b/>" + ls + 
-				"    </a>" + ls + 
-				"    <x>" + ls + 
-				"        <y/>" + ls + 
-				"    </x>" + ls +
-				"</comp>" + ls;
-		
-		assertXMLEqual(expected, parser.getXml());
+		assertThat(parser.getXml(), isIdenticalTo(expected));
 		
 		ArooaContext docContext = handle.getDocumentContext();
 		
 		parser.parse(docContext.getConfigurationNode());
 		
-		assertXMLEqual(expected, parser.getXml());
+		assertThat(parser.getXml(), isIdenticalTo(expected));
 	}
 
+   @Test
 	public void testRoundTripNS() throws Exception {
 
 		String xml = "<comp xmlns='http://www.rgordon.co.uk/arooa'" +
@@ -48,25 +53,23 @@ public class XMLArooaParserTest extends XMLTestCase {
 		XMLArooaParser parser = new XMLArooaParser();
 		ConfigurationHandle handle = parser.parse(new XMLConfiguration("Test", xml));
 		
-		String ls = System.getProperty("line.separator");
+		String expected = "<?xml version='1.0' encoding='UTF-8' standalone='no'?>" + EOL +				
+				"<comp xmlns=\"http://www.rgordon.co.uk/arooa\"" + EOL +
+				"      xmlns:fruit=\"http://www.rgordon.co.uk/fruit\">" + EOL +
+				"    <a>" + EOL + 
+				"        <fruit:b/>" + EOL + 
+				"    </a>" + EOL + 
+				"    <x>" + EOL + 
+				"        <fruit:y/>" + EOL + 
+				"    </x>" + EOL +
+				"</comp>" + EOL;
 		
-		String expected = 
-				"<comp xmlns=\"http://www.rgordon.co.uk/arooa\"" + ls +
-				"      xmlns:fruit=\"http://www.rgordon.co.uk/fruit\">" + ls +
-				"    <a>" + ls + 
-				"        <fruit:b/>" + ls + 
-				"    </a>" + ls + 
-				"    <x>" + ls + 
-				"        <fruit:y/>" + ls + 
-				"    </x>" + ls +
-				"</comp>" + ls;
-		
-		assertXMLEqual(expected, parser.getXml());
+		assertThat(parser.getXml(), isIdenticalTo(expected));
 		
 		ArooaContext docContext = handle.getDocumentContext();
 		
 		parser.parse(docContext.getConfigurationNode());
 		
-		assertXMLEqual(expected, parser.getXml());
+		assertThat(parser.getXml(), isIdenticalTo(expected));
 	}
 }

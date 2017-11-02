@@ -3,15 +3,18 @@
  */
 package org.oddjob.arooa.convert.convertlets;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.convert.ConversionFailedException;
 import org.oddjob.arooa.convert.ConversionPath;
 import org.oddjob.arooa.convert.DefaultConversionProvider;
 import org.oddjob.arooa.convert.DefaultConversionRegistry;
 
-public class BooleanConvertletsTest extends TestCase {
+public class BooleanConvertletsTest extends Assert {
 
+   @Test
 	public void testNumberToBoolean() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new BooleanConvertlets().registerWith(registry);
@@ -26,6 +29,7 @@ public class BooleanConvertletsTest extends TestCase {
 				path.convert(new Short((short) 0), null));
 	}
 	
+   @Test
 	public void testBooleanToNumber() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new BooleanConvertlets().registerWith(registry);
@@ -40,6 +44,7 @@ public class BooleanConvertletsTest extends TestCase {
 				path.convert(new Boolean(false), null));
 	}
 	
+   @Test
 	public void testStringToBoolean() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new BooleanConvertlets().registerWith(registry);
@@ -54,6 +59,7 @@ public class BooleanConvertletsTest extends TestCase {
 				path.convert("no", null));
 	}
 
+   @Test
 	public void testBooleanToString() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new DefaultConversionProvider().registerWith(registry);

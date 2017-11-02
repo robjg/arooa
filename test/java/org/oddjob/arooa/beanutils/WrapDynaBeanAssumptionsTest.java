@@ -1,18 +1,20 @@
 package org.oddjob.arooa.beanutils;
 
+import org.junit.Test;
+
 import java.beans.IndexedPropertyDescriptor;
 import java.beans.PropertyDescriptor;
 import java.util.HashSet;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.MappedPropertyDescriptor;
 import org.apache.commons.beanutils.WrapDynaBean;
 import org.apache.commons.beanutils.WrapDynaClass;
 
-public class WrapDynaBeanAssumptionsTest extends TestCase {
+public class WrapDynaBeanAssumptionsTest extends Assert {
 
 	public static class OurBean {
 		
@@ -23,6 +25,7 @@ public class WrapDynaBeanAssumptionsTest extends TestCase {
 		public void setMapped(String key, String simple) {} 
 	}
 	
+   @Test
 	public void testNoProperty() {
 		
 		WrapDynaClass test = (WrapDynaClass) new WrapDynaBean(
@@ -33,6 +36,7 @@ public class WrapDynaBeanAssumptionsTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testProperties() {
 		
 		WrapDynaClass test = (WrapDynaClass) new WrapDynaBean(
@@ -55,6 +59,7 @@ public class WrapDynaBeanAssumptionsTest extends TestCase {
 		assertFalse(names.contains("mapped"));
 	}
 	
+   @Test
 	public void testSimple() {
 		
 		WrapDynaClass test = (WrapDynaClass) new WrapDynaBean(
@@ -73,6 +78,7 @@ public class WrapDynaBeanAssumptionsTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testIndexed() {
 		
 		WrapDynaClass test = (WrapDynaClass) new WrapDynaBean(
@@ -98,6 +104,7 @@ public class WrapDynaBeanAssumptionsTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testMapped() {
 		
 		WrapDynaClass test = (WrapDynaClass) new WrapDynaBean(

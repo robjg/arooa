@@ -1,6 +1,11 @@
 package org.oddjob.arooa.design;
 
-import org.custommonkey.xmlunit.XMLTestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
+
+import org.junit.Test;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.design.screem.Form;
@@ -13,7 +18,7 @@ import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class MappedDesignPropertyTest extends XMLTestCase {
+public class MappedDesignPropertyTest {
 
 	public static class MyBean {
 		
@@ -54,6 +59,7 @@ public class MappedDesignPropertyTest extends XMLTestCase {
 	
 	String EOL = System.getProperty("line.separator");
 	
+   @Test
 	public void testCreateInstance() throws Exception {
 		
 		String xml = 
@@ -85,7 +91,7 @@ public class MappedDesignPropertyTest extends XMLTestCase {
 		XMLArooaParser xmlParser = new XMLArooaParser();
 		xmlParser.parse(design.getArooaContext().getConfigurationNode());
 		
-		assertXMLEqual(xml, xmlParser.getXml());
+		assertThat(xmlParser.getXml(),isSimilarTo(xml));
 		
 		this.design = design;
 	}

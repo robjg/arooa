@@ -1,8 +1,10 @@
 package org.oddjob.arooa.registry;
 
+import org.junit.Test;
+
 import javax.inject.Inject;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
@@ -12,7 +14,7 @@ import org.oddjob.arooa.life.ArooaSessionAware;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class SimpleComponentPoolIdTest extends TestCase {
+public class SimpleComponentPoolIdTest extends Assert {
 
 	public static class Root implements ArooaSessionAware {
 		
@@ -30,6 +32,7 @@ public class SimpleComponentPoolIdTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testIdAvailable() throws ArooaParseException {
 		
 		Root root = new Root();
@@ -85,6 +88,7 @@ public class SimpleComponentPoolIdTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testNoIdRegisteredForServiceProvider() throws ArooaParseException {
 		
 		MyServices root = new MyServices();

@@ -1,6 +1,8 @@
 package org.oddjob.arooa.reflect;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
@@ -20,7 +22,7 @@ import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.parsing.MockArooaContext;
 
-public class PropertyIdentifierTest extends TestCase {
+public class PropertyIdentifierTest extends Assert {
 
 	private class Result {
 		String element;
@@ -158,6 +160,7 @@ public class PropertyIdentifierTest extends TestCase {
 //		public void setMyMappedValue(String name, Object value) { }
 	}
 
+   @Test
 	public void testComponent() throws ArooaPropertyException {
 
 		PropertyIdentifier<Result, String> test = new PropertyIdentifier<Result, String>(
@@ -177,6 +180,7 @@ public class PropertyIdentifierTest extends TestCase {
 		assertEquals("Component: fruit", result.internal);
 	}
 	
+   @Test
 	public void testValue() {
 
 		PropertyIdentifier<Result, String> test = new PropertyIdentifier<Result, String>(
@@ -196,6 +200,7 @@ public class PropertyIdentifierTest extends TestCase {
 		assertEquals("Value: fruit", result.internal);
 	}
 	
+   @Test
 	public void testMappedComponent() {
 
 		PropertyIdentifier<Result, String> test = new PropertyIdentifier<Result, String>(
@@ -215,6 +220,7 @@ public class PropertyIdentifierTest extends TestCase {
 		assertEquals("Component: fruit", result.internal);
 	}
 
+   @Test
 	public void testMappedValue() {
 
 		PropertyIdentifier<Result, String> test = new PropertyIdentifier<Result, String>(
@@ -234,6 +240,7 @@ public class PropertyIdentifierTest extends TestCase {
 		assertEquals("Value: fruit", result.internal);
 	}
 
+   @Test
 	public void testIndexedComponent() {
 
 		PropertyIdentifier<Result, String> test = new PropertyIdentifier<Result, String>(
@@ -253,6 +260,7 @@ public class PropertyIdentifierTest extends TestCase {
 		assertEquals("Component: fruit", result.internal);
 	}
 
+   @Test
 	public void testIndexedValue() {
 
 		PropertyIdentifier<Result, String> test = new PropertyIdentifier<Result, String>(

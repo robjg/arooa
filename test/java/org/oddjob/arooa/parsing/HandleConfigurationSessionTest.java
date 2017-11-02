@@ -1,10 +1,12 @@
 package org.oddjob.arooa.parsing;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.custommonkey.xmlunit.XMLTestCase;
-import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.deploy.annotations.ArooaComponent;
@@ -13,8 +15,10 @@ import org.oddjob.arooa.registry.ChangeHow;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 import org.xml.sax.SAXException;
+import org.xmlunit.builder.DiffBuilder;
+import org.xmlunit.diff.Diff;
 
-public class HandleConfigurationSessionTest extends XMLTestCase {
+public class HandleConfigurationSessionTest {
 
 	public static interface Fruit {
 		
@@ -54,6 +58,7 @@ public class HandleConfigurationSessionTest extends XMLTestCase {
 		}
 	}
 	
+   @Test
 	public void testModified() 
 	throws ArooaParseException, SAXException, 
 			IOException, ArooaPropertyException {
@@ -120,8 +125,6 @@ public class HandleConfigurationSessionTest extends XMLTestCase {
 		assertFalse(test.isModified());
 		assertFalse(listener.modified);
 		
-		XMLUnit.setIgnoreWhitespace(true);
-
 		String expected = 
 			"<snack>" +
 			" <fruit>" +
@@ -129,9 +132,13 @@ public class HandleConfigurationSessionTest extends XMLTestCase {
 			" </fruit>" +
 			"</snack>";
 		
-		assertXMLEqual(expected, savedXML.get());
+		Diff diff = DiffBuilder.compare(expected)
+				.withTest(savedXML.get()).ignoreWhitespace()
+				.build();
+		assertFalse(diff.toString(), diff.hasDifferences());
 	}
 
+   @Test
 	public void testModifiedWhenReplaceRoot() throws ArooaParseException {
 		
 		XMLConfiguration config = new XMLConfiguration("TEST", 

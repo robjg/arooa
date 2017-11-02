@@ -3,15 +3,18 @@
  */
 package org.oddjob.arooa.convert.convertlets;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.convert.ConversionFailedException;
 import org.oddjob.arooa.convert.ConversionPath;
 import org.oddjob.arooa.convert.DefaultConversionProvider;
 import org.oddjob.arooa.convert.DefaultConversionRegistry;
 
-public class DoubleConvertletsTest extends TestCase {
+public class DoubleConvertletsTest extends Assert {
 
+   @Test
 	public void testNumberToDouble() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new DoubleConvertlets().registerWith(registry);
@@ -24,6 +27,7 @@ public class DoubleConvertletsTest extends TestCase {
 		assertEquals(42.24, result, 0.001);  
 	}
 	
+   @Test
 	public void testStringToDouble() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new DoubleConvertlets().registerWith(registry);
@@ -36,6 +40,7 @@ public class DoubleConvertletsTest extends TestCase {
 		assertEquals(42.24, result, 0.001);  
 	}
 
+   @Test
 	public void testDoubleToString() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new DefaultConversionProvider().registerWith(registry);

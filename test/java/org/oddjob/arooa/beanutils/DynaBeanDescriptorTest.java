@@ -1,6 +1,8 @@
 package org.oddjob.arooa.beanutils;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.apache.commons.beanutils.LazyDynaMap;
 import org.oddjob.arooa.ArooaBeanDescriptor;
@@ -8,9 +10,10 @@ import org.oddjob.arooa.ConfiguredHow;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.standard.StandardArooaDescriptor;
 
-public class DynaBeanDescriptorTest extends TestCase {
+public class DynaBeanDescriptorTest extends Assert {
 
 	
+   @Test
 	public void testDynaBeanInStandardDescriptor() {
 		
 		MagicBeanDefinition def = new MagicBeanDefinition();
@@ -56,6 +59,7 @@ public class DynaBeanDescriptorTest extends TestCase {
 				result.getConfiguredHow("stuff"));
 	}
 	
+   @Test
 	public void testMutableDynaBeanInStandardDescriptor() {
 		
 		

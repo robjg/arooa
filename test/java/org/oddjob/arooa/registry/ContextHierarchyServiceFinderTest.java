@@ -1,8 +1,12 @@
 package org.oddjob.arooa.registry;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 
 import javax.inject.Inject;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.oddjob.arooa.ArooaParseException;
@@ -15,16 +19,22 @@ import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class ContextHierarchyServiceFinderTest extends TestCase {
+public class ContextHierarchyServiceFinderTest extends Assert {
 
 	private static final Logger logger = 
 			Logger.getLogger(ContextHierarchyServiceFinderTest.class);
 	
+	@Rule public TestName name = new TestName();
+
+	public String getName() {
+        return name.getMethodName();
+    }
+
 	interface FruitService {}
-	
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+
+	@Before
+    public void setUp() throws Exception {
+
 		
 		logger.info("-----------------------  " + getClass().getName() + 
 				"#" + getName() + "  -----------------------"); 
@@ -86,6 +96,7 @@ public class ContextHierarchyServiceFinderTest extends TestCase {
 	}
 	
 	
+   @Test
 	public void testParentMatches() throws ArooaPropertyException, ArooaConversionException, ArooaParseException {
 		
 		String xml = 

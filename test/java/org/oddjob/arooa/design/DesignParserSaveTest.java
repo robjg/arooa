@@ -1,8 +1,13 @@
 package org.oddjob.arooa.design;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo;
+
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.custommonkey.xmlunit.XMLTestCase;
+import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.ConfigurationHandle;
@@ -17,7 +22,7 @@ import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class DesignParserSaveTest extends XMLTestCase {
+public class DesignParserSaveTest {
 
 	public static class Snack { 
 		
@@ -64,6 +69,7 @@ public class DesignParserSaveTest extends XMLTestCase {
 	 * 
 	 * @throws ArooaParseException
 	 */
+   @Test
 	public void testPreSave() throws Exception {
 		
 		String xml =
@@ -98,13 +104,14 @@ public class DesignParserSaveTest extends XMLTestCase {
 		
 		designHandle.save();
 
-		String expected = 
+		String expected = "<?xml version='1.0' encoding='UTF-8' standalone='no'?>" + EOL +
 			"<healthy:snack xmlns:healthy=\"urn:healthy\"" + EOL +
 			"               id=\"y\"/>" + EOL;
 		
-		assertXMLEqual(expected, savedXML.get());
+		assertThat(savedXML.get(), isIdenticalTo(expected));
 	}
 
+   @Test
 	public void testSave() throws Exception {
 		
 		String xml =
@@ -147,11 +154,11 @@ public class DesignParserSaveTest extends XMLTestCase {
 
 		standardHandle.save();
 		
-		String expected = 
+		String expected = "<?xml version='1.0' encoding='UTF-8' standalone='no'?>" + EOL +
 			"<healthy:snack xmlns:healthy=\"urn:healthy\"" + EOL +
 			"               id=\"y\"/>" + EOL;
 		
-		assertXMLEqual(expected, savedXML.get());
+		assertThat(savedXML.get(), isIdenticalTo(expected));
 	}
 	
 	public static class Snack2 implements ArooaLifeAware { 
@@ -192,9 +199,10 @@ public class DesignParserSaveTest extends XMLTestCase {
 		}
 	}
 	
+   @Test
 	public void testSaveFailOnSameId() throws Exception {
 		
-		String xml = 
+		String xml = "<?xml version='1.0' encoding='UTF-8' standalone='no'?>" + EOL +
 			"<snack id=\"x\">" + EOL +
 			"    <fruit>" + EOL +
 			"        <is/>" + EOL +
@@ -248,7 +256,7 @@ public class DesignParserSaveTest extends XMLTestCase {
 		standardHandle.save();
 
 		// no change
-		assertXMLEqual(xml, savedXML.get());
+		assertThat(savedXML.get(), isIdenticalTo(xml));
 		
 		assertEquals(1, snack.count);
 		

@@ -1,18 +1,22 @@
 package org.oddjob.arooa.parsing;
 
+import static org.junit.Assert.assertThat;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.custommonkey.xmlunit.XMLTestCase;
+import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class QTagConfigurationTest extends XMLTestCase {
+public class QTagConfigurationTest {
 
+   @Test
 	public void testParse() throws Exception {
 		
 		QTagConfiguration test = new QTagConfiguration(
@@ -25,8 +29,7 @@ public class QTagConfigurationTest extends XMLTestCase {
 		
 		String expected = "<fruit:apple xmlns:fruit=\"http://fruit\"/>" + System.getProperty("line.separator");
 
-		assertXMLEqual(expected,
-				parser.getXml());
+		assertThat(parser.getXml(), isSimilarTo(expected));
 	}
 	
 	/**
@@ -36,6 +39,7 @@ public class QTagConfigurationTest extends XMLTestCase {
 	 * @throws ArooaParseException
 	 * @throws URISyntaxException
 	 */
+   @Test
 	public void testParse1() throws Exception {
 		
 		Object root = new Object();
@@ -64,7 +68,6 @@ public class QTagConfigurationTest extends XMLTestCase {
 		
 		String expected = "<fruit:apple xmlns:fruit=\"http://fruit\"/>" + System.getProperty("line.separator");
 
-		assertXMLEqual(expected,
-				savedXML.get());
+		assertThat(savedXML.get(), isSimilarTo(expected));
 	}
 }

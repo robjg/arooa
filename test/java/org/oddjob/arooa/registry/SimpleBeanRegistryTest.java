@@ -3,16 +3,19 @@
  */
 package org.oddjob.arooa.registry;
 
+import org.junit.Test;
+
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 /**
  * 
  */
-public class SimpleBeanRegistryTest extends TestCase {
+public class SimpleBeanRegistryTest extends Assert {
 
+   @Test
 	public void testAddRemove() throws InvalidIdException, ArooaPropertyException {
 		
 		Object c1 = new Object();
@@ -51,6 +54,7 @@ public class SimpleBeanRegistryTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testGetProperty() throws ArooaConversionException {
 		
 		ThingWithProperty c1 = new ThingWithProperty();
@@ -78,6 +82,7 @@ public class SimpleBeanRegistryTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testRegistryOwners() {
 		
 		Component c1 = new Component("comp1");
@@ -95,6 +100,7 @@ public class SimpleBeanRegistryTest extends TestCase {
 		assertEquals(c1, result);
 	}
 		
+   @Test
 	public void testReservedCharactesException() {
 		
 		SimpleBeanRegistry test = new SimpleBeanRegistry();

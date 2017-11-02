@@ -3,15 +3,18 @@
  */
 package org.oddjob.arooa.convert.convertlets;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaValue;
 import org.oddjob.arooa.convert.Convertlet;
 import org.oddjob.arooa.convert.DefaultConverter;
 import org.oddjob.arooa.convert.convertlets.CheckingConvertletRegistry.Check;
 
-public class ArooaValueConvertletsTest extends TestCase {
+public class ArooaValueConvertletsTest extends Assert {
 	
+   @Test
 	public void testAll() {
 		CheckingConvertletRegistry checking = new CheckingConvertletRegistry(
 				new Check[] { new Check() {

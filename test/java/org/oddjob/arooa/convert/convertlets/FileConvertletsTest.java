@@ -1,4 +1,7 @@
 package org.oddjob.arooa.convert.convertlets;
+import org.junit.Before;
+
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,7 +10,7 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.OurDirs;
 import org.oddjob.arooa.convert.ConversionFailedException;
@@ -15,11 +18,12 @@ import org.oddjob.arooa.convert.ConvertletException;
 import org.oddjob.arooa.convert.DefaultConverter;
 import org.oddjob.arooa.convert.NoConversionAvailableException;
 
-public class FileConvertletsTest extends TestCase {
+public class FileConvertletsTest extends Assert {
 	
 	File dir;
 	
-	protected void setUp() {
+   @Before
+   public void setUp() {
 		
 		OurDirs dirs = new OurDirs();
 		
@@ -28,6 +32,7 @@ public class FileConvertletsTest extends TestCase {
 		dir.mkdirs();
 	}
 	
+   @Test
 	public void testFile2String() throws NoConversionAvailableException, ConversionFailedException {
 		DefaultConverter test= new DefaultConverter();
 		
@@ -37,6 +42,7 @@ public class FileConvertletsTest extends TestCase {
 		assertEquals("test.txt", result);
 	}
 	
+   @Test
 	public void testString2File() throws NoConversionAvailableException, ConversionFailedException {
 		DefaultConverter test= new DefaultConverter();
 		
@@ -46,6 +52,7 @@ public class FileConvertletsTest extends TestCase {
 		assertEquals(new File("test.txt"), result);
 	}
 	
+   @Test
 	public void testFile2InputStream() throws ConvertletException, IOException, NoConversionAvailableException, ConversionFailedException {
 		DefaultConverter converter = new DefaultConverter();
 		
@@ -60,6 +67,7 @@ public class FileConvertletsTest extends TestCase {
 		result.close();
 	}
 
+   @Test
 	public void testFile2OutputStream() throws IOException, NoConversionAvailableException, ConversionFailedException {
 		DefaultConverter converter = new DefaultConverter();
 		
@@ -73,6 +81,7 @@ public class FileConvertletsTest extends TestCase {
 		result.close();
 	}
 	
+   @Test
 	public void testFile2URL() throws NoConversionAvailableException, ConversionFailedException, MalformedURLException {
 		DefaultConverter converter = new DefaultConverter();
 		
@@ -83,6 +92,7 @@ public class FileConvertletsTest extends TestCase {
 		assertEquals(file.toURI().toURL(), result);
 	}
 	
+   @Test
 	public void testFilesToString() throws NoConversionAvailableException, ConversionFailedException {
 		DefaultConverter converter = new DefaultConverter();
 		
@@ -96,6 +106,7 @@ public class FileConvertletsTest extends TestCase {
     			result);
 	}
 	
+   @Test
 	public void testStringToFiles() throws NoConversionAvailableException, ConversionFailedException {
 		DefaultConverter converter = new DefaultConverter();
 		

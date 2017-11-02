@@ -1,15 +1,18 @@
 package org.oddjob.arooa.types;
 
+import org.junit.Test;
+
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaValue;
 import org.oddjob.arooa.convert.ConversionLookup;
 import org.oddjob.arooa.convert.DefaultConverter;
 
-public class ListTypeSupportsTest extends TestCase {
+public class ListTypeSupportsTest extends Assert {
 
+   @Test
 	public void testSupports() {
 		
 		ConversionLookup converter = new DefaultConverter();
@@ -30,6 +33,7 @@ public class ListTypeSupportsTest extends TestCase {
 				ListType.class, ArooaValue.class));
 	}
 	
+   @Test
 	public void testNotSupports() {
 		
 		ConversionLookup converter = new DefaultConverter();

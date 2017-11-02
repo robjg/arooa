@@ -1,12 +1,15 @@
 package org.oddjob.arooa.design.view;
 
+import org.junit.Test;
+
 import java.awt.Dimension;
 import java.awt.Point;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class ScreenPresenceTest extends TestCase {
+public class ScreenPresenceTest extends Assert {
 
+   @Test
 	public void testLocationToCenter() {
 		
 		ScreenPresence test = new ScreenPresence(
@@ -16,10 +19,11 @@ public class ScreenPresenceTest extends TestCase {
 		Point point = test.locationToCenter(
 				new Dimension(50, 100));
 		
-		assertEquals(425.0, point.getX());
-		assertEquals(650.0, point.getY());
+		assertEquals(425.0, point.getX(), 0.01);
+		assertEquals(650.0, point.getY(), 0.01);
 	}
 	
+   @Test
 	public void testCenterNotOffScreen() {
 		
 		ScreenPresence test = new ScreenPresence(
@@ -33,6 +37,7 @@ public class ScreenPresenceTest extends TestCase {
 		assertEquals(0.0, point.getY(), 0.01);
 	}
 	
+   @Test
 	public void testSmaller() {
 		
 		ScreenPresence test = new ScreenPresence(

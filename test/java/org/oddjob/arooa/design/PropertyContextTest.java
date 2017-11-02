@@ -1,6 +1,11 @@
 package org.oddjob.arooa.design;
 
-import org.custommonkey.xmlunit.XMLTestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
+
+import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaType;
@@ -19,7 +24,7 @@ import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.standard.StandardArooaSession;
 
-public class PropertyContextTest extends XMLTestCase {
+public class PropertyContextTest {
 
 	public static class Thing {
 		
@@ -105,6 +110,7 @@ public class PropertyContextTest extends XMLTestCase {
 		}
 	}
 	
+   @Test
 	public void testHandler() throws Exception {
 		
 		OurDesign design = new OurDesign(
@@ -137,6 +143,6 @@ public class PropertyContextTest extends XMLTestCase {
 		
 		String expected = "<idontexist/>" + System.getProperty("line.separator");
 		
-		assertXMLEqual(expected, unknown.getXml());
+		assertThat(unknown.getXml(), isSimilarTo(expected));
 	}
 }

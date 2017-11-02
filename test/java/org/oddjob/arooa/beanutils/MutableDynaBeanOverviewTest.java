@@ -1,13 +1,16 @@
 package org.oddjob.arooa.beanutils;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.apache.commons.beanutils.LazyDynaMap;
 import org.apache.commons.beanutils.MutableDynaClass;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 
-public class MutableDynaBeanOverviewTest extends TestCase {
+public class MutableDynaBeanOverviewTest extends Assert {
 
+   @Test
 	public void testEmpty() 
 	throws ArooaPropertyException {
 		
@@ -28,6 +31,7 @@ public class MutableDynaBeanOverviewTest extends TestCase {
 		assertEquals(0, properties.length);
 	}
 	
+   @Test
 	public void testSimple() {
 		
 		LazyDynaMap dynaBean = new LazyDynaMap();
@@ -50,6 +54,7 @@ public class MutableDynaBeanOverviewTest extends TestCase {
 		assertEquals("fruit", properties[0]);
 	}
 	
+   @Test
 	public void testIndexed() {
 		
 		LazyDynaMap dynaBean = new LazyDynaMap();
@@ -74,6 +79,7 @@ public class MutableDynaBeanOverviewTest extends TestCase {
 		assertEquals("fruit", properties[0]);
 	}
 	
+   @Test
 	public void testMapped() {
 		
 		LazyDynaMap dynaBean = new LazyDynaMap();

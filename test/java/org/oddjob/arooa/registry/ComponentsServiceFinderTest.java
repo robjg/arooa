@@ -1,21 +1,30 @@
 package org.oddjob.arooa.registry;
-
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
+import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.oddjob.arooa.ComponentTrinity;
 import org.oddjob.arooa.parsing.MockArooaContext;
 
-public class ComponentsServiceFinderTest extends TestCase {
+public class ComponentsServiceFinderTest extends Assert {
 
 	private static final Logger logger = 
 			Logger.getLogger(ComponentsServiceFinderTest.class);
 	
+	@Rule public TestName name = new TestName();
+
+	public String getName() {
+        return name.getMethodName();
+    }
+
 	interface FruitService {}
 	
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+   @Before
+   public void setUp() throws Exception {
+
 		
 		logger.info("-----------------------  " + getClass().getName() + 
 				"#" + getName() + "  -----------------------"); 
@@ -65,6 +74,7 @@ public class ComponentsServiceFinderTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testTwoMatches() {
 		
 		SimpleComponentPool components = new SimpleComponentPool();

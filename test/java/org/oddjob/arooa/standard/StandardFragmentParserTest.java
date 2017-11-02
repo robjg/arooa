@@ -1,8 +1,10 @@
 package org.oddjob.arooa.standard;
 
+import org.junit.Test;
+
 import javax.inject.Inject;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaParseException;
@@ -24,7 +26,7 @@ import org.oddjob.arooa.registry.ServiceProvider;
 import org.oddjob.arooa.registry.Services;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class StandardFragmentParserTest extends TestCase {
+public class StandardFragmentParserTest extends Assert {
 
 	public static class Snack implements ArooaLifeAware {
 		String type;
@@ -116,6 +118,7 @@ public class StandardFragmentParserTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testValueFragment() throws ArooaParseException {
 		
 		String xml = "<apple colour='red'/>";
@@ -145,6 +148,7 @@ public class StandardFragmentParserTest extends TestCase {
 		assertEquals(true, apple.destroy);
 	}
 	
+   @Test
 	public void testComponentFragment() throws ArooaParseException {
 		
 		String xml = "<snack type='healthy'/>";
@@ -194,6 +198,7 @@ public class StandardFragmentParserTest extends TestCase {
 		}		
 	}
 	
+   @Test
 	public void testAutoConfigure() throws ArooaParseException {
 		
 		String xml = "<apple/>";

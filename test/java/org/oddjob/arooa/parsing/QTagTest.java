@@ -1,14 +1,17 @@
 package org.oddjob.arooa.parsing;
 
+import org.junit.Test;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import javax.xml.namespace.QName;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class QTagTest extends TestCase {
+public class QTagTest extends Assert {
 
+   @Test
 	public void testQName() {
 		// what's wrong with QName?
 		
@@ -22,6 +25,7 @@ public class QTagTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testToString() throws URISyntaxException {
 		
 		QTag test1 = new QTag("apple");
@@ -34,6 +38,7 @@ public class QTagTest extends TestCase {
 		assertEquals("fruit:apple", test2.toString());
 	}
 	
+   @Test
 	public void testComparable() throws URISyntaxException {
 		
 		assertTrue(new QTag("orange").compareTo(new QTag("apple")) > 0);

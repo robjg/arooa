@@ -1,16 +1,18 @@
 package org.oddjob.arooa.design.view;
 
+import org.junit.Test;
+
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.design.model.MockDesignInstance;
 import org.oddjob.arooa.design.screem.StandardForm;
 
-public class StandardFormViewTest extends TestCase {
+public class StandardFormViewTest extends Assert {
 
 	JComponent view;
 
@@ -27,6 +29,7 @@ public class StandardFormViewTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testHeaderLayout() {
 		
 		MyDesign design = new MyDesign();

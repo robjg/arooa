@@ -1,12 +1,14 @@
 package org.oddjob.arooa.standard;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class StandardPropertyHelperSysTest extends TestCase {
+public class StandardPropertyHelperSysTest extends Assert {
 
 	public static class MyBean {
 		
@@ -21,6 +23,7 @@ public class StandardPropertyHelperSysTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testSystemProperty() throws ArooaParseException {
 		
 		MyBean bean = new MyBean();

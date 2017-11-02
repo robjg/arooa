@@ -1,6 +1,8 @@
 package org.oddjob.arooa.standard;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
@@ -34,7 +36,7 @@ import org.oddjob.arooa.runtime.PropertyFirstEvaluator;
 import org.oddjob.arooa.runtime.PropertyManager;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
-public class ObjectConfiguationTest extends TestCase {
+public class ObjectConfiguationTest extends Assert {
 
 	
 	private class MockObject {
@@ -202,6 +204,7 @@ public class ObjectConfiguationTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testNonConstAttributes() {
 		
 		AContext context = new AContext();
@@ -231,6 +234,7 @@ public class ObjectConfiguationTest extends TestCase {
 		assertNotNull(results.value);
 	}
 	
+   @Test
 	public void testConstAttributes() {
 		
 		AContext context = new AContext();
@@ -298,6 +302,7 @@ public class ObjectConfiguationTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testAddNonConstText() {
 
 		TestTextContext context = new TestTextContext();
@@ -332,6 +337,7 @@ public class ObjectConfiguationTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testAddConstText() {
 
 		TestTextContext context = new TestTextContext();

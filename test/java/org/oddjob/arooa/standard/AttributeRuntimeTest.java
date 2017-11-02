@@ -1,6 +1,8 @@
 package org.oddjob.arooa.standard;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaSession;
@@ -16,7 +18,7 @@ import org.oddjob.arooa.registry.MockBeanRegistry;
 import org.oddjob.arooa.runtime.ParsedExpression;
 import org.oddjob.arooa.runtime.PropertyManager;
 
-public class AttributeRuntimeTest extends TestCase {
+public class AttributeRuntimeTest extends Assert {
 
 	private class ColourAttributeConfiguration extends MockInstanceConfiguration {
 		public ColourAttributeConfiguration() {
@@ -70,6 +72,7 @@ public class AttributeRuntimeTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testConstantAttribute() throws ArooaPropertyException {
 		
 		ColourAttributeConfiguration parentRuntime = new ColourAttributeConfiguration();
@@ -92,6 +95,7 @@ public class AttributeRuntimeTest extends TestCase {
 		assertEquals("blue", parentRuntime.colour);
 	}
 	
+   @Test
 	public void testVariableAttribute() {
 		
 		ColourAttributeConfiguration parentRuntime = new ColourAttributeConfiguration();

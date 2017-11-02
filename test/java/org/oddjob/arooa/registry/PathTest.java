@@ -3,16 +3,19 @@
  */
 package org.oddjob.arooa.registry;
 
+import org.junit.Test;
+
 import java.util.HashSet;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 /**
  * 
  */
-public class PathTest extends TestCase {
+public class PathTest extends Assert {
 
+   @Test
 	public void testCreate() {
 		assertEquals("a", 
 				new Path("a").toString());
@@ -30,6 +33,7 @@ public class PathTest extends TestCase {
 				new Path(null));
 	}
 	
+   @Test
 	public void testAddId() {
 		assertEquals("a/b/c", 
 				new Path("a/b")
@@ -52,6 +56,7 @@ public class PathTest extends TestCase {
 				.toString());
 	}
 
+   @Test
 	public void testAddPath() {
 		assertEquals("a/b/c", 
 				new Path("a/b")
@@ -69,6 +74,7 @@ public class PathTest extends TestCase {
 				.toString());
 	}
 	
+   @Test
 	public void testChildPath() {
 		assertEquals("b/c", 
 				new Path("a/b/c")
@@ -84,6 +90,7 @@ public class PathTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testGetRoot() {
 		assertEquals("a", 
 				new Path("a/b/c")
@@ -99,6 +106,7 @@ public class PathTest extends TestCase {
 				.getRoot());
 	}
 	
+   @Test
 	public void testGetId() {
 		assertEquals("c", 
 				new Path("a/b/c")
@@ -114,6 +122,7 @@ public class PathTest extends TestCase {
 				.getId());
 	}
 	
+   @Test
 	public void testRelative() {
 		assertEquals("a",
 				new Path()
@@ -142,6 +151,7 @@ public class PathTest extends TestCase {
 						new Path("a/b")));
 	}
 
+   @Test
 	public void testEqualsAndHash() {
 		
 		Set<Path> set = new HashSet<Path>();

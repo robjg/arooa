@@ -1,10 +1,14 @@
 package org.oddjob.arooa.parsing;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
+
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.custommonkey.xmlunit.XMLTestCase;
-import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ConfigurationHandle;
@@ -15,8 +19,9 @@ import org.oddjob.arooa.registry.ChangeHow;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 import org.xml.sax.SAXException;
+import org.xmlunit.matchers.CompareMatcher;
 
-public class ContextConfigurationSessionTest extends XMLTestCase {
+public class ContextConfigurationSessionTest {
 
 	public static class Pip {
 		
@@ -90,6 +95,7 @@ public class ContextConfigurationSessionTest extends XMLTestCase {
 		}
 	}
 	
+    @Test
 	public void testModified() 
 	throws ArooaParseException, SAXException, 
 			IOException, ArooaPropertyException {
@@ -150,22 +156,22 @@ public class ContextConfigurationSessionTest extends XMLTestCase {
 		
 		String expected = 
 			"<snack>" + EOL +
-			" <fruit>" + EOL +
-			"  <bean id='fruit' class='" + Apple.class.getName() + "'>" + EOL +
-			"   <pip>" + EOL +
-			"    <bean class='" + Pip.class.getName() + "'/>" + EOL +
-			"   </pip>" + EOL +
-			"  </bean>" + EOL +
-			" </fruit>" + EOL +
+			"    <fruit>" + EOL +
+			"        <bean id='fruit' class='" + Apple.class.getName() + "'>" + EOL +
+			"            <pip>" + EOL +
+			"                <bean class='" + Pip.class.getName() + "'/>" + EOL +
+			"            </pip>" + EOL +
+			"        </bean>" + EOL +
+			"    </fruit>" + EOL +
 			"</snack>";
 		
-		XMLUnit.setIgnoreWhitespace(true);
-		assertXMLEqual(expected, savedXML.get());
+		assertThat(savedXML.get(), isSimilarTo(expected));
 		
 		handle.getDocumentContext().getRuntime().destroy();
 		
 	}
 
+    @Test
 	public void testModifiedWhenPastingIntoExistingConfiguration() 
 	throws ArooaParseException, SAXException, 
 			IOException, ArooaPropertyException {
@@ -226,13 +232,12 @@ public class ContextConfigurationSessionTest extends XMLTestCase {
 		
 		String expected = 
 			"<snack>" + EOL +
-			" <fruit>" + EOL +
-			"  <bean id='fruit' class='" + Apple.class.getName() + "'/>" + EOL +
-			" </fruit>" + EOL +
+			"    <fruit>" + EOL +
+			"        <bean id='fruit' class='" + Apple.class.getName() + "'/>" + EOL +
+			"    </fruit>" + EOL +
 			"</snack>";
 		
-		XMLUnit.setIgnoreWhitespace(true);
-		assertXMLEqual(expected, savedXML.get());
+		assertThat(savedXML.get(), CompareMatcher.isSimilarTo(expected));
 		
 		handle.getDocumentContext().getRuntime().destroy();
 		

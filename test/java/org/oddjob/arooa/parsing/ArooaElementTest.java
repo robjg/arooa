@@ -1,17 +1,20 @@
 package org.oddjob.arooa.parsing;
 
+import org.junit.Test;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.ArooaTestHelper;
 
-public class ArooaElementTest extends TestCase {
+public class ArooaElementTest extends Assert {
 
+   @Test
 	public void testEquals1() {
 		
 		ArooaElement a1 = new ArooaElement("a");
@@ -22,6 +25,7 @@ public class ArooaElementTest extends TestCase {
 		assertEquals(a1.hashCode(), a2.hashCode());
 	}
 	
+   @Test
 	public void testEquals2() throws URISyntaxException {
 		
 		ArooaElement a1 = new ArooaElement(
@@ -35,6 +39,7 @@ public class ArooaElementTest extends TestCase {
 		assertEquals(a1.hashCode(), a2.hashCode());
 	}
 	
+   @Test
 	public void testEquals3() throws URISyntaxException {
 		
 		ArooaElement a1 = new ArooaElement(
@@ -46,6 +51,7 @@ public class ArooaElementTest extends TestCase {
 		assertNotSame(a1, a2);
 	}
 	
+   @Test
 	public void testEquals4() throws URISyntaxException {
 		
 		ArooaElement a1 = new ArooaElement(
@@ -56,6 +62,7 @@ public class ArooaElementTest extends TestCase {
 		assertNotSame(a1, a2);
 	}
 	
+   @Test
 	public void testEquals5() throws URISyntaxException {
 		
 		ArooaElement a1 = new ArooaElement("a");
@@ -64,6 +71,7 @@ public class ArooaElementTest extends TestCase {
 		assertNotSame(a1, a2);
 	}
 	
+   @Test
 	public void testSerialize() throws URISyntaxException, IOException, ClassNotFoundException {
 		
 		ArooaElement test = new ArooaElement(
@@ -74,6 +82,7 @@ public class ArooaElementTest extends TestCase {
 		assertEquals(test, copy);
 	}
 	
+   @Test
 	public void testToString() throws MalformedURLException, URISyntaxException {
 		
 		ArooaElement test = new ArooaElement(

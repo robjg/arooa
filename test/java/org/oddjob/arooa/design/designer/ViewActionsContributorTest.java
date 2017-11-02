@@ -1,8 +1,10 @@
 package org.oddjob.arooa.design.designer;
 
+import org.junit.Test;
+
 import javax.swing.Action;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaParseException;
@@ -33,7 +35,7 @@ import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class ViewActionsContributorTest extends TestCase {
+public class ViewActionsContributorTest extends Assert {
 
 	public static class Stuff {
 		
@@ -138,6 +140,7 @@ public class ViewActionsContributorTest extends TestCase {
 	}
 
 	
+   @Test
 	public void testRootActions() throws ArooaParseException {
 	
 		DesignParser parser = new DesignParser(

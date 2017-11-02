@@ -1,12 +1,16 @@
 package org.oddjob.arooa.types;
 
-import org.custommonkey.xmlunit.XMLTestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+
+import org.junit.Test;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.deploy.annotations.ArooaElement;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
+import org.xmlunit.matchers.CompareMatcher;
 
-public class ImportTypeTest2 extends XMLTestCase {
+public class ImportTypeX2Test {
 
 	public static class StringCapture {
 		String stuff;
@@ -18,7 +22,8 @@ public class ImportTypeTest2 extends XMLTestCase {
 	}
 	
 	String EOL = System.getProperty("line.separator");
-	
+
+	@Test
 	public void testImportXml() throws Exception {
 		
 		StringCapture root = new StringCapture();
@@ -44,12 +49,13 @@ public class ImportTypeTest2 extends XMLTestCase {
 		session.getBeanRegistry().register("xml", moreXML);
 		session.getComponentPool().configure(root);
 		
-		String expected = 
-			"<something/>";
+		String expected = "<?xml version='1.0' encoding='UTF-8' standalone='no'?>" + EOL +
+			"<something/>" + EOL;
 		
-		assertXMLEqual(expected, root.stuff); 
+		assertThat(root.stuff, CompareMatcher.isIdenticalTo(expected)); 
 	}
 	
+	@Test
 	public void testImportRuntimeProperty() throws Exception {
 		
 		StringCapture root = new StringCapture();

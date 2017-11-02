@@ -1,13 +1,16 @@
 package org.oddjob.arooa.utils;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class FlexibleDelimiterFactoryTest extends TestCase {
+import org.junit.Assert;
+
+public class FlexibleDelimiterFactoryTest extends Assert {
 
 	Object[] line = new Object[] { 
 			"Apple", "Crisp, 'Sweet' Sometimes", 22.7 };
 	
 	
+   @Test
 	public void testQuotedNumbersAndText() {
 		
 		FlexibleDelimiterFactory test = new FlexibleDelimiterFactory();
@@ -22,6 +25,7 @@ public class FlexibleDelimiterFactoryTest extends TestCase {
 				result);
 	}
 	
+   @Test
 	public void testQuotedAndEscapedNumbersAndText() {
 		
 		FlexibleDelimiterFactory test = new FlexibleDelimiterFactory();
@@ -37,6 +41,7 @@ public class FlexibleDelimiterFactoryTest extends TestCase {
 				result);
 	}
 	
+   @Test
 	public void testAlwaysQuotedAndEscapedNumbersAndText() {
 		
 		FlexibleDelimiterFactory test = new FlexibleDelimiterFactory();
@@ -54,6 +59,7 @@ public class FlexibleDelimiterFactoryTest extends TestCase {
 	}
 	
 	
+   @Test
 	public void testNoQuoteNumbersAndText() {
 		
 		FlexibleDelimiterFactory test = new FlexibleDelimiterFactory();
@@ -67,6 +73,7 @@ public class FlexibleDelimiterFactoryTest extends TestCase {
 				result);
 	}
 	
+   @Test
 	public void testNulls() {
 		
 		FlexibleDelimiterFactory test = new FlexibleDelimiterFactory();

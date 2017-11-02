@@ -1,8 +1,10 @@
 package org.oddjob.arooa.design.etc;
 
+import org.junit.Test;
+
 import java.io.File;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.deploy.annotations.ArooaAttribute;
@@ -21,7 +23,7 @@ import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class FileAttributeTest extends TestCase {
+public class FileAttributeTest extends Assert {
 
 	public static class Thing {
 		
@@ -64,6 +66,7 @@ public class FileAttributeTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testForm() throws ArooaParseException {
 
 		String xml = 

@@ -1,9 +1,11 @@
 package org.oddjob.arooa.standard;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaSession;
@@ -22,7 +24,7 @@ import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeListener;
 
-public class LifecycleObligationsTest extends TestCase {
+public class LifecycleObligationsTest extends Assert {
 
 	private List<String> events = new ArrayList<String>();
 	
@@ -116,6 +118,7 @@ public class LifecycleObligationsTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testLifecycle() {
 		OurLiffecycleThing check = new OurLiffecycleThing();
 		
@@ -153,6 +156,7 @@ public class LifecycleObligationsTest extends TestCase {
 		assertEquals(5, events.size());
 	}
 	
+   @Test
 	public void testProxyLifecycle() {
 		OurLiffecycleThing check = new OurLiffecycleThing();
 
@@ -213,6 +217,7 @@ public class LifecycleObligationsTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testSession() {
 		OurSessionThing check = new OurSessionThing();
 		
@@ -237,6 +242,7 @@ public class LifecycleObligationsTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testContext() {
 		OurContextThing check = new OurContextThing();
 		

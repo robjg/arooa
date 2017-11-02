@@ -1,6 +1,10 @@
 package org.oddjob.arooa.xml;
 
-import org.custommonkey.xmlunit.XMLTestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
+
+import org.junit.Test;
 import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaException;
@@ -24,7 +28,7 @@ import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeListener;
 import org.oddjob.arooa.standard.StandardArooaParser;
 
-public class XmlInterceptorTest extends XMLTestCase {
+public class XmlInterceptorTest {
 
 	private class TestContext extends MockArooaContext {
 		String name;
@@ -56,6 +60,7 @@ public class XmlInterceptorTest extends XMLTestCase {
 				
 	}
 	
+    @Test
 	public void testMethodAtATime() throws Exception {
 		
 		ParsingInterceptor test= new XMLInterceptor("result");
@@ -92,7 +97,7 @@ public class XmlInterceptorTest extends XMLTestCase {
 		String expected = "<a>" + ls + 
 				"    <b x=\"y\"/><![CDATA[Hello World]]></a>" + ls;
 		
-		assertXMLEqual(expected, testContext.result);
+		assertThat(testContext.result, isSimilarTo(expected));
 	}
 	
 	
@@ -146,6 +151,7 @@ public class XmlInterceptorTest extends XMLTestCase {
 		}
 	}
 	
+    @Test
 	public void testInParser() throws Exception {
 
 		String xml = "<comp>" +
@@ -165,6 +171,6 @@ public class XmlInterceptorTest extends XMLTestCase {
 				"   colour=\"red\">" + ls + 
 				"    <b/>" + ls + 
 				"</a>";		
-		assertXMLEqual(expected, comp.xml);
+		assertThat(comp.xml, isSimilarTo(expected));
 	}
 }

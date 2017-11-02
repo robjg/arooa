@@ -1,11 +1,14 @@
 package org.oddjob.arooa.registry;
 
+import org.junit.Test;
+
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class DirectoryPathWalkerTest extends TestCase {
+public class DirectoryPathWalkerTest extends Assert {
 
+   @Test
 	public void testSimplePath() throws InvalidIdException, ArooaPropertyException {
 		
 		Object comp = new Object();
@@ -37,6 +40,7 @@ public class DirectoryPathWalkerTest extends TestCase {
 	}
 	
 	/** Test a hierarchy */
+   @Test
 	public void testHierarchy() {
 		Component comp1 = new Component("comp1");
 

@@ -1,12 +1,14 @@
 package org.oddjob.arooa.design;
 
+import org.junit.Test;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
@@ -43,7 +45,7 @@ import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.standard.StandardArooaSession;
 
-public class InstanceSupportTest extends TestCase {
+public class InstanceSupportTest extends Assert {
 
 	public static class Fruit {
 		
@@ -189,6 +191,7 @@ public class InstanceSupportTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testInsert() throws ArooaParseException {
 		
 		IndexedDesignProperty property = new IndexedDesignProperty(
@@ -209,6 +212,7 @@ public class InstanceSupportTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testRemove() throws ArooaParseException {
 		
 		IndexedDesignProperty property = new IndexedDesignProperty(
@@ -225,6 +229,7 @@ public class InstanceSupportTest extends TestCase {
 		assertEquals(0, property.instanceCount());
 	}
 	
+   @Test
 	public void testSupportForStandardDescriptor() {
 
 		final ArooaSession session = new StandardArooaSession();
@@ -276,6 +281,7 @@ public class InstanceSupportTest extends TestCase {
 		assertTrue(set.contains(new QTag("value")));
 	}
 	
+   @Test
 	public void testComponentSupportForStandardDescriptor() {
 
 		final ArooaSession session = new StandardArooaSession();
@@ -325,6 +331,7 @@ public class InstanceSupportTest extends TestCase {
 	}
 	
 	
+   @Test
 	public void testTagFor() {
 		
 		ArooaSession session = new StandardArooaSession();
@@ -355,6 +362,7 @@ public class InstanceSupportTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testTagForNoURI() throws URISyntaxException {
 		
 		ArooaSession session = new StandardArooaSession();

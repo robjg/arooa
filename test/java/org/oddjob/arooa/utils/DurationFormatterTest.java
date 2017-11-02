@@ -1,11 +1,14 @@
 package org.oddjob.arooa.utils;
 
+import org.junit.Test;
+
 import java.text.ParseException;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class DurationFormatterTest extends TestCase {
+public class DurationFormatterTest extends Assert {
 
+   @Test
 	public void testDays() throws ParseException {
 		
 		DurationFormatter test = new DurationFormatter();
@@ -62,6 +65,7 @@ public class DurationFormatterTest extends TestCase {
 				5, result);
 	}
 	
+   @Test
 	public void testHours() throws ParseException {
 		
 		DurationFormatter test = new DurationFormatter();
@@ -90,6 +94,7 @@ public class DurationFormatterTest extends TestCase {
 				5, result);
 	}
 	
+   @Test
 	public void testMilliseconds() throws ParseException {
 		
 		DurationFormatter test = new DurationFormatter();
@@ -111,6 +116,7 @@ public class DurationFormatterTest extends TestCase {
 		assertEquals(25, result);
 	}
 	
+   @Test
 	public void testInvalids() {
 		
 		DurationFormatter test = new DurationFormatter();

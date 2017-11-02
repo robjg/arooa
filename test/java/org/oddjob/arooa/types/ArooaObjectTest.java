@@ -1,9 +1,12 @@
 package org.oddjob.arooa.types;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class ArooaObjectTest extends TestCase {
+import org.junit.Assert;
 
+public class ArooaObjectTest extends Assert {
+
+   @Test
 	public void testEquals() {
 		
 		Object test1 = new ArooaObject(null);
@@ -18,6 +21,7 @@ public class ArooaObjectTest extends TestCase {
 		assertEquals(false, test2.equals(test4));
 	}
 	
+   @Test
 	public void testHashCode() {
 		
 		Object test1 = new ArooaObject(null);

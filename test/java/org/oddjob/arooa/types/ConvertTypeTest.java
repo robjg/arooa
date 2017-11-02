@@ -1,14 +1,17 @@
 package org.oddjob.arooa.types;
 
+import org.junit.Test;
+
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.standard.StandardArooaSession;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class ConvertTypeTest extends TestCase {
+public class ConvertTypeTest extends Assert {
 
+   @Test
 	public void testConvertStringToInteger() throws ArooaConversionException {
 		
 		ConvertType<Integer> test = new ConvertType<Integer>();
@@ -24,6 +27,7 @@ public class ConvertTypeTest extends TestCase {
 	 * 
 	 * @throws ArooaConversionException
 	 */
+   @Test
 	public void testConvertStringToObjectArray() throws ArooaConversionException {
 		
 		ArooaSession session = new StandardArooaSession();

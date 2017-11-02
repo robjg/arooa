@@ -1,24 +1,34 @@
 package org.oddjob.arooa.registry;
-
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 import org.apache.log4j.Logger;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class CompositeServiceFinderTest extends TestCase {
+public class CompositeServiceFinderTest extends Assert {
 
 	private static final Logger logger = 
 			Logger.getLogger(CompositeServiceFinderTest.class);
 	
+	@Rule public TestName name = new TestName();
+
+	public String getName() {
+        return name.getMethodName();
+    }
+
 	private static class Cheese {}
 	
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+    @Before
+    public void setUp() throws Exception {
+
 		
 		logger.info("-----------------------  " + getClass().getName() + 
 				"#" + getName() + "  -----------------------"); 
 	}
 	
+   @Test
 	public void testFirstHasService() {
 		
 		ServiceFinder test = new CompositeServiceFinder(new ServiceFinder[] {
@@ -43,6 +53,7 @@ public class CompositeServiceFinderTest extends TestCase {
 		assertNotNull(test.find(Cheese.class, "smelly"));
 	}
 	
+   @Test
 	public void testSecondHasService() {
 		
 		ServiceFinder test = new CompositeServiceFinder(new ServiceFinder[] {
@@ -69,6 +80,7 @@ public class CompositeServiceFinderTest extends TestCase {
 		assertNotNull(test.find(Cheese.class, "smelly"));
 	}
 
+   @Test
 	public void testNoneHasService() {
 		
 		ServiceFinder test = new CompositeServiceFinder(new ServiceFinder[] {

@@ -1,5 +1,7 @@
 package org.oddjob.arooa.design.view.multitype;
 
+import org.junit.Test;
+
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,11 +11,11 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.design.view.FileSelectionWidget;
 
-public class ListMultiTypeAdaptorTest extends TestCase {
+public class ListMultiTypeAdaptorTest extends Assert {
 
 	private static final Integer DELETE_OPTION = new Integer(0);
 	
@@ -123,6 +125,7 @@ public class ListMultiTypeAdaptorTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testInsertSwapDelete() {
 
 		MyMultiTypeTableModel model = new MyMultiTypeTableModel();

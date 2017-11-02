@@ -1,9 +1,12 @@
 package org.oddjob.arooa.registry;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class AdressTest extends TestCase {
+import org.junit.Assert;
 
+public class AdressTest extends Assert {
+
+   @Test
 	public void testFields() {
 		
 		Address test = new Address(
@@ -17,6 +20,7 @@ public class AdressTest extends TestCase {
 		assertEquals("//test:x/y", test.toString());
 	}
 	
+   @Test
 	public void testEquals() {
 		
 		Address test1 = new Address(

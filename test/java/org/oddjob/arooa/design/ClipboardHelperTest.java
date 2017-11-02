@@ -1,11 +1,14 @@
 package org.oddjob.arooa.design;
 
+import org.junit.Test;
+
 import java.awt.GraphicsEnvironment;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class ClipboardHelperTest extends TestCase {
+public class ClipboardHelperTest extends Assert {
 
+   @Test
 	public void testRoundTrip() {
 		
 		if (GraphicsEnvironment.isHeadless()) {

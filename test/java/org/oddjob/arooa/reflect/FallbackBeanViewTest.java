@@ -1,10 +1,12 @@
 package org.oddjob.arooa.reflect;
 
+import org.junit.Test;
+
 import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class FallbackBeanViewTest extends TestCase {
+public class FallbackBeanViewTest extends Assert {
 
 	public static class Fruit {
 		
@@ -18,6 +20,7 @@ public class FallbackBeanViewTest extends TestCase {
 	}
 	
 	
+   @Test
 	public void testProperties() {		
 		
 		Fruit bean = new Fruit();

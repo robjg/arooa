@@ -1,9 +1,11 @@
 package org.oddjob.arooa.deploy;
 
+import org.junit.Test;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaType;
@@ -28,7 +30,7 @@ import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaClass;
 
-public class LinkedDescriptorTest extends TestCase {
+public class LinkedDescriptorTest extends Assert {
 
 	public static class Apple {
 		
@@ -38,6 +40,7 @@ public class LinkedDescriptorTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testComponentMapping() {
 	
 		ArooaDescriptor primary = new MockArooaDescriptor() {
@@ -99,6 +102,7 @@ public class LinkedDescriptorTest extends TestCase {
 				new InstantiationContext(ArooaType.COMPONENT, null)));
 	}
 	
+   @Test
 	public void testValueMapping() {
 		
 		ArooaDescriptor primary = new MockArooaDescriptor() {
@@ -161,6 +165,7 @@ public class LinkedDescriptorTest extends TestCase {
 		
 	}
 			
+   @Test
 	public void testValueMappingOneNull() {
 		
 		ArooaDescriptor primary = new MockArooaDescriptor() {
@@ -227,6 +232,7 @@ public class LinkedDescriptorTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testConvertletProvider() {
 		
 		ArooaDescriptor primary = new MockArooaDescriptor() {
@@ -273,6 +279,7 @@ public class LinkedDescriptorTest extends TestCase {
 		assertNotNull(registry.convertlet);
 	}
 	
+   @Test
 	public void testConvertletProviderOrder() 
 	throws NoConversionAvailableException, ConversionFailedException {
 		
@@ -335,6 +342,7 @@ public class LinkedDescriptorTest extends TestCase {
 		assertEquals(42, i);		
 	}
 	
+   @Test
 	public void testClassFestResources() {
 		
 		ArooaDescriptor primary = new MockArooaDescriptor() {

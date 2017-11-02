@@ -1,14 +1,16 @@
 package org.oddjob.arooa.deploy;
 
+import org.junit.Test;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.MockClassResolver;
 
-public class ClassResolverDescriptorFactoryTest extends TestCase {
+public class ClassResolverDescriptorFactoryTest extends Assert {
 
 	private class OurResolver extends MockClassResolver {
 		
@@ -21,6 +23,7 @@ public class ClassResolverDescriptorFactoryTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testCreateDescriptor() throws URISyntaxException {
 		
 		ClassResolverDescriptorFactory test =

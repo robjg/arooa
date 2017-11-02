@@ -1,8 +1,15 @@
 package org.oddjob.arooa.design.etc;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
+
 import java.net.URISyntaxException;
 
-import org.custommonkey.xmlunit.XMLTestCase;
+import org.junit.Test;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
@@ -26,7 +33,7 @@ import org.oddjob.arooa.runtime.MockConfigurationNode;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class UnknownInstanceTest extends XMLTestCase {
+public class UnknownInstanceTest {
 
 	String EOL = System.getProperty("line.separator");
 	
@@ -37,6 +44,7 @@ public class UnknownInstanceTest extends XMLTestCase {
 	 * @throws URISyntaxException
 	 * @throws ArooaParseException
 	 */
+   @Test
 	public void testParse() throws Exception {
 		
 		ArooaSession session = new MockArooaSession();
@@ -59,7 +67,7 @@ public class UnknownInstanceTest extends XMLTestCase {
 		String expected = 
 			"<fruit:ThisNeedntBeApple xmlns:fruit=\"http://fruit\"/>" + EOL;
 		
-		assertXMLEqual(expected, parser.getXml());
+		assertThat(parser.getXml(), isSimilarTo(expected));
 	}
 
 	/**
@@ -67,6 +75,7 @@ public class UnknownInstanceTest extends XMLTestCase {
 	 * @throws URISyntaxException
 	 * @throws ArooaParseException
 	 */
+   @Test
 	public void testParse2() throws Exception {
 		
 		ArooaSession session = new MockArooaSession();
@@ -95,7 +104,7 @@ public class UnknownInstanceTest extends XMLTestCase {
 		
 		parser.parse(test.getArooaContext().getConfigurationNode());
 		
-		assertXMLEqual(xml, parser.getXml());
+		assertThat(parser.getXml(), isSimilarTo(xml));
 	}
 
 	/**
@@ -104,6 +113,7 @@ public class UnknownInstanceTest extends XMLTestCase {
 	 * @throws URISyntaxException
 	 * @throws ArooaParseException
 	 */
+   @Test
 	public void testMissingPrefixMapping() {
 		
 		ArooaSession session = new MockArooaSession();
@@ -181,6 +191,7 @@ public class UnknownInstanceTest extends XMLTestCase {
 	 * Can't quite remember what this is really testing!
 	 * 
 	 */
+   @Test
 	public void testAsChild() {
 		
 		IndexedDesignProperty prop = new IndexedDesignProperty(
@@ -208,6 +219,7 @@ public class UnknownInstanceTest extends XMLTestCase {
 	
 	UnknownInstance test;
 	
+   @Test
 	public void testTheContext() throws Exception {
 		
 		ArooaSession session = new MockArooaSession();
@@ -245,7 +257,7 @@ public class UnknownInstanceTest extends XMLTestCase {
 		
 		parser.parse(test.getArooaContext().getConfigurationNode());
 		
-		assertXMLEqual(xml, parser.getXml());
+		assertThat(parser.getXml(), isSimilarTo(xml));
 	}
 	
 }

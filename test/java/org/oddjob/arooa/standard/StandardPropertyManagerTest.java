@@ -1,18 +1,21 @@
 package org.oddjob.arooa.standard;
+import org.junit.Before;
+
+import org.junit.Test;
 
 import java.util.Properties;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class StandardPropertyManagerTest extends TestCase {
+public class StandardPropertyManagerTest extends Assert {
 
 	Properties someProperties;
 	
 	Properties otherProperties;
 	
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+    @Before
+    public void setUp() throws Exception {
+
 		
 		someProperties = new Properties();
 		
@@ -24,6 +27,7 @@ public class StandardPropertyManagerTest extends TestCase {
 		otherProperties.setProperty("snack.fruit", "orange");
 	}
 	
+   @Test
 	public void testNoParentNoProperties() {
 		
 		StandardPropertyManager test = new StandardPropertyManager();
@@ -40,6 +44,7 @@ public class StandardPropertyManagerTest extends TestCase {
 				test.lookup("snack.fruit"));
 	}
 	
+   @Test
 	public void testPropertiesNoParent() {
 		
 		StandardPropertyManager test = new StandardPropertyManager(
@@ -55,6 +60,7 @@ public class StandardPropertyManagerTest extends TestCase {
 				test.lookup("snack.fruit"));
 	}
 	
+   @Test
 	public void testPropertiesAndParent() {
 		
 		StandardPropertyManager parent = new StandardPropertyManager(
@@ -70,6 +76,7 @@ public class StandardPropertyManagerTest extends TestCase {
 				test.lookup("snack.fruit"));
 	}
 	
+   @Test
 	public void testOverridesAndParent() {
 		
 		StandardPropertyManager parent = new StandardPropertyManager(

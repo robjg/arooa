@@ -1,6 +1,8 @@
 package org.oddjob.arooa.design.view;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaType;
@@ -24,7 +26,7 @@ import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class FieldSelectionViewTest extends TestCase {
+public class FieldSelectionViewTest extends Assert {
 
 	public static class Thing {
 		
@@ -105,6 +107,7 @@ public class FieldSelectionViewTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testForm() throws ArooaParseException {
 
 		String xml = 

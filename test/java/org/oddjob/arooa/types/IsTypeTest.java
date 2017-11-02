@@ -1,11 +1,13 @@
 package org.oddjob.arooa.types;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaType;
@@ -15,7 +17,7 @@ import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
 
-public class IsTypeTest extends TestCase {
+public class IsTypeTest extends Assert {
 
 	// #fruitBean {	
 	public static class FruitBean {
@@ -44,6 +46,7 @@ public class IsTypeTest extends TestCase {
 	// } #simpleBean 
 	
 	
+   @Test
 	public void testSimpleProperty() throws ArooaParseException {
 
 		SnackBean root = new SnackBean();
@@ -78,6 +81,7 @@ public class IsTypeTest extends TestCase {
 	}
 	// } #mappedBean
 	
+   @Test
 	public void testMappedProperty() throws ArooaParseException {
 		
 		MappedSnack root = new MappedSnack();
@@ -113,6 +117,7 @@ public class IsTypeTest extends TestCase {
 	}
 	// } #indexedBean
 	
+   @Test
 	public void testIndexedProperty() throws ArooaParseException {
 
 		IndexedSnack root = new IndexedSnack();
@@ -148,6 +153,7 @@ public class IsTypeTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testSupports() {
 	
 		assertFalse(IsType.supports(

@@ -1,9 +1,11 @@
 package org.oddjob.arooa.beanutils;
 
+import org.junit.Test;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaParseException;
@@ -24,7 +26,7 @@ import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.standard.StandardFragmentParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class MagicBeanDescriptorFactoryTest extends TestCase {
+public class MagicBeanDescriptorFactoryTest extends Assert {
 	
 	public static class Stuff {
 		
@@ -39,6 +41,7 @@ public class MagicBeanDescriptorFactoryTest extends TestCase {
 		}
 	}
 
+   @Test
 	public void testSimpleDefinition() throws ArooaParseException, ArooaPropertyException, ArooaConversionException, URISyntaxException {
 		
 		String definition =
@@ -128,6 +131,7 @@ public class MagicBeanDescriptorFactoryTest extends TestCase {
 		assertEquals("John", name);
 	}
 	
+   @Test
 	public void testWithPropertyAccessor() 
 	throws IllegalAccessException, InstantiationException {
 		
@@ -160,6 +164,7 @@ public class MagicBeanDescriptorFactoryTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testClassIdentifier() throws IllegalAccessException, InstantiationException {
 		
 		MagicBeanDefinition def = new MagicBeanDefinition();

@@ -1,8 +1,10 @@
 package org.oddjob.arooa.convert.jokers;
 
+import org.junit.Test;
+
 import java.io.File;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.convert.ConversionFailedException;
 import org.oddjob.arooa.convert.ConversionPath;
@@ -10,8 +12,9 @@ import org.oddjob.arooa.convert.DefaultConversionProvider;
 import org.oddjob.arooa.convert.DefaultConversionRegistry;
 import org.oddjob.arooa.convert.DefaultConverter;
 
-public class ArrayConversionsTest extends TestCase {
+public class ArrayConversionsTest extends Assert {
 
+   @Test
 	public void testArrayConvert() throws Exception {
 		
 		DefaultConversionRegistry reg = new DefaultConversionRegistry();
@@ -35,6 +38,7 @@ public class ArrayConversionsTest extends TestCase {
 		assertEquals(9, resultArray[1]);
 	}
 	
+   @Test
 	public void testConvertSingleToArray() throws ConversionFailedException {
 
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
@@ -55,6 +59,7 @@ public class ArrayConversionsTest extends TestCase {
 	/**
 	 * 42 gets converted to true?
 	 */
+   @Test
 	public void testABigFatBugThatNeedFixing() throws ConversionFailedException {
 
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
@@ -72,6 +77,7 @@ public class ArrayConversionsTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testFilesToStrings() throws ConversionFailedException {
 
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();

@@ -1,9 +1,11 @@
 package org.oddjob.arooa.beandocs;
 
+import org.junit.Test;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaType;
@@ -15,8 +17,9 @@ import org.oddjob.arooa.types.IsType;
 import org.oddjob.arooa.types.ListType;
 import org.oddjob.arooa.types.MapType;
 
-public class SessionArooaDocFactoryTest extends TestCase {
+public class SessionArooaDocFactoryTest extends Assert {
 
+    @Test
 	public void testStandardSession() {
 		
 		ArooaSession session = new StandardArooaSession();

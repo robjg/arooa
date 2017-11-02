@@ -1,12 +1,14 @@
 package org.oddjob.arooa.utils;
 
+import org.junit.Test;
+
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class TimeParserTest extends TestCase {
+public class TimeParserTest extends Assert {
 
 	private class Results implements CalendarAdaptor {
 		
@@ -38,6 +40,7 @@ public class TimeParserTest extends TestCase {
 	}
 	
 	
+   @Test
 	public void testDates() throws ParseException {
 		
 		Results results = new Results();
@@ -72,6 +75,7 @@ public class TimeParserTest extends TestCase {
 		assertEquals(456, results.milliseconds);
 	}
 	
+   @Test
 	public void testReferenceDateWithMilliseconds() throws ParseException {
 		
 		Date referenceDate = DateHelper.parseDateTime("2006-03-01 10:59:59.999");
@@ -88,6 +92,7 @@ public class TimeParserTest extends TestCase {
 				result);
 	}
 	
+   @Test
 	public void testUnusalParsing() throws ParseException {
 		
 		new TimeParser().parse("1234:56");

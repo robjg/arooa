@@ -1,6 +1,8 @@
 package org.oddjob.arooa.deploy;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.MockElementMappings;
 import org.oddjob.arooa.life.InstantiationContext;
@@ -8,7 +10,7 @@ import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaClass;
 
-public class ClassMappingsListTest extends TestCase {
+public class ClassMappingsListTest extends Assert {
 
 	private class Mappings1 extends MockElementMappings {
 
@@ -39,6 +41,7 @@ public class ClassMappingsListTest extends TestCase {
 		}
 	};
 	
+   @Test
 	public void testElementSearchOrder() {
 		
 		ClassMappingsList test = new ClassMappingsList();

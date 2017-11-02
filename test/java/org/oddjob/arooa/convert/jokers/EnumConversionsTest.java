@@ -1,6 +1,8 @@
 package org.oddjob.arooa.convert.jokers;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.convert.ArooaConverter;
@@ -17,13 +19,14 @@ import org.oddjob.arooa.convert.DefaultConverter;
 import org.oddjob.arooa.convert.Joker;
 import org.oddjob.arooa.convert.NoConversionAvailableException;
 
-public class EnumConversionsTest extends TestCase {
+public class EnumConversionsTest extends Assert {
 
 	enum Deed {
 		GOOD,
 		BAD
 	}
 	
+   @Test
 	public void testStringConversions() throws NoConversionAvailableException, ConversionFailedException {
 		
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
@@ -44,6 +47,7 @@ public class EnumConversionsTest extends TestCase {
 	 * @throws NoConversionAvailableException
 	 * @throws ConversionFailedException
 	 */
+   @Test
 	public void testShadowJoker() throws NoConversionAvailableException, ConversionFailedException {
 		
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
@@ -87,6 +91,7 @@ public class EnumConversionsTest extends TestCase {
 		
 	}
 
+   @Test
 	public void testShadowConversion() throws NoConversionAvailableException, ConversionFailedException {
 		
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
@@ -131,6 +136,7 @@ public class EnumConversionsTest extends TestCase {
 		}
 	}
 
+   @Test
 	public void testComplicatedDeed() throws NoConversionAvailableException, ConversionFailedException {
 		
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
@@ -174,6 +180,7 @@ public class EnumConversionsTest extends TestCase {
 	 * @throws NoConversionAvailableException
 	 * @throws ConversionFailedException
 	 */
+   @Test
 	public void testAnEnumThatImplementsAnInterface() throws NoConversionAvailableException, ConversionFailedException {
 		
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();

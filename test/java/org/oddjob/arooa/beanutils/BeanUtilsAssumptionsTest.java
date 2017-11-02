@@ -2,7 +2,6 @@
  * (c) Rob Gordon 2006
  */
 package org.oddjob.arooa.beanutils;
-
 import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.lang.reflect.InvocationHandler;
@@ -12,12 +11,15 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.MappedPropertyDescriptor;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * Test our assumptions about BeanUtils.
@@ -26,14 +28,20 @@ import org.apache.log4j.Logger;
  * performs conversions we don't want. 
  *
  */
-public class BeanUtilsAssumptionsTest extends TestCase {
+public class BeanUtilsAssumptionsTest extends Assert {
 
 	private static final Logger logger = Logger.getLogger(
 			BeanUtilsAssumptionsTest.class);
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Rule public TestName name = new TestName();
+
+	public String getName() {
+        return name.getMethodName();
+    }
+
+	    @Before
+   public void setUp() throws Exception {
+
 		
 		logger.info("-------------------  " + getName() + 
 				"  ------------------");
@@ -57,6 +65,7 @@ public class BeanUtilsAssumptionsTest extends TestCase {
 	 * 
 	 * @throws Exception
 	 */
+   @Test
 	public void testMappedType() throws Exception {
 		BeanWithMappedProp bean = new BeanWithMappedProp();
 		
@@ -72,6 +81,7 @@ public class BeanUtilsAssumptionsTest extends TestCase {
 	 * 
 	 * @throws Exception
 	 */
+   @Test
 	public void testSetMapped() throws Exception {
 		BeanWithMappedProp bean = new BeanWithMappedProp();
 
@@ -93,6 +103,7 @@ public class BeanUtilsAssumptionsTest extends TestCase {
 	 * 
 	 * @throws Exception
 	 */
+   @Test
 	public void testSetMapped2() throws Exception {
 		BeanWithMappedProp bean = new BeanWithMappedProp();
 
@@ -102,6 +113,7 @@ public class BeanUtilsAssumptionsTest extends TestCase {
 	}
 	
 
+   @Test
 	public void testSetMappedWithMap() throws Exception {
 		BeanWithMappedProp bean = new BeanWithMappedProp();
 
@@ -135,6 +147,7 @@ public class BeanUtilsAssumptionsTest extends TestCase {
 	 * 
 	 * @throws Exception
 	 */
+   @Test
 	public void testMapType() throws Exception {
 		BeanWithMapProp bean = new BeanWithMapProp();
 		
@@ -152,6 +165,7 @@ public class BeanUtilsAssumptionsTest extends TestCase {
 	 * 
 	 * @throws Exception
 	 */
+   @Test
 	public void testSetMap() throws Exception {
 		BeanWithMapProp bean = new BeanWithMapProp();
 
@@ -173,6 +187,7 @@ public class BeanUtilsAssumptionsTest extends TestCase {
 	 * 
 	 * @throws Exception
 	 */
+   @Test
 	public void testSetMap2() throws Exception {
 		BeanWithMapProp bean = new BeanWithMapProp();
 
@@ -186,6 +201,7 @@ public class BeanUtilsAssumptionsTest extends TestCase {
 	 * 
 	 * @throws Exception
 	 */
+   @Test
 	public void testSetMap3() throws Exception {
 		BeanWithMapProp bean = new BeanWithMapProp();
 
@@ -217,6 +233,7 @@ public class BeanUtilsAssumptionsTest extends TestCase {
 	 * 
 	 * @throws Exception
 	 */
+   @Test
 	public void testSetNestedProperty() throws Exception {
 		ComplexBean cb = new ComplexBean();
 		
@@ -251,6 +268,7 @@ public class BeanUtilsAssumptionsTest extends TestCase {
 	/**
 	 * There's nothing special about proxies...
 	 */
+   @Test
 	public void testWithProxy() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 	
 		Object proxy = Proxy.newProxyInstance(

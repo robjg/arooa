@@ -1,11 +1,13 @@
 package org.oddjob.arooa.runtime;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.reflect.ArooaClass;
 
-public class AbstractRuntimeConfigurationTest extends TestCase {
+public class AbstractRuntimeConfigurationTest extends Assert {
 
 	class OurRuntime extends AbstractRuntimeConfiguration {
 
@@ -48,6 +50,7 @@ public class AbstractRuntimeConfigurationTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testConcurrentRemoveListener() {
 
 		final OurRuntime test = new OurRuntime();
@@ -71,6 +74,7 @@ public class AbstractRuntimeConfigurationTest extends TestCase {
 	}
 	
 	
+   @Test
 	public void testFireMethods() {
 
 		final int results[] = new int[1];

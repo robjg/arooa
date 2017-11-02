@@ -3,17 +3,20 @@
  */
 package org.oddjob.arooa.convert.convertlets;
 
+import org.junit.Test;
+
 import java.math.BigDecimal;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.convert.ConversionFailedException;
 import org.oddjob.arooa.convert.ConversionPath;
 import org.oddjob.arooa.convert.DefaultConversionProvider;
 import org.oddjob.arooa.convert.DefaultConversionRegistry;
 
-public class IntegerConvertletsTest extends TestCase {
+public class IntegerConvertletsTest extends Assert {
 
+   @Test
 	public void testNumberToInteger() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new IntegerConvertlets().registerWith(registry);
@@ -26,6 +29,7 @@ public class IntegerConvertletsTest extends TestCase {
 		assertEquals(new Integer(42), result);  
 	}
 	
+   @Test
 	public void testStringToInteger() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new IntegerConvertlets().registerWith(registry);
@@ -40,12 +44,14 @@ public class IntegerConvertletsTest extends TestCase {
 		assertEquals(new Integer(2009090900), result);  
 	}
 	
+   @Test
 	public void testNullIntegerToInConversion() {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new IntegerConvertlets().registerWith(registry);
 		
 	}
 	
+   @Test
 	public void testIntegerToString() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new DefaultConversionProvider().registerWith(registry);

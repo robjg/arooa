@@ -1,15 +1,19 @@
 package org.oddjob.arooa.xml;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
+
 import java.net.URI;
 
-import org.custommonkey.xmlunit.XMLTestCase;
+import org.junit.Test;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.parsing.MockArooaContext;
 import org.oddjob.arooa.parsing.MutableAttributes;
 import org.oddjob.arooa.parsing.PrefixMappings;
 import org.oddjob.arooa.parsing.SimplePrefixMappings;
 
-public class XMLConfigurationNodeTest extends XMLTestCase {
+public class XMLConfigurationNodeTest {
 
 	class ParentContext extends MockArooaContext {
 		
@@ -25,6 +29,7 @@ public class XMLConfigurationNodeTest extends XMLTestCase {
 		}
 	}
 		
+   @Test
 	public void testParse() throws Exception {
 
 		// The elements
@@ -89,9 +94,10 @@ public class XMLConfigurationNodeTest extends XMLTestCase {
 				"          colour=\"green\"/>" + ls +
 				"</fruit>" + ls; 
 		
-		assertXMLEqual(expected, parser.getXml());
+		assertThat(parser.getXml(), isSimilarTo(expected));
 	}
 	
+   @Test
 	public void testParseNS() throws Exception {
 
 		// The elements
@@ -167,9 +173,10 @@ public class XMLConfigurationNodeTest extends XMLTestCase {
 				"                colour=\"green\"/>" + ls +
 				"</arooa:fruit>" + ls; 
 		
-		assertXMLEqual(expected, parser.getXml());
+		assertThat(parser.getXml(), isSimilarTo(expected));
 	}
 	
+   @Test
 	public void testText() {
 		
 		XMLConfigurationNode test1 = new XMLConfigurationNode(

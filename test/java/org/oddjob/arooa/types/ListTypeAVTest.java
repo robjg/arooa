@@ -1,8 +1,10 @@
 package org.oddjob.arooa.types;
 
+import org.junit.Test;
+
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaParseException;
@@ -22,7 +24,7 @@ import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.standard.StandardFragmentParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class ListTypeAVTest extends TestCase {
+public class ListTypeAVTest extends Assert {
 
 	public interface Fruit {
 		String getColour();
@@ -92,6 +94,7 @@ public class ListTypeAVTest extends TestCase {
 	}
 	
 	
+   @Test
 	public void testStringArray() 
 	throws ArooaParseException, NoConversionAvailableException, 
 	ConversionFailedException {
@@ -123,6 +126,7 @@ public class ListTypeAVTest extends TestCase {
 	}
 	
 	@SuppressWarnings("unchecked")
+   @Test
 	public void testStringList() throws ArooaParseException, NoConversionAvailableException, ConversionFailedException {
 		
 		String xml= 

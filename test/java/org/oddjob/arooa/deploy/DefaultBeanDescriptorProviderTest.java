@@ -1,15 +1,17 @@
 package org.oddjob.arooa.deploy;
 
+import org.junit.Test;
+
 import java.util.Date;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ConfiguredHow;
 import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
 import org.oddjob.arooa.life.SimpleArooaClass;
 
-public class DefaultBeanDescriptorProviderTest extends TestCase {
+public class DefaultBeanDescriptorProviderTest extends Assert {
 
 	enum Type {
 		COX,
@@ -33,6 +35,7 @@ public class DefaultBeanDescriptorProviderTest extends TestCase {
 	}
 	
 	
+   @Test
 	public void testIsAttribute() {
 		
 		DefaultBeanDescriptorProvider test = 

@@ -1,11 +1,14 @@
 package org.oddjob.arooa.registry;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class BeanDirectoryCrawlerTest extends TestCase {
+import org.junit.Assert;
+
+public class BeanDirectoryCrawlerTest extends Assert {
 
 	/** Test a single registry with no children. 
 	 * @throws InvalidIdException */
+   @Test
 	public void testSingle() throws InvalidIdException {
 		Object comp = new Object();
 		SimpleBeanRegistry cr = new SimpleBeanRegistry();
@@ -34,6 +37,7 @@ public class BeanDirectoryCrawlerTest extends TestCase {
 	}
 	
 	/** Test a hierarchy */
+   @Test
 	public void testHierarchy() {
 		Component comp1 = new Component("comp1");
 
@@ -54,6 +58,7 @@ public class BeanDirectoryCrawlerTest extends TestCase {
 	}
 	
 	
+   @Test
 	public void testPathForObjectInNullPath () {
 		
 		Component c1 = new Component("comp1");

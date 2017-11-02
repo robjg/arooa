@@ -3,9 +3,11 @@
  */
 package org.oddjob.arooa.convert.convertlets;
 
+import org.junit.Test;
+
 import java.math.BigDecimal;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaValue;
 import org.oddjob.arooa.convert.ConversionFailedException;
@@ -13,8 +15,9 @@ import org.oddjob.arooa.convert.ConversionPath;
 import org.oddjob.arooa.convert.DefaultConversionProvider;
 import org.oddjob.arooa.convert.DefaultConversionRegistry;
 
-public class LongConvertletsTest extends TestCase {
+public class LongConvertletsTest extends Assert {
 
+   @Test
 	public void testNumberToLong() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new LongConvertlets().registerWith(registry);
@@ -27,6 +30,7 @@ public class LongConvertletsTest extends TestCase {
 		assertEquals(new Long(42000000000L), result);  
 	}
 	
+   @Test
 	public void testStringToLong() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new LongConvertlets().registerWith(registry);
@@ -41,6 +45,7 @@ public class LongConvertletsTest extends TestCase {
 		assertEquals(new Long(200909091234567890L), result);  
 	}
 
+   @Test
 	public void testLongToString() throws ConversionFailedException {
 		
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
@@ -56,6 +61,7 @@ public class LongConvertletsTest extends TestCase {
 		assertEquals("200909091234567890", result);  
 	}
 	
+   @Test
 	public void testLongToObject() throws ConversionFailedException {
 		
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
@@ -71,6 +77,7 @@ public class LongConvertletsTest extends TestCase {
 		assertEquals(new Long(200909091234567890L), result);  
 	}
 	
+   @Test
 	public void testLongToArooaValue() throws ConversionFailedException {
 		
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();

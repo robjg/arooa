@@ -1,6 +1,10 @@
 package org.oddjob.arooa.types;
 
-import org.custommonkey.xmlunit.XMLTestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
+
+import org.junit.Test;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
@@ -21,10 +25,11 @@ import org.oddjob.arooa.standard.StandardFragmentParser;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class BeanTypeTest extends XMLTestCase {
+public class BeanTypeTest {
 	
 	static final String EOL = System.getProperty("line.separator");
 	
+   @Test
 	public void testCreateAndParse() throws Exception {
 		
 		DesignParser parser = new DesignParser(
@@ -47,7 +52,7 @@ public class BeanTypeTest extends XMLTestCase {
 		
 		xmlParser.parse(design.getArooaContext().getConfigurationNode());
 		
-		assertXMLEqual(xml, xmlParser.getXml());
+		assertThat(xmlParser.getXml(), isSimilarTo(xml));
 	}
 	
 	public class SnackDesignFactory implements DesignFactory {
@@ -83,6 +88,7 @@ public class BeanTypeTest extends XMLTestCase {
 		}
 	}
 	
+   @Test
 	public void testBeanExample() throws ArooaParseException {
 		
 		StandardFragmentParser parser = new StandardFragmentParser();
@@ -106,6 +112,7 @@ public class BeanTypeTest extends XMLTestCase {
 	}
 	
 	// Class can't be a runtime property!!!
+   @Test
 	public void testClassAtRuntime() throws ArooaParseException {
 		
 		String xml = 

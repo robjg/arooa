@@ -1,8 +1,10 @@
 package org.oddjob.arooa.deploy;
 
+import org.junit.Test;
+
 import java.net.URI;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.ElementMappings;
@@ -13,8 +15,9 @@ import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.types.XMLConfigurationType;
 
-public class ArooaDescriptorDescriptorTest extends TestCase {
+public class ArooaDescriptorDescriptorTest extends Assert {
 
+   @Test
 	public void testClassMappings() throws Exception {
 		
 		ArooaDescriptorDescriptor test = new ArooaDescriptorDescriptor();
@@ -65,6 +68,7 @@ public class ArooaDescriptorDescriptorTest extends TestCase {
 				classIdentifier.forClass());
 	}
 	
+   @Test
 	public void testSupports() throws Exception {
 		
 		ArooaDescriptorDescriptor test = new ArooaDescriptorDescriptor();

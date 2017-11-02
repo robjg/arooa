@@ -1,9 +1,11 @@
 package org.oddjob.arooa.runtime;
 
+import org.junit.Test;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaParseException;
@@ -21,7 +23,7 @@ import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class AutoSetterTest extends TestCase {
+public class AutoSetterTest extends Assert {
 	
 	public static class MyThing {
 		
@@ -123,6 +125,7 @@ public class AutoSetterTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testAutoSetting() {
 		
 		OurRuntime runtime = new OurRuntime();
@@ -193,6 +196,7 @@ public class AutoSetterTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testMultipleProviders() throws ArooaParseException {
 		
 		String xml = 

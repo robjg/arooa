@@ -1,5 +1,7 @@
 package org.oddjob.arooa.deploy;
 
+import org.junit.Test;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -8,7 +10,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaBeanDescriptor;
@@ -18,7 +20,7 @@ import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class ArooaDescriptorAnnotationsTest extends TestCase {
+public class ArooaDescriptorAnnotationsTest extends Assert {
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.METHOD)
@@ -56,6 +58,7 @@ public class ArooaDescriptorAnnotationsTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testDescriptorAndAnnotations() {
 		
 		ArooaDescriptor descriptor = 
@@ -85,6 +88,7 @@ public class ArooaDescriptorAnnotationsTest extends TestCase {
 		assertNull(test.methodFor("idontexist"));
 	}
 	
+   @Test
 	public void testPropertyAnnotations() {
 		
 		ArooaDescriptor descriptor = 

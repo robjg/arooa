@@ -1,5 +1,7 @@
 package org.oddjob.arooa.beanutils;
 
+import org.junit.Test;
+
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -7,14 +9,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.LazyDynaMap;
 import org.apache.commons.beanutils.PropertyUtils;
 
-public class DynaBeanAssumptionsTest extends TestCase {
+public class DynaBeanAssumptionsTest extends Assert {
 
+   @Test
 	public void testDescrptors1() {
 		
 		PropertyDescriptor[] descriptors =
@@ -37,6 +40,7 @@ public class DynaBeanAssumptionsTest extends TestCase {
 
 	}
 
+   @Test
 	public void testDynaProperties() {
 
 		LazyDynaMap dynaBean = new LazyDynaMap();
@@ -55,6 +59,7 @@ public class DynaBeanAssumptionsTest extends TestCase {
 		assertFalse(dynaProperty.isMapped());
 	}
 
+   @Test
 	public void testSimpleProperties() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		
 		LazyDynaMap dynaBean = new LazyDynaMap();
@@ -77,6 +82,7 @@ public class DynaBeanAssumptionsTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testIndexedProperties() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		
 		LazyDynaMap dynaBean = new LazyDynaMap();
@@ -96,6 +102,7 @@ public class DynaBeanAssumptionsTest extends TestCase {
 		assertNull(dynaProperties[0].getContentType());
 	}
 	
+   @Test
 	public void testMappedProperties() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		
 		LazyDynaMap dynaBean = new LazyDynaMap();

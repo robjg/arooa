@@ -1,8 +1,10 @@
 package org.oddjob.arooa.standard;
 
+import org.junit.Test;
+
 import java.io.Serializable;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
@@ -49,7 +51,7 @@ import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeListener;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class ComponentConfigurationCreatorTest extends TestCase {
+public class ComponentConfigurationCreatorTest extends Assert {
 
 	public static class DummyComponent implements Serializable {
 		private static final long serialVersionUID = 20070701;
@@ -332,6 +334,7 @@ public class ComponentConfigurationCreatorTest extends TestCase {
 	/**
 	 * Test creating a component from a class specification.
 	 */
+   @Test
 	public void testComponentFromClassCreate() throws ArooaException {
         
 		String descriptorXML =
@@ -408,6 +411,7 @@ public class ComponentConfigurationCreatorTest extends TestCase {
 	/**
 	 * Test creating a component from an element name.
 	 */
+   @Test
 	public void testComponentFromElementCreate() throws ArooaException {
         
 		MutableAttributes attributes = new MutableAttributes();
@@ -463,6 +467,7 @@ public class ComponentConfigurationCreatorTest extends TestCase {
 		}		
 	}
 
+   @Test
 	public void testRestoreComponent() {
 	
 		MutableAttributes attributes = new MutableAttributes();
@@ -510,6 +515,7 @@ public class ComponentConfigurationCreatorTest extends TestCase {
 		assertTrue(session.proxy instanceof DummyComponent);
 	}
 	
+   @Test
 	public void testRestoreProxy() {
 		
 		String descriptorXML =

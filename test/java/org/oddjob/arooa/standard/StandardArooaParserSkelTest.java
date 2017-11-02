@@ -1,6 +1,8 @@
 package org.oddjob.arooa.standard;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaParseException;
@@ -17,7 +19,7 @@ import org.oddjob.arooa.parsing.MutableAttributes;
  * @author rob
  *
  */
-public class StandardArooaParserSkelTest extends TestCase {
+public class StandardArooaParserSkelTest extends Assert {
 
 	
 	private class AConfiguration implements ArooaConfiguration {
@@ -93,6 +95,7 @@ public class StandardArooaParserSkelTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testEndToEnd() throws ArooaParseException {
 		
 		Root root = new Root();

@@ -1,6 +1,8 @@
 package org.oddjob.arooa.reflect;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
 import org.oddjob.arooa.beanutils.DynaArooaClass;
@@ -8,7 +10,7 @@ import org.oddjob.arooa.beanutils.MagicBeanClassCreator;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.types.ListType;
 
-public class ArooaClassesTest extends TestCase {
+public class ArooaClassesTest extends Assert {
 
 	private class Stuff {
 		
@@ -30,6 +32,7 @@ public class ArooaClassesTest extends TestCase {
 		});		
 	}
 	
+   @Test
 	public void testFindArooaClass() {
 		
 		ArooaClass result = ArooaClasses.classFor(new Stuff());
@@ -38,6 +41,7 @@ public class ArooaClassesTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testStandardFactories() throws ClassNotFoundException {
 
 		Class.forName(BeanUtilsPropertyAccessor.class.getName());

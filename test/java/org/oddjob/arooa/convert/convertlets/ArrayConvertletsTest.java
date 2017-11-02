@@ -1,5 +1,7 @@
 package org.oddjob.arooa.convert.convertlets;
 
+import org.junit.Test;
+
 import java.lang.reflect.Array;
 
 import org.oddjob.arooa.convert.ConversionFailedException;
@@ -7,10 +9,11 @@ import org.oddjob.arooa.convert.DefaultConverter;
 import org.oddjob.arooa.convert.NoConversionAvailableException;
 
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class ArrayConvertletsTest extends TestCase {
+public class ArrayConvertletsTest extends Assert {
 
+   @Test
 	public void testArrayStringToInts() throws NoConversionAvailableException, ConversionFailedException {
 		
 		DefaultConverter converter = new DefaultConverter();
@@ -26,6 +29,7 @@ public class ArrayConvertletsTest extends TestCase {
 	}
 
 	
+   @Test
 	public void testArrayToIterable() throws NoConversionAvailableException, ConversionFailedException {
 		
 		DefaultConverter converter = new DefaultConverter();
@@ -45,6 +49,7 @@ public class ArrayConvertletsTest extends TestCase {
 		assertEquals("b", results[1]);
 	}
 	
+   @Test
 	public void testToString() throws NoConversionAvailableException, ConversionFailedException {
 		
 		DefaultConverter converter = new DefaultConverter();

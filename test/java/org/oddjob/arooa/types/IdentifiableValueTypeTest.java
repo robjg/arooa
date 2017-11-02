@@ -1,6 +1,8 @@
 package org.oddjob.arooa.types;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
@@ -11,7 +13,7 @@ import org.oddjob.arooa.registry.InvalidIdException;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class IdentifiableValueTypeTest extends TestCase {
+public class IdentifiableValueTypeTest extends Assert {
 
 	public static class Root {
 		
@@ -30,6 +32,7 @@ public class IdentifiableValueTypeTest extends TestCase {
 		
 	}
 		
+   @Test
 	public void testIdentifyNonArooaValue() throws ArooaParseException, InvalidIdException {
 		
 		Root root = new Root();
@@ -69,6 +72,7 @@ public class IdentifiableValueTypeTest extends TestCase {
 		assertEquals(null, registered);
 	}	
 	
+   @Test
 	public void testIdentifyArooaValue() throws ArooaParseException, InvalidIdException, ArooaPropertyException, ArooaConversionException {
 		
 		Root root = new Root();

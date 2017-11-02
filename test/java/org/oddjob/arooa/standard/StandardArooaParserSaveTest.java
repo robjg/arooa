@@ -1,8 +1,13 @@
 package org.oddjob.arooa.standard;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
+
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.custommonkey.xmlunit.XMLTestCase;
+import org.junit.Test;
 import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaParseException;
@@ -18,7 +23,7 @@ import org.oddjob.arooa.registry.ComponentPool;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class StandardArooaParserSaveTest extends XMLTestCase {
+public class StandardArooaParserSaveTest {
 
 	public static class Root {
 		Object child;
@@ -56,6 +61,7 @@ public class StandardArooaParserSaveTest extends XMLTestCase {
 
 	String EOL = System.getProperty("line.separator");
 	
+   @Test
 	public void testConfigurationBackToXML() throws Exception {
 
 		String descriptorXML =
@@ -102,9 +108,10 @@ public class StandardArooaParserSaveTest extends XMLTestCase {
 			"    </snack>" + EOL +
 			"</root>" + EOL;
 		
-		assertXMLEqual(expected, parser2.getXml());
+		assertThat(parser2.getXml(), isSimilarTo(expected));
 	}
 	
+   @Test
 	public void testSave() throws Exception {
 
 		String descriptorXML =
@@ -158,9 +165,10 @@ public class StandardArooaParserSaveTest extends XMLTestCase {
 			"    </snack>" + EOL +
 			"</root>" + EOL;
 		
-		assertXMLEqual(expected, savedXML.get());
+		assertThat(savedXML.get(), isSimilarTo(expected));
 	}
 	
+   @Test
 	public void testSaveOfAParse() throws Exception {
 
 		String descriptorXML =
@@ -226,9 +234,10 @@ public class StandardArooaParserSaveTest extends XMLTestCase {
 			"    </snack>" + EOL +
 			"</root>" + EOL;
 		
-		assertXMLEqual(expected, savedXML.get());
+		assertThat(expected, isSimilarTo(savedXML.get()));
 	}
 	
+   @Test
 	public void testChangeDocAndSave() throws Exception {
 
 		String descriptorXML =
@@ -286,6 +295,6 @@ public class StandardArooaParserSaveTest extends XMLTestCase {
 		String expected = 
 			"<root id=\"y\"/>" + EOL;
 		
-		assertXMLEqual(expected, savedXML.get());
+		assertThat(savedXML.get(), isSimilarTo(expected));
 	}
 }

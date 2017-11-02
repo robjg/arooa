@@ -1,9 +1,11 @@
 package org.oddjob.arooa.deploy;
 
+import org.junit.Test;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
@@ -32,7 +34,7 @@ import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.MockArooaClass;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 
-public class ListDescriptorTest extends TestCase {
+public class ListDescriptorTest extends Assert {
 
 	public static class Fruit {
 		
@@ -46,6 +48,7 @@ public class ListDescriptorTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testComponentMapping() {
 	
 		ArooaDescriptor second = new MockArooaDescriptor() {
@@ -109,6 +112,7 @@ public class ListDescriptorTest extends TestCase {
 				new InstantiationContext(ArooaType.COMPONENT, null)));
 	}
 	
+   @Test
 	public void testValueMapping() {
 		
 		ArooaDescriptor second = new MockArooaDescriptor() {
@@ -173,6 +177,7 @@ public class ListDescriptorTest extends TestCase {
 				new InstantiationContext(ArooaType.VALUE, null)));		
 	}
 			
+   @Test
 	public void testValueMappingOneNull() {
 		
 		ArooaDescriptor primary = new MockArooaDescriptor() {
@@ -240,6 +245,7 @@ public class ListDescriptorTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testConvertletProvider() {
 		
 		ArooaDescriptor primary = new MockArooaDescriptor() {
@@ -290,6 +296,7 @@ public class ListDescriptorTest extends TestCase {
 		assertNotNull(registry.convertlet);
 	}
 
+   @Test
 	public void testConvertletProviderOrder() 
 	throws NoConversionAvailableException, ConversionFailedException {
 		
@@ -367,6 +374,7 @@ public class ListDescriptorTest extends TestCase {
 		assertEquals(110, i);
 	}
 	
+   @Test
 	public void testClassFestResources() {
 		
 		ArooaDescriptor primary = new MockArooaDescriptor() {
@@ -432,6 +440,7 @@ public class ListDescriptorTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testBeanDescriptor() {
 
 		ArooaDescriptor first = new MockArooaDescriptor() {

@@ -1,8 +1,10 @@
 package org.oddjob.arooa.deploy;
 
+import org.junit.Test;
+
 import java.lang.reflect.Method;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.deploy.annotations.ArooaAttribute;
 import org.oddjob.arooa.deploy.annotations.ArooaComponent;
@@ -12,7 +14,7 @@ import org.oddjob.arooa.life.Destroy;
 import org.oddjob.arooa.life.Initialised;
 import org.oddjob.arooa.life.SimpleArooaClass;
 
-public class ArooaAnnotationsHelperTest extends TestCase {
+public class ArooaAnnotationsHelperTest extends Assert {
 
 	public static class MyBase {
 		
@@ -38,6 +40,7 @@ public class ArooaAnnotationsHelperTest extends TestCase {
 	}
 	
 	
+   @Test
 	public void testMethodAnnotations() {
 		
 		ArooaAnnotationsHelper test = new ArooaAnnotationsHelper(
@@ -85,6 +88,7 @@ public class ArooaAnnotationsHelperTest extends TestCase {
 		assertEquals("myInit", method.getName());
 	}
 	
+   @Test
 	public void testPropertyAnnotations() {
 		
 		ArooaAnnotationsHelper test = new ArooaAnnotationsHelper(

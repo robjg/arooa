@@ -1,9 +1,11 @@
 package org.oddjob.arooa.standard;
 
+import org.junit.Test;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaBeanDescriptor;
@@ -41,7 +43,7 @@ import org.oddjob.arooa.xml.XMLConfiguration;
 /**
  * Tests the Arooa framework can build something.
  */
-public class StandardArooaParserTest extends TestCase {
+public class StandardArooaParserTest extends Assert {
 	
 	
 	private class MockConfig implements ArooaConfiguration {
@@ -72,6 +74,7 @@ public class StandardArooaParserTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testDocElementOnly() throws ArooaParseException {
 		O o = new O();
 		
@@ -177,6 +180,7 @@ public class StandardArooaParserTest extends TestCase {
     	}
     }
     
+   @Test
 	public void testValuesAndText() throws ArooaParseException {
 
 	    RootComponentWithElement root = new RootComponentWithElement();
@@ -377,6 +381,7 @@ public class StandardArooaParserTest extends TestCase {
     	}
     }
     
+   @Test
 	public void testComponentsAndStandin() throws ArooaParseException {
 		RootComponent root = new RootComponent();
 		

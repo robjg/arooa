@@ -1,5 +1,7 @@
 package org.oddjob.arooa.reflect;
 
+import org.junit.Test;
+
 import java.beans.BeanInfo;
 import java.beans.EventSetDescriptor;
 import java.beans.IntrospectionException;
@@ -7,7 +9,7 @@ import java.beans.Introspector;
 import java.beans.PropertyChangeListener;
 import java.util.EventListener;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 /**
  * Thinking about how to handle/if to handle bound properties.
@@ -15,7 +17,7 @@ import junit.framework.TestCase;
  * @author rob
  *
  */
-public class EventDescriptorTest extends TestCase {
+public class EventDescriptorTest extends Assert {
 	
 	public static class Bean {
 		
@@ -28,6 +30,7 @@ public class EventDescriptorTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testPropertyListenerIntrospection() throws IntrospectionException {
 		
 		BeanInfo beanInfo = Introspector.getBeanInfo(Bean.class);
@@ -52,6 +55,7 @@ public class EventDescriptorTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testMyListenerIntrospection() throws IntrospectionException {
 		
 		BeanInfo beanInfo = Introspector.getBeanInfo(Bean2.class);

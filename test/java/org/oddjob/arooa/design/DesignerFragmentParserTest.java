@@ -1,12 +1,14 @@
 package org.oddjob.arooa.design;
 
+import org.junit.Test;
+
 import java.awt.Component;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
@@ -33,7 +35,7 @@ import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.standard.StandardArooaDescriptor;
 import org.oddjob.arooa.standard.StandardTools;
 
-public class DesignerFragmentParserTest extends TestCase {
+public class DesignerFragmentParserTest extends Assert {
 	
 	private Component view;
 	
@@ -95,6 +97,7 @@ public class DesignerFragmentParserTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testAttributeProperty() throws ArooaParseException {
 		
 		ArooaElement element = new ArooaElement("snack");

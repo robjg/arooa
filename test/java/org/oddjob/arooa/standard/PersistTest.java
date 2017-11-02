@@ -1,5 +1,7 @@
 package org.oddjob.arooa.standard;
 
+import org.junit.Test;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -9,7 +11,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaException;
@@ -23,7 +25,7 @@ import org.oddjob.arooa.life.MockComponentPersister;
 import org.oddjob.arooa.registry.ComponentPool;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class PersistTest extends TestCase {
+public class PersistTest extends Assert {
 
 	public static class Root {
 		Fruit fruit;
@@ -156,6 +158,7 @@ public class PersistTest extends TestCase {
 		"  </fruit>" +
 		"</ignored>");
 	
+   @Test
 	public void testRoundTrip() throws ArooaParseException, ComponentPersistException {
 		
 		Root root = new Root();
@@ -216,6 +219,7 @@ public class PersistTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testRoundTripWithProxy() throws ArooaParseException, ComponentPersistException {
 		
 		Root root = new Root();

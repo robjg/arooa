@@ -1,6 +1,8 @@
 package org.oddjob.arooa.standard;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaBeanDescriptor;
@@ -34,7 +36,7 @@ import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeEvent;
 import org.oddjob.arooa.runtime.RuntimeListener;
 
-public class IndexedPropertyRuntimeTest extends TestCase {
+public class IndexedPropertyRuntimeTest extends Assert {
 
 	
 	/**
@@ -180,6 +182,7 @@ public class IndexedPropertyRuntimeTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testConfigure() {
 		
 		ParentContext parentContext = new ParentContext();		

@@ -1,8 +1,12 @@
 package org.oddjob.arooa.design.view.multitype;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
+
 import javax.swing.table.TableModel;
 
-import org.custommonkey.xmlunit.XMLTestCase;
+import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.design.DesignInstance;
@@ -22,7 +26,7 @@ import org.oddjob.arooa.types.ValueType;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class MultiTypeDesignModelTest extends XMLTestCase {
+public class MultiTypeDesignModelTest {
 	
 	
 	class MyDesign implements DesignInstance {
@@ -54,6 +58,7 @@ public class MultiTypeDesignModelTest extends XMLTestCase {
 	 * Test inserting and changing cells in the table.
 	 * @throws ArooaParseException 
 	 */
+   @Test
 	public void testInsertChangeDeleteList() throws ArooaParseException {
 		
 		IndexedDesignProperty property = new IndexedDesignProperty(
@@ -92,6 +97,7 @@ public class MultiTypeDesignModelTest extends XMLTestCase {
 
 	String EOL = System.getProperty("line.separator");
 	
+   @Test
 	public void testMapped() throws Exception {
 		
 		MappedDesignProperty property = new MappedDesignProperty(
@@ -119,7 +125,7 @@ public class MultiTypeDesignModelTest extends XMLTestCase {
 				"    <value key=\"morning\"/>" + EOL +
 				"</fruit>" + EOL; 
 		
-		assertXMLEqual(expected, parser.getXml());
+		assertThat(parser.getXml(), isSimilarTo(expected));
 				
 		table.setValueAt(beanTag, 0, 0);
 		
@@ -138,6 +144,7 @@ public class MultiTypeDesignModelTest extends XMLTestCase {
 		assertEquals(0, property.instanceCount());
 	}
 	
+   @Test
 	public void testSwap() {
 	
 		MappedDesignProperty designProperty = 

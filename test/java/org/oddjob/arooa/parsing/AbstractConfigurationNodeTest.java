@@ -1,6 +1,8 @@
 package org.oddjob.arooa.parsing;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
@@ -17,7 +19,7 @@ import org.oddjob.arooa.runtime.MockConfigurationNode;
 import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
-public class AbstractConfigurationNodeTest extends TestCase {
+public class AbstractConfigurationNodeTest extends Assert {
 
 	class ExpectedException extends RuntimeException {
 		private static final long serialVersionUID = 2009012800L;
@@ -86,6 +88,7 @@ public class AbstractConfigurationNodeTest extends TestCase {
 		}
 	}
 			
+   @Test
 	public void testChainingConfigurationHandleDoc() {
 		
 		ParseParentContext parseParent = new ParseParentContext();
@@ -178,6 +181,7 @@ public class AbstractConfigurationNodeTest extends TestCase {
 	}
 
 	
+   @Test
 	public void testChainingConfigurationHandleSave() throws ArooaParseException {
 		
 		ParseParentContext parseParent = new ParseParentContext();

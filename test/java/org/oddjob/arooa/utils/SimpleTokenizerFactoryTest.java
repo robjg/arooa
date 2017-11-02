@@ -1,11 +1,14 @@
 package org.oddjob.arooa.utils;
 
+import org.junit.Test;
+
 import java.text.ParseException;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class SimpleTokenizerFactoryTest extends TestCase {
+public class SimpleTokenizerFactoryTest extends Assert {
 
+   @Test
 	public void testSimpleCommaExamples() throws ParseException {
 		
 		ArooaTokenizerFactory test = new SimpleTokenizerFactory(",");

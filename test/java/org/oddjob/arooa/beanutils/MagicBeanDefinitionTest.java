@@ -1,13 +1,16 @@
 package org.oddjob.arooa.beanutils;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 
-public class MagicBeanDefinitionTest extends TestCase {
+public class MagicBeanDefinitionTest extends Assert {
 
+   @Test
 	public void testCreateMagic() {
 		
 		MagicBeanDefinition def = new MagicBeanDefinition();

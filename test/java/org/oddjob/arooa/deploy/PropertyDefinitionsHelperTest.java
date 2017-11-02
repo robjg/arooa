@@ -1,13 +1,16 @@
 package org.oddjob.arooa.deploy;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ConfiguredHow;
 import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
 import org.oddjob.arooa.life.SimpleArooaClass;
 
-public class PropertyDefinitionsHelperTest extends TestCase {
+public class PropertyDefinitionsHelperTest extends Assert {
 
+   @Test
 	public void testSameProperties() {
 
 		BeanDefinition def1 = new BeanDefinition();
@@ -37,6 +40,7 @@ public class PropertyDefinitionsHelperTest extends TestCase {
 		}
 	}
 
+   @Test
 	public void testWithBeanDefinition() {
 		
 		BeanDefinition definition = new BeanDefinition();				

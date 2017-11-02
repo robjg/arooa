@@ -3,14 +3,17 @@
  */
 package org.oddjob.arooa.convert;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaValue;
 import org.oddjob.arooa.types.ArooaObject;
 import org.oddjob.arooa.types.ValueType;
 
-public class DefaultConverterTest extends TestCase {
+public class DefaultConverterTest extends Assert {
 
+   @Test
 	public void testAssumptions() {
 		
 		// This is slightly confusing, and also a awkward, otherwise
@@ -25,12 +28,13 @@ public class DefaultConverterTest extends TestCase {
 		Object[] oa = sa;
 		sa = (String[]) oa;
 		
-		assertEquals(sa, oa);
+		assertArrayEquals(sa, oa);
 		
 		// didn't know this!
 		assertTrue(Cloneable.class.isAssignableFrom(Object[].class));
 	}
 	
+   @Test
 	public void testPrimitiveAssumptions() throws ArooaConversionException {
 
 		// doesn't take into account auto-boxing
@@ -59,6 +63,7 @@ public class DefaultConverterTest extends TestCase {
 	 * 
 	 * @throws NoConversionAvailableException
 	 */
+   @Test
 	public void testAroaValuePaths() throws ArooaConversionException {
 		
 		class MockArooaValue implements ArooaValue {
@@ -123,6 +128,7 @@ public class DefaultConverterTest extends TestCase {
 	 * 
 	 * @throws NoConversionAvailableException
 	 */
+   @Test
 	public void testNullFrom() throws ArooaConversionException {
 		DefaultConverter test = new DefaultConverter(null);
 
@@ -134,10 +140,11 @@ public class DefaultConverterTest extends TestCase {
 		assertEquals(0, (short) test.convert(null, short.class));
 		assertEquals(0, (int) test.convert(null, int.class));
 		assertEquals(0L, (long) test.convert(null, long.class));
-		assertEquals(0.0F, (float) test.convert(null, float.class));
-		assertEquals(0.0, (double) test.convert(null, double.class));
+		assertEquals(0.0F, (float) test.convert(null, float.class), 0.01);
+		assertEquals(0.0, (double) test.convert(null, double.class), 0.01);
 	}
 	
+   @Test
 	public void testEmptyStringConversions() throws NoConversionAvailableException, ConversionFailedException {
 		
 		DefaultConverter test = new DefaultConverter();
@@ -148,8 +155,8 @@ public class DefaultConverterTest extends TestCase {
 		assertEquals(0, (short) test.convert(" ", short.class));
 		assertEquals(0, (int) test.convert(" ", int.class));
 		assertEquals(0L, (long) test.convert(" ", long.class));
-		assertEquals(0.0F, (float) test.convert(" ", float.class));
-		assertEquals(0.0, (double) test.convert(" ", double.class));
+		assertEquals(0.0F, (float) test.convert(" ", float.class), 0.01);
+		assertEquals(0.0, (double) test.convert(" ", double.class), 0.01);
 	}
 	
 	/**
@@ -157,6 +164,7 @@ public class DefaultConverterTest extends TestCase {
 	 * 
 	 * @throws NoConversionAvailableException
 	 */
+   @Test
 	public void testToArooaValue() throws ArooaConversionException {
 		
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
@@ -174,6 +182,7 @@ public class DefaultConverterTest extends TestCase {
 	 * 
 	 * @throws NoConversionAvailableException
 	 */
+   @Test
 	public void testFromArooaValueConvertObject() throws ArooaConversionException {
 		class AV implements ArooaValue {
 		}
@@ -214,6 +223,7 @@ public class DefaultConverterTest extends TestCase {
 	 * 
 	 * @throws NoConversionAvailableException
 	 */
+   @Test
 	public void testFromArooaValueConvertObject2() throws ArooaConversionException {
 		ValueType vt = new ValueType();
 		vt.setValue(new ArooaObject("test"));
@@ -233,6 +243,7 @@ public class DefaultConverterTest extends TestCase {
 	 * 
 	 * @throws NoConversionAvailableException
 	 */
+   @Test
 	public void testArooaValueConvertNull() throws ArooaConversionException {
 		
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
@@ -261,6 +272,7 @@ public class DefaultConverterTest extends TestCase {
 	 * 
 	 * @throws NoConversionAvailableException
 	 */
+   @Test
 	public void testFromArooaValueToArooaValue() throws ArooaConversionException {
 		
 		ValueType vt = new ValueType();
@@ -277,6 +289,7 @@ public class DefaultConverterTest extends TestCase {
 	 * 
 	 * @throws NoConversionAvailableException
 	 */
+   @Test
 	public void testSomeConversions() throws ArooaConversionException {
 	
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
@@ -293,6 +306,7 @@ public class DefaultConverterTest extends TestCase {
 	}
 	
 	
+   @Test
 	public void testArooaValueArrayConvert() throws Exception {
 		ValueType vt1 = new ValueType();
 		vt1.setValue(new ArooaObject("a"));

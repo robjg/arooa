@@ -1,6 +1,8 @@
 package org.oddjob.arooa.standard;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaBeanDescriptor;
@@ -29,7 +31,7 @@ import org.oddjob.arooa.xml.XMLConfigurationNode;
 /**
  * Test a bespoke component handler can be used.
  */
-public class BespokeBuildTest extends TestCase {
+public class BespokeBuildTest extends Assert {
 
 	private class BespokeBuildComponent {
 	    
@@ -133,6 +135,7 @@ public class BespokeBuildTest extends TestCase {
 		}
 	}
 		    
+   @Test
 	public void testBuild() throws ArooaParseException {
 
 		OurBespokeHandler handler = new OurBespokeHandler();

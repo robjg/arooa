@@ -3,12 +3,14 @@
  */
 package org.oddjob.arooa.convert;
 
+import org.junit.Test;
+
 import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.oddjob.arooa.ArooaValue;
@@ -16,7 +18,7 @@ import org.oddjob.arooa.convert.convertlets.ArooaValueConvertlets;
 import org.oddjob.arooa.convert.convertlets.FileConvertlets;
 import org.oddjob.arooa.convert.convertlets.URLConvertlets;
 
-public class DefaultConvertletRegistryTest extends TestCase {
+public class DefaultConvertletRegistryTest extends Assert {
 	private static final Logger logger = Logger.getLogger(DefaultConvertletRegistryTest.class);
 	
 	/**
@@ -26,6 +28,7 @@ public class DefaultConvertletRegistryTest extends TestCase {
 	 * Even though java.util.Date is a better match, java.sql.Date 
 	 * was registered first so is chosen for the conversion first.
 	 */
+   @Test
 	public void testRegistrationOrder() {
 		class CP implements ConversionProvider {
 			public void registerWith(ConversionRegistry registry) {
@@ -53,6 +56,7 @@ public class DefaultConvertletRegistryTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testShortestWins() {
 		
 		// this allows us to go Long -> String > Date or Long -> Date.
@@ -94,6 +98,7 @@ public class DefaultConvertletRegistryTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testDoubleToLong() {
 		DefaultConversionRegistry test = new DefaultConversionRegistry();
 		
@@ -105,6 +110,7 @@ public class DefaultConvertletRegistryTest extends TestCase {
 		assertNull(result);
 	}
 
+   @Test
 	public void testFloatToDouble() {
 		DefaultConversionRegistry test = new DefaultConversionRegistry();
 		
@@ -129,6 +135,7 @@ public class DefaultConvertletRegistryTest extends TestCase {
 	 * not attempt to find a path.
 	 *
 	 */
+   @Test
 	public void testAlreadyInstance() {
 		ConversionLookup test = new DefaultConversionRegistry();
 		
@@ -146,6 +153,7 @@ public class DefaultConvertletRegistryTest extends TestCase {
 		assertEquals(0, result.length());
 	}		
 	
+   @Test
 	public void testExtendsAndImplements() {
 		Class<?>[] results = DefaultConversionRegistry.extendsAndImplements(URL.class);
 		
@@ -160,6 +168,7 @@ public class DefaultConvertletRegistryTest extends TestCase {
 	 * for a conversion.
 	 *
 	 */
+   @Test
 	public void testSubClassLookup() {
 		DefaultConversionRegistry test = new DefaultConversionRegistry();
 
@@ -262,6 +271,7 @@ public class DefaultConvertletRegistryTest extends TestCase {
 	 * Test order of best conversion search.
 	 *
 	 */
+   @Test
 	public void testOrder() {
 		DefaultConversionRegistry test1 = new DefaultConversionRegistry();
 
@@ -348,6 +358,7 @@ public class DefaultConvertletRegistryTest extends TestCase {
 	 * be converted to a fruit before a match can be found.
 	 *
 	 */
+   @Test
 	public void testOrderWithSuper() {
 		ConversionTracker2 test = new ConversionTracker2();
 
@@ -394,6 +405,7 @@ public class DefaultConvertletRegistryTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testDiagnose() {
 		
 		Diagnose diagnose = new Diagnose();

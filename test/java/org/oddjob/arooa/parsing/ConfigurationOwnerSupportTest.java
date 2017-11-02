@@ -1,10 +1,13 @@
 package org.oddjob.arooa.parsing;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class ConfigurationOwnerSupportTest extends TestCase {
+import org.junit.Assert;
+
+public class ConfigurationOwnerSupportTest extends Assert {
 
 	
+   @Test
 	public void testNotifications() {		
 				
 		final ConfigurationOwnerSupport test = 

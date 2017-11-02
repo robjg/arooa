@@ -1,19 +1,22 @@
 package org.oddjob.arooa.life;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.parsing.MutableAttributes;
 import org.oddjob.arooa.reflect.ArooaClass;
 
-public class BaseInstantiatorTest extends TestCase {
+public class BaseInstantiatorTest extends Assert {
 
 	public static class Fruit {
 		
 	}
 	
 	
+   @Test
 	public void testClassElement() {
 				
 		MutableAttributes attrs = new MutableAttributes();
@@ -31,6 +34,7 @@ public class BaseInstantiatorTest extends TestCase {
 		assertEquals(Fruit.class, ((SimpleArooaClass) result).forClass());
 	}
 
+   @Test
 	public void testIsElement() {
 		
 		ArooaElement element = new ArooaElement("is");

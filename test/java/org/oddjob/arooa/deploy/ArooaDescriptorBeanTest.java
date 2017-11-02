@@ -2,6 +2,9 @@
  * (c) Rob Gordon 2005
  */
 package org.oddjob.arooa.deploy;
+import org.junit.Before;
+
+import org.junit.Test;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaConfiguration;
@@ -22,7 +25,8 @@ public class ArooaDescriptorBeanTest extends ArooaDescriptorTestBase {
 	
 	ArooaDescriptorBean test = new ArooaDescriptorBean();
 	
-	protected void setUp() throws ArooaParseException {
+   @Before
+   public void setUp() throws ArooaParseException {
 		
 		ArooaConfiguration config = new XMLConfiguration(
 				"Descriptor",
@@ -46,6 +50,7 @@ public class ArooaDescriptorBeanTest extends ArooaDescriptorTestBase {
 	}
 	
 	
+   @Test
 	public void testNamespaceIsAttribute() throws Exception {
 
 		ArooaDescriptor descriptor = new LinkedDescriptor(

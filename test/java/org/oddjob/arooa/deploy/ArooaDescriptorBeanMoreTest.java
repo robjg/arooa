@@ -1,6 +1,8 @@
 package org.oddjob.arooa.deploy;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaConfigurationException;
@@ -18,7 +20,7 @@ import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class ArooaDescriptorBeanMoreTest extends TestCase {
+public class ArooaDescriptorBeanMoreTest extends Assert {
 
 	public static class OurBean {
 		
@@ -26,6 +28,7 @@ public class ArooaDescriptorBeanMoreTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testEmptyBeanDescriptor() {
 		
 		ArooaDescriptorBean test = new ArooaDescriptorBean();
@@ -40,6 +43,7 @@ public class ArooaDescriptorBeanMoreTest extends TestCase {
 		assertNull(beanDescriptor);
 	}
 	
+   @Test
 	public void testNoClassName() {
 		ArooaDescriptorBean test = new ArooaDescriptorBean();
 
@@ -49,6 +53,7 @@ public class ArooaDescriptorBeanMoreTest extends TestCase {
 		assertNotNull(descriptor.getElementMappings());
 	}
 	
+   @Test
 	public void testBeanDescriptorQuery() {
 		
 		ArooaDescriptorBean test = new ArooaDescriptorBean();
@@ -113,6 +118,7 @@ public class ArooaDescriptorBeanMoreTest extends TestCase {
 	}
 	
 	/** Check both get applied but XML Descriptor wins. */
+   @Test
 	public void testBeanDescriptorWithAnnotaitons() {
 		
 		String xml =

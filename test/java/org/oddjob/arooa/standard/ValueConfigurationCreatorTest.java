@@ -1,6 +1,8 @@
 package org.oddjob.arooa.standard;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaException;
@@ -18,7 +20,7 @@ import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeListener;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class ValueConfigurationCreatorTest extends TestCase {
+public class ValueConfigurationCreatorTest extends Assert {
 
 	public static class PretendNestedFruit {
 		boolean propertySet;
@@ -101,6 +103,7 @@ public class ValueConfigurationCreatorTest extends TestCase {
 	/**
 	 * Test creating a value from an element name.
 	 */
+   @Test
 	public void testValueFromElementCreate() throws ArooaException {
     
 		String descriptorXML =

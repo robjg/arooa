@@ -1,5 +1,8 @@
 package org.oddjob.arooa.design.view.multitype;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -7,8 +10,7 @@ import java.net.URISyntaxException;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 
-import org.custommonkey.xmlunit.XMLTestCase;
-import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Test;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.deploy.ConfigurationDescriptorFactory;
@@ -30,8 +32,9 @@ import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 import org.xml.sax.SAXException;
+import org.xmlunit.matchers.CompareMatcher;
 
-public class MultiTypeTableWidgetTest extends XMLTestCase {
+public class MultiTypeTableWidgetTest {
 
 	private static final ArooaElement APPLE;
 	
@@ -119,6 +122,7 @@ public class MultiTypeTableWidgetTest extends XMLTestCase {
 	
 	String EOL = System.getProperty("line.separator");
 	
+   @Test
 	public void testSwapActions() throws ArooaParseException, SAXException, IOException {
 		
 		DesignParser designParser = new DesignParser(
@@ -201,15 +205,16 @@ public class MultiTypeTableWidgetTest extends XMLTestCase {
 		
 		String expected = 
 				"<fruit:snack xmlns:fruit='oddjob:fruit'>" + EOL +
-				" <fruit>" + EOL +
-				"  <fruit:apple key='morning' colour='red'/>" + EOL +
-				"  <fruit:apple key='extra'/>" + EOL +
-				"  <fruit:orange key='afternoon' seedless='true'/>" + EOL +
-				" </fruit>" + EOL +
+				"    <fruit>" + EOL +
+				"        <fruit:apple key='morning' colour='red'/>" + EOL +
+				"        <fruit:apple key='extra'/>" + EOL +
+				"        <fruit:orange key='afternoon' seedless='true'/>" + EOL +
+				"    </fruit>" + EOL +
 				"</fruit:snack>" + EOL; 
 		
-		XMLUnit.setIgnoreWhitespace(true);
-		assertXMLEqual(expected, parser.getXml());
+		String result = parser.getXml();
+
+		assertThat(result, CompareMatcher.isSimilarTo(expected));
 	}
 	
 	public static void main(String[] args) throws ArooaParseException, SAXException, IOException {

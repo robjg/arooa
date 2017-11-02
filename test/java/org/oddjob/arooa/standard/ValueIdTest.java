@@ -1,12 +1,14 @@
 package org.oddjob.arooa.standard;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class ValueIdTest extends TestCase {
+public class ValueIdTest extends Assert {
 	
 	public static class Root {
 		
@@ -14,6 +16,7 @@ public class ValueIdTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testSimpleValueId() throws ArooaParseException {
 		
 		String xml = 

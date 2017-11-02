@@ -1,10 +1,15 @@
 package org.oddjob.arooa.design;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.custommonkey.xmlunit.XMLTestCase;
+import org.junit.Test;
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaParseException;
@@ -30,7 +35,7 @@ import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 import org.xml.sax.SAXException;
 
-public class DesignParserTest extends XMLTestCase {
+public class DesignParserTest {
 
 	public static class Thing {
 		
@@ -85,6 +90,7 @@ public class DesignParserTest extends XMLTestCase {
 		}
 	}
 	
+   @Test
 	public void testParse() throws ArooaParseException, URISyntaxException {
 		
 		DesignParser test = new DesignParser(
@@ -105,6 +111,7 @@ public class DesignParserTest extends XMLTestCase {
 	
 	String EOL = System.getProperty("line.separator");
 	
+   @Test
 	public void testTestBadParse() throws Exception {
 		
 		DesignParser test = new DesignParser(
@@ -120,7 +127,7 @@ public class DesignParserTest extends XMLTestCase {
 		
 		UnknownInstance result = (UnknownInstance) test.getDesign();
 		
-		assertXMLEqual(xml, result.getXml());
+		assertThat(result.getXml(), isSimilarTo(xml));
 		
 		// Now correct it with paste.
 		
@@ -196,6 +203,7 @@ public class DesignParserTest extends XMLTestCase {
 		}
 	}
 	
+   @Test
 	public void testWithComponentProperties() throws ArooaParseException {
 		
 		ArooaDescriptor descriptor = new LinkedDescriptor(new OtherDescriptor(), 
@@ -229,6 +237,7 @@ public class DesignParserTest extends XMLTestCase {
 		assertNotNull(thing);
 	}
 	
+   @Test
 	public void testWithId() throws ArooaParseException, URISyntaxException, SAXException, IOException {
 		
 		ArooaDescriptor descriptor = new LinkedDescriptor(new OtherDescriptor(), 
@@ -250,7 +259,7 @@ public class DesignParserTest extends XMLTestCase {
 		
 		xmlParser.parse(design.getArooaContext().getConfigurationNode());
 		
-		assertXMLEqual(xml, xmlParser.getXml());
+		assertThat(xmlParser.getXml(), isSimilarTo(xml));
 	}
 	
 }

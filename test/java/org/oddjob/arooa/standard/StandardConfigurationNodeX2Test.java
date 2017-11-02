@@ -1,9 +1,15 @@
 package org.oddjob.arooa.standard;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.custommonkey.xmlunit.XMLTestCase;
+import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.deploy.annotations.ArooaComponent;
@@ -12,7 +18,7 @@ import org.oddjob.arooa.parsing.CutAndPasteSupport;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class StandardConfigurationNodeTest2 extends XMLTestCase {
+public class StandardConfigurationNodeX2Test {
 	
 	public static class Component {
 		
@@ -35,15 +41,16 @@ public class StandardConfigurationNodeTest2 extends XMLTestCase {
 		}
 	}
 	
-	String EOL = System.getProperty("line.separator");
+	static final String EOL = System.getProperty("line.separator");
 	
+	@Test
 	public void testManySave() throws ArooaParseException {
 
 		Component root = new Component();
 
 		StandardArooaParser parser = new StandardArooaParser(root);
 		
-		String xml = 
+		String xml = "<?xml version='1.0' encoding='UTF-8' standalone='no'?>" + EOL +
 			"<component>" + EOL +
 			"    <child>" + EOL +
 			"        <bean class=\"" + Component.class.getName() + "\"" + EOL + 
@@ -84,13 +91,14 @@ public class StandardConfigurationNodeTest2 extends XMLTestCase {
 		assertEquals("yellow", root.children.get(0).colour);
 	}
 	
+	@Test
 	public void testBadSave() throws Exception {
 
 		Component root = new Component();
 
 		StandardArooaParser parser = new StandardArooaParser(root);
 		
-		String xml = 
+		String xml = "<?xml version='1.0' encoding='UTF-8' standalone='no'?>" + EOL +
 			"<component>" + EOL +
 			"    <child>" + EOL +
 			"        <bean class=\"" + Component.class.getName() + "\"" + EOL + 
@@ -127,7 +135,7 @@ public class StandardConfigurationNodeTest2 extends XMLTestCase {
 			).getComponentPool().contextFor(root).getConfigurationNode());
 		
 		
-		assertXMLEqual(xml, xmlParser2.getXml());
+		assertThat(xmlParser2.getXml(), isIdenticalTo(xml));
 
 		// Test replaced node is still useable.
 		
@@ -156,13 +164,14 @@ public class StandardConfigurationNodeTest2 extends XMLTestCase {
 		rootContext.getRuntime().destroy();
 	}
 	
+	@Test
 	public void testReplaceWithBadChild() throws Exception {
 
 		Component root = new Component();
 
 		StandardArooaParser parser = new StandardArooaParser(root);
 		
-		String xml = 
+		String xml = "<?xml version='1.0' encoding='UTF-8' standalone='no'?>" + EOL +
 			"<component>" + EOL +
 			"    <child>" + EOL +
 			"        <bean class=\"" + Component.class.getName() + "\"" + EOL + 
@@ -177,7 +186,7 @@ public class StandardConfigurationNodeTest2 extends XMLTestCase {
 		ArooaContext rootContext = parser.getSession(
 				).getComponentPool().contextFor(root);
 		
-		String replacementXml = 
+		String replacementXml = "<?xml version='1.0' encoding='UTF-8' standalone='no'?>" + EOL +
 			"<component>" + EOL +
 			"    <child>" + EOL +
 			"       <bean class=\"" + Component.class.getName() + "\"" +
@@ -197,7 +206,7 @@ public class StandardConfigurationNodeTest2 extends XMLTestCase {
 		xmlParser2.parse(parser.getSession(
 			).getComponentPool().contextFor(root).getConfigurationNode());
 		
-		assertXMLEqual(xml, xmlParser2.getXml());
+		assertThat(xmlParser2.getXml(), isIdenticalTo(xml));
 
 		handle.getDocumentContext().getRuntime().destroy();
 	}

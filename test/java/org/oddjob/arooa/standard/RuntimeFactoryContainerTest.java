@@ -1,6 +1,8 @@
 package org.oddjob.arooa.standard;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaTools;
@@ -15,7 +17,7 @@ import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
-public class RuntimeFactoryContainerTest extends TestCase {
+public class RuntimeFactoryContainerTest extends Assert {
 
 	public static class Snack {
 		public void setFruit(String fruit) {}
@@ -46,6 +48,7 @@ public class RuntimeFactoryContainerTest extends TestCase {
 	}
 	
 	
+   @Test
 	public void testMappedRuntime() {
     	
 		ParentContext parentContext = new ParentContext();
@@ -73,6 +76,7 @@ public class RuntimeFactoryContainerTest extends TestCase {
 	 * As above but for indexes.
 	 * @throws ArooaPropertyException 
 	 */
+   @Test
 	public void testIndexedRuntime() {
     	
 		ParentContext parentContext = new ParentContext();

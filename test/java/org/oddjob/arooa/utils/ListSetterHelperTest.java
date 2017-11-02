@@ -1,12 +1,15 @@
 package org.oddjob.arooa.utils;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class ListSetterHelperTest extends TestCase {
+public class ListSetterHelperTest extends Assert {
 
+   @Test
 	public void testAddAndRemove() {
 		
 		List<String> list = new ArrayList<String>();

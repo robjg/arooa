@@ -1,5 +1,7 @@
 package org.oddjob.arooa.design;
 
+import org.junit.Test;
+
 import java.awt.Component;
 
 import javax.swing.JButton;
@@ -7,7 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaConfiguration;
@@ -43,7 +45,7 @@ import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.types.IsType;
 
-public class BaseInstantiatorDesignTest extends TestCase {
+public class BaseInstantiatorDesignTest extends Assert {
 	
 	private Component view;
 	
@@ -170,6 +172,7 @@ public class BaseInstantiatorDesignTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testIsDesign() throws ArooaParseException {
 
 		ArooaSession session = new StandardArooaSession();

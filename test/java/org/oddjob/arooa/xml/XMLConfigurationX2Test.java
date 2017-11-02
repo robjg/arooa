@@ -14,7 +14,7 @@ import org.oddjob.arooa.runtime.ConfigurationNode;
 import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
-public class XMLConfigurationTest2 extends TestCase {
+public class XMLConfigurationX2Test extends TestCase {
 
 	class ElementCaptureContext extends MockArooaContext {
 		ArooaElement element;

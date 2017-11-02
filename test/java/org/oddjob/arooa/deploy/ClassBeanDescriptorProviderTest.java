@@ -1,6 +1,8 @@
 package org.oddjob.arooa.deploy;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.MockArooaBeanDescriptor;
@@ -8,7 +10,7 @@ import org.oddjob.arooa.ParsingInterceptor;
 import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
 import org.oddjob.arooa.life.SimpleArooaClass;
 
-public class ClassBeanDescriptorProviderTest extends TestCase {
+public class ClassBeanDescriptorProviderTest extends Assert {
 
 	private class Thing {};
 	
@@ -31,6 +33,7 @@ public class ClassBeanDescriptorProviderTest extends TestCase {
 		}
 	}
 		
+   @Test
 	public void testClassBeanDescriptor() {
 		
 		ClassBeanDescriptorProvider test = new ClassBeanDescriptorProvider();

@@ -1,4 +1,7 @@
 package org.oddjob.arooa.life;
+import org.junit.Before;
+
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,14 +21,14 @@ import org.oddjob.arooa.runtime.RuntimeListener;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class ArooaLifecycleTest extends TestCase {
+public class ArooaLifecycleTest extends Assert {
 
 	private static List<String> events = new ArrayList<String>();
 
-	@Override
-	protected void setUp() throws Exception {
+   @Before
+   public void setUp() throws Exception {
 		events.clear();
 	}
 	
@@ -95,6 +98,7 @@ public class ArooaLifecycleTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testAllLifecycleOnRoot() throws ArooaParseException {
 		
 		String xml = 
@@ -143,6 +147,7 @@ public class ArooaLifecycleTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testAllLifecycleOnObject() throws ArooaParseException, ArooaPropertyException, ArooaConversionException {
 		
 		String xml = 
@@ -200,6 +205,7 @@ public class ArooaLifecycleTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testAllLifecycleOnComponent() throws ArooaParseException, ArooaPropertyException, ArooaConversionException {
 		
 		String xml = 
@@ -246,6 +252,7 @@ public class ArooaLifecycleTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testManyLevelsDown() throws ArooaParseException, ArooaPropertyException, ArooaConversionException {
 		
 		String xml = 

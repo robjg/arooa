@@ -1,5 +1,7 @@
 package org.oddjob.arooa.design.view;
 
+import org.junit.Test;
+
 import java.awt.Component;
 import java.awt.GridBagLayout;
 import java.net.URI;
@@ -10,7 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
@@ -45,7 +47,7 @@ import org.oddjob.arooa.runtime.ConfigurationNode;
 import org.oddjob.arooa.runtime.MockConfigurationNode;
 import org.oddjob.arooa.standard.StandardTools;
 
-public class TypeSelectionViewTest extends TestCase {
+public class TypeSelectionViewTest extends Assert {
 
 	public static class Fruit {
 		
@@ -162,6 +164,7 @@ public class TypeSelectionViewTest extends TestCase {
 	}
 	
 
+   @Test
 	public void testView() {
 		
 		SimpleDesignProperty test = new SimpleDesignProperty(
@@ -212,6 +215,7 @@ public class TypeSelectionViewTest extends TestCase {
 		view = panel;				
 	}
 	
+   @Test
 	public void testViewPropertyPopulated() throws URISyntaxException, ArooaParseException {
 		SimpleDesignProperty test = new SimpleDesignProperty(
 				"test", Fruit.class, ArooaType.VALUE, new OurDesign());

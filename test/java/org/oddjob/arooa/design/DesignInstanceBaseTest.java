@@ -1,8 +1,16 @@
 package org.oddjob.arooa.design;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
+
 import java.net.URISyntaxException;
 
-import org.custommonkey.xmlunit.XMLTestCase;
+import org.junit.Test;
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaParseException;
@@ -27,7 +35,7 @@ import org.oddjob.arooa.standard.StandardTools;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class DesignInstanceBaseTest extends XMLTestCase {
+public class DesignInstanceBaseTest {
 
 	public static class Snack {
 	
@@ -72,10 +80,12 @@ public class DesignInstanceBaseTest extends XMLTestCase {
 	
 	String EOL = System.getProperty("line.separator");
 	
+   @Test
 	public void testLoadAndSave() throws Exception {
 		
 		ArooaSession session = new StandardArooaSession();
-		String xml = "<food:snack xmlns:food=\"http://food\">" + EOL +
+		String xml = "<?xml version='1.0' encoding='UTF-8' standalone='no'?>" + EOL +
+				"<food:snack xmlns:food=\"http://food\">" + EOL +
 				"    <fruit>" + EOL +
 				"        <is/>" + EOL +
 				"    </fruit>" + EOL +
@@ -92,10 +102,11 @@ public class DesignInstanceBaseTest extends XMLTestCase {
 		
 		parser.parse(design.getArooaContext().getConfigurationNode());
 		
-		assertXMLEqual(xml, parser.getXml());
+		assertThat(parser.getXml(), isIdenticalTo(xml));
 	}
 	
 
+   @Test
 	public void testEmptyProperty() throws Exception {
 		
 		ArooaSession session = new StandardArooaSession();
@@ -121,9 +132,10 @@ public class DesignInstanceBaseTest extends XMLTestCase {
 		
 		parser.parse(design.getArooaContext().getConfigurationNode());
 		
-		assertXMLEqual(xml, parser.getXml());
+		assertThat(parser.getXml(), isSimilarTo(xml));
 	}
 	
+   @Test
 	public void testRuntimeDestroy() {
 	
 		class PretendPropertyContext extends MockArooaContext {
@@ -184,6 +196,7 @@ public class DesignInstanceBaseTest extends XMLTestCase {
 		assertEquals(99, context.index);
 	}
 	
+   @Test
 	public void testPropertyConfigurationNodes() {
 		
 		ArooaSession session = new StandardArooaSession();
@@ -201,6 +214,7 @@ public class DesignInstanceBaseTest extends XMLTestCase {
 		
 	}
 	
+   @Test
 	public void testInvalidAttirbute() throws ArooaParseException, URISyntaxException {
 		
 		ArooaSession session = new StandardArooaSession();

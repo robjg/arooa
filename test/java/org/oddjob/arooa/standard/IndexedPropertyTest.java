@@ -1,16 +1,18 @@
 package org.oddjob.arooa.standard;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.deploy.annotations.ArooaAttribute;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class IndexedPropertyTest extends TestCase {
+public class IndexedPropertyTest extends Assert {
 
 	public static class SimpleAndIndexed {
 		
@@ -29,6 +31,7 @@ public class IndexedPropertyTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testSettingAsAttributeFails() throws ArooaParseException {
 
 		String xml = 
@@ -49,6 +52,7 @@ public class IndexedPropertyTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testElementFails() {
 
 		String xml = 
@@ -97,6 +101,7 @@ public class IndexedPropertyTest extends TestCase {
 	 * Just check understanding of BeanUtils while were here...
 	 * @throws ArooaParseException 
 	 */
+   @Test
 	public void testSettingFromArrays() throws ArooaParseException {
 
 		String xml = 
@@ -118,6 +123,7 @@ public class IndexedPropertyTest extends TestCase {
 		assertEquals(2, x.things.size());
 	}
 	
+   @Test
 	public void testConfigureConigureDestroy() throws ArooaParseException {
 		
 		String xml = 

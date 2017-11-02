@@ -1,4 +1,7 @@
 package org.oddjob.arooa.xml;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -6,7 +9,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import org.apache.log4j.Logger;
-import org.custommonkey.xmlunit.XMLTestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
@@ -20,7 +27,7 @@ import org.oddjob.arooa.standard.StandardArooaParser;
 import org.xml.sax.SAXException;
 
 
-public class XMLConfigurationFileTest extends XMLTestCase {
+public class XMLConfigurationFileTest {
 	
 	private static final Logger logger = Logger.getLogger(XMLConfigurationFileTest.class);
 
@@ -28,12 +35,19 @@ public class XMLConfigurationFileTest extends XMLTestCase {
 	
 	final File file;
 
+	@Rule public TestName name = new TestName();
+
+	public String getName() {
+        return name.getMethodName();
+    }
+
 	public XMLConfigurationFileTest() throws IOException {
 		this.workDir = new File("work").getCanonicalFile();
 		this.file = new File(workDir, "XMLConfigurationFileText.xml");
 	}
 	
-	protected void setUp() {
+   @Before
+   public void setUp() {
 		
 		logger.info("----------------------   " + getName() + "   -------------------------");
 		
@@ -61,7 +75,8 @@ public class XMLConfigurationFileTest extends XMLTestCase {
 		throw new RuntimeException("Failed attempting to create " + file);
 	}
 	
-	protected void tearDown() {
+   @After
+   public void tearDown() {
 		logger.info("Deleting file " + file);
 		file.delete();
 	}
@@ -73,6 +88,7 @@ public class XMLConfigurationFileTest extends XMLTestCase {
 	 * 
 	 * @throws ArooaParseException
 	 */
+    @Test
 	public void testReParse() throws Exception {
 		
 		XMLConfiguration config = new XMLConfiguration(file);
@@ -81,14 +97,14 @@ public class XMLConfigurationFileTest extends XMLTestCase {
 		
 		parser.parse(config);
 
-		assertXMLEqual("<snack/>" + EOL, parser.getXml());
+		assertThat(parser.getXml(), isSimilarTo("<snack/>" + EOL));
 		
 		parser = new XMLArooaParser();
 		
 		// should force re-read of the file.
 		parser.parse(config);
 		
-		assertXMLEqual("<snack/>" + EOL, parser.getXml());
+		assertThat(parser.getXml(), isSimilarTo("<snack/>" + EOL));
 	}
 	
 	public static class Snack {
@@ -128,6 +144,7 @@ public class XMLConfigurationFileTest extends XMLTestCase {
 	}
 
 	
+    @Test
 	public void testChangeAndSave() throws ArooaParseException, SAXException, IOException {
 		
 		XMLConfiguration config = new XMLConfiguration(file);
@@ -166,10 +183,11 @@ public class XMLConfigurationFileTest extends XMLTestCase {
 			"    </stuff>" + EOL +
 			"</snack>" + EOL;
 		
-		assertXMLEqual(expected, xmlParser.getXml());
+		assertThat(xmlParser.getXml(), isSimilarTo(expected));
 		
 	}
 	
+    @Test
 	public void testChangeRoot() throws Exception {
 		
 		XMLConfiguration config = new XMLConfiguration(file);
@@ -200,7 +218,7 @@ public class XMLConfigurationFileTest extends XMLTestCase {
 		String expected =
 			"<meal/>" + EOL;
 		
-		assertXMLEqual(expected, xmlParser.getXml());
+		assertThat(xmlParser.getXml(), isSimilarTo(expected));
 	}
 	
 }

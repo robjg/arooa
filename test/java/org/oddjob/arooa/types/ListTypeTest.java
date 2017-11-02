@@ -2,13 +2,17 @@
  * (c) Rob Gordon 2005
  */
 package org.oddjob.arooa.types;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.oddjob.arooa.ArooaConfiguration;
@@ -29,16 +33,23 @@ import org.oddjob.arooa.xml.XMLConfiguration;
 /**
  * Tests for ListType.
  */
-public class ListTypeTest extends TestCase {
+public class ListTypeTest extends Assert {
 
 	private static final Logger logger = Logger.getLogger(ListTypeTest.class);
 	
-	@Override
-	protected void setUp() throws Exception {
+	@Rule public TestName name = new TestName();
+
+	public String getName() {
+        return name.getMethodName();
+    }
+
+    @Before
+    public void setUp() throws Exception {
 		logger.info("-----------------------  " + getName() + 
 				"  ----------------------------");
 	}
 
+   @Test
 	public void testDefaultConversions() 
 	throws NoConversionAvailableException, ConversionFailedException {
 		
@@ -67,6 +78,7 @@ public class ListTypeTest extends TestCase {
 		assertEquals(null, conversionToString);
 	}
 	
+   @Test
 	public void testConvertContents() throws Exception {
 		ListType test = new ListType();
 		
@@ -93,6 +105,7 @@ public class ListTypeTest extends TestCase {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
+   @Test
 	public void testGettingAsList() throws Exception {
 		ListType test = new ListType();
 
@@ -116,6 +129,7 @@ public class ListTypeTest extends TestCase {
 	 * 
 	 * @throws Exception
 	 */
+   @Test
 	public void testGettingAsObjectArray() throws Exception {
 		ListType test = new ListType();
 		
@@ -138,6 +152,7 @@ public class ListTypeTest extends TestCase {
 	 * 
 	 * @throws Exception
 	 */
+   @Test
 	public void testGetAsStringArray() throws Exception {
 		ListType test = new ListType();
 
@@ -161,6 +176,7 @@ public class ListTypeTest extends TestCase {
 	 * 
 	 * @throws Exception
 	 */
+   @Test
 	public void testGetArrayOfInts() throws Exception {
 		ListType test = new ListType();
 		
@@ -182,6 +198,7 @@ public class ListTypeTest extends TestCase {
 		assertEquals(2, result[1]);
 	}
 	
+   @Test
 	public void testConvertToListOfObjects() 
 	throws ArooaConversionException {
 
@@ -228,6 +245,7 @@ public class ListTypeTest extends TestCase {
 		assertEquals("oranges", results.get(1));
 	}
 	
+   @Test
 	public void testConvertToListOfString() 
 	throws ArooaConversionException {
 
@@ -274,6 +292,7 @@ public class ListTypeTest extends TestCase {
 		assertEquals("oranges", results.get(1));
 	}
 	
+   @Test
 	public void testConvertDelimitedTextToListOfArrays() throws ClassNotFoundException, NoConversionAvailableException, ConversionFailedException {
 		
 		logger.info(String[].class.getName());
@@ -308,6 +327,7 @@ public class ListTypeTest extends TestCase {
 		assertEquals(2, list.size());
 	}
 	
+   @Test
 	public void testMergeList() throws Exception {
 		List<String> list1 = new ArrayList<String>();
 		list1.add("a");
@@ -352,6 +372,7 @@ public class ListTypeTest extends TestCase {
 		assertEquals("d", arrayResult[3]);
 	}
 	
+   @Test
 	public void testMergeUniqueArray() throws Exception {
 		ValueType content1 = new ValueType();
 		content1.setValue(
@@ -389,6 +410,7 @@ public class ListTypeTest extends TestCase {
 		assertEquals("c", arrayResult[2]);
 	}
 
+   @Test
 	public void testMergeNulls() throws NoConversionAvailableException, ConversionFailedException {
 		ValueType content1 = new ValueType();
 		content1.setValue(
@@ -413,6 +435,7 @@ public class ListTypeTest extends TestCase {
 		assertNull(result[0]);		
 	}
 	
+   @Test
 	public void testNoMergeArray() throws Exception {
 		ValueType content1 = new ValueType();
 		content1.setValue(
@@ -439,6 +462,7 @@ public class ListTypeTest extends TestCase {
 		assertEquals("a", ((String[]) result[0])[0]);
 	}
 	
+   @Test
 	public void testElementTypeSingle() throws NoConversionAvailableException, ConversionFailedException, ClassNotFoundException {
 		
 		ValueType element1 = new ValueType();
@@ -514,6 +538,7 @@ public class ListTypeTest extends TestCase {
 	 * 
 	 * @throws Exception
 	 */
+   @Test
 	public void testObjects() throws Exception {
 		
 		String descriptorXML =
@@ -568,6 +593,7 @@ public class ListTypeTest extends TestCase {
 	    assertEquals("The string.", "apple", o[1]);
 	}
 
+   @Test
 	public void testStrings() throws Exception {
 
 		String xml= "<root>\n" +
@@ -599,6 +625,7 @@ public class ListTypeTest extends TestCase {
 	    assertEquals("The string.", "apple", root.results[1]);	    
 	}
 	
+   @Test
 	public void testUniqueInts() throws Exception {
 		String xml= "<root>" +
 			"<results>" +
@@ -635,6 +662,7 @@ public class ListTypeTest extends TestCase {
 	 * 
 	 * @throws Exception
 	 */
+   @Test
 	public void testNullsAndReconfiguring() throws Exception {
 		String EOL = System.getProperty("line.separator");
 		
@@ -679,6 +707,7 @@ public class ListTypeTest extends TestCase {
 	    assertNull(root.results);
 	}
 	
+   @Test
 	public void testAddingValues() throws NoConversionAvailableException, ConversionFailedException {
 		
 		ListType test = new ListType();

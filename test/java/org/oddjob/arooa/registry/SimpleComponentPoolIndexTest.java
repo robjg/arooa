@@ -1,13 +1,16 @@
 package org.oddjob.arooa.registry;
 
+import org.junit.Test;
+
 import org.oddjob.arooa.ComponentTrinity;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.MockArooaContext;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class SimpleComponentPoolIndexTest extends TestCase {
+public class SimpleComponentPoolIndexTest extends Assert {
 	
+   @Test
 	public void testAddWithId() {
 	
 		Object component = new Object();
@@ -45,6 +48,7 @@ public class SimpleComponentPoolIndexTest extends TestCase {
 	}
 	
 	
+   @Test
 	public void testAddWithNoId() {
 		
 		Object component = new Object();
@@ -85,6 +89,7 @@ public class SimpleComponentPoolIndexTest extends TestCase {
 		assertNull(test.trinityForId("a"));
 	}
 	
+   @Test
 	public void testDuplicateIds() {
 		
 		ArooaContext context = new MockArooaContext();

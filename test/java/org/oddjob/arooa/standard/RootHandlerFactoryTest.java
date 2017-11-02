@@ -3,7 +3,9 @@
  */
 package org.oddjob.arooa.standard;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaSession;
@@ -21,7 +23,7 @@ import org.oddjob.arooa.runtime.RuntimeConfiguration;
 /**
  *  
  */
-public class RootHandlerFactoryTest extends TestCase {
+public class RootHandlerFactoryTest extends Assert {
 
 	private class MockRoot { }
 
@@ -86,6 +88,7 @@ public class RootHandlerFactoryTest extends TestCase {
     	}
     }
     
+   @Test
 	public void testOnElement() {
 				
 		RootHandler test = new RootHandler(new ElementAction<InstanceRuntime>() {

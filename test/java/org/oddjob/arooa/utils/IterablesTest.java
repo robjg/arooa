@@ -1,12 +1,15 @@
 package org.oddjob.arooa.utils;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class IterablesTest extends TestCase {
+public class IterablesTest extends Assert {
 
+   @Test
 	public void testToArray() {
 
 		List<Integer> list = new ArrayList<Integer>();
@@ -20,6 +23,7 @@ public class IterablesTest extends TestCase {
 	}
 	
 	// Why class has to be Class<?>
+   @Test
 	public void testToArrayOfParameterisedType() {
 
 		List<List<Integer>> list = new ArrayList<List<Integer>>();
@@ -31,6 +35,7 @@ public class IterablesTest extends TestCase {
 		assertEquals(2, result.length);
 	}
 	
+   @Test
 	public void testToArrayWhenNull() {
 		
 		try {
@@ -42,6 +47,7 @@ public class IterablesTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testToString() {
 		
 		List<Integer> list = new ArrayList<Integer>();
@@ -53,6 +59,7 @@ public class IterablesTest extends TestCase {
 		assertEquals("[2, 3]", result);
 	}
 	
+   @Test
 	public void testToStringWhenNull() {
 		
 		String result = Iterables.toString(null);

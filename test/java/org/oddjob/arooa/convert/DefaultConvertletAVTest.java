@@ -1,6 +1,8 @@
 package org.oddjob.arooa.convert;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaValue;
 
@@ -10,7 +12,7 @@ import org.oddjob.arooa.ArooaValue;
  * @author rob
  *
  */
-public class DefaultConvertletAVTest extends TestCase {
+public class DefaultConvertletAVTest extends Assert {
 
 	class Apples {
 		
@@ -30,6 +32,7 @@ public class DefaultConvertletAVTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testToObject() throws NoConversionAvailableException, ConversionFailedException {
 				
 		DefaultConversionRegistry test = new DefaultConversionRegistry();
@@ -64,6 +67,7 @@ public class DefaultConvertletAVTest extends TestCase {
 	 * @throws NoConversionAvailableException
 	 * @throws ConversionFailedException
 	 */
+   @Test
 	public void testToArooaValue() throws NoConversionAvailableException, ConversionFailedException {
 		
 		DefaultConversionRegistry test = new DefaultConversionRegistry();

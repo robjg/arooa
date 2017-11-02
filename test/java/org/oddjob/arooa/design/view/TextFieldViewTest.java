@@ -1,5 +1,7 @@
 package org.oddjob.arooa.design.view;
 
+import org.junit.Test;
+
 import java.awt.Component;
 
 import javax.swing.JFrame;
@@ -8,7 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.design.SimpleTextAttribute;
@@ -16,7 +18,7 @@ import org.oddjob.arooa.design.model.MockDesignInstance;
 import org.oddjob.arooa.design.screem.TextField;
 import org.oddjob.arooa.parsing.ArooaElement;
 
-public class TextFieldViewTest extends TestCase {
+public class TextFieldViewTest extends Assert {
 
 	private Component view;
 	
@@ -32,6 +34,7 @@ public class TextFieldViewTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testSimple() {
 		
 		OurInstance design = new OurInstance();

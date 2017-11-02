@@ -1,11 +1,13 @@
 package org.oddjob.arooa.xml;
 
+import org.junit.Test;
+
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaParseException;
@@ -20,7 +22,7 @@ import org.oddjob.arooa.runtime.ConfigurationNode;
 import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
-public class XMLConfigurationTest extends TestCase {
+public class XMLConfigurationTest extends Assert {
 
 	
 	class MyHandler implements ArooaHandler {
@@ -83,6 +85,7 @@ public class XMLConfigurationTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testParse() throws ArooaParseException {
 		
 		String xml = "<a><b x='10'><c>Test</c></b></a>";
@@ -164,6 +167,7 @@ public class XMLConfigurationTest extends TestCase {
 	}
 
 	
+   @Test
 	public void testFullParse() throws ArooaParseException {
 		XMLConfiguration test = new XMLConfiguration("Test",
 				"<a>x<b/>y</a>");
@@ -181,6 +185,7 @@ public class XMLConfigurationTest extends TestCase {
 		assertEquals("onEndElement: ", context.results.get(4));
 	}
 
+   @Test
 	public void testEmptyParse() throws ArooaParseException {
 		
 		XMLConfiguration test = new XMLConfiguration("TEST", "");
@@ -195,6 +200,7 @@ public class XMLConfigurationTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testInputStreamSource() throws ArooaParseException {
 		
 		InputStream input = getClass().getResourceAsStream(
@@ -217,6 +223,7 @@ public class XMLConfigurationTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testResource() throws ArooaParseException {
 		
 		XMLConfiguration test = new XMLConfiguration(
@@ -235,6 +242,7 @@ public class XMLConfigurationTest extends TestCase {
 		assertEquals(10, context.results.size());
 	}
 	
+   @Test
 	public void testURL() throws ArooaParseException {
 		
 		URL url = getClass().getResource(

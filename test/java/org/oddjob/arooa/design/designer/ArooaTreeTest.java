@@ -1,5 +1,7 @@
 package org.oddjob.arooa.design.designer;
 
+import org.junit.Test;
+
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -17,7 +19,7 @@ import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
@@ -29,7 +31,7 @@ import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
 
-public class ArooaTreeTest extends TestCase {
+public class ArooaTreeTest extends Assert {
 
 	interface ChildListener {
 		void childAdded(int index, Folder folder);
@@ -141,6 +143,7 @@ public class ArooaTreeTest extends TestCase {
 	}
 	
 	
+   @Test
 	public void testTree() throws ArooaParseException {
 
 		Folder root = new Folder("Root");
@@ -201,6 +204,7 @@ public class ArooaTreeTest extends TestCase {
 	}
 
 
+    @Test
 	public void testDelete() throws ArooaParseException {
 
 		Folder root = new Folder("Root");

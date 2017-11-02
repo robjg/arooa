@@ -1,6 +1,8 @@
 package org.oddjob.arooa.registry;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaTools;
 import org.oddjob.arooa.MockArooaSession;
@@ -11,7 +13,7 @@ import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.MockPropertyAccessor;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 
-public class FullPathLookupTest extends TestCase {
+public class FullPathLookupTest extends Assert {
 
 	public static class Fruit {
 		
@@ -40,6 +42,7 @@ public class FullPathLookupTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testRegistryLookup() throws ArooaPropertyException {
 		
 		OurSession session = new OurSession();
@@ -64,6 +67,7 @@ public class FullPathLookupTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testNestedLookup() {
 		
 		SimpleBeanRegistry test = new SimpleBeanRegistry(
@@ -88,6 +92,7 @@ public class FullPathLookupTest extends TestCase {
 	}
 	
 	
+   @Test
 	public void testFullLookup() {
 		
 		OurSession session = new OurSession();

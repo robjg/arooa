@@ -1,17 +1,20 @@
 package org.oddjob.arooa.beanutils;
 
+import org.junit.Test;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.apache.commons.beanutils.DynaProperty;
 
-public class MagicBeanTest extends TestCase {
+public class MagicBeanTest extends Assert {
 
+   @Test
 	public void testSerialisation() throws IOException, ClassNotFoundException {
 		
 		MagicBeanClass beanClass = new MagicBeanClass(
@@ -39,6 +42,7 @@ public class MagicBeanTest extends TestCase {
 		assertEquals("apple", fruit);
 	}
 	
+   @Test
 	public void testToString() {
 		
 		MagicBeanClass beanClass = new MagicBeanClass(

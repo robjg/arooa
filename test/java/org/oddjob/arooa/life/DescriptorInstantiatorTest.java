@@ -1,6 +1,8 @@
 package org.oddjob.arooa.life;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.ElementMappings;
@@ -10,7 +12,7 @@ import org.oddjob.arooa.deploy.MappingsSwitch;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaClass;
 
-public class DescriptorInstantiatorTest extends TestCase {
+public class DescriptorInstantiatorTest extends Assert {
 
 	public interface Fruit {
 		
@@ -46,6 +48,7 @@ public class DescriptorInstantiatorTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testPossibleElements() {
 		
 		ElementMappings test = 

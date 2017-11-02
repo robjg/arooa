@@ -1,5 +1,7 @@
 package org.oddjob.arooa.design.actions;
 
+import org.junit.Test;
+
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -13,15 +15,15 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.WindowConstants;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class ConfigurableMenusTest extends TestCase {
+public class ConfigurableMenusTest extends Assert {
 
 	class OurAction extends AbstractArooaAction {
 		private static final long serialVersionUID = 1;
 		
 		OurAction(String name) {
-			super(name);
+
 		}
 		
 		public void actionPerformed(ActionEvent e) {
@@ -52,6 +54,7 @@ public class ConfigurableMenusTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testSimple() {
 		
 		test = new ConfigurableMenus();
@@ -76,6 +79,7 @@ public class ConfigurableMenusTest extends TestCase {
 
 	}
 	
+   @Test
 	public void testNonVisible() {
 		
 		test = new ConfigurableMenus();
@@ -151,6 +155,7 @@ public class ConfigurableMenusTest extends TestCase {
 	
 	ConfigurableMenus test;
 	
+   @Test
 	public void testMenus() {
 		
 		test = new ConfigurableMenus();

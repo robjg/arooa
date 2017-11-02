@@ -1,6 +1,8 @@
 package org.oddjob.arooa.design.view;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
@@ -20,7 +22,7 @@ import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class TextInputViewTest extends TestCase {
+public class TextInputViewTest extends Assert {
 
 	public static class Thing {
 		
@@ -70,6 +72,7 @@ public class TextInputViewTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testForm() throws ArooaParseException {
 
 		String EOL = System.getProperty("line.separator");

@@ -1,6 +1,9 @@
 package org.oddjob.arooa.standard;
+import org.junit.Before;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaTools;
@@ -27,7 +30,7 @@ import org.oddjob.arooa.runtime.PropertyManager;
 /**
  * class to look at how we expand properties
  */
-public class StandardPropertyHelperTest extends TestCase {
+public class StandardPropertyHelperTest extends Assert {
 	
 	private class NestedPropPropertyAccessor extends MockPropertyAccessor {
 		@Override
@@ -48,8 +51,8 @@ public class StandardPropertyHelperTest extends TestCase {
 	
 	SimpleBeanRegistry beanRegistry;
 	
-	@Override
-	protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new OurConvertletProvider().registerWith(registry);
 		converter = new DefaultConverter(registry);
@@ -63,6 +66,7 @@ public class StandardPropertyHelperTest extends TestCase {
      * run through the test cases of expansion
      * @throws ArooaConversionException 
      */
+   @Test
     public void testPropertyExpansion() throws ArooaConversionException {
         assertExpandsTo("","");
         assertExpandsTo("$","$");
@@ -82,6 +86,7 @@ public class StandardPropertyHelperTest extends TestCase {
      * new things we want
      * @throws ArooaConversionException 
      */
+   @Test
     public void testDollarPassthru() throws ArooaConversionException {
         assertExpandsTo("$-","$-");    
         assertExpandsTo("Class$subclass","Class$subclass");    
@@ -96,6 +101,7 @@ public class StandardPropertyHelperTest extends TestCase {
 	 * Object replacement
 	 * @throws ArooaConversionException 
 	 */
+   @Test
 	public void testObjectReplacement() throws ArooaConversionException {
 		beanRegistry.register("an-int",new Integer(2));
 		assertExpandsTo("${an-int}", new Integer(2));
@@ -103,11 +109,13 @@ public class StandardPropertyHelperTest extends TestCase {
 		assertExpandsTo("${unassigned.property}", null);
 	}
     
+   @Test
 	public void testProxyExpansion() throws ArooaConversionException {
 		beanRegistry.register("fruit", new ProxyType());
 		assertExpandsTo("${fruit}s and pairs", "apples and pairs");
 	}
 	
+   @Test
 	public void testNullExpansionInString() throws ArooaConversionException {
 		assertExpandsTo("apples and ${missing}", "apples and ");
 	}
@@ -127,6 +135,7 @@ public class StandardPropertyHelperTest extends TestCase {
 	 * Test isConstant method.
 	 *
 	 */
+   @Test
 	public void testisConstant() {
 		
 		StandardPropertyHelper ph = new StandardPropertyHelper();
@@ -143,6 +152,7 @@ public class StandardPropertyHelperTest extends TestCase {
 	 * @throws ArooaConversionException 
 	 *
 	 */
+   @Test
 	public void testNestedExpansion() throws ArooaConversionException {
 		
 		NestedProp foo = new NestedProp();

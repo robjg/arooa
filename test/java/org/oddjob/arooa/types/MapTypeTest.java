@@ -1,11 +1,15 @@
 package org.oddjob.arooa.types;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.oddjob.arooa.ArooaConfiguration;
@@ -22,16 +26,23 @@ import org.oddjob.arooa.xml.XMLConfiguration;
 /**
  * Tests for ListType.
  */
-public class MapTypeTest extends TestCase {
+public class MapTypeTest extends Assert {
 
 	private static final Logger logger = Logger.getLogger(MapTypeTest.class);
 	
-	@Override
-	protected void setUp() throws Exception {
+	@Rule public TestName name = new TestName();
+
+	public String getName() {
+        return name.getMethodName();
+    }
+
+    @Before
+    public void setUp() throws Exception {
 		logger.info("-----------------------  " + getName() + 
 				"  ----------------------------");
 	}
 
+   @Test
 	public void testMapAssumptions() {
 		
 		Map<String, String> test = new LinkedHashMap<String, String>();
@@ -61,6 +72,7 @@ public class MapTypeTest extends TestCase {
 		assertEquals(false, it.hasNext());
 	}
 	
+   @Test
 	public void testDefaultConversions() 
 	throws NoConversionAvailableException, ConversionFailedException {
 		
@@ -79,6 +91,7 @@ public class MapTypeTest extends TestCase {
 		assertEquals(false, iterator.hasNext());
 	}
 	
+   @Test
 	public void testConvertContents() throws Exception {
 		MapType test = new MapType();
 
@@ -100,6 +113,7 @@ public class MapTypeTest extends TestCase {
 	 * 
 	 * @throws Exception
 	 */
+   @Test
 	public void testGettingAsMap() throws Exception {
 
 		MapType test = new MapType();
@@ -136,6 +150,7 @@ public class MapTypeTest extends TestCase {
 	 * 
 	 * @throws Exception
 	 */
+   @Test
 	public void testObjects() throws Exception {
 		
 		String descriptorXML =
@@ -184,6 +199,7 @@ public class MapTypeTest extends TestCase {
 	    assertEquals("The string.", "apple", root.results.get("two"));
 	}
 
+   @Test
 	public void testStrings() throws Exception {
 
 		String xml= "<root>\n" +
@@ -220,6 +236,7 @@ public class MapTypeTest extends TestCase {
 	 * 
 	 * @throws Exception
 	 */
+   @Test
 	public void testNullsAndReconfiguring() throws Exception {
 		String EOL = System.getProperty("line.separator");
 		
@@ -265,6 +282,7 @@ public class MapTypeTest extends TestCase {
 	}
 	
 	@SuppressWarnings("unchecked")
+   @Test
 	public void testAddingValues() throws NoConversionAvailableException, ConversionFailedException {
 		
 		MapType test = new MapType();

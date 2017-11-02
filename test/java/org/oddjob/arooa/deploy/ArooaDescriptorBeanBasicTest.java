@@ -1,6 +1,8 @@
 package org.oddjob.arooa.deploy;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaType;
@@ -12,8 +14,9 @@ import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.types.BeanType;
 
-public class ArooaDescriptorBeanBasicTest extends TestCase {
+public class ArooaDescriptorBeanBasicTest extends Assert {
 	
+   @Test
 	public void testElements() {
 
 		ArooaDescriptorBean test = new ArooaDescriptorBean();

@@ -1,12 +1,15 @@
 package org.oddjob.arooa.standard;
 
+import org.junit.Test;
+
 import java.util.Properties;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class StandardPropertyLookupTest extends TestCase {
+public class StandardPropertyLookupTest extends Assert {
 
+   @Test
 	public void testLookupSourceAndNames() {
 		
 		Properties props = new Properties();

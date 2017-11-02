@@ -1,6 +1,8 @@
 package org.oddjob.arooa.standard;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
@@ -36,7 +38,7 @@ import org.oddjob.arooa.runtime.PropertyFirstEvaluator;
 import org.oddjob.arooa.runtime.PropertyManager;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
-public class ComponentConfigurationTest extends TestCase {
+public class ComponentConfigurationTest extends Assert {
 
 	private class ATools extends MockArooaTools {
 		String property;
@@ -236,6 +238,7 @@ public class ComponentConfigurationTest extends TestCase {
 		
 	}
 
+   @Test
 	public void testInit() {
 		
 		AContext context = new AContext();
@@ -284,6 +287,7 @@ public class ComponentConfigurationTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testConfigure() {
 		
 		AContext context = new AContext();

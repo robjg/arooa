@@ -1,6 +1,8 @@
 package org.oddjob.arooa.convert;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 /**
  * Checking primitive conversion now that 1.5 is here...
@@ -8,10 +10,11 @@ import junit.framework.TestCase;
  * @author rob
  *
  */
-public class PrimativeAssumptionsTest extends TestCase {
+public class PrimativeAssumptionsTest extends Assert {
 
 	
 	
+   @Test
 	public void testIsAssignable() {
 
 		// So all this works.
@@ -40,6 +43,7 @@ public class PrimativeAssumptionsTest extends TestCase {
 		cl = o.getClass();
 	}
 
+   @Test
 	public void testAutoboxing() {
 
 		// Autoboxing happens before call... but we new that.
@@ -50,6 +54,7 @@ public class PrimativeAssumptionsTest extends TestCase {
 		assertEquals(Integer.class, cl);
 	}
 	
+   @Test
 	public void testSuperClass() {
 		
 		// is it object - no it's null?

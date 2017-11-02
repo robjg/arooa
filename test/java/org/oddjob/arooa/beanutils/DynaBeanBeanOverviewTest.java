@@ -1,10 +1,12 @@
 package org.oddjob.arooa.beanutils;
 
+import org.junit.Test;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.DynaClass;
@@ -13,7 +15,7 @@ import org.apache.log4j.Logger;
 import org.oddjob.arooa.reflect.ArooaNoPropertyException;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 
-public class DynaBeanBeanOverviewTest extends TestCase {
+public class DynaBeanBeanOverviewTest extends Assert {
 
 	private static final Logger logger = Logger.getLogger(
 			DynaBeanBeanOverviewTest.class);
@@ -50,6 +52,7 @@ public class DynaBeanBeanOverviewTest extends TestCase {
 	
 	
 	
+   @Test
 	public void testNoProperty() {
 		
 		DynaBeanOverview test = new DynaBeanOverview(
@@ -81,6 +84,7 @@ public class DynaBeanBeanOverviewTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testProperties() {
 		
 		DynaBeanOverview test = new DynaBeanOverview(
@@ -97,6 +101,7 @@ public class DynaBeanBeanOverviewTest extends TestCase {
 		assertEquals("mapped", properties[2]);		
 	}
 	
+   @Test
 	public void testSimple() 
 	throws ArooaPropertyException {
 		
@@ -112,6 +117,7 @@ public class DynaBeanBeanOverviewTest extends TestCase {
 
 	}
 	
+   @Test
 	public void testIndexed() {
 		
 		DynaBeanOverview test = new DynaBeanOverview(
@@ -126,6 +132,7 @@ public class DynaBeanBeanOverviewTest extends TestCase {
 
 	}
 	
+   @Test
 	public void testMapped() {
 		
 		DynaBeanOverview test = new DynaBeanOverview(

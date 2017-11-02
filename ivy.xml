@@ -18,12 +18,14 @@
 	    	rev="1.9.2" conf="default->default" />
 		<dependency org="javax.inject" name="javax.inject" rev="1"
 			conf="default->default" />
-		<dependency org="junit" name="junit" rev="3.8.2"
+        <dependency org="junit" name="junit" rev="4.12"
 			conf="test->default"/>
 		<dependency org="org.mockito" name="mockito-all" rev="1.10.19"
 			conf="test->default" />
-		<dependency org="xmlunit" name="xmlunit" rev="1.6" 
+		<dependency org="org.xmlunit" name="xmlunit-core" rev="2.5.0" 
 			conf="test->default"/>
+        <dependency org="org.xmlunit" name="xmlunit-matchers" rev="2.5.0" 
+            conf="test->default"/>
 	</dependencies>
   
 </ivy-module>

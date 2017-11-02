@@ -3,15 +3,18 @@
  */
 package org.oddjob.arooa.convert.convertlets;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.convert.ConversionFailedException;
 import org.oddjob.arooa.convert.ConversionPath;
 import org.oddjob.arooa.convert.DefaultConversionProvider;
 import org.oddjob.arooa.convert.DefaultConversionRegistry;
 
-public class CharacterConvertletsTest extends TestCase {
+public class CharacterConvertletsTest extends Assert {
 
+   @Test
 	public void testStringToCharacter() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new CharacterConvertlets().registerWith(registry);
@@ -24,6 +27,7 @@ public class CharacterConvertletsTest extends TestCase {
 		assertEquals(new Character('A'), result);  
 	}
 	
+   @Test
 	public void testCharacterToString() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new DefaultConversionProvider().registerWith(registry);
@@ -36,6 +40,7 @@ public class CharacterConvertletsTest extends TestCase {
 		assertEquals("A", result);  
 	}
 	
+   @Test
 	public void testNumberToCharacter() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new DefaultConversionProvider().registerWith(registry);
@@ -48,6 +53,7 @@ public class CharacterConvertletsTest extends TestCase {
 		assertEquals(new Character('A'), result);  
 	}
 	
+   @Test
 	public void testCharacterToNumber() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new DefaultConversionProvider().registerWith(registry);

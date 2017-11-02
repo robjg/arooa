@@ -1,14 +1,17 @@
 package org.oddjob.arooa.parsing;
 
+import org.junit.Test;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.oddjob.arooa.ArooaException;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class PrefixMappingsTest extends TestCase {
+public class PrefixMappingsTest extends Assert {
 
+   @Test
 	public void testQName() throws ArooaException, URISyntaxException {
 		
 		PrefixMappings test = new SimplePrefixMappings();
@@ -24,6 +27,7 @@ public class PrefixMappingsTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testPrefixForURI() throws ArooaException, URISyntaxException {
 		
 		PrefixMappings test = new SimplePrefixMappings();
@@ -35,6 +39,7 @@ public class PrefixMappingsTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testURIForPrefix() throws ArooaException, URISyntaxException {
 		
 		PrefixMappings test = new SimplePrefixMappings();

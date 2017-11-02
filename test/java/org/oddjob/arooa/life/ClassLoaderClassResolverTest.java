@@ -1,20 +1,23 @@
 package org.oddjob.arooa.life;
 
+import org.junit.Test;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.OurDirs;
 
-public class ClassLoaderClassResolverTest extends TestCase {
+public class ClassLoaderClassResolverTest extends Assert {
 
 	public static class Apple {
 		
 	}
 	
+   @Test
 	public void testFindClass() {
 		
 		ClassLoaderClassResolver test = new ClassLoaderClassResolver(
@@ -27,6 +30,7 @@ public class ClassLoaderClassResolverTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testFindPrimatives() {
 		
 		ClassLoaderClassResolver test = new ClassLoaderClassResolver(
@@ -42,6 +46,7 @@ public class ClassLoaderClassResolverTest extends TestCase {
 		assertEquals(double.class, test.findClass(double.class.getName()));
 	}
 	
+   @Test
 	public void testFindClassClassLoader() throws MalformedURLException {
 		OurDirs ourDirs = new OurDirs();
 		
@@ -68,6 +73,7 @@ public class ClassLoaderClassResolverTest extends TestCase {
 	}
 	
 	
+   @Test
 	public void testGetResource() {
 	
 		ClassLoaderClassResolver test = new ClassLoaderClassResolver(
@@ -79,6 +85,7 @@ public class ClassLoaderClassResolverTest extends TestCase {
 		assertNotNull(result);
 	}
 	
+   @Test
 	public void testGetResources() {
 		
 		ClassLoaderClassResolver test = new ClassLoaderClassResolver(
@@ -96,6 +103,7 @@ public class ClassLoaderClassResolverTest extends TestCase {
 	 * 
 	 * @throws ClassNotFoundException
 	 */
+   @Test
 	public void testFindArrayClass() throws ClassNotFoundException {
 		
 		String name = String[].class.getName();

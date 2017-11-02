@@ -1,10 +1,12 @@
 package org.oddjob.arooa.reflect;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.convert.ArooaConversionException;
 
-public class BeanViewBeanTest extends TestCase {
+public class BeanViewBeanTest extends Assert {
 
 	public static class Fruit {
 		
@@ -24,6 +26,7 @@ public class BeanViewBeanTest extends TestCase {
 
 	}
 	
+   @Test
 	public void testPropertyOrder() throws ArooaConversionException {
 
 		BeanViewBean test = new BeanViewBean();
@@ -46,6 +49,7 @@ public class BeanViewBeanTest extends TestCase {
 		assertEquals(expected[2], result.titleFor(properties[2]));
 	}
 	
+   @Test
 	public void testWithTitles() throws ArooaConversionException {
 		
 		BeanViewBean test = new BeanViewBean();

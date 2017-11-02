@@ -1,9 +1,12 @@
 package org.oddjob.arooa.utils;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class ClassUtilsTest extends TestCase {
+import org.junit.Assert;
 
+public class ClassUtilsTest extends Assert {
+
+   @Test
 	public void testClassFor() throws ClassNotFoundException {
 		
 		assertEquals(String.class,
@@ -24,6 +27,7 @@ public class ClassUtilsTest extends TestCase {
 	}
 	
 	// To visually check the error message.
+   @Test
 	public void testError() {
 		
 		try {

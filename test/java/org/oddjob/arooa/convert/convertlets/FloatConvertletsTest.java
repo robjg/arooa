@@ -3,16 +3,19 @@
  */
 package org.oddjob.arooa.convert.convertlets;
 
+import org.junit.Test;
+
 import java.math.BigDecimal;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.convert.ConversionFailedException;
 import org.oddjob.arooa.convert.ConversionPath;
 import org.oddjob.arooa.convert.DefaultConversionRegistry;
 
-public class FloatConvertletsTest extends TestCase {
+public class FloatConvertletsTest extends Assert {
 
+   @Test
 	public void testNumberToFloat() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new FloatConvertlets().registerWith(registry);
@@ -25,6 +28,7 @@ public class FloatConvertletsTest extends TestCase {
 		assertEquals(42.24, result, 0.001);  
 	}
 	
+   @Test
 	public void testStringToFloat() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new FloatConvertlets().registerWith(registry);

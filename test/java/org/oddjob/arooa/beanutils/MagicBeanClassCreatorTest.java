@@ -1,12 +1,15 @@
 package org.oddjob.arooa.beanutils;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.apache.commons.beanutils.DynaBean;
 import org.oddjob.arooa.reflect.ArooaClass;
 
-public class MagicBeanClassCreatorTest extends TestCase {
+public class MagicBeanClassCreatorTest extends Assert {
 
+   @Test
 	public void testAllPrimatives() {
 		
 		MagicBeanClassCreator creator = new MagicBeanClassCreator("Test");

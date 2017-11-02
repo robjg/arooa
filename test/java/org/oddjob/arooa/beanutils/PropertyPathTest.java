@@ -1,15 +1,17 @@
 package org.oddjob.arooa.beanutils;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.beanutils.PropertyPath;
 import org.oddjob.arooa.beanutils.PropertyPath.FragmentVisitor;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 
-public class PropertyPathTest extends TestCase {
+public class PropertyPathTest extends Assert {
 
 	class MockFragmentVisitor implements FragmentVisitor {
 		List<String> names = new ArrayList<String>();
@@ -48,6 +50,7 @@ public class PropertyPathTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testNull() throws ArooaPropertyException {
 		
 		PropertyPath test = new PropertyPath(null);
@@ -58,6 +61,7 @@ public class PropertyPathTest extends TestCase {
 		assertEquals(0, results.names.size());
 	}
 	
+   @Test
 	public void testEmpty() {
 		
 		PropertyPath test = new PropertyPath("");
@@ -70,6 +74,7 @@ public class PropertyPathTest extends TestCase {
 		assertEquals("", results.getName(0));
 	}
 
+   @Test
 	public void testSingle() {
 		
 		PropertyPath test = new PropertyPath("abc");
@@ -82,6 +87,7 @@ public class PropertyPathTest extends TestCase {
 		assertEquals("abc", results.getName(0));
 	}
 	
+   @Test
 	public void testSimple() {
 		
 		PropertyPath test = new PropertyPath("a.b.c");
@@ -98,6 +104,7 @@ public class PropertyPathTest extends TestCase {
 		assertEquals("c", results.getName(2));
 	}
 	
+   @Test
 	public void testIndexed() {
 		
 		PropertyPath test = new PropertyPath("a.b.c[23]");
@@ -116,6 +123,7 @@ public class PropertyPathTest extends TestCase {
 		assertEquals(23, results.index);
 	}
 	
+   @Test
 	public void testIndexed2() {
 		
 		PropertyPath test = new PropertyPath("a[23].b.c");
@@ -132,6 +140,7 @@ public class PropertyPathTest extends TestCase {
 		assertEquals("c", results.getName(2));
 	}
 	
+   @Test
 	public void testMapped() {
 		
 		PropertyPath test = new PropertyPath("a.b(xyz).c");

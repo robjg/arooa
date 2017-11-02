@@ -1,6 +1,8 @@
 package org.oddjob.arooa.parsing.interceptors;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaBeanDescriptor;
@@ -22,7 +24,7 @@ import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class AllElementsOnePropertyInterceptorTest extends TestCase {
+public class AllElementsOnePropertyInterceptorTest extends Assert {
 
 	
 	public static class Snack {
@@ -115,6 +117,7 @@ public class AllElementsOnePropertyInterceptorTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testInStandardParser() throws ArooaParseException {
 		
 		
@@ -136,6 +139,7 @@ public class AllElementsOnePropertyInterceptorTest extends TestCase {
 		assertEquals("red", apple.getColour());
 	}
 	
+   @Test
 	public void testNoChild() throws ArooaParseException {
 		
 		
@@ -223,6 +227,7 @@ public class AllElementsOnePropertyInterceptorTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testIndexedProperty() throws ArooaParseException {
 				
 		String xml = "<snack>" +

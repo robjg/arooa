@@ -3,14 +3,17 @@
  */
 package org.oddjob.arooa.convert.convertlets;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.convert.ConversionFailedException;
 import org.oddjob.arooa.convert.ConversionPath;
 import org.oddjob.arooa.convert.DefaultConversionRegistry;
 
-public class ShortConvertletsTest extends TestCase {
+public class ShortConvertletsTest extends Assert {
 
+   @Test
 	public void testNumberToShort() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new ShortConvertlets().registerWith(registry);
@@ -23,6 +26,7 @@ public class ShortConvertletsTest extends TestCase {
 		assertEquals(new Short((short) 42), result);  
 	}
 	
+   @Test
 	public void testStringToShort() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new ShortConvertlets().registerWith(registry);

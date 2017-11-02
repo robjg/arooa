@@ -1,15 +1,18 @@
 package org.oddjob.arooa.runtime;
 
+import org.junit.Test;
+
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.registry.BeanRegistry;
 import org.oddjob.arooa.standard.MockPropertyLookup;
 import org.oddjob.arooa.standard.StandardArooaSession;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class RetainUnexpandedStringsTest extends TestCase {
+public class RetainUnexpandedStringsTest extends Assert {
 
+   @Test
 	public void testLotsOfExpressions() throws ArooaConversionException {
 		
 		ArooaSession session = new SubstituationPolicySession(

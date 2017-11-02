@@ -1,6 +1,8 @@
 package org.oddjob.arooa.types;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.convert.ConversionFailedException;
@@ -12,7 +14,7 @@ import org.oddjob.arooa.convert.DefaultConversionRegistry;
 import org.oddjob.arooa.convert.Joker;
 import org.oddjob.arooa.convert.NoConversionAvailableException;
 
-public class FactoryValueTest extends TestCase {
+public class FactoryValueTest extends Assert {
 
 	class MyFactory implements ValueFactory<String> {
 		public String toValue() {
@@ -20,6 +22,7 @@ public class FactoryValueTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testMyFactory() throws NoConversionAvailableException, ConversionFailedException {
 	
 		ArooaConverter converter = new DefaultConverter();
@@ -29,6 +32,7 @@ public class FactoryValueTest extends TestCase {
 		assertEquals("apple", string);
 	}
 	
+   @Test
 	public void testMaskedJokerConversion() throws NoConversionAvailableException, ConversionFailedException {
 
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();

@@ -1,5 +1,7 @@
 package org.oddjob.arooa.deploy;
 
+import org.junit.Test;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -8,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.oddjob.OurDirs;
@@ -20,9 +22,10 @@ import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaClass;
 
-public class URLDescriptorFactoryTest extends TestCase {
+public class URLDescriptorFactoryTest extends Assert {
 	private static final Logger logger = Logger.getLogger(URLDescriptorFactoryTest.class);
 	
+   @Test
 	public void testClassLoader() throws IOException {
 
 		OurDirs ourDirs = new OurDirs();

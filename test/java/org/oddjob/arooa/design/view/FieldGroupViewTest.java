@@ -1,5 +1,7 @@
 package org.oddjob.arooa.design.view;
 
+import org.junit.Test;
+
 import java.awt.Component;
 import java.awt.GridBagLayout;
 
@@ -7,7 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.design.SimpleTextAttribute;
@@ -15,7 +17,7 @@ import org.oddjob.arooa.design.model.MockDesignInstance;
 import org.oddjob.arooa.design.screem.BorderedGroup;
 import org.oddjob.arooa.parsing.ArooaElement;
 
-public class FieldGroupViewTest extends TestCase {
+public class FieldGroupViewTest extends Assert {
 
 	private Component view;
 	
@@ -31,6 +33,7 @@ public class FieldGroupViewTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testTwoSimpleFields() {
 		
 		BorderedGroup fieldGroup = new BorderedGroup("2 Fields");

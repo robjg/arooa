@@ -135,5 +135,5 @@ implements ArooaContainer {
 	 * @return A drag point or null if the node doesn't support dragging.
 	 * 
 	 */
-	abstract public DragPoint getDragPoint(Object treeNode);
+	abstract protected DragPoint getDragPoint(Object treeNode);
 }

@@ -1,10 +1,13 @@
 package org.oddjob.arooa.life;
+import org.junit.Before;
+
+import org.junit.Test;
 
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaType;
@@ -22,7 +25,7 @@ import org.oddjob.arooa.deploy.ArooaDescriptorBean;
 import org.oddjob.arooa.deploy.BeanDefinition;
 import org.oddjob.arooa.parsing.ArooaElement;
 
-public class DescriptorInstantiatorSupportTest extends TestCase {
+public class DescriptorInstantiatorSupportTest extends Assert {
 
 	
 	public interface Fruit {
@@ -38,8 +41,8 @@ public class DescriptorInstantiatorSupportTest extends TestCase {
 	
 	ArooaDescriptor descriptor;
 	
-	@Override
-	protected void setUp() throws Exception {
+   @Before
+   public void setUp() throws Exception {
 		ArooaDescriptorBean df = new ArooaDescriptorBean();
 				
 		BeanDefinition def = new BeanDefinition();
@@ -52,6 +55,7 @@ public class DescriptorInstantiatorSupportTest extends TestCase {
 		descriptor = df.createDescriptor(getClass().getClassLoader());
 	}
 		
+   @Test
 	public void testSimpleTypes() {
 			
 		ElementMappings test = 
@@ -109,6 +113,7 @@ public class DescriptorInstantiatorSupportTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testArooaValue() {
 		
 		ElementMappings test = 

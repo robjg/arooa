@@ -1,6 +1,8 @@
 package org.oddjob.arooa.deploy;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaParseException;
@@ -10,8 +12,9 @@ import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.standard.StandardFragmentParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class PropertyDefinitionTest extends TestCase {
+public class PropertyDefinitionTest extends Assert {
 
+   @Test
 	public void testXMLConfiguration() throws ArooaParseException {
 		
 				

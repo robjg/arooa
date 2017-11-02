@@ -1,6 +1,9 @@
 package org.oddjob.arooa.xml;
-
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
+import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.oddjob.arooa.ArooaException;
@@ -17,10 +20,16 @@ import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class SAXHandlerTest extends TestCase {
+public class SAXHandlerTest extends Assert {
 
 	private static final Logger logger = Logger.getLogger(SAXHandlerTest.class);
 	
+	@Rule public TestName name = new TestName();
+
+	public String getName() {
+        return name.getMethodName();
+    }
+
 	boolean init;
 	
 	class OurDocumentContext extends MockArooaContext {
@@ -46,13 +55,14 @@ public class SAXHandlerTest extends TestCase {
 		}
 	}
 	
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+    @Before
+    public void setUp() throws Exception {
+
 		
 		logger.info("-------------------  " + getName() + "  --------------------");
 	}
 	
+   @Test
 	public void testDocumentContext() throws SAXException {
 
 		RootContext rootContext = new RootContext(ArooaType.COMPONENT, 

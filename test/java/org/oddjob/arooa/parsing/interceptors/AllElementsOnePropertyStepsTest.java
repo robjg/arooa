@@ -1,6 +1,8 @@
 package org.oddjob.arooa.parsing.interceptors;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.parsing.ArooaContext;
@@ -15,7 +17,7 @@ import org.oddjob.arooa.runtime.MockConfigurationNode;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 
-public class AllElementsOnePropertyStepsTest extends TestCase {
+public class AllElementsOnePropertyStepsTest extends Assert {
 
 	class SnackRuntime extends MockRuntimeConfiguration {		
 		RuntimeListener listener;
@@ -205,6 +207,7 @@ public class AllElementsOnePropertyStepsTest extends TestCase {
 	 *   <apple colour="red"/>
 	 * </snack>
 	 */
+   @Test
 	public void testAllInSteps() {
 		
 		OnePropertyInterceptor test = new OnePropertyInterceptor(); 

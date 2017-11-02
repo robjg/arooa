@@ -1,6 +1,8 @@
 package org.oddjob.arooa.standard;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.life.SimpleArooaClass;
@@ -11,7 +13,7 @@ import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
-public class AttributeSetterTest extends TestCase {
+public class AttributeSetterTest extends Assert {
 
 	public static class Apple {
 		
@@ -53,6 +55,7 @@ public class AttributeSetterTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testSimpleSetAttribute() throws ArooaPropertyException {
 		
 		Apple apple = new Apple();
@@ -72,6 +75,7 @@ public class AttributeSetterTest extends TestCase {
 		assertEquals("colour", "red", apple.colour);
 	}	
 	
+   @Test
 	public void testOptionalAttribute() {
 		
 		Banana banana = new Banana();
@@ -94,6 +98,7 @@ public class AttributeSetterTest extends TestCase {
 		assertEquals(30, banana.curvature);
 	}
 	
+   @Test
 	public void testNoPropertyAttribute() {
 		
 		Banana banana = new Banana();

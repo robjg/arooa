@@ -3,10 +3,12 @@
  */
 package org.oddjob.arooa.convert.convertlets;
 
+import org.junit.Test;
+
 import java.io.IOException;
 import java.io.InputStream;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.convert.ConversionFailedException;
@@ -15,7 +17,7 @@ import org.oddjob.arooa.convert.DefaultConversionRegistry;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class StringConvertletsTest extends TestCase {
+public class StringConvertletsTest extends Assert {
 
 	private class Apple {
 		@Override
@@ -24,6 +26,7 @@ public class StringConvertletsTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testToString() throws ConversionFailedException {
 		
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
@@ -37,6 +40,7 @@ public class StringConvertletsTest extends TestCase {
 		assertEquals("apple", result);
 	}
 
+   @Test
 	public void testStringToInputStream() throws ConversionFailedException {
 		
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
@@ -58,6 +62,7 @@ public class StringConvertletsTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testTokenizedString() throws ConversionFailedException {
 		
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
@@ -75,6 +80,7 @@ public class StringConvertletsTest extends TestCase {
 		assertEquals("horse", results[2]);
 	}
 	
+   @Test
 	public void testObjectToString() throws ConversionFailedException {
 		
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
@@ -110,6 +116,7 @@ public class StringConvertletsTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testTokenizedStringToArray() throws ArooaParseException {
 		
 		ThingWithArrayProperty root = new ThingWithArrayProperty();

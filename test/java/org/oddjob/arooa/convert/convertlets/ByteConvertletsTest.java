@@ -3,14 +3,17 @@
  */
 package org.oddjob.arooa.convert.convertlets;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.convert.ConversionFailedException;
 import org.oddjob.arooa.convert.ConversionPath;
 import org.oddjob.arooa.convert.DefaultConversionRegistry;
 
-public class ByteConvertletsTest extends TestCase {
+public class ByteConvertletsTest extends Assert {
 
+   @Test
 	public void testNumberToByte() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new ByteConvertlets().registerWith(registry);
@@ -23,6 +26,7 @@ public class ByteConvertletsTest extends TestCase {
 		assertEquals(new Byte((byte) 42), result);  
 	}
 	
+   @Test
 	public void testStringToByte() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new ByteConvertlets().registerWith(registry);

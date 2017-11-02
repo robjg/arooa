@@ -1,11 +1,14 @@
 package org.oddjob.arooa.utils;
 
+import org.junit.Test;
+
 import java.text.ParseException;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class QuoteTokenizerFactoryTest extends TestCase {
+public class QuoteTokenizerFactoryTest extends Assert {
 
+   @Test
 	public void testPattern() {
 		
 		QuoteTokenizerFactory test = new QuoteTokenizerFactory(",", '"', '~');
@@ -21,6 +24,7 @@ public class QuoteTokenizerFactoryTest extends TestCase {
 				test.getPattern());
 	}
 	
+   @Test
 	public void testSimple() throws ParseException {
 		
 		QuoteTokenizerFactory test = new QuoteTokenizerFactory(",", '"', '~');
@@ -68,6 +72,7 @@ public class QuoteTokenizerFactoryTest extends TestCase {
 		assertEquals(3, results.length);
 	}
 	
+   @Test
 	public void testQuotesAndEscapes() throws ParseException {
 		
 		QuoteTokenizerFactory test = new QuoteTokenizerFactory(",", '"', '\\');
@@ -118,6 +123,7 @@ public class QuoteTokenizerFactoryTest extends TestCase {
 		assertEquals(3, results.length);
 	}
 	
+   @Test
 	public void testEscapedEscapesAndEscapedQuote() throws ParseException {
 		
 		QuoteTokenizerFactory test = new QuoteTokenizerFactory("\\s+", '\'', '~');
@@ -133,6 +139,7 @@ public class QuoteTokenizerFactoryTest extends TestCase {
 
 	}
 	
+   @Test
 	public void testWhilteSpaceDelimiter() throws ParseException {
 		
 		QuoteTokenizerFactory test = new QuoteTokenizerFactory("\\s+", '"', '\\');
@@ -198,6 +205,7 @@ public class QuoteTokenizerFactoryTest extends TestCase {
 		assertEquals(6, results.length);
 	}
 	
+   @Test
 	public void testQuotesForEscapes() throws ParseException {
 		
 		QuoteTokenizerFactory test = new QuoteTokenizerFactory(",", '\'', '\'');

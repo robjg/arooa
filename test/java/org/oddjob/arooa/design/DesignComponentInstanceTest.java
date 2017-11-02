@@ -1,6 +1,8 @@
 package org.oddjob.arooa.design;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
@@ -35,7 +37,7 @@ import org.oddjob.arooa.registry.MockComponentPool;
 import org.oddjob.arooa.standard.ExtendedTools;
 import org.oddjob.arooa.standard.StandardTools;
 
-public class DesignComponentInstanceTest extends TestCase {
+public class DesignComponentInstanceTest extends Assert {
 
 	public static class MyComponent {
 	
@@ -152,6 +154,7 @@ public class DesignComponentInstanceTest extends TestCase {
 	}
 		
 
+   @Test
 	public void testAddComponent() throws ArooaParseException {
 		
 		ArooaElement element = new ArooaElement("acomp");
@@ -192,6 +195,7 @@ public class DesignComponentInstanceTest extends TestCase {
 	}
 	
 	
+   @Test
 	public void testRemoveComponent() throws ArooaParseException {
 		
 		ArooaElement element = new ArooaElement("acomp");

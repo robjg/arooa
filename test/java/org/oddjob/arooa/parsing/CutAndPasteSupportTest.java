@@ -1,12 +1,22 @@
 package org.oddjob.arooa.parsing;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.custommonkey.xmlunit.XMLTestCase;
+import org.junit.Test;
 import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaParseException;
@@ -29,7 +39,7 @@ import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class CutAndPasteSupportTest extends XMLTestCase {
+public class CutAndPasteSupportTest {
 
 	static final String LS = System.getProperty("line.separator");
 	
@@ -102,6 +112,7 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 		}
 	}
 	
+   @Test
 	public void testCutting() throws Exception {
 		
 		String xml = "<snack>" +
@@ -132,17 +143,19 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 		
 		assertNull(snack.fruit);
 		
-		String expected = "<snack/>" + LS;
+		String expected = "<?xml version='1.0' encoding='UTF-8' standalone='no'?>" + LS +
+				"<snack/>" + LS;
 		
 		XMLArooaParser xmlParser = new XMLArooaParser();
 	
 		xmlParser.parse(
 				session.getComponentPool().contextFor(snack).getConfigurationNode());
 		
-		assertXMLEqual(expected, xmlParser.getXml());
+		assertThat(xmlParser.getXml(), isIdenticalTo(expected));
 		
 	}
 	
+    @Test
 	public void testPasting() throws Exception {
 		
 		String xml = "<snack/>";
@@ -169,7 +182,8 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 		
 		assertNotNull(snack.fruit);
 		
-		String expected = "<snack>" + LS +
+		String expected = "<?xml version='1.0' encoding='UTF-8' standalone='no'?>" + LS +
+				"<snack>" + LS +
 				"    <fruit>" + LS + 
 				"        <orange/>" + LS + 
 				"    </fruit>" + LS + 
@@ -180,10 +194,11 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 		xmlParser.parse(
 				session.getComponentPool().contextFor(snack).getConfigurationNode());
 		
-		assertXMLEqual(expected, xmlParser.getXml());
+		assertThat(xmlParser.getXml(), isIdenticalTo(expected));
 		
 	}
 
+    @Test
 	public void testPastingOverExisting() throws Exception {
 		
 		String xml = "<snack>" +
@@ -215,6 +230,7 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 		
 	}
 	
+   @Test
 	public void testReplace() throws Exception {
 		
 		String xml = 
@@ -245,7 +261,8 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 
 		assertEquals(Apple.class, snack.fruit.getClass());
 		
-		String expected = "<snack>" + LS +
+		String expected = "<?xml version='1.0' encoding='UTF-8' standalone='no'?>" + LS +
+				"<snack>" + LS +
 				"    <fruit>" + LS + 
 				"        <apple/>" + LS + 
 				"    </fruit>" + LS + 
@@ -256,7 +273,7 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 		xmlParser.parse(
 				session.getComponentPool().contextFor(snack).getConfigurationNode());
 		
-		assertXMLEqual(expected, xmlParser.getXml());
+		assertThat(xmlParser.getXml(), isIdenticalTo(expected));
 		
 		
 		// Sanity check the replace by replacing the orange back again.
@@ -268,7 +285,8 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 
 		assertEquals(Orange.class, snack.fruit.getClass());
 		
-		String expected2 = "<snack>" + LS +
+		String expected2 = "<?xml version='1.0' encoding='UTF-8' standalone='no'?>" + LS +
+				"<snack>" + LS +
 				"    <fruit>" + LS + 
 				"        <orange/>" + LS + 
 				"    </fruit>" + LS + 
@@ -277,10 +295,11 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 		xmlParser.parse(
 				session.getComponentPool().contextFor(snack).getConfigurationNode());
 		
-		assertXMLEqual(expected2, xmlParser.getXml());
+		assertThat(xmlParser.getXml(), isIdenticalTo(expected2));
 		
 	}
 	
+   @Test
 	public void testReplaceRoot() throws ArooaParseException {
 		
 		String xml = 
@@ -324,9 +343,10 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 	}
 	
 	
+   @Test
 	public void testBadReplace() throws Exception {
 		
-		String xml = 
+		String xml = "<?xml version='1.0' encoding='UTF-8' standalone='no'?>" + LS +
 			"<snack>" + LS +
 			"    <fruit>" + LS + 
 			"        <orange/>" + LS + 
@@ -362,7 +382,7 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 		xmlParser.parse(
 				session.getComponentPool().contextFor(snack).getConfigurationNode());
 		
-		assertXMLEqual(xml, xmlParser.getXml());
+		assertThat(xmlParser.getXml(), isIdenticalTo(xml));
 		
 		final AtomicReference<String > savedXML = new AtomicReference<String>();
 		config.setSaveHandler(new XMLConfiguration.SaveHandler() {
@@ -375,7 +395,7 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 		// check it will save - no reason why it shouldn't...
 		handle.save();
 		
-		assertXMLEqual(xml, savedXML.get());
+		assertThat(savedXML.get(), isIdenticalTo(xml));
 
 		// check what's there is still valid by cutting it.
 		ArooaContext orangeContext2 = session.getComponentPool().contextFor(
@@ -402,6 +422,7 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 	}
 	
 	
+   @Test
 	public void testIndexedCutting() throws Exception {
 		
 		String xml = "<snack>" +
@@ -433,7 +454,8 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 		assertEquals(1, snack.fruit.size());
 		assertEquals(Orange.class, snack.fruit.get(0).getClass());
 		
-		String expected = "<snack>" + LS +
+		String expected = "<?xml version='1.0' encoding='UTF-8' standalone='no'?>" + LS +
+				"<snack>" + LS +
 				"    <fruit>" + LS + 
 				"        <orange/>" + LS + 
 				"    </fruit>" + LS + 
@@ -444,10 +466,11 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 		xmlParser.parse(
 				session.getComponentPool().contextFor(snack).getConfigurationNode());
 		
-		assertXMLEqual(expected, xmlParser.getXml());
+		assertThat(xmlParser.getXml(), isIdenticalTo(expected));
 		
 	}
 
+    @Test
 	public void testIndexedPasting() throws Exception {
 		
 		String xml = "<snack>" +
@@ -482,7 +505,8 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 		assertEquals(Orange.class, snack.fruit.get(2).getClass());
 		
 		
-		String expected = "<snack>" + LS +
+		String expected = "<?xml version='1.0' encoding='UTF-8' standalone='no'?>" + LS +
+				"<snack>" + LS +
 				"    <fruit>" + LS + 
 				"        <orange/>" + LS + 
 				"        <apple/>" + LS + 
@@ -495,9 +519,10 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 		xmlParser.parse(
 				session.getComponentPool().contextFor(snack).getConfigurationNode());
 		
-		assertXMLEqual(expected, xmlParser.getXml());	
+		assertThat(xmlParser.getXml(), isIdenticalTo(expected));
 	}	
 	
+    @Test
 	public void testIndexedReplace() throws Exception {
 		
 		String xml = 
@@ -532,7 +557,8 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 		assertEquals(Apple.class, snack.fruit.get(1).getClass());
 		
 		
-		String expected = "<snack>" + LS +
+		String expected = "<?xml version='1.0' encoding='UTF-8' standalone='no'?>" + LS +
+				"<snack>" + LS +
 				"    <fruit>" + LS + 
 				"        <apple/>" + LS + 
 				"        <apple/>" + LS + 
@@ -544,7 +570,7 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 		xmlParser.parse(
 				session.getComponentPool().contextFor(snack).getConfigurationNode());
 		
-		assertXMLEqual(expected, xmlParser.getXml());
+		assertThat(xmlParser.getXml(), isIdenticalTo(expected));
 	
 	}
 	
@@ -564,6 +590,7 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 	}
 	
 	
+    @Test
 	public void testMappedCutting() throws Exception {
 		
 		String xml = "<snack>" +
@@ -606,10 +633,11 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 		xmlParser.parse(
 				session.getComponentPool().contextFor(snack).getConfigurationNode());
 		
-		assertXMLEqual(expected, xmlParser.getXml());
+		assertThat(xmlParser.getXml(), isSimilarTo(expected));
 		
 	}
 
+   @Test
 	public void testMappedPasting() throws Exception {
 		
 		String xml = "<snack>" +
@@ -644,7 +672,8 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 		assertEquals(Orange.class, snack.fruit.get("orange").getClass());
 		
 		
-		String expected = "<snack>" + LS +
+		String expected = "<?xml version='1.0' encoding='UTF-8' standalone='no'?>" + LS +
+				"<snack>" + LS +
 				"    <fruit>" + LS + 
 				"        <orange key=\"yellow\"/>" + LS + 
 				"        <apple key=\"red\"/>" + LS + 
@@ -657,9 +686,10 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 		xmlParser.parse(
 				session.getComponentPool().contextFor(snack).getConfigurationNode());
 		
-		assertXMLEqual(expected, xmlParser.getXml());	
+		assertThat(xmlParser.getXml(), isIdenticalTo(expected));	
 	}	
 	
+   @Test
 	public void testMappedReplace() throws Exception {
 		
 		String xml = 
@@ -706,7 +736,7 @@ public class CutAndPasteSupportTest extends XMLTestCase {
 		xmlParser.parse(
 				session.getComponentPool().contextFor(snack).getConfigurationNode());
 		
-		assertXMLEqual(expected, xmlParser.getXml());
+		assertThat(xmlParser.getXml(), isSimilarTo(expected));
 	
 	}
 	

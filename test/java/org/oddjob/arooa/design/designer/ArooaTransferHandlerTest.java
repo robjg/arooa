@@ -1,4 +1,7 @@
 package org.oddjob.arooa.design.designer;
+import org.junit.Before;
+
+import org.junit.Test;
 
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
@@ -8,7 +11,7 @@ import javax.swing.TransferHandler;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.design.ClipboardHelper;
 import org.oddjob.arooa.parsing.DragPoint;
@@ -16,10 +19,10 @@ import org.oddjob.arooa.parsing.DragTransaction;
 import org.oddjob.arooa.parsing.MockDragPoint;
 import org.oddjob.arooa.registry.ChangeHow;
 
-public class ArooaTransferHandlerTest extends TestCase {
+public class ArooaTransferHandlerTest extends Assert {
 
-	@Override
-	protected void setUp() throws Exception {
+   @Before
+   public void setUp() throws Exception {
 
 		if (GraphicsEnvironment.isHeadless()) {
 			return;
@@ -65,13 +68,14 @@ public class ArooaTransferHandlerTest extends TestCase {
 		}
 		
 		@Override
-		public DragPoint getDragPoint(Object treeNode) {
+		protected DragPoint getDragPoint(Object treeNode) {
 			assertNotNull(treeNode);
 			return new OurDragPoint((DefaultMutableTreeNode) treeNode);
 		}
 	}
 	
 	
+   @Test
 	public void testCopy() {
 	
 		if (GraphicsEnvironment.isHeadless()) {
@@ -101,7 +105,7 @@ public class ArooaTransferHandlerTest extends TestCase {
 		private static final long serialVersionUID = 2009020400L;
 		
 		NoDragPointTree(TreeNode root) {
-			super(root);
+
 		}
 		
 		@Override
@@ -111,6 +115,7 @@ public class ArooaTransferHandlerTest extends TestCase {
 	}
 
 	
+   @Test
 	public void testNoDragPoint() {
 		
 		if (GraphicsEnvironment.isHeadless()) {

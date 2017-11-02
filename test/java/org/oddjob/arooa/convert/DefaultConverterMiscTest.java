@@ -1,11 +1,13 @@
 package org.oddjob.arooa.convert;
 
+import org.junit.Test;
+
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaValue;
 import org.oddjob.arooa.deploy.ListDescriptorBean;
@@ -17,8 +19,9 @@ import org.oddjob.arooa.types.ValueType;
  * @author rob
  *
  */
-public class DefaultConverterMiscTest extends TestCase {
+public class DefaultConverterMiscTest extends Assert {
 
+   @Test
 	public void testValueTypeToString() {
 		
 		ArooaConverter test = new DefaultConverter();
@@ -28,6 +31,7 @@ public class DefaultConverterMiscTest extends TestCase {
 		assertEquals("ValueType-String", path.toString());
 	}
 	
+   @Test
 	public void testStringToArooaValue() {
 		
 		ArooaConverter test = new DefaultConverter();
@@ -37,6 +41,7 @@ public class DefaultConverterMiscTest extends TestCase {
 		assertEquals("String-Object-ArooaValue", path.toString());
 	}
 	
+   @Test
 	public void testStringToInputStream() {
 		
 		ArooaConverter test = new DefaultConverter();
@@ -47,6 +52,7 @@ public class DefaultConverterMiscTest extends TestCase {
 		assertEquals("String-InputStream", path.toString());
 	}
 	
+   @Test
 	public void testURLToString() {
 		
 		ArooaConverter test = new DefaultConverter();
@@ -58,6 +64,7 @@ public class DefaultConverterMiscTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testSomeLoudicrousConversionsDontExist() {
 
 		ArooaConverter test = new DefaultConverter();
@@ -72,6 +79,7 @@ public class DefaultConverterMiscTest extends TestCase {
 				Integer.class, File.class));
 	}
 		
+   @Test
 	public void testThingsToList() throws ConversionFailedException {
 		
 		ArooaConverter test = new DefaultConverter();

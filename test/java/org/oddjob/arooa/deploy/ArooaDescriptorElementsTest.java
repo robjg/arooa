@@ -2,6 +2,7 @@
  * (c) Rob Gordon 2005
  */
 package org.oddjob.arooa.deploy;
+import org.junit.Before;
 
 import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaDescriptor;
@@ -16,7 +17,8 @@ public class ArooaDescriptorElementsTest extends ArooaDescriptorTestBase {
 	
 	ArooaDescriptorFactory test;
 	
-	protected void setUp() throws ArooaParseException {
+   @Before
+   public void setUp() throws ArooaParseException {
 		
 		ArooaConfiguration config = new XMLConfiguration(
 				"Descriptor",

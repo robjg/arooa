@@ -1,8 +1,12 @@
 package org.oddjob.arooa.parsing;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
+
 import java.net.URI;
 
-import org.custommonkey.xmlunit.XMLTestCase;
+import org.junit.Test;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.deploy.ArooaDescriptorBean;
@@ -12,7 +16,7 @@ import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLArooaParser;
 
-public class ElementConfigurationTest extends XMLTestCase {
+public class ElementConfigurationTest {
 
 	public static class Stuff  {
 		
@@ -29,6 +33,7 @@ public class ElementConfigurationTest extends XMLTestCase {
 	
 	String EOL = System.getProperty("line.separator");
 	
+    @Test
 	public void testParseAndSave() throws Exception {
 		
 		BeanDefinition beanDef = new BeanDefinition();
@@ -80,7 +85,7 @@ public class ElementConfigurationTest extends XMLTestCase {
 			"    </moreStuff>" + EOL +
 			"</stf:stuff>" + EOL;
 			
-		assertXMLEqual(expected, xmlParser.getXml());
+		assertThat(xmlParser.getXml(), isSimilarTo(expected));
 	}
 	
 }

@@ -3,17 +3,19 @@
  */
 package org.oddjob.arooa.convert.convertlets;
 
+import org.junit.Test;
+
 import java.text.ParseException;
 import java.util.Date;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.convert.Convertlet;
 import org.oddjob.arooa.convert.convertlets.CheckingConvertletRegistry.Check;
 import org.oddjob.arooa.utils.DateHelper;
 
-public class DateConvertletsTest extends TestCase {
+public class DateConvertletsTest extends Assert {
 
 	private static Date parse(String s) {
 		try {
@@ -24,6 +26,7 @@ public class DateConvertletsTest extends TestCase {
 	}
 	
 	
+   @Test
 	public void testAll() {
 		CheckingConvertletRegistry checking = 
 			new CheckingConvertletRegistry(	new Check[] {

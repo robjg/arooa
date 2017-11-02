@@ -1,10 +1,16 @@
 package org.oddjob.arooa.types;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.custommonkey.xmlunit.XMLTestCase;
-import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Test;
 import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaParseException;
@@ -38,13 +44,11 @@ import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.standard.StandardFragmentParser;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
+import org.xmlunit.builder.DiffBuilder;
+import org.xmlunit.diff.Diff;
 
-public class XMLTypeTest extends XMLTestCase {
+public class XMLTypeTest {
 
-	static {
-		XMLUnit.setIgnoreWhitespace(true);
-	}
-	
 	static final String EOL = System.getProperty("line.separator");
 	
 	public static class HasXMLProperty {
@@ -82,6 +86,7 @@ public class XMLTypeTest extends XMLTestCase {
 		}
 	}
 	
+   @Test
 	public void testAsValue() throws Exception {
 		
 		String xml = 
@@ -114,10 +119,11 @@ public class XMLTypeTest extends XMLTestCase {
 			"    </fruit>" + EOL +
 			"</snack>" + EOL;
 		
-		assertXMLEqual(expected, bean.ourXml);
+		assertThat(bean.ourXml, isSimilarTo(expected));
 
 	}
 	
+   @Test
 	public void testMultipleDocElementsInXml() {
 		
 		String xml = 
@@ -142,6 +148,7 @@ public class XMLTypeTest extends XMLTestCase {
 		}		
 	}
 	
+   @Test
 	public void testAsFragment() throws Exception {
 		
 		String xml = 
@@ -160,7 +167,7 @@ public class XMLTypeTest extends XMLTestCase {
 		String result = converter.convert(
 				test, String.class);
 		
-		assertXMLEqual("<apples/>" + EOL, result);
+		assertThat(result, isSimilarTo("<apples/>" + EOL));
 	}
 	
 	
@@ -197,6 +204,7 @@ public class XMLTypeTest extends XMLTestCase {
 		
 	}
 	
+   @Test
 	public void testDesign() throws Exception {
 		
 		String xml = 
@@ -226,7 +234,7 @@ public class XMLTypeTest extends XMLTestCase {
 		
 		xmlParser.parse(design.getArooaContext().getConfigurationNode());
 		
-		assertXMLEqual(xml, xmlParser.getXml());
+		assertThat(xml, isSimilarTo(xmlParser.getXml()));
 		
 		this.design = design;
 	}
@@ -271,6 +279,7 @@ public class XMLTypeTest extends XMLTestCase {
 	}
 
 	
+   @Test
 	public void testAsConfiguration() throws Exception {
 	
 		
@@ -318,7 +327,7 @@ public class XMLTypeTest extends XMLTestCase {
 			"    </fruit>" + EOL +
 			"</snack>" + EOL;
 		
-		assertXMLEqual(expected, xmlParser.getXml());
+		assertThat(xmlParser.getXml(), isSimilarTo(expected));
 		
 		ChangeListener listener = new ChangeListener();
 		
@@ -347,9 +356,13 @@ public class XMLTypeTest extends XMLTestCase {
 			" </ourConfig>" + 
 			"</whatever>";
 		
-		assertXMLEqual(saved, savedXML.get());
+		Diff diff = DiffBuilder.compare(saved)
+				.withTest(saved).ignoreWhitespace().build();
+		
+		assertFalse(diff.toString(), diff.hasDifferences());
 	}
 	
+   @Test
 	public void testAsNullConfiguration() throws Exception {
 		
 		String xml = 

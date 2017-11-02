@@ -1,9 +1,11 @@
 package org.oddjob.arooa.parsing;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
@@ -13,7 +15,7 @@ import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.utils.ListSetterHelper;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class CutAndPasteSupport3Test extends TestCase {
+public class CutAndPasteSupport3Test extends Assert {
 
 	public static class Component {
 		
@@ -34,6 +36,7 @@ public class CutAndPasteSupport3Test extends TestCase {
 	 * Tracking down a bug that obfuscated the real exception.
 	 * @throws ArooaParseException 
 	 */
+   @Test
 	public void testPastingSameId() throws ArooaParseException {
 		Component root = new Component();
 		

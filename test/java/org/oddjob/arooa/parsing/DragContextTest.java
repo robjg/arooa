@@ -1,9 +1,11 @@
 package org.oddjob.arooa.parsing;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
@@ -21,7 +23,7 @@ import org.oddjob.arooa.xml.XMLConfiguration;
  * @author rob
  *
  */
-public class DragContextTest extends TestCase {
+public class DragContextTest extends Assert {
 
 	public static class Component {
 	
@@ -33,6 +35,7 @@ public class DragContextTest extends TestCase {
 		}
 	}
 		
+   @Test
 	public void testPasteCommit() throws ArooaPropertyException, ArooaParseException {
 
 		String xml = 
@@ -69,6 +72,7 @@ public class DragContextTest extends TestCase {
 		assertEquals(2, root.children.size());
 	}
 	
+   @Test
 	public void testPasteRollback() throws ArooaParseException {
 		
 		String xml = 
@@ -105,6 +109,7 @@ public class DragContextTest extends TestCase {
 		assertEquals(1, root.children.size());
 	}
 	
+   @Test
 	public void testDuplicateId() throws ArooaParseException {
 		
 		String xml = 
@@ -151,6 +156,7 @@ public class DragContextTest extends TestCase {
 	}
 
 	
+   @Test
 	public void testExisting() throws ArooaParseException {
 		
 		String xml = 
@@ -203,6 +209,7 @@ public class DragContextTest extends TestCase {
 	}
 
 	
+   @Test
 	public void testEither() throws ArooaParseException {
 		
 		String xml = 
@@ -252,6 +259,7 @@ public class DragContextTest extends TestCase {
 	}
 	
 	
+   @Test
 	public void testEitherRollback() throws ArooaParseException {
 		
 		String xml = 
@@ -299,6 +307,7 @@ public class DragContextTest extends TestCase {
 		assertEquals(2, root.children.size());
 	}
 	
+   @Test
 	public void testMaybe() throws ArooaParseException {
 		
 		String xml = 

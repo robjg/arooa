@@ -1,6 +1,9 @@
 package org.oddjob.arooa.standard;
+import org.junit.Before;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaBeanDescriptor;
@@ -37,10 +40,10 @@ import org.oddjob.arooa.runtime.RuntimeListener;
  * @author rob
  *
  */
-public class ContainerRuntimeFactoryTest extends TestCase {
+public class ContainerRuntimeFactoryTest extends Assert {
 
-	@Override
-	protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
 		Class.forName(SimpleArooaClass.class.getName());
 	}
 	
@@ -301,6 +304,7 @@ public class ContainerRuntimeFactoryTest extends TestCase {
 	}
 	
 
+   @Test
 	public void testComponent() {
 
 		MutableAttributes attrs = new MutableAttributes();
@@ -346,6 +350,7 @@ public class ContainerRuntimeFactoryTest extends TestCase {
 		assertEquals("fruit: Component", parentContext.runtime.value);
 	}
 	
+   @Test
 	public void testValue() {
 
 		MutableAttributes attrs = new MutableAttributes();
@@ -391,6 +396,7 @@ public class ContainerRuntimeFactoryTest extends TestCase {
 		assertEquals("fruit: Value", context.runtime.value);
 	}
 		
+   @Test
 	public void testMappedComponent() {
 
 		RootContext rootContext = new RootContext();
@@ -439,6 +445,7 @@ public class ContainerRuntimeFactoryTest extends TestCase {
 		assertEquals("red", context.runtime.key);
 	}
 
+   @Test
 	public void testMappedValue() {
 
 		RootContext rootContext = new RootContext();
@@ -487,6 +494,7 @@ public class ContainerRuntimeFactoryTest extends TestCase {
 		assertEquals("red", context.runtime.key);
 	}
 	
+   @Test
 	public void testIndexedComponent() {
 
 		RootContext rootContext = new RootContext();
@@ -533,6 +541,7 @@ public class ContainerRuntimeFactoryTest extends TestCase {
 
 	}
 
+   @Test
 	public void testIndexedValue() {
 		
 		RootContext rootContext = new RootContext();

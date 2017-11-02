@@ -1,12 +1,15 @@
 package org.oddjob.arooa.utils;
 
+import org.junit.Test;
+
 import java.text.ParseException;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
-public class ArooaTokenizerTest extends TestCase {
+public class ArooaTokenizerTest extends Assert {
 	
 	
+   @Test
 	public void testSimpleTokenizer() throws ParseException {
 	
 		FlexibleTokenizerFactory test = new FlexibleTokenizerFactory();
@@ -24,6 +27,7 @@ public class ArooaTokenizerTest extends TestCase {
 		assertEquals("fox", results[3]);
 	}
 	
+   @Test
 	public void testEscapedTokenizer() throws ParseException {
 		
 		FlexibleTokenizerFactory test = new FlexibleTokenizerFactory();
@@ -42,6 +46,7 @@ public class ArooaTokenizerTest extends TestCase {
 		assertEquals("brown fox", results[2]);
 	}
 	
+   @Test
 	public void testQuoteAndEscapedTokenizer() throws ParseException {
 		
 		FlexibleTokenizerFactory test = new FlexibleTokenizerFactory();
@@ -62,6 +67,7 @@ public class ArooaTokenizerTest extends TestCase {
 		assertEquals("fox", results[3]);		
 	}
 	
+   @Test
 	public void testQuoteQuoteTokenizer() throws ParseException {
 		
 		FlexibleTokenizerFactory test = new FlexibleTokenizerFactory();

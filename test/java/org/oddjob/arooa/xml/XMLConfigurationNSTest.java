@@ -1,11 +1,13 @@
 package org.oddjob.arooa.xml;
 
+import org.junit.Test;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaParseException;
@@ -19,7 +21,7 @@ import org.oddjob.arooa.runtime.ConfigurationNode;
 import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
-public class XMLConfigurationNSTest extends TestCase {
+public class XMLConfigurationNSTest extends Assert {
 
 	class ParentContext extends MockArooaContext {
 		
@@ -79,6 +81,7 @@ public class XMLConfigurationNSTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testParse() throws ArooaParseException, URISyntaxException {
 		
 		String xml = "<f:fruit xmlns:f='http://www.rgordon.co.uk/oddjob/fruit'>" +
@@ -108,6 +111,7 @@ public class XMLConfigurationNSTest extends TestCase {
 
 	}
 	
+   @Test
 	public void testParseDefaultNS() throws ArooaParseException, URISyntaxException {
 		
 		String xml = "<fruit xmlns='http://www.rgordon.co.uk/oddjob/fruit'>" +

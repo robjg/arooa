@@ -1,11 +1,14 @@
 package org.oddjob.arooa.beanutils;
+import org.junit.Before;
+
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.DynaClass;
@@ -17,10 +20,10 @@ import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 
-public class BeanUtilsBeanOverviewTest extends TestCase {	
+public class BeanUtilsBeanOverviewTest extends Assert {	
 
-	@Override
-	protected void setUp() throws Exception {
+   @Before
+   public void setUp() throws Exception {
 		Class.forName(DynaArooaClass.class.getName());		
 		Class.forName(SimpleArooaClass.class.getName());		
 	}
@@ -49,6 +52,7 @@ public class BeanUtilsBeanOverviewTest extends TestCase {
 	}
 
 	
+   @Test
 	public void testBasics() throws ArooaPropertyException {
 		PropertyAccessor propertyAccessor = 
 			new BeanUtilsPropertyAccessor(); 
@@ -119,6 +123,7 @@ public class BeanUtilsBeanOverviewTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testIndexed() throws ArooaPropertyException {
 		PropertyAccessor propertyAccessor = 
 			new BeanUtilsPropertyAccessor(); 
@@ -167,6 +172,7 @@ public class BeanUtilsBeanOverviewTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testMapped() throws ArooaPropertyException {
 		PropertyAccessor propertyAccessor = 
 			new BeanUtilsPropertyAccessor(); 
@@ -206,6 +212,7 @@ public class BeanUtilsBeanOverviewTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testMappedWithJustASetter() {
 		PropertyAccessor propertyAccessor = 
 			new BeanUtilsPropertyAccessor(); 
@@ -283,6 +290,7 @@ public class BeanUtilsBeanOverviewTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testDynaBean() throws ClassNotFoundException {
 		
 		PropertyAccessor propertyAccessor = 
@@ -298,6 +306,7 @@ public class BeanUtilsBeanOverviewTest extends TestCase {
 		assertFalse(test.hasWriteableProperty("fruit"));
 	}
 	
+   @Test
 	public void testDynaBeanByClass() {
 		PropertyAccessor propertyAccessor = 
 			new BeanUtilsPropertyAccessor(); 

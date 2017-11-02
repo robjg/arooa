@@ -1,6 +1,8 @@
 package org.oddjob.arooa.types;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaParseException;
@@ -22,7 +24,7 @@ import org.oddjob.arooa.registry.InvalidIdException;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class ImportTypeTest extends TestCase {
+public class ImportTypeTest extends Assert {
 
 	public static class Apple {
 		
@@ -61,6 +63,7 @@ public class ImportTypeTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testXML() throws ArooaParseException, InvalidIdException {
 		
 		Apple root = new Apple();
@@ -86,6 +89,7 @@ public class ImportTypeTest extends TestCase {
 		assertEquals("red", root.colour); 
 	}
 	
+   @Test
 	public void testResource() throws ArooaParseException {
 		
 		Apple root = new Apple();
@@ -108,6 +112,7 @@ public class ImportTypeTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testNoResource() throws NoConversionAvailableException, ConversionFailedException {
 
 		class OurSession extends MockArooaSession {
@@ -148,6 +153,7 @@ public class ImportTypeTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testComponent() throws ArooaParseException {
 		
 		Snack root = new Snack();

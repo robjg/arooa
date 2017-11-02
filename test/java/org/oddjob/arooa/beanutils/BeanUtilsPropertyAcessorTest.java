@@ -3,6 +3,8 @@
  */
 package org.oddjob.arooa.beanutils;
 
+import org.junit.Test;
+
 import java.beans.IndexedPropertyDescriptor;
 import java.beans.PropertyDescriptor;
 import java.io.File;
@@ -10,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.DynaClass;
@@ -32,7 +34,7 @@ import org.oddjob.arooa.types.ArooaObject;
 /**
  * Tests for BeanUtilsBeanHelper
  */
-public class BeanUtilsPropertyAcessorTest extends TestCase {
+public class BeanUtilsPropertyAcessorTest extends Assert {
 
 	private static final ArooaConverter CONVERTER = new DefaultConverter();
 	
@@ -44,6 +46,7 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
 	 * @throws ConversionFailedException 
 	 * @throws NoConversionAvailableException 
 	 */
+   @Test
     public void testAttributeSetters() throws ArooaException, NoConversionAvailableException, ConversionFailedException {
 		
     	PropertyAccessor bubh = 
@@ -147,6 +150,7 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
         assertEquals("pairs", CONVERTER.convert(subject.thirteen[1], Object.class));
     }
 
+   @Test
     public void testAttributeGetters() throws ArooaException, ArooaPropertyException, ArooaConversionException {
 		
     	PropertyAccessor test = 
@@ -241,6 +245,7 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
      * More complicated cases.
      *
      */
+   @Test
     public void testAttributeSetters2() {
     	PropertyAccessor bubh = 
     		new BeanUtilsPropertyAccessor().accessorWithConversions(CONVERTER);
@@ -253,6 +258,7 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
     	
     }
     	
+   @Test
 	public void testNestedSet() {
 		OuterBeanForSetters subject = new OuterBeanForSetters();
 		PropertyAccessor test = 
@@ -288,6 +294,7 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
 		
 	}	
     
+   @Test
 	public void testNestedGet() {
 		OuterBeanForGetters subject = new OuterBeanForGetters();
 		PropertyAccessor test = 
@@ -300,6 +307,7 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
         
 	}
 
+   @Test
 	public void testSecondLevelNestedGet() {
 		
 		SecondLevelGetters subject = new SecondLevelGetters();
@@ -317,6 +325,7 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
 	 * 
 	 * @throws ArooaException
 	 */
+   @Test
     public void testMappedProperties() throws ArooaException {
 		
     	PropertyAccessor test = 
@@ -581,6 +590,7 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
 	}
 
 	// Not sure when this might be useful.
+   @Test
 	public void testMapProperties() {
 		
 		PropertyAccessor test = 
@@ -606,6 +616,7 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
 	 * Test getting the type of a property.
 	 *
 	 */
+   @Test
 	public void testPropertyType() {
     	BeanUtilsPropertyAccessor bubh = new BeanUtilsPropertyAccessor();
     	
@@ -639,6 +650,7 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
 	 * Tracking down a bug where args property of 
 	 * Oddjob wasn't being set properly.
 	 */
+   @Test
 	public void testPropertyType2() throws Exception{
 		// first look at an array without a indexed acessor.
 		ThingWithSetters thing = new ThingWithSetters();
@@ -737,6 +749,7 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
     	}
     }
     
+   @Test
     public void testGetProperty() {
     	BeanUtilsPropertyAccessor test = new BeanUtilsPropertyAccessor();
     	
@@ -747,6 +760,7 @@ public class BeanUtilsPropertyAcessorTest extends TestCase {
     	assertEquals(String.class, test.getPropertyType(subject, "mapped"));
     }
     
+   @Test
     public void testDynaBeanSetters() {
     	BeanUtilsPropertyAccessor test = new BeanUtilsPropertyAccessor();
     	

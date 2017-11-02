@@ -3,9 +3,11 @@
  */
 package org.oddjob.arooa.convert.convertlets;
 
+import org.junit.Test;
+
 import java.text.ParseException;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaValue;
 import org.oddjob.arooa.convert.ConversionFailedException;
@@ -15,10 +17,11 @@ import org.oddjob.arooa.convert.DefaultConversionRegistry;
 import org.oddjob.arooa.types.ArooaObject;
 import org.oddjob.arooa.utils.DateHelper;
 
-public class SqlDateConvertletsTest extends TestCase {
+public class SqlDateConvertletsTest extends Assert {
 	
 	
 	
+   @Test
 	public void testDateToDate() throws ConversionFailedException, ParseException {
 		
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
@@ -34,6 +37,7 @@ public class SqlDateConvertletsTest extends TestCase {
 		assertEquals("2010-07-02", DateHelper.formatDate(result));
 	}
 
+   @Test
 	public void testStringToDate() throws ConversionFailedException, ParseException {
 		
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
@@ -49,6 +53,7 @@ public class SqlDateConvertletsTest extends TestCase {
 		assertEquals(new java.sql.Date(DateHelper.parseDate("2010-07-02").getTime()), result);
 	}
 
+   @Test
 	public void testDateToString() throws ConversionFailedException, ParseException {
 		
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
@@ -66,6 +71,7 @@ public class SqlDateConvertletsTest extends TestCase {
 	}
 
 	
+   @Test
 	public void testDateToArooaValue() throws ConversionFailedException {
 		
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();

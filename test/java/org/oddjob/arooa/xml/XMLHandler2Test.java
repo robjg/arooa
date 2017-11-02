@@ -1,8 +1,11 @@
 package org.oddjob.arooa.xml;
 
+import static org.junit.Assert.assertThat;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
+
 import java.net.URI;
 
-import org.custommonkey.xmlunit.XMLTestCase;
+import org.junit.Test;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.parsing.MockArooaContext;
@@ -10,7 +13,7 @@ import org.oddjob.arooa.parsing.MutableAttributes;
 import org.oddjob.arooa.parsing.PrefixMappings;
 import org.oddjob.arooa.parsing.SimplePrefixMappings;
 
-public class XMLHandler2Test extends XMLTestCase {
+public class XMLHandler2Test {
 
 	String ls = System.getProperty("line.separator");
 	
@@ -25,6 +28,7 @@ public class XMLHandler2Test extends XMLTestCase {
 		
 	}
 	
+    @Test
 	public void testSimple() throws Exception {
 		
 		XmlHandler2 test = new XmlHandler2();
@@ -50,11 +54,10 @@ public class XMLHandler2Test extends XMLTestCase {
 				"    <apple/>" + ls +
 				"</fruit>" + ls;
 
-		assertXMLEqual(
-				expected,
-				test.getXml());
+		assertThat(test.getXml(), isSimilarTo(expected));
 	}
 	
+    @Test
 	public void testAttributes() throws Exception {
 		
 		XmlHandler2 test = new XmlHandler2();
@@ -73,11 +76,10 @@ public class XMLHandler2Test extends XMLTestCase {
 		
 		String expected = "<fruit colour=\"red\"/>" + ls;
 		
-		assertXMLEqual(
-				expected,
-				test.getXml());
+		assertThat(test.getXml(), isSimilarTo(expected));
 	}
 	
+    @Test
 	public void testQuotesInAttributes() throws Exception {
 		
 		XmlHandler2 test = new XmlHandler2();
@@ -96,11 +98,10 @@ public class XMLHandler2Test extends XMLTestCase {
 		
 		String expected = "<fruit colour=\"&quot;red&quot;\"/>" + ls;
 		
-		assertXMLEqual(
-				expected,
-				test.getXml());
+		assertThat(test.getXml(), isSimilarTo(expected));
 	}
 	
+    @Test
 	public void testText() throws Exception {
 				
 		XmlHandler2 test = new XmlHandler2();
@@ -118,11 +119,10 @@ public class XMLHandler2Test extends XMLTestCase {
 		
 		String expected = "<fruit><![CDATA[Very <> Nice]]></fruit>" + ls;
 		
-		assertXMLEqual(
-				expected,
-				test.getXml());
+		assertThat(test.getXml(), isSimilarTo(expected));
 	}
 	
+    @Test
 	public void testComplicated() throws Exception {
 		
 		XmlHandler2 test = new XmlHandler2();
@@ -152,11 +152,10 @@ public class XMLHandler2Test extends XMLTestCase {
 		String expected = "<fruit colour=\"red\">" + ls +
 				"    <apple/><![CDATA[Very & Nice]]></fruit>" + ls;
 		
-		assertXMLEqual(
-				expected,
-				test.getXml());
+		assertThat(test.getXml(), isSimilarTo(expected));
 	}
 	
+    @Test
 	public void testNS() throws Exception {
 		
 		XmlHandler2 test = new XmlHandler2();
@@ -173,12 +172,12 @@ public class XMLHandler2Test extends XMLTestCase {
 		ArooaContext newContext = test.onStartElement(element, context);
 		newContext.getRuntime().init();
 		
-		assertXMLEqual(
+		assertThat(test.getXml(), isSimilarTo(
 				"<arooa:fruit xmlns:arooa=\"http://www.rgordon.co.uk/oddjob/arooa\"/>" +
-					ls,
-				test.getXml());
+					ls));
 	}
 	
+    @Test
 	public void testDefaultNS() throws Exception {
 		
 		XmlHandler2 test = new XmlHandler2();
@@ -195,12 +194,12 @@ public class XMLHandler2Test extends XMLTestCase {
 		ArooaContext newContext = test.onStartElement(element, context);
 		newContext.getRuntime().init();
 		
-		assertXMLEqual(
+		assertThat(test.getXml(), isSimilarTo(
 				"<fruit xmlns=\"http://www.rgordon.co.uk/oddjob/arooa\"/>" +
-					ls,
-				test.getXml());
+					ls));
 	}
 	
+    @Test
 	public void testReplace() throws Exception {
 		
 		XmlHandler2 test = new XmlHandler2();
@@ -247,16 +246,12 @@ public class XMLHandler2Test extends XMLTestCase {
 			"    <orange/>" + ls +
 			"</fruit>" + ls;
 
-		assertXMLEqual(
-				expected,
-				test.getXml());
+		assertThat(test.getXml(), isSimilarTo(expected));
 	
 		XMLArooaParser parser = new XMLArooaParser();
 		
 		parser.parse(context1.getConfigurationNode());
 		
-		assertXMLEqual(
-				expected,
-				parser.getXml());
+		assertThat(parser.getXml(), isSimilarTo(expected));
 	}
 }

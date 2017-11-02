@@ -1,6 +1,8 @@
 package org.oddjob.arooa.standard;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaParseException;
@@ -19,7 +21,7 @@ import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class StandardConfigurationNodeTest extends TestCase {
+public class StandardConfigurationNodeTest extends Assert {
 
 	public static class Apple {
 		
@@ -120,6 +122,7 @@ public class StandardConfigurationNodeTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testSave() throws ArooaParseException {
 
 		Apple root = new Apple();

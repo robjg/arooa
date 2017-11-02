@@ -1,13 +1,15 @@
 package org.oddjob.arooa.deploy;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
 import org.oddjob.arooa.life.SimpleArooaClass;
 
-public class BeanDefinitionsTest extends TestCase {
+public class BeanDefinitionsTest extends Assert {
 
 	public interface Fruit {
 		
@@ -17,6 +19,7 @@ public class BeanDefinitionsTest extends TestCase {
 		
 	}
 	
+   @Test
 	public void testIsBeanDefinition() {
 		
 		BeanDefinition beanDef = new BeanDefinition();

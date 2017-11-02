@@ -1,10 +1,18 @@
 package org.oddjob.arooa.design.designer;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
+
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.tree.TreeModel;
 
-import org.custommonkey.xmlunit.XMLTestCase;
+import org.junit.Test;
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaType;
@@ -41,7 +49,7 @@ import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class DesignerModelTest extends XMLTestCase {
+public class DesignerModelTest {
 
 	String EOL = System.getProperty("line.separator");
 	
@@ -95,6 +103,7 @@ public class DesignerModelTest extends XMLTestCase {
 		}
 	}
 	
+    @Test
 	public void testReplaceRootXML() throws Exception {
 
 		DesignParser parser = new DesignParser(
@@ -115,7 +124,7 @@ public class DesignerModelTest extends XMLTestCase {
 		
 		UnknownInstance unknown = (UnknownInstance) model.getCurrentComponent();
 
-		assertXMLEqual("<snack/>" + EOL, unknown.getXml());
+		assertThat(unknown.getXml(), isSimilarTo("<snack/>" + EOL));
 		
 		// Sanity check the root is connected to the original
 		// root context.
@@ -142,7 +151,7 @@ public class DesignerModelTest extends XMLTestCase {
 		
 		handle.save();
 		
-		assertXMLEqual("<lunch/>" + EOL, savedXML.get());
+		assertThat(savedXML.get(), isSimilarTo("<lunch/>" + EOL));
 	}
 	
 	private class OurDescriptor extends MockArooaDescriptor {
@@ -247,6 +256,7 @@ public class DesignerModelTest extends XMLTestCase {
 	}
 	
 	
+   @Test
 	public void testAddRemoveChild() throws ArooaParseException {
 		
 		DesignSeedContext context = new DesignSeedContext(
@@ -279,6 +289,7 @@ public class DesignerModelTest extends XMLTestCase {
 	}
 	
 	
+   @Test
 	public void testAddingBuiltStructure() throws ArooaParseException {
 		
 		DesignSeedContext context = new DesignSeedContext(
@@ -330,6 +341,7 @@ public class DesignerModelTest extends XMLTestCase {
 	 * Check that the added child must be a DesignComponent.
 	 * @throws ArooaParseException 
 	 */
+   @Test
 	public void testAddingNonComponentChild() throws ArooaParseException {
 		
 		DesignSeedContext context = new DesignSeedContext(
@@ -361,6 +373,7 @@ public class DesignerModelTest extends XMLTestCase {
 	}
 	
 	
+   @Test
 	public void testReplaceSelectedConfiguration() throws ArooaParseException {
 		
 		DesignSeedContext context = new DesignSeedContext(
@@ -398,6 +411,7 @@ public class DesignerModelTest extends XMLTestCase {
 	// can't refer to a local model.
 	DesignerModel model;
 	
+   @Test
 	public void testReplaceSelectedRootConfiguration() throws ArooaParseException {
 
 		final DesignParser parser = new DesignParser(
@@ -430,6 +444,7 @@ public class DesignerModelTest extends XMLTestCase {
 		assertTrue(model.getCurrentSelection() == treeModel.getRoot());
 	}
 	
+   @Test
 	public void testViewSelectedAsXML() throws Exception {
 		
 		DesignSeedContext context = new DesignSeedContext(
@@ -462,6 +477,6 @@ public class DesignerModelTest extends XMLTestCase {
 		
 		Unknown unknown = (Unknown) newChild.getDesignComponent(); 
 		
-		assertXMLEqual("<snack/>" + EOL, unknown.getXml());		
+		assertThat(unknown.getXml(), isSimilarTo("<snack/>" + EOL));
 	}
 }

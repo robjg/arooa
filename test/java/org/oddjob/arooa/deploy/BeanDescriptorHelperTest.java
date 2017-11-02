@@ -1,12 +1,15 @@
 package org.oddjob.arooa.deploy;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ConfiguredHow;
 import org.oddjob.arooa.MockArooaBeanDescriptor;
 
-public class BeanDescriptorHelperTest extends TestCase {
+public class BeanDescriptorHelperTest extends Assert {
 
+   @Test
 	public void testElement() {
 		
 		BeanDescriptorHelper helper = new BeanDescriptorHelper(null);
@@ -24,6 +27,7 @@ public class BeanDescriptorHelperTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testElement2() {
 		
 		BeanDescriptorHelper helper = new BeanDescriptorHelper(

@@ -1,9 +1,11 @@
 package org.oddjob.arooa.design.etc;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaType;
@@ -21,7 +23,7 @@ import org.oddjob.arooa.parsing.CutAndPasteSupport;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-public class ComponentInstanceTest extends TestCase {
+public class ComponentInstanceTest extends Assert {
 
 	public static class OurComponent {
 		
@@ -65,6 +67,7 @@ public class ComponentInstanceTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testAddRemove() throws ArooaParseException {
 
 		DesignSeedContext context = new DesignSeedContext(

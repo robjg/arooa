@@ -1,6 +1,8 @@
 package org.oddjob.arooa.registry;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import org.junit.Assert;
 
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ComponentTrinity;
@@ -13,7 +15,7 @@ import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.standard.StandardArooaSession;
 
-public class SimpleComponentPoolTest extends TestCase {
+public class SimpleComponentPoolTest extends Assert {
 
 	public static class Fruit {
 		
@@ -65,6 +67,7 @@ public class SimpleComponentPoolTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testLookup() {
 		
 		SimpleComponentPool test = new SimpleComponentPool();
@@ -86,6 +89,7 @@ public class SimpleComponentPoolTest extends TestCase {
 		assertEquals(component, test.trinityForId("fruit").getTheComponent());
 	}
 	
+   @Test
 	public void testNoIdLookup() {
 		
 		SimpleComponentPool test = new SimpleComponentPool();
@@ -106,6 +110,7 @@ public class SimpleComponentPoolTest extends TestCase {
 		assertEquals(context, test.contextFor(proxy));
 	}
 	
+   @Test
 	public void testSave() throws ComponentPersistException {
 		
 		SimpleComponentPool test = new SimpleComponentPool();
@@ -131,6 +136,7 @@ public class SimpleComponentPoolTest extends TestCase {
 		assertTrue(context.session.persister.removed);		
 	}
 	
+   @Test
 	public void testNoIdNoSave() throws ComponentPersistException {
 		
 		SimpleComponentPool test = new SimpleComponentPool();
@@ -151,6 +157,7 @@ public class SimpleComponentPoolTest extends TestCase {
 		assertFalse(context.session.persister.saved);
 	}
 	
+   @Test
 	public void testNoPersisterNoSave() throws ComponentPersistException {
 		
 		SimpleComponentPool test = new SimpleComponentPool();
@@ -205,6 +212,7 @@ public class SimpleComponentPoolTest extends TestCase {
 		}
 	}
 	
+   @Test
 	public void testConfigure() {
 		
 		SimpleComponentPool test = new SimpleComponentPool();
