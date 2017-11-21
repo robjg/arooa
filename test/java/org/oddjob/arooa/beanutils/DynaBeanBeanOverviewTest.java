@@ -11,13 +11,14 @@ import org.junit.Assert;
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.DynaClass;
 import org.apache.commons.beanutils.DynaProperty;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.reflect.ArooaNoPropertyException;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 
 public class DynaBeanBeanOverviewTest extends Assert {
 
-	private static final Logger logger = Logger.getLogger(
+	private static final Logger logger = LoggerFactory.getLogger(
 			DynaBeanBeanOverviewTest.class);
 	
 	class OurDynaClass implements DynaClass {

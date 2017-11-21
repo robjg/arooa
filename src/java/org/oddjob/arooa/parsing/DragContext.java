@@ -1,6 +1,7 @@
 package org.oddjob.arooa.parsing;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
@@ -17,7 +18,7 @@ import org.oddjob.arooa.xml.XMLConfiguration;
  *
  */
 public class DragContext implements DragPoint {
-	private static final Logger logger = Logger.getLogger(DragContext.class);
+	private static final Logger logger = LoggerFactory.getLogger(DragContext.class);
 	
 	private static SimpleTransaction transaction;
 	    

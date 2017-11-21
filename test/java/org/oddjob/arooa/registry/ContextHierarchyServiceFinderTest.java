@@ -8,7 +8,8 @@ import javax.inject.Inject;
 
 import org.junit.Assert;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ConfigurationHandle;
@@ -22,7 +23,7 @@ import org.oddjob.arooa.xml.XMLConfiguration;
 public class ContextHierarchyServiceFinderTest extends Assert {
 
 	private static final Logger logger = 
-			Logger.getLogger(ContextHierarchyServiceFinderTest.class);
+			LoggerFactory.getLogger(ContextHierarchyServiceFinderTest.class);
 	
 	@Rule public TestName name = new TestName();
 

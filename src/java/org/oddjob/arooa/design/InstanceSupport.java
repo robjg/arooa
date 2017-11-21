@@ -2,7 +2,8 @@ package org.oddjob.arooa.design;
 
 import java.util.TreeMap;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaConfigurationException;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.life.InstantiationContext;
@@ -22,7 +23,7 @@ import org.oddjob.arooa.types.BeanType;
  */
 public class InstanceSupport {
 
-	private static final Logger logger = Logger.getLogger(InstanceSupport.class);
+	private static final Logger logger = LoggerFactory.getLogger(InstanceSupport.class);
 	
 	/** The property context. */
 	private final ArooaContext arooaContext;

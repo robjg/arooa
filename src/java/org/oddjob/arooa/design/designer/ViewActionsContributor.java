@@ -12,7 +12,8 @@ import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.design.DesignComponent;
 import org.oddjob.arooa.design.Unknown;
@@ -33,7 +34,7 @@ import org.oddjob.arooa.xml.XMLConfiguration;
  */
 public class ViewActionsContributor implements ActionContributor {
 
-	private static final Logger logger = Logger.getLogger(ViewActionsContributor.class);
+	private static final Logger logger = LoggerFactory.getLogger(ViewActionsContributor.class);
 	
 	public static final String VIEW_MENU_ID = "view";
 	

@@ -7,16 +7,15 @@ import javax.swing.JOptionPane;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggingEvent;
 import org.oddjob.arooa.design.DesignNotifier;
 import org.oddjob.arooa.design.actions.ActionContributor;
 import org.oddjob.arooa.design.actions.ConfigurableMenus;
 import org.oddjob.arooa.design.view.SwingFormView;
 import org.oddjob.arooa.design.view.ViewHelper;
+import org.oddjob.arooa.logging.Appender;
+import org.oddjob.arooa.logging.LoggerAdapter;
+import org.oddjob.arooa.logging.LogLevel;
+import org.oddjob.arooa.logging.LoggingEvent;
 
 /**
  * The Swing GUI designer dialogue for Oddjob.
@@ -71,12 +70,12 @@ implements SwingFormView {
 
 		if (!noErrorDialg) {
 			final Appender errorListener = 
-				new AppenderSkeleton () {
+				new Appender() {
 				
 				@Override
-				protected void append(LoggingEvent event) {
+				public void append(LoggingEvent event) {
 	
-					if (event.getLevel().isGreaterOrEqual(Level.ERROR)) {
+					if (!event.getLevel().isLessThan(LogLevel.ERROR)) {
 					
 						JOptionPane.showMessageDialog(
 								component, 
@@ -84,27 +83,23 @@ implements SwingFormView {
 								"Error",
 								JOptionPane.ERROR_MESSAGE);
 					}	
-				}
-				
-				public void close() {
-				}
-	
-	
-				public boolean requiresLayout() {
-					return false;
-				}
+				}				
 			};
 			
 			component.addAncestorListener(new AncestorListener() {
 				public void ancestorAdded(AncestorEvent event) {
-					Logger.getLogger("org.oddjob.arooa.design").addAppender(errorListener);				
+					LoggerAdapter
+							.appenderAdapterFor("org.oddjob.arooa.design")
+							.addAppender(errorListener);				
 				}
 				
 				public void ancestorMoved(AncestorEvent event) {
 				}
 				
 				public void ancestorRemoved(AncestorEvent event) {
-					Logger.getLogger("org.oddjob.arooa.design").removeAppender(errorListener);
+					LoggerAdapter
+							.appenderAdapterFor("org.oddjob.arooa.design")
+							.removeAppender(errorListener);
 				}
 			});
 		}	

@@ -5,14 +5,15 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.Assert;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ComponentTrinity;
 import org.oddjob.arooa.parsing.MockArooaContext;
 
 public class ComponentsServiceFinderTest extends Assert {
 
 	private static final Logger logger = 
-			Logger.getLogger(ComponentsServiceFinderTest.class);
+			LoggerFactory.getLogger(ComponentsServiceFinderTest.class);
 	
 	@Rule public TestName name = new TestName();
 

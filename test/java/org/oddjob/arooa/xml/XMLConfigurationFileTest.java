@@ -8,7 +8,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -29,7 +30,7 @@ import org.xml.sax.SAXException;
 
 public class XMLConfigurationFileTest {
 	
-	private static final Logger logger = Logger.getLogger(XMLConfigurationFileTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(XMLConfigurationFileTest.class);
 
 	final File workDir;
 	

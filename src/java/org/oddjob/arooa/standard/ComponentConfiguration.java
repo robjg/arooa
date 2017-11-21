@@ -1,6 +1,7 @@
 package org.oddjob.arooa.standard;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaConfigurationException;
 import org.oddjob.arooa.ArooaConstants;
 import org.oddjob.arooa.ArooaException;
@@ -21,7 +22,7 @@ import org.oddjob.arooa.reflect.ArooaPropertyException;
  *
  */
 class ComponentConfiguration extends InstanceConfiguration {
-	private static final Logger logger = Logger.getLogger(
+	private static final Logger logger = LoggerFactory.getLogger(
 			ComponentConfiguration.class);
 
 	private final String id;

@@ -1,6 +1,7 @@
 package org.oddjob.arooa.design;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaConfigurationException;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaType;
@@ -16,7 +17,7 @@ import org.oddjob.arooa.runtime.RuntimeListenerAdapter;
 
 abstract class XMLFirstHandler implements ArooaHandler {
 
-	private static final Logger logger = Logger.getLogger(PropertyContext.class);
+	private static final Logger logger = LoggerFactory.getLogger(PropertyContext.class);
 	
 	private DesignInstance xmlDesign;
 

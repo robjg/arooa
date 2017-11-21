@@ -21,13 +21,14 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Create dialogs for forms.
  */
 public class ValueDialog {
-	private static final Logger logger = Logger.getLogger(ValueDialog.class);
+	private static final Logger logger = LoggerFactory.getLogger(ValueDialog.class);
 
 	/** The form. */
 	private final Component form;

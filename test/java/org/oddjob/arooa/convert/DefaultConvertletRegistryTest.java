@@ -12,14 +12,15 @@ import java.net.URL;
 
 import org.junit.Assert;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaValue;
 import org.oddjob.arooa.convert.convertlets.ArooaValueConvertlets;
 import org.oddjob.arooa.convert.convertlets.FileConvertlets;
 import org.oddjob.arooa.convert.convertlets.URLConvertlets;
 
 public class DefaultConvertletRegistryTest extends Assert {
-	private static final Logger logger = Logger.getLogger(DefaultConvertletRegistryTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(DefaultConvertletRegistryTest.class);
 	
 	/**
 	 * Test that the order of registration is used when finding

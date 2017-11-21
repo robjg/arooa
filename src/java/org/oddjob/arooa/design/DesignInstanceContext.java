@@ -29,7 +29,7 @@ import org.oddjob.arooa.xml.XmlHandler2;
  */
 public class DesignInstanceContext implements ArooaContext {
 
-//	private static final Logger logger = Logger.getLogger(DesignInstanceContext.class);
+//	private static final Logger logger = LoggerFactory.getLogger(DesignInstanceContext.class);
 	
 	private final ArooaContext parent;
 	

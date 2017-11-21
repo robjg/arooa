@@ -5,7 +5,8 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.Assert;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.parsing.ArooaContext;
@@ -22,7 +23,7 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class SAXHandlerTest extends Assert {
 
-	private static final Logger logger = Logger.getLogger(SAXHandlerTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(SAXHandlerTest.class);
 	
 	@Rule public TestName name = new TestName();
 

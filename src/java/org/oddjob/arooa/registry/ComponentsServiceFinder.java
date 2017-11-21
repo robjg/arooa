@@ -1,6 +1,7 @@
 package org.oddjob.arooa.registry;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ComponentTrinity;
 
 /**
@@ -12,7 +13,7 @@ import org.oddjob.arooa.ComponentTrinity;
 public class ComponentsServiceFinder implements ServiceFinder {
 
 	private static final Logger logger = 
-			Logger.getLogger(ComponentsServiceFinder.class);
+			LoggerFactory.getLogger(ComponentsServiceFinder.class);
 	
 	private final ComponentPool directory;
 	

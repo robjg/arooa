@@ -12,7 +12,8 @@ import java.util.List;
 
 import org.junit.Assert;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.OurDirs;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaType;
@@ -23,7 +24,7 @@ import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaClass;
 
 public class URLDescriptorFactoryTest extends Assert {
-	private static final Logger logger = Logger.getLogger(URLDescriptorFactoryTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(URLDescriptorFactoryTest.class);
 	
    @Test
 	public void testClassLoader() throws IOException {

@@ -67,7 +67,7 @@ import org.oddjob.arooa.parsing.ArooaElement;
 public class ValueType implements ArooaValue, Serializable {
 	private static final long serialVersionUID = 20070312;
 	
-	// private static final Logger logger = Logger.getLogger(ValueType.class);
+	// private static final Logger logger = LoggerFactory.getLogger(ValueType.class);
 
 	public static final ArooaElement ELEMENT = new ArooaElement("value");
 

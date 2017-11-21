@@ -7,7 +7,8 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Observable;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.design.DesignComponent;
@@ -27,7 +28,7 @@ import org.oddjob.arooa.xml.XMLArooaParser;
  * Model for a designer session.
  */
 public class DesignerModel extends Observable {
-	private static final Logger logger = Logger.getLogger(DesignerModel.class);
+	private static final Logger logger = LoggerFactory.getLogger(DesignerModel.class);
 	
 	/** The tree model */
 	private final DesignTreeModel treeModel;

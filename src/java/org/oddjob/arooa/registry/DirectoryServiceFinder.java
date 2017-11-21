@@ -1,6 +1,7 @@
 package org.oddjob.arooa.registry;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A {@link ServiceFinder} that looks through a {@link BeanDirectory}
@@ -12,7 +13,7 @@ import org.apache.log4j.Logger;
 public class DirectoryServiceFinder implements ServiceFinder {
 
 	private static final Logger logger = 
-			Logger.getLogger(DirectoryServiceFinder.class);
+			LoggerFactory.getLogger(DirectoryServiceFinder.class);
 		
 	private final BeanDirectory directory;
 	

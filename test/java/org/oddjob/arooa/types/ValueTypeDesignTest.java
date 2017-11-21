@@ -13,7 +13,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaType;
@@ -31,7 +32,7 @@ import org.oddjob.arooa.xml.XMLArooaParser;
 import org.xml.sax.SAXException;
 
 public class ValueTypeDesignTest {
-	private static final Logger logger = Logger.getLogger(ValueTypeDesignTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(ValueTypeDesignTest.class);
 	
 	Component comp; 
 

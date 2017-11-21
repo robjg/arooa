@@ -13,14 +13,15 @@ import java.util.TimeZone;
 
 import org.junit.Assert;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaConstants;
 
 /**
  * 
  */
 public class DateHelperTest extends Assert {
-	private static final Logger logger = Logger.getLogger(DateHelperTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(DateHelperTest.class);
 
    @Test
 	public void testShowWhyWeNeedThreeTimeFormats() {
@@ -45,7 +46,7 @@ public class DateHelperTest extends Assert {
 		long m; 
 
 		TimeZone.setDefault(null);
-		logger.debug(TimeZone.getDefault());
+		logger.debug(TimeZone.getDefault().toString());
 		
 		m = DateHelper.parseTime("00:00");
 		logger.debug("" + new Date(m));
@@ -77,7 +78,7 @@ public class DateHelperTest extends Assert {
 		long m;
 		
 		TimeZone.setDefault(null);
-		logger.debug(TimeZone.getDefault());
+		logger.debug(TimeZone.getDefault().toString());
 		
 		m = DateHelper.parseTime("10:47:56");
 		logger.debug("" + new Date(m));	
@@ -102,7 +103,7 @@ public class DateHelperTest extends Assert {
 		long m;
 		
 		TimeZone.setDefault(null);
-		logger.debug(TimeZone.getDefault());
+		logger.debug(TimeZone.getDefault().toString());
 		
 		m = DateHelper.parseTime("28:47:56");
 		logger.debug("" + new Date(m));	

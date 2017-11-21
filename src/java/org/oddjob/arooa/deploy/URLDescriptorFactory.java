@@ -4,7 +4,8 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
@@ -17,7 +18,7 @@ import org.oddjob.arooa.xml.XMLConfiguration;
 public class URLDescriptorFactory 
 implements ArooaDescriptorFactory {
 	private static final Logger logger = 
-		Logger.getLogger(URLDescriptorFactory.class);
+		LoggerFactory.getLogger(URLDescriptorFactory.class);
 
 	private final Collection<URL> urls;
 

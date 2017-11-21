@@ -28,10 +28,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggingEvent;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaType;
@@ -48,12 +44,18 @@ import org.oddjob.arooa.design.actions.ConfigurableMenus;
 import org.oddjob.arooa.design.view.Looks;
 import org.oddjob.arooa.design.view.Standards;
 import org.oddjob.arooa.life.ArooaSessionAware;
+import org.oddjob.arooa.logging.Appender;
+import org.oddjob.arooa.logging.AppenderAdapter;
+import org.oddjob.arooa.logging.LoggerAdapter;
+import org.oddjob.arooa.logging.LoggingEvent;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.parsing.ElementConfiguration;
 import org.oddjob.arooa.types.BeanType;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @oddjob.description Run a GUI designer for Oddjob.
@@ -64,7 +66,7 @@ import org.oddjob.arooa.xml.XMLConfiguration;
 public class ArooaDesigner 
 implements ArooaSessionAware, Runnable {
 
-	private static final Logger logger = Logger.getLogger(ArooaDesigner.class);
+	private static final Logger logger = LoggerFactory.getLogger(ArooaDesigner.class);
 
 	private static final String MODEL_PROPERTY = "designNotifier"; 
 	private static final String FILE_PROPERTY = "file"; 
@@ -294,11 +296,10 @@ implements ArooaSessionAware, Runnable {
 		
 		frame.setJMenuBar(menuBar);
 
-		Appender errorListener = 
-			new AppenderSkeleton () {
+		Appender errorListener = new Appender() {
 			
 			@Override
-			protected void append(LoggingEvent event) {
+			public void append(LoggingEvent event) {
 
 				JOptionPane.showMessageDialog(
 						frame, 
@@ -306,22 +307,15 @@ implements ArooaSessionAware, Runnable {
 						"Error",
 						JOptionPane.ERROR_MESSAGE);
 
-			}
-			
-			public void close() {
-			}
-
-
-			public boolean requiresLayout() {
-				return false;
-			}
+			}			
 		};
 
 		frame.setSize(Looks.DESIGNER_WIDTH, Looks.DESIGNER_HEIGHT);
 		frame.setVisible(true);
 		
-		Logger.getLogger("org.oddjob.arooa.design").addAppender(errorListener);
-
+		AppenderAdapter appenderAdapter = LoggerAdapter
+				.appenderAdapterFor("org.oddjob.arooa.design").addAppender(errorListener);
+		
 		if (file != null) {
 			try {
 				load(file);
@@ -344,7 +338,7 @@ implements ArooaSessionAware, Runnable {
 			}
 		}
 		
-		Logger.getLogger("org.oddjob.arooa.design").removeAppender(errorListener);
+		appenderAdapter.removeAppender(errorListener);
 		
 		frame = null;
 	}

@@ -6,7 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,7 +35,7 @@ public class BeanTypeDesFaTest {
 	static final String EOL = System.getProperty("line.separator");
 	
 	private static final Logger logger = 
-			Logger.getLogger(BeanTypeDesFa.class);
+			LoggerFactory.getLogger(BeanTypeDesFa.class);
 	
 	@Rule public TestName name = new TestName();
 

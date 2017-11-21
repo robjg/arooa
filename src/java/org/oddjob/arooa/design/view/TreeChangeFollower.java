@@ -8,7 +8,8 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class that tracks the selected tree node and moves it when
@@ -18,7 +19,7 @@ import org.apache.log4j.Logger;
  *
  */
 public class TreeChangeFollower {
-	private static final Logger logger = Logger.getLogger(TreeChangeFollower.class);
+	private static final Logger logger = LoggerFactory.getLogger(TreeChangeFollower.class);
 	
 	private final JTree tree;
 		

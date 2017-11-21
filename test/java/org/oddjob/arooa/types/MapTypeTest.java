@@ -11,7 +11,8 @@ import java.util.Map;
 
 import org.junit.Assert;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaSession;
@@ -28,7 +29,7 @@ import org.oddjob.arooa.xml.XMLConfiguration;
  */
 public class MapTypeTest extends Assert {
 
-	private static final Logger logger = Logger.getLogger(MapTypeTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(MapTypeTest.class);
 	
 	@Rule public TestName name = new TestName();
 

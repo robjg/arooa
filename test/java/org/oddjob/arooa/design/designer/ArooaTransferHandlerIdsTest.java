@@ -15,7 +15,8 @@ import javax.swing.TransferHandler.TransferSupport;
 
 import org.junit.Assert;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaConfigurationException;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
@@ -30,7 +31,7 @@ import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
 public class ArooaTransferHandlerIdsTest extends Assert {
-	private static final Logger logger = Logger.getLogger(ArooaTransferHandlerIdsTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(ArooaTransferHandlerIdsTest.class);
 	
 	public static class Component {
 		

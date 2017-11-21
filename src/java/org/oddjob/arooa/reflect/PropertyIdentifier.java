@@ -1,6 +1,7 @@
 package org.oddjob.arooa.reflect;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaConfigurationException;
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.handlers.ElementAction;
@@ -17,7 +18,7 @@ import org.oddjob.arooa.parsing.ArooaElement;
  */
 public class PropertyIdentifier<R, N> {
 
-	private static final Logger logger = Logger.getLogger(
+	private static final Logger logger = LoggerFactory.getLogger(
 			PropertyIdentifier.class);
 	
 	/**

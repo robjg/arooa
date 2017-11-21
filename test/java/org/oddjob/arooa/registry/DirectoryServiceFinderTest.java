@@ -5,12 +5,13 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.Assert;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DirectoryServiceFinderTest extends Assert {
 
 	private static final Logger logger = 
-			Logger.getLogger(DirectoryServiceFinderTest.class);
+			LoggerFactory.getLogger(DirectoryServiceFinderTest.class);
 	
 	@Rule public TestName name = new TestName();
 

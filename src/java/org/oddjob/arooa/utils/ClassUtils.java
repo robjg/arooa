@@ -3,7 +3,8 @@ package org.oddjob.arooa.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaException;
 
 /**
@@ -12,7 +13,7 @@ import org.oddjob.arooa.ArooaException;
  * @author Rob Gordon.
  */
 public class ClassUtils {
-	private static Logger logger = Logger.getLogger(ClassUtils.class);
+	private static Logger logger = LoggerFactory.getLogger(ClassUtils.class);
 	
 	/**
 	 * Primitive type class names to types.

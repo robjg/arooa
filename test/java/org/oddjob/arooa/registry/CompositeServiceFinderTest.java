@@ -3,14 +3,15 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.junit.Assert;
 
 public class CompositeServiceFinderTest extends Assert {
 
 	private static final Logger logger = 
-			Logger.getLogger(CompositeServiceFinderTest.class);
+			LoggerFactory.getLogger(CompositeServiceFinderTest.class);
 	
 	@Rule public TestName name = new TestName();
 

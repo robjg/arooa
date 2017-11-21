@@ -1,6 +1,7 @@
 package org.oddjob.arooa.deploy;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.reflect.ArooaClass;
@@ -15,7 +16,7 @@ import org.oddjob.arooa.reflect.PropertyAccessor;
  */
 public class ClassBeanDescriptorProvider implements BeanDescriptorProvider {
 
-	private static final Logger logger = Logger.getLogger(
+	private static final Logger logger = LoggerFactory.getLogger(
 			ClassBeanDescriptorProvider.class);
 	
 	public final static String NAME_EXTENSION="Arooa";

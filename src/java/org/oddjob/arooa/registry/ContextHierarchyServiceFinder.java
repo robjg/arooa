@@ -1,6 +1,7 @@
 package org.oddjob.arooa.registry;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.runtime.InstanceRuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
@@ -15,7 +16,7 @@ import org.oddjob.arooa.runtime.RuntimeConfiguration;
 public class ContextHierarchyServiceFinder implements ServiceFinder {
 
 	private static final Logger logger = 
-			Logger.getLogger(ContextHierarchyServiceFinder.class);
+			LoggerFactory.getLogger(ContextHierarchyServiceFinder.class);
 	
 	private final ArooaContext arooaContext;
 	

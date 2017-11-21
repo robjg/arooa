@@ -14,7 +14,8 @@ import java.util.Map;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.MappedPropertyDescriptor;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,7 +31,7 @@ import org.junit.rules.TestName;
  */
 public class BeanUtilsAssumptionsTest extends Assert {
 
-	private static final Logger logger = Logger.getLogger(
+	private static final Logger logger = LoggerFactory.getLogger(
 			BeanUtilsAssumptionsTest.class);
 
 	@Rule public TestName name = new TestName();
@@ -279,7 +280,7 @@ public class BeanUtilsAssumptionsTest extends Assert {
 		PropertyDescriptor[] descriptors = 
 				PropertyUtils.getPropertyDescriptors(proxy);
 		for (PropertyDescriptor descriptor : descriptors) {
-			logger.info(descriptor);
+			logger.info(descriptor.toString());
 		}	
 		
 		PropertyDescriptor propertyDescriptor1 = 

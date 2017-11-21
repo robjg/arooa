@@ -61,7 +61,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Stack;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
@@ -80,7 +81,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * with the implicit execution stack )
  */
 class SAXHandler extends DefaultHandler {
-	private static final Logger logger = Logger.getLogger(SAXHandler.class);
+	private static final Logger logger = LoggerFactory.getLogger(SAXHandler.class);
 	    
     private Locator locator;
     

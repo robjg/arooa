@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaConfigurationException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ComponentTrinity;
@@ -27,7 +28,7 @@ import org.oddjob.arooa.runtime.RuntimeConfiguration;
  */
 public class SimpleComponentPool implements ComponentPool {
 	
-	private static final Logger logger = Logger.getLogger(SimpleComponentPool.class);
+	private static final Logger logger = LoggerFactory.getLogger(SimpleComponentPool.class);
 
 	private final AllWayIndex index = new AllWayIndex();
 	

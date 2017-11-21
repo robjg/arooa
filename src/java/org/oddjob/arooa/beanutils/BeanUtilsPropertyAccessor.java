@@ -13,7 +13,8 @@ import org.apache.commons.beanutils.DynaClass;
 import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.beanutils.PropertyUtilsBean;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaValue;
 import org.oddjob.arooa.convert.ArooaConversionException;
@@ -36,7 +37,7 @@ import org.oddjob.arooa.reflect.PropertySetException;
  * BeanUtilsBean with bespoke conversion and ArooaExceptions.
  */
 public class BeanUtilsPropertyAccessor implements PropertyAccessor {
-	private static final Logger logger = Logger.getLogger(BeanUtilsPropertyAccessor.class);
+	private static final Logger logger = LoggerFactory.getLogger(BeanUtilsPropertyAccessor.class);
 		
 	static {
 		
