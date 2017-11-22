@@ -10,6 +10,12 @@ import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
+/**
+ * Adapter for Log4J.
+ * 
+ * @author rob
+ *
+ */
 @SuppressWarnings("deprecation")
 public class Log4jLoggerAdapter extends LoggerAdapter {
 
