@@ -92,7 +92,7 @@ public class AppenderAdapterTest {
 		
 		List<String> results = new ArrayList<>();
 
-		Layout layout = LoggerAdapter.layoutFor("%m");
+		Layout layout = LoggerAdapter.layoutFor("%message");
 		
 		Appender appender = new Appender() {
 

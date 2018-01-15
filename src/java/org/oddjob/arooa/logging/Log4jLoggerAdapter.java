@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.apache.log4j.PropertyConfigurator;
 
 /**
  * Adapter for Log4J.
@@ -19,7 +20,7 @@ import org.apache.log4j.PatternLayout;
 @SuppressWarnings("deprecation")
 public class Log4jLoggerAdapter extends LoggerAdapter {
 
-	private ConcurrentMap<Appender, AppenderSkeleton> appenders = 
+	private final ConcurrentMap<Appender, AppenderSkeleton> appenders = 
 			new ConcurrentHashMap<>();
 
 	@Override
@@ -67,6 +68,12 @@ public class Log4jLoggerAdapter extends LoggerAdapter {
 				return layout.format(((AdaptedOddjobLoggingEvent) event).log4jEvent);
 			}
 		};
+	}
+	
+	@Override
+	protected void _configre(String logConfigFileName) {
+		System.setProperty("log4j.defaultInitOverride", "true");
+	    PropertyConfigurator.configure(logConfigFileName);
 	}
 
 	private static class Log4jAppender extends AppenderSkeleton {

@@ -18,11 +18,14 @@ abstract public class LoggerAdapter {
 		ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
 		String className = loggerFactory.getClass().getName();
 		String concreateClassName;
-		if ("org.slf4j.impl.Log4jLoggerFactory".equals(className)) {
+		switch (className) {
+		case "org.slf4j.impl.Log4jLoggerFactory":
 			concreateClassName = "org.oddjob.arooa.logging.Log4jLoggerAdapter";
-			
-		}
-		else {
+			break;
+		case "ch.qos.logback.classic.LoggerContext":
+			concreateClassName = "org.oddjob.arooa.logging.LogbackLoggerAdapter";
+			break;
+		default:
 			throw new IllegalStateException("No Appender for " + className);
 		}
 		
@@ -75,6 +78,10 @@ abstract public class LoggerAdapter {
 		return delegate._layoutFor(pattern);
 	}
 
+	public static void configure(String logConfigFileName) {
+		delegate._configre(logConfigFileName);
+	}
+
 	abstract protected AppenderAdapter _appenderAdapterFor(String loggerName);
 	
 	protected AppenderAdapter _appenderAdapterForRoot() {
@@ -86,4 +93,6 @@ abstract public class LoggerAdapter {
 	}
 
 	abstract protected Layout _layoutFor(String pattern);
+
+	abstract protected void _configre(String logConfigFileName);
 }

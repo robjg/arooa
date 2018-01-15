@@ -3,6 +3,7 @@
 
 	<configurations>
         <conf name="default" visibility="public"></conf>
+        <conf name="provided" visibility="public"></conf>
         <conf name="test" extends="default" visibility="public"></conf>
 	</configurations>  
         
@@ -14,10 +15,12 @@
 	<dependencies>
         <dependency org="org.slf4j" name="slf4j-api" rev="1.7.25"
             conf="default->default"/>
-        <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.7.25"
-            conf="default->default"/>
+        <!-- dependency org="org.slf4j" name="slf4j-log4j12" rev="1.7.25"
+            conf="default->default"/ -->
 	    <dependency org="log4j" name="log4j" rev="1.2.17"
-	    	conf="default->default"/>
+	    	conf="provided->default"/>
+        <dependency org="ch.qos.logback" name="logback-classic" rev="1.2.3"
+            conf="default->default"/>
 	    <dependency org="commons-beanutils" name="commons-beanutils"
 	    	rev="1.9.2" conf="default->default" />
 		<dependency org="javax.inject" name="javax.inject" rev="1"
