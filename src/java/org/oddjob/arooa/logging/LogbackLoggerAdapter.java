@@ -1,7 +1,9 @@
 package org.oddjob.arooa.logging;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -13,6 +15,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -193,8 +196,54 @@ public class LogbackLoggerAdapter extends LoggerAdapter {
 		}
 
 		@Override
-		public Throwable getThrowable() {
-			return null;
+		public ThrowableProxy getThrowable() {
+			return Optional.ofNullable(logbackEvent.getThrowableProxy())
+					.map(t -> new ThrowableProxyAdapter(t))
+					.orElse(null);
 		}		
 	}
+	
+	static class ThrowableProxyAdapter implements ThrowableProxy {
+		
+		private final IThrowableProxy iThrowableProxy;
+		
+		public ThrowableProxyAdapter(IThrowableProxy iThrowableProxy) {
+			Objects.requireNonNull(iThrowableProxy);
+			this.iThrowableProxy = iThrowableProxy;
+		}
+		
+		@Override
+		public String getMessage() {
+			return iThrowableProxy.getMessage();
+		}
+		
+		@Override
+		public String getClassName() {
+			return iThrowableProxy.getClassName();
+		}
+		
+		@Override
+		public ThrowableProxy getCause() {
+			return Optional.ofNullable(iThrowableProxy.getCause())
+					.map(t -> new ThrowableProxyAdapter(t))
+					.orElse(null);
+		}
+
+		@Override
+		public StackTraceElement[] getStackTraceElementArray() {
+			
+			return Arrays.stream(iThrowableProxy.getStackTraceElementProxyArray())
+						.map(e-> e.getStackTraceElement())
+						.toArray(i -> new StackTraceElement[i]);
+		}
+		
+		@Override
+		public ThrowableProxy[] getSuppressed() {
+
+			return Arrays.stream(iThrowableProxy.getSuppressed())
+					.map(e-> new ThrowableProxyAdapter(e))
+					.toArray(i -> new ThrowableProxyAdapter[i]);
+		}
+	}
+	
 }

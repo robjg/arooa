@@ -85,7 +85,7 @@
 
 		<ivy:resolve />
 		        		
-		<ivy:cachepath pathid="classpath" conf="default" />
+		<ivy:cachepath pathid="classpath" conf="default,provided" />
 		
 		<ivy:cachepath pathid="test-cachepath" conf="test" />
 			

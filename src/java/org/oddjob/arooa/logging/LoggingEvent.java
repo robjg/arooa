@@ -64,5 +64,5 @@ public interface LoggingEvent {
      * 
      * @return
      */
-    Throwable getThrowable();
+    ThrowableProxy getThrowable();
 }

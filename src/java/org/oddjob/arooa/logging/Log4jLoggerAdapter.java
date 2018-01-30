@@ -1,7 +1,9 @@
 package org.oddjob.arooa.logging;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -173,8 +175,52 @@ public class Log4jLoggerAdapter extends LoggerAdapter {
 		}
 
 		@Override
-		public Throwable getThrowable() {
-			return log4jEvent.getThrowableInformation().getThrowable();
+		public ThrowableProxy getThrowable() {
+			return Optional.ofNullable(log4jEvent.getThrowableInformation())
+					.map(ti -> ti.getThrowable())
+					.map(t -> new ThrowableProxyAdapter(t))
+					.orElse(null);
 		}		
+	}
+	
+	static class ThrowableProxyAdapter implements ThrowableProxy {
+		
+		private final Throwable throwable;
+		
+		public ThrowableProxyAdapter(Throwable iThrowableProxy) {
+			Objects.requireNonNull(iThrowableProxy);
+			this.throwable = iThrowableProxy;
+		}
+		
+		@Override
+		public String getMessage() {
+			return throwable.getMessage();
+		}
+		
+		@Override
+		public String getClassName() {
+			return throwable.getClass().getName();
+		}
+		
+		@Override
+		public ThrowableProxy getCause() {
+			return Optional.ofNullable(throwable.getCause())
+					.map(t -> new ThrowableProxyAdapter(t))
+					.orElse(null);
+		}
+
+		@Override
+		public StackTraceElement[] getStackTraceElementArray() {
+			
+			return throwable.getStackTrace();
+		}
+		
+		@Override
+		public ThrowableProxy[] getSuppressed() {
+
+			return Arrays.stream(throwable.getSuppressed())
+					.map(e-> new ThrowableProxyAdapter(e))
+					.toArray(i -> new ThrowableProxyAdapter[i]);
+		}
 	}
 }
