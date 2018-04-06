@@ -59,6 +59,16 @@ public abstract class Try<T> {
 	 * @throws Exception if the Try resulted in a Failure.
 	 */
 	abstract public T orElseThrow() throws Exception;
+
+	/**
+	 * Recover the value or apply a function to the exception to 
+	 * get result.
+	 * 
+	 * @param f A function taking the exception.
+	 * 
+	 * @return A value.
+	 */
+	abstract public T orElse(Function<Exception, T> f);
 	
 	/**
 	 * Apply a function to the Try. The function will only be applied if the Try is currently a Success.
@@ -88,7 +98,7 @@ public abstract class Try<T> {
 	 * @return A new Try wrapping the result of applying the function, or a previous Failure, or a new
 	 * Failure from the function.
 	 */
-	abstract public <U> Try<U> trying(Func<T, U, ?> f);
+	abstract public <U> Try<U> trying(Func<T, U, ?> f);	
 	
 	/**
 	 * Success.
@@ -108,6 +118,12 @@ public abstract class Try<T> {
 			return value;
 		}
 
+		
+		@Override
+		public T orElse(Function<Exception, T> f) {
+			return value;
+		}
+		
 		@Override
 		public <U> Try<U> map(Function<T, U> f) {
 			return new Success<>(f.apply(value));
@@ -123,7 +139,8 @@ public abstract class Try<T> {
 			
 			try {
 				return new Success<>(f.apply(value));
-			} catch (Exception e) {
+			} 
+			catch (Exception e) {
 				return new Failure<>(e);
 			}
 		}
@@ -178,6 +195,12 @@ public abstract class Try<T> {
 		public T orElseThrow() throws Exception {
 			throw e;
 		}
+
+		@Override
+		public T orElse(Function<Exception, T> f) {
+			return f.apply(e);
+		}
+		
 		
 		@SuppressWarnings("unchecked")
 		@Override
