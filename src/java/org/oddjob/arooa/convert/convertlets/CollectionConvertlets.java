@@ -8,6 +8,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.oddjob.arooa.convert.ConversionProvider;
 import org.oddjob.arooa.convert.ConversionRegistry;
@@ -51,6 +55,37 @@ public class CollectionConvertlets implements ConversionProvider {
 			@SuppressWarnings("unchecked")
 			public Collection<Map.Entry> convert(Map from) {
 				return new ArrayList<Map.Entry>(from.entrySet());
+			};
+		});
+		
+		registry.register(Iterable.class, Stream.class, 
+				new Convertlet<Iterable, Stream>() {
+			@SuppressWarnings("unchecked")
+			public Stream convert(Iterable from) {
+				return StreamSupport.stream(from.spliterator(), false);
+			};
+		});
+
+		registry.register(Stream.class, Iterable.class, 
+				new Convertlet<Stream, Iterable>() {
+			public Iterable convert(Stream from) {
+				return () -> from.iterator();
+			};
+		});
+
+		registry.register(Stream.class, List.class, 
+				new Convertlet<Stream, List>() {
+			@SuppressWarnings("unchecked")
+			public List convert(Stream from) {
+				return (List) from.collect(Collectors.toList());
+			};
+		});
+		
+		registry.register(Stream.class, Set.class, 
+				new Convertlet<Stream, Set>() {
+			@SuppressWarnings("unchecked")
+			public Set convert(Stream from) {
+				return (Set) from.collect(Collectors.toSet());
 			};
 		});
 	}	

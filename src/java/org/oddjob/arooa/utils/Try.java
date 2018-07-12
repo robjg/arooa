@@ -1,6 +1,7 @@
 package org.oddjob.arooa.utils;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -47,7 +48,7 @@ public abstract class Try<T> {
 	 * 
 	 * @return A Try wrapping the Exception.
 	 */
-	public static <U> Try<U> fail(Exception e) {
+	public static <U> Try<U> fail(Throwable e) {
 		return new Failure<>(e);
 	}
 	
@@ -58,8 +59,20 @@ public abstract class Try<T> {
 	 * 
 	 * @throws Exception if the Try resulted in a Failure.
 	 */
-	abstract public T orElseThrow() throws Exception;
+	abstract public T orElseThrow() throws RuntimeException;
 
+	/**
+	 * Recover the value or throw an exception created by applying the exception mapping function
+	 * to a failure.
+	 * 
+	 * @param f The exception mapping function.
+	 * 
+	 * @return The value if a success.
+	 * 
+	 * @throws E The type of the resultant exception when a failure.
+	 */
+	abstract public <E extends Throwable> T orElseThrow(Function<? super Throwable, E> f) throws E;
+	
 	/**
 	 * Recover the value or apply a function to the exception to 
 	 * get result.
@@ -68,7 +81,7 @@ public abstract class Try<T> {
 	 * 
 	 * @return A value.
 	 */
-	abstract public T orElse(Function<Exception, T> f);
+	abstract public T recover(Function<? super Throwable, ? extends T> f);
 	
 	/**
 	 * Apply a function to the Try. The function will only be applied if the Try is currently a Success.
@@ -77,8 +90,17 @@ public abstract class Try<T> {
 	 * 
 	 * @return A new Try wrapping the result of applying the function, or a previous Failure.
 	 */
-	abstract public <U> Try<U> map(Function<T, U> f);
+	abstract public <U> Try<U> map(Function<? super T, ? extends U> f);
 	
+	/**
+	 * Map a failure by applying the exception mapping function. A success will be left unchanged.
+	 * 
+	 * @param f The failure mapping function.
+	 * 
+	 * @return The resultant try.
+	 */
+	abstract public Try<T> mapFailure(Function<? super Throwable, ? extends Throwable> f);
+
 	/**
 	 * Apply a function to the Try that itself returns a Try. The function will only be applied if the 
 	 * Try is currently a Success.
@@ -88,7 +110,7 @@ public abstract class Try<T> {
 	 * @return A new Try wrapping the result of applying the function, or a previous Failure, or a new
 	 * Failure from the function.
 	 */
-	abstract public <U> Try<U> flatMap(Function<T, Try<U>> f);
+	abstract public <U> Try<U> flatMap(Function<? super T, ? extends Try<U>> f);
 	
 	/**
 	 * Try a Function that might throw a Exception.
@@ -98,8 +120,12 @@ public abstract class Try<T> {
 	 * @return A new Try wrapping the result of applying the function, or a previous Failure, or a new
 	 * Failure from the function.
 	 */
-	abstract public <U> Try<U> trying(Func<T, U, ?> f);	
+	abstract public <U> Try<U> trying(Func<? super T, ? extends U, ?> f);	
+		
+	abstract public Try<T> onSuccess(Consumer< ? super T> s);
 	
+	abstract public Try<T> onFailure(Consumer< ? super Throwable> f);
+
 	/**
 	 * Success.
 	 * 
@@ -118,31 +144,51 @@ public abstract class Try<T> {
 			return value;
 		}
 
-		
 		@Override
-		public T orElse(Function<Exception, T> f) {
+		public <E extends Throwable> T orElseThrow(Function<? super Throwable, E> f) throws E {
 			return value;
 		}
 		
 		@Override
-		public <U> Try<U> map(Function<T, U> f) {
+		public T recover(Function<? super Throwable, ? extends T> f) {
+			return value;
+		}
+		
+		@Override
+		public <U> Try<U> map(Function<? super T, ? extends U> f) {
 			return new Success<>(f.apply(value));
 		}
 
 		@Override
-		public <U> Try<U> flatMap(Function<T, Try<U>> f) {
+		public Try<T> mapFailure(Function<? super Throwable, ? extends Throwable> f) {
+			return this;
+		}
+		
+		@Override
+		public <U> Try<U> flatMap(Function<? super T, ? extends Try<U>> f) {
 			return f.apply(value);
 		}
 		
 		@Override
-		public <U> Try<U> trying(Func<T, U, ?> f) {
+		public <U> Try<U> trying(Func<? super T, ? extends U, ?> f) {
 			
 			try {
 				return new Success<>(f.apply(value));
 			} 
-			catch (Exception e) {
+			catch (Throwable e) {
 				return new Failure<>(e);
 			}
+		}
+		
+		@Override
+		public Try<T> onSuccess(Consumer<? super T> s) {
+			s.accept(value);
+			return this;
+		}
+
+		@Override
+		public Try<T> onFailure(Consumer<? super Throwable> f) {
+			return this;
 		}
 		
 		@Override
@@ -175,6 +221,7 @@ public abstract class Try<T> {
 		public String toString() {
 			return getClass().getSimpleName() + ": " + value;
 		}
+
 	}
 	
 	/**
@@ -184,40 +231,65 @@ public abstract class Try<T> {
 	 */
 	private static class Failure<T> extends Try<T> {
 
-		private final Exception e;
+		private final Throwable e;
 		
-		Failure(Exception e) {
+		Failure(Throwable e) {
 			Objects.requireNonNull(e);
 			this.e = e;
 		}
 		
 		@Override
-		public T orElseThrow() throws Exception {
-			throw e;
+		public T orElseThrow() throws RuntimeException {
+			if (e instanceof RuntimeException) {
+				throw (RuntimeException) e;
+			}
+			else {
+				throw new RuntimeException(e);
+			}
 		}
 
 		@Override
-		public T orElse(Function<Exception, T> f) {
+		public T recover(Function<? super Throwable, ? extends T> f) {
 			return f.apply(e);
 		}
-		
+	
+		@Override
+		public <E extends Throwable> T orElseThrow(Function<? super Throwable, E> f) throws E {
+			throw f.apply(e);
+		}
 		
 		@SuppressWarnings("unchecked")
 		@Override
-		public <U> Try<U> map(Function<T, U> f) {
+		public <U> Try<U> map(Function<? super T, ? extends U> f) {
+			return (Try<U>) this;
+		}
+
+		@Override
+		public Try<T> mapFailure(Function<? super Throwable, ? extends Throwable> f) {
+			return new Failure<>(f.apply(e));
+		}
+		
+		@SuppressWarnings("unchecked")
+		@Override
+		public <U> Try<U> flatMap(Function<? super T, ? extends Try<U>> f) {
 			return (Try<U>) this;
 		}
 		
 		@SuppressWarnings("unchecked")
 		@Override
-		public <U> Try<U> flatMap(Function<T, Try<U>> f) {
+		public <U> Try<U> trying(Func<? super T, ? extends U, ?> f) {
 			return (Try<U>) this;
 		}
 		
-		@SuppressWarnings("unchecked")
 		@Override
-		public <U> Try<U> trying(Func<T, U, ?> f) {
-			return (Try<U>) this;
+		public Try<T> onSuccess(Consumer<? super T> s) {
+			return this;
+		}
+
+		@Override
+		public Try<T> onFailure(Consumer<? super Throwable> f) {
+			f.accept(e);			
+			return this;
 		}
 		
 		@Override
@@ -246,6 +318,7 @@ public abstract class Try<T> {
 		public String toString() {
 			return getClass().getSimpleName() + ": " + e;
 		}
+
 	}
 
 	/**
@@ -256,7 +329,7 @@ public abstract class Try<T> {
 	 * @param <E> the type of the exception.
 	 */
 	@FunctionalInterface
-	public interface Func<T, R, E extends Exception> {
+	public interface Func<T, R, E extends Throwable> {
 
 		R apply(T from) throws E;
 

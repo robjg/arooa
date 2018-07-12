@@ -5,12 +5,16 @@ import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
+
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 public class TryTest {
 
 	@Test
-	public void testTrying() {
+	public void testTryingWithCaughtException() {
 		
 		Exception e = new Exception("Fail");
 		
@@ -21,14 +25,14 @@ public class TryTest {
 			fail("should throw.");
 		}
 		catch (Exception e2) {
-			assertThat(e2, sameInstance(e));
+			assertThat(e2.getCause(), sameInstance(e));
 		}
 	}
 	
 	@Test
-	public void testTryingCompose() {
+	public void testTryingWithRuntimeException() {
 		
-		Exception e = new Exception("Fail");
+		RuntimeException e = new RuntimeException("Fail");
 
 		Try<String> t = Try.of("Foo").trying(s -> { throw e; });
 		
@@ -43,7 +47,7 @@ public class TryTest {
 
 	
 	@Test
-	public void testMap() throws Exception {
+	public void testMap() {
 		
 		Try<String> t = Try.of("Foo").map(s -> s + "Bar");
 		
@@ -56,15 +60,38 @@ public class TryTest {
 		Try<String> r = t2.map(s -> { throw new RuntimeException("Unexpected"); });
 
 		try {
-			r.orElseThrow();
+			r.orElseThrow(Function.identity());
+			fail("should throw.");
 		}
-		catch (Exception e2) {
+		catch (Throwable e2) {
 			assertThat(e2, sameInstance(e));
 		}
 	}
-
+	
 	@Test
-	public void testFlatMap() throws Exception {
+	public void testMapFailure() {
+
+		assertThat( Try.of("Foo")
+						.mapFailure(Function.identity())
+						.orElseThrow(), 
+					is ("Foo"));
+		
+		Try<String> t2 = Try.fail(new Exception("Doh!"));
+		
+		Try<String> r = t2.mapFailure(e -> new Exception("Really Doh!"));
+
+		
+		try {
+			r.orElseThrow(e -> (Exception) e);
+			fail("should throw.");
+		}
+		catch (Exception e2) {
+			assertThat(e2.getMessage(), is("Really Doh!"));
+		}
+	}
+	
+	@Test
+	public void testFlatMap() {
 		
 		Try<String> t = Try.of("Foo").flatMap(s -> Try.of(s + "Bar"));
 		
@@ -77,12 +104,59 @@ public class TryTest {
 		Try<String> r = t2.flatMap(s -> Try.fail(new RuntimeException("Unexpected")));
 
 		try {
-			r.orElseThrow();
+			r.orElseThrow(ex -> (Exception) ex);
+			fail("should throw.");
 		}
 		catch (Exception e2) {
 			assertThat(e2, sameInstance(e));
 		}
 	}
+	
+	public void testRecover() {
+		
+		Try<String> success = Try.of("good");
+		
+		assertThat(success.recover(e -> "cool"), is("good"));		
+
+		Try<String> fail = Try.fail(new Exception("Doh!"));
+		
+		assertThat(fail.recover(e -> "cool"), is("cool"));		
+	}
+	
+	public void testOnSuccess() {
+
+		
+		Try<String> success = Try.of("good");
+
+		AtomicReference<String> goodResult = new AtomicReference<>();
+		AtomicReference<Throwable> badResult= new AtomicReference<>();
+		
+		success.onSuccess(goodResult::set);
+	
+		assertThat(goodResult.get(), is("good"));		
+		assertThat(badResult.get(), CoreMatchers.nullValue());		
+
+	}
+	
+	public void testOnFailure() {
+		
+		AtomicReference<Throwable> badResult= new AtomicReference<>();
+		
+		Try<String> fail = Try.fail(new Exception("Doh!"));
+
+		Try<String> next = fail.onFailure(badResult::set);
+		
+		assertThat(badResult.get().getMessage(), is("Doh!") );
+		
+		try {
+			next.orElseThrow();
+			fail("should throw.");
+		}
+		catch (Exception e) {
+			// expected 
+		}
+	}
+	
 	
 	@Test
 	public void testEquals() {
