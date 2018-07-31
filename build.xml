@@ -48,13 +48,15 @@
 		<property name="nowarn"         value="on"/>
 		<!-- <property name="build.compiler" value="classic"/> -->
 
-		<property name="src.dir"      value="./src"/>
-		<property name="java.dir"     value="${src.dir}/java"/>
-		<property name="test.dir"     value="./test"/>
-		<property name="test.src"     value="${test.dir}/java"/>
-		<property name="lib.dir"      value="./lib"/>
-		<property name="test.lib"     value="${test.dir}/lib"/>
-		<property name="packages"     value="org.oddjob"/>
+		<property name="src.dir"              value="./src"/>
+		<property name="main.java.dir"        value="${src.dir}/main/java"/>
+        <property name="main.resources.dir"   value="${src.dir}/main/java"/>
+		<property name="test.dir"             value="./test"/>
+		<property name="test.java.dir"             value="${src.dir}/test/java"/>
+        <property name="test.resources.dir"   value="${src.dir}/test/resources"/>
+		<property name="lib.dir"              value="./lib"/>
+		<property name="test.lib"             value="${test.dir}/lib"/>
+		<property name="packages"             value="org.oddjob"/>
 
 		<property name="build.dir"        	value="./build"/>
 		<property name="build.src"        	value="${build.dir}/src"/>
@@ -107,14 +109,14 @@
 		<mkdir dir="${build.src}"/>
 		<mkdir dir="${build.classes}"/>
 		<copy todir="${build.src}" filtering="on">
-			<fileset dir="${java.dir}">
+			<fileset dir="${main.java.dir}">
 				<exclude name="**/*.gif"/>
 				<exclude name="**/*.properties"/>
 				<exclude name="**/*.xml"/>
 			</fileset>
 		</copy>
 		<copy todir="${build.src}" filtering="off">
-			<fileset dir="${java.dir}">
+			<fileset dir="${main.resources.dir}">
 				<include name="**/*.gif"/>
 				<include name="**/*.properties"/>
 				<include name="**/*.xml"/>
@@ -241,14 +243,11 @@
 		<mkdir dir="${build.test}"/>
 
 		<copy todir="${build.test.classes}" filtering="off">
-			<fileset dir="${test.src}">
-				<include name="**/*.xml"/>
-				<include name="**/*.properties"/>
-			</fileset>
+			<fileset dir="${test.resources.dir}"/>
 		</copy>
 		
 		<!-- Compile tests -->
-		<javac srcdir="${test.src}"
+		<javac srcdir="${test.java.dir}"
             destdir="${build.test.classes}"
             debug="${debug}"
             optimize="${optimize}"

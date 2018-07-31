@@ -2,3 +2,6 @@
 /work
 /classes
 /build/
+/target/
+/.idea/
+/arooa.iml

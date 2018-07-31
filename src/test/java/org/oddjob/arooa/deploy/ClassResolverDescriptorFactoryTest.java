@@ -28,7 +28,7 @@ public class ClassResolverDescriptorFactoryTest extends Assert {
 		
 		ClassResolverDescriptorFactory test =
 			new ClassResolverDescriptorFactory(
-					"org/oddjob/arooa/deploy/descriptor.xml", 
+                    "org/oddjob/arooa/deploy/descriptor.xml",
 					new OurResolver());
 		
 		ArooaDescriptor descriptor = test.createDescriptor(
