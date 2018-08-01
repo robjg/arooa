@@ -50,9 +50,9 @@
 
 		<property name="src.dir"              value="./src"/>
 		<property name="main.java.dir"        value="${src.dir}/main/java"/>
-        <property name="main.resources.dir"   value="${src.dir}/main/java"/>
+        <property name="main.resources.dir"   value="${src.dir}/main/resources"/>
 		<property name="test.dir"             value="./test"/>
-		<property name="test.java.dir"             value="${src.dir}/test/java"/>
+		<property name="test.java.dir"        value="${src.dir}/test/java"/>
         <property name="test.resources.dir"   value="${src.dir}/test/resources"/>
 		<property name="lib.dir"              value="./lib"/>
 		<property name="test.lib"             value="${test.dir}/lib"/>
