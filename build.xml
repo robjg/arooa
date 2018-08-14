@@ -51,11 +51,9 @@
 		<property name="src.dir"              value="./src"/>
 		<property name="main.java.dir"        value="${src.dir}/main/java"/>
         <property name="main.resources.dir"   value="${src.dir}/main/resources"/>
-		<property name="test.dir"             value="./test"/>
 		<property name="test.java.dir"        value="${src.dir}/test/java"/>
         <property name="test.resources.dir"   value="${src.dir}/test/resources"/>
 		<property name="lib.dir"              value="./lib"/>
-		<property name="test.lib"             value="${test.dir}/lib"/>
 		<property name="packages"             value="org.oddjob"/>
 
 		<property name="build.dir"        	value="./build"/>
@@ -116,11 +114,7 @@
 			</fileset>
 		</copy>
 		<copy todir="${build.src}" filtering="off">
-			<fileset dir="${main.resources.dir}">
-				<include name="**/*.gif"/>
-				<include name="**/*.properties"/>
-				<include name="**/*.xml"/>
-			</fileset>
+			<fileset dir="${main.resources.dir}"/>
 		</copy>
 	</target>
 
@@ -138,11 +132,7 @@
           description="Compiles the source code">
 
 		<copy todir="${build.classes}">
-			<fileset dir="${build.src}">
-				<include name="**/*.gif"/>
-				<include name="**/*.properties"/>
-				<include name="**/*.xml"/>
-			</fileset>
+            <fileset dir="${main.resources.dir}"/>
 		</copy>
 
 		<echo message="Compiling with Java ${ant.java.version}, debug ${debug}, optimize ${optimize}, deprecation ${deprecation}"/>
@@ -326,10 +316,6 @@
 			
 		<copy todir="${to.dir}/src" filtering="off">
 			<fileset dir="${src.dir}"/>
-		</copy>
-
-		<copy todir="${to.dir}/test" filtering="off">
-			<fileset dir="${test.dir}"/>
 		</copy>
 
 		<copy todir="${to.dir}">

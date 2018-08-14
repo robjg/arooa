@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.oddjob.arooa.ArooaAnnotations;
+import org.oddjob.arooa.ArooaError;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.utils.ClassUtils;
 
@@ -37,30 +38,35 @@ public class ArooaAnnotationsHelper implements ArooaAnnotations {
 	 */
 	public ArooaAnnotationsHelper(ArooaClass classIdentifier) {
 
-		this.theClass = classIdentifier.forClass();
-
-		for (Method method : theClass.getMethods()) {
-
-			Annotation[] annotations = method.getAnnotations();
-
-			for (Annotation annotation : annotations) {
-				
-				addMethod(new AnnotationArooaAnnotation(annotation), method);
-			}
-		}
-		
-		for (Class<?> cl = theClass; cl != null; 
-				cl = cl.getSuperclass()) {
-			for (Field field : cl.getDeclaredFields()) {
-
-				Annotation[] annotations = field.getAnnotations();
-
+		try {
+			this.theClass = classIdentifier.forClass();
+	
+			for (Method method : theClass.getMethods()) {
+	
+				Annotation[] annotations = method.getAnnotations();
+	
 				for (Annotation annotation : annotations) {
 					
-					addProperty(new AnnotationArooaAnnotation(annotation), 
-							field.getName());
+					addMethod(new AnnotationArooaAnnotation(annotation), method);
 				}
 			}
+			
+			for (Class<?> cl = theClass; cl != null; 
+					cl = cl.getSuperclass()) {
+				for (Field field : cl.getDeclaredFields()) {
+	
+					Annotation[] annotations = field.getAnnotations();
+	
+					for (Annotation annotation : annotations) {
+						
+						addProperty(new AnnotationArooaAnnotation(annotation), 
+								field.getName());
+					}
+				}
+			}
+		}
+		catch (Error e) {
+			throw new ArooaError("Failed analyzing annotations for " + classIdentifier, e);
 		}
 	}
 	
