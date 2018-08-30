@@ -13,25 +13,25 @@
 	</publications>  
 
 	<dependencies>
-        <dependency org="org.slf4j" name="slf4j-api" rev="1.7.25"
+        <dependency org="org.slf4j" name="slf4j-api" rev="${slf4j.version}"
             conf="default->default"/>
         <!-- dependency org="org.slf4j" name="slf4j-log4j12" rev="1.7.25"
             conf="default->default"/ -->
-	    <dependency org="log4j" name="log4j" rev="1.2.17"
+	    <dependency org="log4j" name="log4j" rev="${log4j.version}"
 	    	conf="provided->default"/>
-        <dependency org="ch.qos.logback" name="logback-classic" rev="1.2.3"
+        <dependency org="ch.qos.logback" name="logback-classic" rev="${logback.version}"
             conf="default->default"/>
 	    <dependency org="commons-beanutils" name="commons-beanutils"
-	    	rev="1.9.2" conf="default->default" />
+	    	rev="${beanutils.version}" conf="default->default" />
 		<dependency org="javax.inject" name="javax.inject" rev="1"
 			conf="default->default" />
-        <dependency org="junit" name="junit" rev="4.12"
+        <dependency org="junit" name="junit" rev="${junit.version}"
 			conf="test->default"/>
-		<dependency org="org.mockito" name="mockito-all" rev="1.10.19"
+		<dependency org="org.mockito" name="mockito-all" rev="${mockito.version}"
 			conf="test->default" />
-		<dependency org="org.xmlunit" name="xmlunit-core" rev="2.5.0" 
+		<dependency org="org.xmlunit" name="xmlunit-core" rev="${xmlunit.version}" 
 			conf="test->default"/>
-        <dependency org="org.xmlunit" name="xmlunit-matchers" rev="2.5.0" 
+        <dependency org="org.xmlunit" name="xmlunit-matchers" rev="${xmlunit.version}" 
             conf="test->default"/>
 	</dependencies>
   

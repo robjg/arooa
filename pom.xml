@@ -1,60 +1,46 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>uk.co.rgordon</groupId>
+
+  <parent>
+    <groupId>uk.co.rgordon</groupId>
+    <artifactId>oj-assembly</artifactId>
+    <version>1.6-SNAPSHOT</version>
+    <relativePath>../oj-assembly/pom.xml</relativePath>
+  </parent>
+
   <artifactId>arooa</artifactId>
   <packaging>jar</packaging>
-  <version>1.6-SNAPSHOT</version>
+
   <name>Arooa</name>
   <description>A Rip Off Of Ant - A drag and drop component framework.</description>
   <url>http://rgordon.co.uk/oddjob</url>
-  <properties>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-   </properties>
-  <licenses>
-    <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
+
   <scm>
     <url>https://github.com/robjg/arooa</url>
     <connection>scm:git:git://github.com/robjg/arooa.git</connection>
   </scm>
-  <developers>
-    <developer>
-      <id>rob</id>
-      <name>Rob</name>
-      <email>contact@rgordon.co.uk</email>
-    </developer>
-  </developers>
+
   <dependencies>
 
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.25</version>
     </dependency>
 
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.2.3</version>
     </dependency>
 
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>1.2.17</version>
     </dependency>
 
     <dependency>
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils</artifactId>
-      <version>1.9.2</version>
     </dependency>
 
     <dependency>
@@ -66,30 +52,46 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
-      <version>1.10.19</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.xmlunit</groupId>
       <artifactId>xmlunit-core</artifactId>
-      <version>2.5.0</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.xmlunit</groupId>
       <artifactId>xmlunit-matchers</artifactId>
-      <version>2.5.0</version>
       <scope>test</scope>
     </dependency>
 
   </dependencies>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+  
 </project>
