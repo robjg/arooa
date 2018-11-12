@@ -1,22 +1,6 @@
 package org.oddjob.arooa.convert;
 
-import org.oddjob.arooa.convert.convertlets.ArooaValueConvertlets;
-import org.oddjob.arooa.convert.convertlets.BigDecimalConvertlets;
-import org.oddjob.arooa.convert.convertlets.BooleanConvertlets;
-import org.oddjob.arooa.convert.convertlets.ByteConvertlets;
-import org.oddjob.arooa.convert.convertlets.CharacterConvertlets;
-import org.oddjob.arooa.convert.convertlets.CollectionConvertlets;
-import org.oddjob.arooa.convert.convertlets.DateConvertlets;
-import org.oddjob.arooa.convert.convertlets.DoubleConvertlets;
-import org.oddjob.arooa.convert.convertlets.FileConvertlets;
-import org.oddjob.arooa.convert.convertlets.FloatConvertlets;
-import org.oddjob.arooa.convert.convertlets.IntegerConvertlets;
-import org.oddjob.arooa.convert.convertlets.LongConvertlets;
-import org.oddjob.arooa.convert.convertlets.ShortConvertlets;
-import org.oddjob.arooa.convert.convertlets.SqlDateConvertlets;
-import org.oddjob.arooa.convert.convertlets.StringConvertlets;
-import org.oddjob.arooa.convert.convertlets.URIConvertlets;
-import org.oddjob.arooa.convert.convertlets.URLConvertlets;
+import org.oddjob.arooa.convert.convertlets.*;
 import org.oddjob.arooa.convert.jokers.ArrayConversions;
 import org.oddjob.arooa.convert.jokers.EnumConversions;
 import org.oddjob.arooa.types.ArooaObject;
@@ -95,6 +79,7 @@ public class DefaultConversionProvider implements ConversionProvider {
 		new BigDecimalConvertlets().registerWith(registry);
 		new StringConvertlets().registerWith(registry);
 		new FileConvertlets().registerWith(registry);
+		new PathConvertlets().registerWith(registry);
 		new URIConvertlets().registerWith(registry);
 		new URLConvertlets().registerWith(registry);
 		new SqlDateConvertlets().registerWith(registry);
