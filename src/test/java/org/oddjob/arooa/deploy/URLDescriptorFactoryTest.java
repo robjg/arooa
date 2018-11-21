@@ -1,19 +1,7 @@
 package org.oddjob.arooa.deploy;
 
-import org.junit.Test;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-
 import org.junit.Assert;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.Test;
 import org.oddjob.OurDirs;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaType;
@@ -22,32 +10,35 @@ import org.oddjob.arooa.life.InstantiationContext;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaClass;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 public class URLDescriptorFactoryTest extends Assert {
 	private static final Logger logger = LoggerFactory.getLogger(URLDescriptorFactoryTest.class);
 	
    @Test
-	public void testClassLoader() throws IOException {
+	public void testClassLoader() throws IOException, URISyntaxException {
 
-		OurDirs ourDirs = new OurDirs();
-		
-		File classes = new File(ourDirs.base(), "build/test/classes");
-		if (!classes.exists()) {
-			classes = new File(ourDirs.base(), "classes");
-		}
-		if (!classes.exists()) {
-			throw new IllegalStateException("No classes!");
-		}
+	   Path classes = OurDirs.classesDir(getClass());
 		
 		URLClassLoader classLoader = new URLClassLoader(new URL[] {
-				classes.toURI().toURL()
+				classes.toUri().toURL()
 		}, null);
 		
 		String resource = "org/oddjob/arooa/deploy/URLDescriptorFactoryTest.xml";
 		
 		Enumeration<URL> eUrls = classLoader.getResources(resource);
 
-		List<URL> urls = new ArrayList<URL>();
+		List<URL> urls = new ArrayList<>();
 		
 		while (eUrls.hasMoreElements()) {
 			URL url = eUrls.nextElement();

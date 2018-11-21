@@ -2,6 +2,7 @@ package org.oddjob;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 
@@ -128,4 +129,19 @@ public class OurDirs {
         });
     }
 
+    public static Path classesDir( Class<?> forClass) throws URISyntaxException {
+
+        Path classes = Paths.get(forClass.getResource(
+                forClass.getSimpleName() + ".class").toURI())
+                .getParent();
+
+        String classPackage = forClass.getPackage().getName();
+
+        String[] packages = classPackage.split("\\.");
+        for (int i = 0; i < packages.length; ++i) {
+            classes = classes.getParent();
+        }
+
+        return classes;
+    }
 }

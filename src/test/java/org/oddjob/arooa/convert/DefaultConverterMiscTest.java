@@ -13,6 +13,8 @@ import org.oddjob.arooa.ArooaValue;
 import org.oddjob.arooa.deploy.ListDescriptorBean;
 import org.oddjob.arooa.types.ValueType;
 
+import static org.hamcrest.CoreMatchers.is;
+
 /**
  * Miscellaneous conversions...
  * 
@@ -91,7 +93,8 @@ public class DefaultConverterMiscTest extends Assert {
 		
 		// This needs to be thought about!!!
 		
-		assertNull(path);		
+		assertThat(path.toString(),
+				is( "String-File-Path-Iterable-Stream-List"));
 	}
 
 
