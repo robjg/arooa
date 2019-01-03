@@ -37,12 +37,12 @@ public class SimpleBeanRegistry implements BeanRegistry {
 		Pattern.compile("[" + Pattern.quote(RESERVED_CHARACTERS) + "]");
 	
 	/** Maps ids to Components */
-	private final Map<String, Object> ids = 
-		new HashMap<String, Object>();
+	private final Map<String, Object> ids =
+			new HashMap<>();
 
 	/** Maps components to ids. */
-	private final Map<Object, String> components = 
-		new LinkedHashMap<Object, String>();
+	private final Map<Object, String> components =
+			new LinkedHashMap<>();
 	
 	private final PropertyAccessor propertyAcessor;
 	
@@ -71,9 +71,10 @@ public class SimpleBeanRegistry implements BeanRegistry {
 			this.converter = converter;
 		}
 	}
-	
+
+	@Override
 	public synchronized <T> Iterable<T> getAllByType(Class<T> type) {
-		List<T> results = new ArrayList<T>();
+		List<T> results = new ArrayList<>();
 		for (Object component : components.keySet()) {
 			if (type.isInstance(component)) {
 				results.add(type.cast(component));
@@ -86,9 +87,10 @@ public class SimpleBeanRegistry implements BeanRegistry {
      * Register an object. The id should not contain reserved characters.
      * 
      * @param id The id of the object.
-     * @param object The object.
+     * @param component The object.
      */
-	public synchronized void register(String id, Object component) 
+	@Override
+	public synchronized void register(String id, Object component)
 	throws InvalidIdException {
 		if (component == null) {
 			throw new NullPointerException("Null component. id [" + id + "]");
@@ -120,10 +122,11 @@ public class SimpleBeanRegistry implements BeanRegistry {
 	 * (non-Javadoc)
 	 * @see org.oddjob.arooa.registry.BeanDirectory#getById(java.lang.String)
 	 */
-	public Object lookup(String path) 
+	@Override
+	public Object lookup(String path)
 	throws ArooaPropertyException {
 		PathBreakdown breakdown = new PathBreakdown(path);
-		Object bean = null;
+		Object bean;
 		synchronized (this) {
 			bean = ids.get(breakdown.getId());
 		}
@@ -151,11 +154,12 @@ public class SimpleBeanRegistry implements BeanRegistry {
 			}
 		}
 	}
-	
-	public <T> T lookup(String path, Class<T> required) 
+
+	@Override
+	public <T> T lookup(String path, Class<T> required)
 	throws ArooaPropertyException, ArooaConversionException {
 		PathBreakdown breakdown = new PathBreakdown(path);
-		Object bean = null;
+		Object bean;
 		synchronized (this) {
 			bean = ids.get(breakdown.getId());
 		}
@@ -192,6 +196,7 @@ public class SimpleBeanRegistry implements BeanRegistry {
 	 * @param component The component.
 	 * @return The id or null if none can be found.
 	 */
+	@Override
 	public synchronized String getIdFor(Object component) {
 	    return components.get(component);
 	}
@@ -199,8 +204,9 @@ public class SimpleBeanRegistry implements BeanRegistry {
 	/**
 	 * Remove a component from the registry if it exists.
 	 * 
-	 * @param component The compnent.
+	 * @param component The component.
 	 */
+	@Override
 	public synchronized void remove(Object component) {
 		String id = components.remove(component);
 		ids.remove(id);

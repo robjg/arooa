@@ -16,9 +16,9 @@ public interface BeanRegistry extends BeanDirectory {
      * Register an object. The id should not contain reserved characters.
      * 
      * @param id The id of the object.
-     * @param object The object.
+     * @param component The object.
      */
-	public void register(String id, Object component) 
+	void register(String id, Object component)
 	throws InvalidIdException;
 
 	
@@ -27,6 +27,6 @@ public interface BeanRegistry extends BeanDirectory {
 	 * 
 	 * @param component The component.
 	 */
-	public void remove(Object component);
+	void remove(Object component);
 
 }

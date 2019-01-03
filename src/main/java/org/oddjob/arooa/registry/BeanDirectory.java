@@ -28,13 +28,13 @@ public interface BeanDirectory {
 	 *  <li>Most combinations of the above.</li>
 	 * </ul>
 	 * 
-	 * @param fullPath The path.
+	 * @param path The path.
 	 * 
 	 * @return The resultant value or null.
 	 * 
 	 * @throws ArooaPropertyException If property access fails.
 	 */
-	public Object lookup(String path) throws ArooaPropertyException;
+	Object lookup(String path) throws ArooaPropertyException;
 	
 	/**
 	 * Get a value, as above, but also convert it into to given
@@ -55,17 +55,17 @@ public interface BeanDirectory {
 	 * it can't be converted into the required type.
 	 * @throws ArooaPropertyException If property access fails.
 	 */
-	public <T> T lookup(String path, 
+	<T> T lookup(String path,
 			Class<T> required)
 	throws ArooaPropertyException, ArooaConversionException;
 	
 	/**
 	 * Find the id for the given component.
 	 * 
-	 * @param component The component.
+	 * @param bean The component.
 	 * @return The id or null if none can be found.
 	 */
-	public String getIdFor(Object bean);
+	String getIdFor(Object bean);
 	
 	/**
 	 * Get all objects in the directory of the required type.
@@ -79,5 +79,5 @@ public interface BeanDirectory {
 	 * 
 	 * @return An Iterable for matches. Never null.
 	 */
-	public <T> Iterable<T> getAllByType(Class<T> type);
+	<T> Iterable<T> getAllByType(Class<T> type);
 }

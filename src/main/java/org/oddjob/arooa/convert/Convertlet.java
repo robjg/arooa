@@ -22,6 +22,7 @@ package org.oddjob.arooa.convert;
  * @author rob
  *
  */
+@FunctionalInterface
 public interface Convertlet<F, T> {
 	
 	/**
@@ -33,5 +34,5 @@ public interface Convertlet<F, T> {
 	 * @throws ArooaConversionException If conversion failed - for instance
 	 * a number or date can't be parsed.
 	 */
-	public T convert(F from) throws ArooaConversionException;
+	T convert(F from) throws ArooaConversionException;
 }
