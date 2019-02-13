@@ -19,10 +19,10 @@ public interface DragTransaction {
 	/**
 	 * Save changes to the configuration.
 	 */
-	public void commit() throws ArooaParseException;
+	void commit() throws ArooaParseException;
 	
 	/**
 	 * Abandons changes to the configuration.
 	 */
-	public void rollback();
+	void rollback();
 }

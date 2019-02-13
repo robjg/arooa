@@ -3,6 +3,9 @@ package org.oddjob.arooa.runtime;
 import java.util.EventObject;
 
 
+/**
+ * An event passed to a {@link RuntimeListener}.
+ */
 public class RuntimeEvent extends EventObject {
 	private static final long serialVersionUID = 20080121;
 	

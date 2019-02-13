@@ -13,14 +13,14 @@ public interface SessionStateListener extends EventListener {
 	/**
 	 * Called when the session is modified.
 	 * 
-	 * @param event
+	 * @param event The event.
 	 */
-	public void sessionModifed(ConfigSessionEvent event);
+	void sessionModified(ConfigSessionEvent event);
 	
 	/**
 	 * Called when the session is saved.
 	 * 
-	 * @param event
+	 * @param event The event.
 	 */
-	public void sessionSaved(ConfigSessionEvent event);
+	void sessionSaved(ConfigSessionEvent event);
 }

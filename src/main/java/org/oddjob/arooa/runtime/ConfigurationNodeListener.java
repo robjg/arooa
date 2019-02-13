@@ -16,34 +16,36 @@ public interface ConfigurationNodeListener extends EventListener {
 	 * An instance of this use is that a simple property will only 
 	 * allow a single child.
 	 * 
-	 * @param nodeEvent
-	 * @throws ModificationRefusedException
+	 * @param nodeEvent The modification event.
+     *
+	 * @throws ModificationRefusedException If the listener veto's the request.
 	 */
-	public void insertRequest(ConfigurationNodeEvent nodeEvent)
+	void insertRequest(ConfigurationNodeEvent nodeEvent)
 	throws ModificationRefusedException;
 	
 	/**
 	 * A {@link ConfigurationNode} will make a request to all
 	 * listeners before removing a node.
 	 * 
-	 * @param nodeEvent
-	 * @throws ModificationRefusedException
+	 * @param nodeEvent The modification event.
+	 *
+	 * @throws ModificationRefusedException If the listener veto's the request.
 	 */
-	public void removalRequest(ConfigurationNodeEvent nodeEvent)
+	void removalRequest(ConfigurationNodeEvent nodeEvent)
 	throws ModificationRefusedException;
 	
 	/**
 	 * Receive notification that a child has been inserted.
 	 * 
-	 * @param nodeEvent
+	 * @param nodeEvent The modification event.
 	 */
-	public void childInserted(ConfigurationNodeEvent nodeEvent);
+	void childInserted(ConfigurationNodeEvent nodeEvent);
 	
 	/**
 	 * Receive notification that a child has been removed.
 	 * 
-	 * @param nodeEvent
+	 * @param nodeEvent The modification event.
 	 */
-	public void childRemoved(ConfigurationNodeEvent nodeEvent);
+	void childRemoved(ConfigurationNodeEvent nodeEvent);
 	
 }

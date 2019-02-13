@@ -15,21 +15,67 @@ import org.oddjob.arooa.ArooaConfigurationException;
  */
 public interface RuntimeListener extends EventListener {
 
-	public void beforeInit(RuntimeEvent event) 
-	throws ArooaConfigurationException;
-	
-	public void afterInit(RuntimeEvent event) 
-	throws ArooaConfigurationException;
-	
-	public void beforeConfigure(RuntimeEvent event) 
+    /**
+     * Called by an {@link RuntimeConfiguration} before performing the
+     * initialisation phase.
+     *
+     * @param event The event.
+     *
+     * @throws ArooaConfigurationException If the listener detects a configuration
+     * problem.
+     */
+	void beforeInit(RuntimeEvent event)
 	throws ArooaConfigurationException;
 
-	public void afterConfigure(RuntimeEvent event) 
+    /**
+     * Called by an {@link RuntimeConfiguration} after performing the
+     * initialisation phase.
+     *
+     * @param event The event. Never null.
+     *
+     * @throws ArooaConfigurationException If the listener detects a configuration
+     * problem.
+     */
+	void afterInit(RuntimeEvent event)
 	throws ArooaConfigurationException;
-	
-	public void beforeDestroy(RuntimeEvent event) 
+
+    /**
+     * Called by an {@link RuntimeConfiguration} before performing the
+     * configuration phase.
+     *
+     * @param event The event. Never null.
+     *
+     * @throws ArooaConfigurationException If the listener detects a configuration
+     * problem.
+     */
+	void beforeConfigure(RuntimeEvent event)
 	throws ArooaConfigurationException;
-	
-	public void afterDestroy(RuntimeEvent event) 
+
+    /**
+     * Called by an {@link RuntimeConfiguration} after performing the
+     * configuration phase.
+     *
+     * @param event The event. Never Null.
+     *
+     * @throws ArooaConfigurationException If the listener detects a configuration
+     * problem.
+     */
+	void afterConfigure(RuntimeEvent event)
 	throws ArooaConfigurationException;
+
+    /**
+     * Called by an {@link RuntimeConfiguration} before performing the
+     * destroy phase.
+     *
+     * @param event The event. Never null.
+     */
+	void beforeDestroy(RuntimeEvent event);
+
+    /**
+     * Called by an {@link RuntimeConfiguration} after performing the
+     * destroy phase.
+     *
+     * @param event The event. Never null.
+     */
+	void afterDestroy(RuntimeEvent event);
 }

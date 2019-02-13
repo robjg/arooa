@@ -25,14 +25,14 @@ public interface ConfigurationSession {
 	 * @return A DragPoint, or null if the component is not
 	 * a member of the session.
 	 */
-	public DragPoint dragPointFor(Object component);
+	DragPoint dragPointFor(Object component);
 
 	/**
 	 * Has the configuration been modified.
 	 * 
 	 * @return true/false. True if modified.
 	 */
-	public boolean isModified();
+	boolean isModified();
 	
 	/**
 	 * Add a {@link SessionStateListener} listener. 
@@ -40,7 +40,7 @@ public interface ConfigurationSession {
 	 * @param listener The listener.
 	 * 
 	 */
-   public void addSessionStateListener(
+   void addSessionStateListener(
         SessionStateListener listener);
 
    /**
@@ -49,15 +49,15 @@ public interface ConfigurationSession {
     * @param listener The listener.
     * 
     */
-   public void removeSessionStateListener(
+   void removeSessionStateListener(
                 SessionStateListener listener);
 	
 	/**
 	 * Save the configuration.
 	 * 
-	 * @throws ArooaParseException
+	 * @throws ArooaParseException If save failed. (Is this the right Exception)?
 	 */
-	public void save()
+	void save()
 	throws ArooaParseException;
 	
 	/**
@@ -65,6 +65,6 @@ public interface ConfigurationSession {
 	 * 
 	 * @return An ArooaDescriptor. Never Null.
 	 */
-	public ArooaDescriptor getArooaDescriptor();
+	ArooaDescriptor getArooaDescriptor();
 
 }

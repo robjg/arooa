@@ -5,11 +5,16 @@ import java.util.List;
 
 import org.oddjob.arooa.ArooaConfigurationException;
 
+/**
+ * Base class for {@link RuntimeConfiguration}s.
+ *
+ *
+ */
 abstract public class AbstractRuntimeConfiguration 
 implements RuntimeConfiguration {
 
-	private List<RuntimeListener> configurationListeners = 
-		new ArrayList<RuntimeListener>();
+	private final List<RuntimeListener> configurationListeners =
+			new ArrayList<>();
 	
 	public void addRuntimeListener(RuntimeListener listener) {
 		synchronized (configurationListeners) {
@@ -26,13 +31,13 @@ implements RuntimeConfiguration {
 	protected void fireBeforeInit() 
 	throws ArooaConfigurationException {
 		
-		List<RuntimeListener> copy = null;
+		List<RuntimeListener> copy;
 		synchronized (configurationListeners) {
 			if (configurationListeners.size() == 0) {
 				return;
 			}
-			copy = new ArrayList<RuntimeListener>(
-					configurationListeners);
+			copy = new ArrayList<>(
+                    configurationListeners);
 		}
 
 		RuntimeEvent event = new RuntimeEvent(this);
@@ -45,13 +50,13 @@ implements RuntimeConfiguration {
 	protected void fireAfterInit() 
 	throws ArooaConfigurationException {
 		
-		List<RuntimeListener> copy = null;
+		List<RuntimeListener> copy;
 		synchronized (configurationListeners) {
 			if (configurationListeners.size() == 0) {
 				return;
 			}
-			copy = new ArrayList<RuntimeListener>(
-					configurationListeners);
+			copy = new ArrayList<>(
+                    configurationListeners);
 		}
 		
 		RuntimeEvent event = new RuntimeEvent(this);
@@ -63,13 +68,13 @@ implements RuntimeConfiguration {
 	protected void fireBeforeConfigure() 
 	throws ArooaConfigurationException {
 
-		List<RuntimeListener> copy = null;
+		List<RuntimeListener> copy;
 		synchronized (configurationListeners) {
 			if (configurationListeners.size() == 0) {
 				return;
 			}
-			copy = new ArrayList<RuntimeListener>(
-					configurationListeners);
+			copy = new ArrayList<>(
+                    configurationListeners);
 		}
 		
 		RuntimeEvent event = new RuntimeEvent(this);
@@ -81,13 +86,13 @@ implements RuntimeConfiguration {
 	protected void fireAfterConfigure() 
 	throws ArooaConfigurationException {
 		
-		List<RuntimeListener> copy = null;
+		List<RuntimeListener> copy;
 		synchronized (configurationListeners) {
 			if (configurationListeners.size() == 0) {
 				return;
 			}
-			copy = new ArrayList<RuntimeListener>(
-					configurationListeners);
+			copy = new ArrayList<>(
+                    configurationListeners);
 		}
 		
 		RuntimeEvent event = new RuntimeEvent(this);
@@ -99,13 +104,13 @@ implements RuntimeConfiguration {
 	protected void fireBeforeDestroy() 
 	throws ArooaConfigurationException {
 
-		List<RuntimeListener> copy = null;
+		List<RuntimeListener> copy;
 		synchronized (configurationListeners) {
 			if (configurationListeners.size() == 0) {
 				return;
 			}
-			copy = new ArrayList<RuntimeListener>(
-					configurationListeners);
+			copy = new ArrayList<>(
+                    configurationListeners);
 		}
 		
 		RuntimeEvent event = new RuntimeEvent(this);
@@ -117,13 +122,13 @@ implements RuntimeConfiguration {
 	protected void fireAfterDestroy() 
 	throws ArooaConfigurationException {
 		
-		List<RuntimeListener> copy = null;
+		List<RuntimeListener> copy;
 		synchronized (configurationListeners) {
 			if (configurationListeners.size() == 0) {
 				return;
 			}
-			copy = new ArrayList<RuntimeListener>(
-					configurationListeners);
+			copy = new ArrayList<>(
+                    configurationListeners);
 		}
 		
 		RuntimeEvent event = new RuntimeEvent(this);

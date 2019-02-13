@@ -24,53 +24,54 @@ import org.oddjob.arooa.runtime.RuntimeConfiguration;
 public interface ArooaContext {
 
 	/**
-	 * Get the type of bean this is.
+	 * Get the type of bean or property this is a context for (a component
+	 * or a value)
 	 * 
 	 * @return The type. Never null.
 	 */
-	public ArooaType getArooaType();
+	ArooaType getArooaType();
 	
 	/**
 	 * Get the parent {@link ArooaContext}
 	 * 
 	 * @return The parent context. This will be null for the root context.
 	 */
-	public ArooaContext getParent();
+	ArooaContext getParent();
 	
     /**
-     * Get the current {@link RuntimeConfiguration{} for this context.
+     * Get the current {@link RuntimeConfiguration} for this context.
      * 
      * @return A RuntimeConfiguration. This may be null for the root context.
      */
-    public RuntimeConfiguration getRuntime();
+    RuntimeConfiguration getRuntime();
 
     /**
      * Get the {@link ConfigurationNode} for this context.
      * 
      * @return A RuntimeNode. Never null.
      */
-    public ConfigurationNode getConfigurationNode();
+    ConfigurationNode getConfigurationNode();
 
     /**
-     * Get the {@link ArooHandler} that will be used to process any child
+     * Get the {@link ArooaHandler} that will be used to process any child
      * elements.
      * 
      * @return An ArooaHandler. Never null.
      */
-    public ArooaHandler getArooaHandler();
+    ArooaHandler getArooaHandler();
     
 	/**
 	 * Get the prefix mappings for this context.
 	 * 
-	 * @return
+	 * @return The prefix mappings.
 	 */
-    public abstract PrefixMappings getPrefixMappings();
+    PrefixMappings getPrefixMappings();
 
 	/**
 	 * Get the session for this context.
 	 * 
-	 * @return
+	 * @return The session. Never null.
 	 */
-	public ArooaSession getSession();
+	ArooaSession getSession();
 	
 }

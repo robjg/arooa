@@ -16,21 +16,21 @@ public interface ConfigurationOwner {
 	 * 
 	 * @return A {@link ConfigurationSession}. My be null if no session is available.
 	 */
-	public ConfigurationSession provideConfigurationSession();
+	ConfigurationSession provideConfigurationSession();
 	
 	/**
 	 * Add a listener.
 	 * 
 	 * @param listener
 	 */
-	public void addOwnerStateListener(OwnerStateListener listener);
+	void addOwnerStateListener(OwnerStateListener listener);
 	
 	/**
 	 * Remove a listener.
 	 * 
 	 * @param listener
 	 */
-	public void removeOwnerStateListener(OwnerStateListener listener);
+	void removeOwnerStateListener(OwnerStateListener listener);
 	
 	/**
 	 * Get the design factory for the configuration. If this is null
@@ -42,7 +42,7 @@ public interface ConfigurationOwner {
 	 * @return A DesignFactory. Must not be null if a {@link ConfigurationSession} 
 	 * is available.
 	 */
-	public SerializableDesignFactory rootDesignFactory();
+	SerializableDesignFactory rootDesignFactory();
 	
 	/**
 	 * Get the root element.
@@ -50,6 +50,6 @@ public interface ConfigurationOwner {
 	 * @return The root element of the configuration. Must not be null if
 	 * a ConfiguraitonSession is available.
 	 */
-	public ArooaElement rootElement();
+	ArooaElement rootElement();
 	
 }

@@ -1,10 +1,16 @@
 package org.oddjob.arooa.life;
 
+import org.oddjob.arooa.beanutils.DynaArooaClass;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.ArooaInstantiationException;
 import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 
+/**
+ * Wrapper for a standard Java class.
+ *
+ * @see DynaArooaClass
+ */
 public class SimpleArooaClass implements ArooaClass {
 
 	private final Class<?> forClass;

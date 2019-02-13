@@ -8,16 +8,35 @@ package org.oddjob.arooa.reflect;
  * Implementations should implement equals and hashCode so their
  * {@link BeanOverview}s may be cached. This is because creating them
  * is possibly an expensive operation due to introspection (although this
- * hasn't been prooved by the developer).
+ * hasn't been proved by the developer).
  * 
  * @author rob
  *
  */
 public interface ArooaClass {
 
-	public Class<?> forClass();
-	
-	public Object newInstance() throws ArooaInstantiationException;
-	
-	public BeanOverview getBeanOverview(PropertyAccessor accessor);
+    /**
+     * Provide the actual Java class this is for.
+     *
+     * @return A class. Never null.
+     */
+	Class<?> forClass();
+
+    /**
+     * Create a new instance of the Object this represents.
+     *
+     * @return The object. Never null.
+     *
+     * @throws ArooaInstantiationException If creation fails.
+     */
+	Object newInstance() throws ArooaInstantiationException;
+
+    /**
+     * Get an overview of the class.
+     *
+     * @param accessor A property accessor.
+     *
+     * @return An overview of the class.
+     */
+	BeanOverview getBeanOverview(PropertyAccessor accessor);
 }

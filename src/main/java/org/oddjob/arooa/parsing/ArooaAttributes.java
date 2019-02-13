@@ -20,13 +20,13 @@ public interface ArooaAttributes {
 	 * 
 	 * @return The value, or null if it doesn't exist.
 	 */
-	public String get(String name);
+	String get(String name);
 	
 	/**
 	 * Get all the names of the attributes.
 	 * 
 	 * @return The attribute names. Never null.
 	 */
-	public String[] getAttributNames();
+	String[] getAttributeNames();
 	
 }

@@ -75,7 +75,7 @@ public interface ArooaHandler {
 	 * 
 	 * @return A new ArooaContext for this element.
 	 */
-	public ArooaContext onStartElement(
+	ArooaContext onStartElement(
 			ArooaElement element,
 			ArooaContext parentContext)
 	throws ArooaConfigurationException;

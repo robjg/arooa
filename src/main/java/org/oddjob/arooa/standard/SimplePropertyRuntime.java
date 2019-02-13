@@ -11,19 +11,31 @@ import org.oddjob.arooa.runtime.ConfigurationNodeListener;
 import org.oddjob.arooa.runtime.ModificationRefusedException;
 
 /**
- * 
+ * A {@link org.oddjob.arooa.runtime.RuntimeConfiguration} for an
+ * simple property.
+ *
  * @author rob
  *
  */
 class SimplePropertyRuntime extends ContainerRuntime {
 
+
+	/** Creates the configuration for the instance that is the value of this
+	 * property. */
 	private final ElementAction<InstanceConfiguration> nestedAction;
 
+	/**
+	 * Constructor.
+	 *
+	 * @param nestedAction The child Instance Configuration creator.
+	 * @param propertyDefinition The definition of the property this is for.
+	 * @param parentContext The parent context.
+	 */
 	public SimplePropertyRuntime(
 			ElementAction<InstanceConfiguration> nestedAction, 
 			PropertyDefinition propertyDefinition,
-			ArooaContext context) {
-		super(propertyDefinition, context);
+			ArooaContext parentContext) {
+		super(propertyDefinition, parentContext);
 		this.nestedAction = nestedAction;
 	}
 	

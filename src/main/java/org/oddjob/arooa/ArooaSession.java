@@ -20,35 +20,35 @@ public interface ArooaSession {
 	 *  
 	 * @return An ArooaDescriptor. Must not be null.
 	 */
-    public ArooaDescriptor getArooaDescriptor();
+    ArooaDescriptor getArooaDescriptor();
 
     /**
      * Get the underlying {@link ComponentPool}.
      * 
      * @return A ComponentPool. Must not be null.
      */
-	public ComponentPool getComponentPool();
+	ComponentPool getComponentPool();
 	
     /**
      * Get the underlying {@link BeanRegistry}.
      * 
      * @return A BeanRegistry. Must not be null.
      */
-	public BeanRegistry getBeanRegistry();
+	BeanRegistry getBeanRegistry();
 	
 	/**
 	 * Get the {@link PropertyManager} for this session.
 	 * 
 	 * @return The PropertyMananger. Must not be null.
 	 */
-	public PropertyManager getPropertyManager();
+	PropertyManager getPropertyManager();
 	
 	/**
 	 * Get the tools {@link ArooaTools} to use.
 	 * 
 	 * @return An instance of ArooaTools.
 	 */
-	public ArooaTools getTools();
+	ArooaTools getTools();
 
 	/**
 	 * Get the {@link ComponentPersister} to use.
@@ -56,7 +56,7 @@ public interface ArooaSession {
 	 * @return A ComponentPersister. Can be null if
 	 * no persistence is required.
 	 */
-	public ComponentPersister getComponentPersister();
+	ComponentPersister getComponentPersister();
 	
 	/**
 	 * 
@@ -65,6 +65,6 @@ public interface ArooaSession {
 	 * @return A ComponentProxyResolver. Can be null if
 	 * no Proxy substitution is required.
 	 */
-	public ComponentProxyResolver getComponentProxyResolver();
+	ComponentProxyResolver getComponentProxyResolver();
 	
 }

@@ -16,12 +16,12 @@ interface PropertyDefinition {
 	 * 
 	 * @return
 	 */
-	public String getPropertyName();
+	String getPropertyName();
 	
 	/**
 	 * The class name of the property.
 	 * 
 	 * @return
 	 */
-	public ArooaClass getPropertyType();
+	ArooaClass getPropertyType();
 }

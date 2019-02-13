@@ -14,7 +14,7 @@ import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaClass;
 
 /**
- * An ElementAction that produces an IstanceConfiguration for a 
+ * An {@link ElementAction} that produces an {@link InstanceConfiguration} for a
  * Component.
  * 
  * @author rob

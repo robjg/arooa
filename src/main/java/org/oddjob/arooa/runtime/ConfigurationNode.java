@@ -17,28 +17,28 @@ public interface ConfigurationNode extends ArooaConfiguration {
 	 * 
 	 * @return The ArooaContext. Never null.
 	 */
-	public ArooaContext getContext();
+	ArooaContext getContext();
 	
 	/**
-	 * Add a RuntimeNodeListener.
+	 * Add a listener to listen to configuration changes.
 	 * 
-	 * @param listener
+	 * @param listener A listener.
 	 */
-	public void addNodeListener(ConfigurationNodeListener listener);
+	void addNodeListener(ConfigurationNodeListener listener);
 	
 	/**
-	 * Remove a RuntimeNodeListener.
+	 * Remove a listener.
 	 * 
-	 * @param listener
+	 * @param listener A listener.
 	 */
-	public void removeNodeListener(ConfigurationNodeListener listener);	
+	void removeNodeListener(ConfigurationNodeListener listener);
 	
 	/**
 	 * Set the position for the next inserted node.
 	 *  
 	 * @param insertAt The position.
 	 */
-	public void setInsertPosition(int insertAt);
+	void setInsertPosition(int insertAt);
 	
 	/**
 	 * Insert a child in the parse Tree.
@@ -47,21 +47,21 @@ public interface ConfigurationNode extends ArooaConfiguration {
 	 * 
 	 * @return The insert position. 
 	 */
-	public int insertChild(ConfigurationNode child);
+	int insertChild(ConfigurationNode child);
 	
 	/**
 	 * Remove a child.
 	 * 
 	 * @param index The index at which to remove the child.
 	 */
-	public void removeChild(int index);
+	void removeChild(int index);
 	
 	/**
 	 * Add text to the node.
 	 * 
-	 * @param text
+	 * @param text Some text.
 	 */
-	public void addText(String text);
+	void addText(String text);
 	
 	/**
 	 * Get the index of a child RuntimeNode. This is required for lists who's
@@ -71,6 +71,6 @@ public interface ConfigurationNode extends ArooaConfiguration {
 	 * 
 	 * @return The index, or -1 if the node is not a child.
 	 */
-	public int indexOf(ConfigurationNode child);
+	int indexOf(ConfigurationNode child);
 		
 }
