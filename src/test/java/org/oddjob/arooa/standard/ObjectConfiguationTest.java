@@ -1,364 +1,352 @@
 package org.oddjob.arooa.standard;
 
-import org.junit.Test;
-
 import org.junit.Assert;
-
-import org.oddjob.arooa.ArooaBeanDescriptor;
-import org.oddjob.arooa.ArooaDescriptor;
-import org.oddjob.arooa.ArooaException;
-import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ArooaTools;
-import org.oddjob.arooa.ConfiguredHow;
-import org.oddjob.arooa.MockArooaBeanDescriptor;
-import org.oddjob.arooa.MockArooaDescriptor;
-import org.oddjob.arooa.MockArooaSession;
-import org.oddjob.arooa.MockArooaTools;
+import org.junit.Test;
+import org.oddjob.arooa.*;
+import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
 import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.convert.DefaultConverter;
+import org.oddjob.arooa.deploy.annotations.ArooaText;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.MockArooaContext;
 import org.oddjob.arooa.parsing.MutableAttributes;
 import org.oddjob.arooa.reflect.ArooaClass;
-import org.oddjob.arooa.reflect.ArooaPropertyException;
-import org.oddjob.arooa.reflect.BeanOverview;
-import org.oddjob.arooa.reflect.MockArooaClass;
-import org.oddjob.arooa.reflect.MockBeanOverview;
-import org.oddjob.arooa.reflect.MockPropertyAccessor;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.registry.BeanRegistry;
 import org.oddjob.arooa.registry.MockBeanRegistry;
-import org.oddjob.arooa.runtime.Evaluator;
-import org.oddjob.arooa.runtime.ExpressionParser;
-import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
-import org.oddjob.arooa.runtime.PropertyFirstEvaluator;
-import org.oddjob.arooa.runtime.PropertyManager;
-import org.oddjob.arooa.runtime.RuntimeConfiguration;
+import org.oddjob.arooa.runtime.*;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ObjectConfiguationTest extends Assert {
 
-	
-	private class MockObject {
-		// public void setFruit();
-	}
 
-	public static class Fruit {
-		
-	}
+    public static class SomeBean {
+        private String fruit;
+
+        public void setFruit(String fruit) {
+            this.fruit = fruit;
+        }
+    }
+
+    private class OurAttributeTestSession extends MockArooaSession {
+
+        @Override
+        public ArooaDescriptor getArooaDescriptor() {
+            return new StandardArooaDescriptor();
+        }
+
+        @Override
+        public ArooaTools getTools() {
+            return new MockArooaTools() {
+                @Override
+                public PropertyAccessor getPropertyAccessor() {
+                    return new BeanUtilsPropertyAccessor();
+                }
+
+                @Override
+                public ExpressionParser getExpressionParser() {
+                    return new StandardPropertyHelper();
+                }
+
+                @Override
+                public ArooaConverter getArooaConverter() {
+                    return new DefaultConverter();
+                }
+
+                @Override
+                public Evaluator getEvaluator() {
+                    return new PropertyFirstEvaluator();
+                }
+            };
+        }
+
+        @Override
+        public BeanRegistry getBeanRegistry() {
+            return new MockBeanRegistry() {
+                @SuppressWarnings("unchecked")
+                @Override
+                public <T> T lookup(String path, Class<T> required) {
+                    assertEquals("Apple", path);
+                    assertEquals(String.class, required);
+                    return (T) "Orange";
+                }
+            };
+        }
+
+        @Override
+        public PropertyManager getPropertyManager() {
+            return new MockPropertyManager() {
+                @Override
+                public String lookup(String propertyName) {
+                    return null;
+                }
+            };
+        }
+    }
+
+    private class AContext extends MockArooaContext {
+        OurAttributeTestSession session = new OurAttributeTestSession();
+
+        final ConfigurationNode configurationNode =
+                mock(ConfigurationNode.class);
+
+        RuntimeListener runtimeListener;
+
+        {
+            when(configurationNode.indexOf(any(ConfigurationNode.class)))
+                    .thenReturn(-1);
+        }
+
+        @Override
+        public ArooaSession getSession() {
+            return session;
+        }
+
+        @Override
+        public RuntimeConfiguration getRuntime() {
+            return new MockRuntimeConfiguration() {
+                @Override
+                public ArooaClass getClassIdentifier() {
+                    return new SimpleArooaClass(
+                            String.class);
+                }
+
+                @Override
+                public void addRuntimeListener(RuntimeListener listener) {
+                    assertThat(listener, notNullValue());
+                    assertThat(runtimeListener, nullValue());
+                    runtimeListener = listener;
+                }
+
+                @Override
+                public void removeRuntimeListener(RuntimeListener listener) {
+                    assertThat(listener, notNullValue());
+                    assertThat(runtimeListener, is(listener));
+                    runtimeListener = null;
+                }
+            };
+        }
+    }
 
 
-	private class OurAttributeTestSession extends MockArooaSession {
-		Object propertyValue;
+    private class AnInstanceRuntime extends MockInstanceRuntime {
+        Object value;
 
-		@Override
-		public ArooaDescriptor getArooaDescriptor() {
-			return new MockArooaDescriptor() {
-				@Override
-				public ArooaBeanDescriptor getBeanDescriptor(
-						ArooaClass forClass, PropertyAccessor accessor) {
-					return new MockArooaBeanDescriptor() {
-						@Override
-						public ConfiguredHow getConfiguredHow(String property) {
-							assertEquals("fruit", property);
-							return ConfiguredHow.ATTRIBUTE;
-						}
-						@Override
-						public String getComponentProperty() {
-							return null;
-						}
-					};
-				}
-			};
-		}
-		
-		@Override
-		public ArooaTools getTools() {
-			return new MockArooaTools() {
-				@Override
-				public PropertyAccessor getPropertyAccessor() {
-					return new MockPropertyAccessor() {
-						@Override
-						public void setSimpleProperty(Object bean, String name, Object value) throws ArooaException {
-							assertEquals("MockObject bean", MockObject.class, bean.getClass());
-							assertEquals("Property name", "fruit", name);
-							propertyValue = value;
-						}
-						
-						@Override
-						public ArooaClass getClassName(Object bean) {
-							Class<?> cl = (Class<?>) bean.getClass();
-							return new SimpleArooaClass(cl);
-						}
-						
-						@Override
-						public BeanOverview getBeanOverview(
-								Class<?> forClass) throws ArooaException {
-							return new MockBeanOverview() {
-								@Override
-								public String[] getProperties() {
-									return new String[0];
-								}
-								@Override
-								public Class<?> getPropertyType(String property) {
-									assertEquals("fruit", property);
-									return String.class;
-								}
-								
-								@Override
-								public boolean hasWriteableProperty(
-										String property) {
-									if ("fruit".equals(property)) {
-										return true;
-									}
-									else {
-										throw new ArooaPropertyException(property);
-									}
-								}
-							};
-						}
-						
-						@Override
-						public PropertyAccessor accessorWithConversions(
-								ArooaConverter converter) {
-							return this;
-						}
-					};
-				}
-				@Override
-				public ExpressionParser getExpressionParser() {
-					return new StandardPropertyHelper();
-				}
-	
-				@Override
-				public ArooaConverter getArooaConverter() {
-					return new DefaultConverter();
-				}
-				
-				@Override
-				public Evaluator getEvaluator() {
-					return new PropertyFirstEvaluator();
-				}
-			};
-		}
-		
-		@Override
-		public BeanRegistry getBeanRegistry() {
-			return new MockBeanRegistry() {
-				@SuppressWarnings("unchecked")
-				@Override
-				public <T> T lookup(String path, Class<T> required) {
-					assertEquals("Apple", path);
-					assertEquals(String.class, required);
-					return (T) "Orange";
-				}
-			};
-		}
-		
-		@Override
-		public PropertyManager getPropertyManager() {
-			return new MockPropertyManager() {
-				@Override
-				public String lookup(String propertyName) {
-					return null;
-				}
-			};
-		}
-	}
+        public AnInstanceRuntime(InstanceConfiguration instance, ArooaContext parentContext) {
+            super(instance, parentContext);
+        }
 
-	private class AContext extends MockArooaContext {
-		OurAttributeTestSession session = new OurAttributeTestSession();
+        @Override
+        ParentPropertySetter getParentPropertySetter() {
+            return value -> AnInstanceRuntime.this.value = value;
+        }
+    }
 
-		@Override
-		public ArooaSession getSession() {
-			return session;
-		}
-		
-		@Override
-		public RuntimeConfiguration getRuntime() {
-			return new MockRuntimeConfiguration() {
-				@Override
-				public ArooaClass getClassIdentifier() {
-					return new SimpleArooaClass(String.class);
-				}
-			};
-		}
-		
-	}
-	
+    @Test
+    public void testNonConstAttributes() {
 
-	private class WrappingRuntime extends MockInstanceRuntime {
-		Object value;
+        AContext parentContext = new AContext();
 
-		public WrappingRuntime(InstanceConfiguration instance, ArooaContext parentContext) {
-			super(instance, parentContext);
-		}
-		
-		@Override
-		ParentPropertySetter getParentPropertySetter() {
-			return new ParentPropertySetter() {
-				public void parentSetProperty(Object value) {
-					WrappingRuntime.this.value = value;
-				}
-			};
-		}
-	}
-	
-   @Test
-	public void testNonConstAttributes() {
-		
-		AContext context = new AContext();
+        MutableAttributes attrs = new MutableAttributes();
+        attrs.set("fruit", "${Apple}");
 
-		MutableAttributes attrs = new MutableAttributes();
-		attrs.set("fruit", "${Apple}");
+        SomeBean ourBean = new SomeBean();
 
-		ObjectConfiguration test = new ObjectConfiguration(
-				new SimpleArooaClass(MockObject.class), 
-				new MockObject(), attrs);
-		
-		WrappingRuntime results = new WrappingRuntime(test, context);
-		
-		assertNull("No attribute", context.session.propertyValue);
-		
-		test.init(results, context);
-		
-		assertNull("No attribute because not constant.", 
-				context.session.propertyValue);
-		
-		test.listenerConfigure(results, context);
-		
+        ObjectConfiguration test = new ObjectConfiguration(
+                new SimpleArooaClass(SomeBean.class),
+                ourBean,
+                attrs);
 
-		assertEquals("Runtime attribute set.", "Orange", 
-				context.session.propertyValue);
-		
-		assertNotNull(results.value);
-	}
-	
-   @Test
-	public void testConstAttributes() {
-		
-		AContext context = new AContext();
+        AnInstanceRuntime instanceRuntime = new AnInstanceRuntime(test, parentContext);
 
-		MutableAttributes attrs = new MutableAttributes();
-		attrs.set("fruit", "Apple");
+        assertNull("No attribute", ourBean.fruit);
 
-		ObjectConfiguration test = new ObjectConfiguration(
-				new SimpleArooaClass(MockObject.class), 
-				new MockObject(), attrs);
-		
-		WrappingRuntime results = new WrappingRuntime(test, context);
-		
-		test.init(results, context);
-		
-		assertEquals("Constant attribute set.", "Apple", 
-				context.session.propertyValue);
-		
-		test.listenerConfigure(results, context);
-		
-		assertEquals("Still Constant attribute set.", "Apple", 
-				context.session.propertyValue);
-		
-	}
-	
+        ArooaContext ourContext = mock(ArooaContext.class);
+        when(ourContext.getSession())
+                .thenReturn(parentContext.getSession());
+        when(ourContext.getRuntime())
+                .thenReturn(instanceRuntime);
 
-	private class TestTextContext extends MockArooaContext {
-		String textProperty;
-		
-		OurAttributeTestSession session = new OurAttributeTestSession() {
-			@Override
-			public ArooaDescriptor getArooaDescriptor() {
-				return new MockArooaDescriptor() {
-					@Override
-					public ArooaBeanDescriptor getBeanDescriptor(
-							ArooaClass forClass, PropertyAccessor accessor) {					
-						if (forClass instanceof OurArooaClass) {
-							return new MockArooaBeanDescriptor() {
-								@Override
-								public String getTextProperty() {
-									return textProperty;
-								}
-							};
-						}
-						return null;
-					}
-				};
-			}
-		};
-		
-		@Override
-		public ArooaSession getSession() {
-			return session;
-		}
-		
-		@Override
-		public RuntimeConfiguration getRuntime() {
-			return new MockRuntimeConfiguration() {
-				@Override
-				public ArooaClass getClassIdentifier() {
-					return new SimpleArooaClass(String.class);
-				}
-			};
-		}
-		
-	}
-	
-   @Test
-	public void testAddNonConstText() {
+        instanceRuntime.setContext(ourContext);
 
-		TestTextContext context = new TestTextContext();
-		
-		ObjectConfiguration test = new ObjectConfiguration(
-				new OurArooaClass(), new MockObject(), new MutableAttributes());
+        test.init(instanceRuntime, ourContext);
 
-		WrappingRuntime result = new WrappingRuntime(test, context);
-		
-		test.addText("${Apple}");
-		try {
-			test.listenerConfigure(result, context);
-			fail("No text property set.");
-		} catch (ArooaException e) {
-			// expected
-		}
-		
-		context.textProperty = "fruit";
-		
-		assertNull("No attribute", context.session.propertyValue);
-		
-		test.init(result, context);
-		
-		assertNull("No attribute because not constant.", context.session.propertyValue);
+        assertNull("No attribute because not constant.",
+                   ourBean.fruit);
 
-		test.listenerConfigure(result, context);
-		
-		assertEquals("Runtime attribute set.", "Orange", context.session.propertyValue);		
-	}	
-	
-	private class OurArooaClass extends MockArooaClass {
-		
-	}
-	
-   @Test
-	public void testAddConstText() {
+        test.listenerConfigure(instanceRuntime, ourContext);
 
-		TestTextContext context = new TestTextContext();
-		
-		ObjectConfiguration test = new ObjectConfiguration(
-				new OurArooaClass(), new MockObject(), new MutableAttributes());
 
-		WrappingRuntime result = new WrappingRuntime(test, context);
-		
-		context.textProperty = "fruit";
-		
-		test.addText("Apple");
-		
-		test.init(result, context);
-		
-		assertEquals("Constant attribute set.", "Apple", context.session.propertyValue);
-				
-		test.listenerConfigure(result, context);
-		
-		assertEquals("Still Constant attribute set.", "Apple", context.session.propertyValue);
-		
-	}
-	
+        assertEquals("Runtime attribute set.", "Orange",
+                     ourBean.fruit);
+
+        assertThat(instanceRuntime.value, is(ourBean));
+    }
+
+    @Test
+    public void testConstAttributes() {
+
+        AContext parentContext = new AContext();
+
+        MutableAttributes attrs = new MutableAttributes();
+        attrs.set("fruit", "Apple");
+
+        SomeBean ourBean = new SomeBean();
+
+        ObjectConfiguration test = new ObjectConfiguration(
+                new SimpleArooaClass(SomeBean.class),
+                ourBean,
+                attrs);
+
+        AnInstanceRuntime instanceRuntime = new AnInstanceRuntime(test, parentContext);
+
+        ArooaContext ourContext = mock(ArooaContext.class);
+        when(ourContext.getSession())
+                .thenReturn(parentContext.getSession());
+        when(ourContext.getRuntime())
+                .thenReturn(instanceRuntime);
+
+        instanceRuntime.setContext(ourContext);
+
+        test.init(instanceRuntime, ourContext);
+
+        assertEquals("Constant attribute set.", "Apple",
+                     ourBean.fruit);
+
+        test.listenerConfigure(instanceRuntime, ourContext);
+
+        assertEquals("Still Constant attribute set.", "Apple",
+                     ourBean.fruit);
+
+    }
+
+    public static class SomeBean2 {
+        private String fruit;
+
+        @ArooaText
+        public void setFruit(String fruit) {
+            this.fruit = fruit;
+        }
+    }
+
+    private class TestTextContext extends MockArooaContext {
+
+        RuntimeListener runtimeListener;
+
+        OurAttributeTestSession session = new OurAttributeTestSession() {
+            @Override
+            public ArooaDescriptor getArooaDescriptor() {
+                return new StandardArooaDescriptor();
+            }
+        };
+
+        @Override
+        public ArooaSession getSession() {
+            return session;
+        }
+
+        @Override
+        public RuntimeConfiguration getRuntime() {
+            return new MockRuntimeConfiguration() {
+                @Override
+                public ArooaClass getClassIdentifier() {
+                    return new SimpleArooaClass(
+                            String.class);
+                }
+
+                @Override
+                public void addRuntimeListener(RuntimeListener listener) {
+                    assertThat(listener, notNullValue());
+                    assertThat(runtimeListener, nullValue());
+                    runtimeListener = listener;
+                }
+
+                @Override
+                public void removeRuntimeListener(RuntimeListener listener) {
+                    assertThat(listener, notNullValue());
+                    assertThat(runtimeListener, is(listener));
+                    runtimeListener = null;
+                }
+            };
+        }
+    }
+
+    @Test
+    public void testAddNonConstText() {
+
+        TestTextContext parentContext = new TestTextContext();
+
+        SomeBean2 ourBean = new SomeBean2();
+
+        ObjectConfiguration test = new ObjectConfiguration(
+                new SimpleArooaClass(SomeBean2.class),
+                ourBean,
+                new MutableAttributes());
+
+        AnInstanceRuntime instanceRuntime = new AnInstanceRuntime(test, parentContext);
+
+        ArooaContext ourContext = mock(ArooaContext.class);
+        when(ourContext.getSession())
+                .thenReturn(parentContext.getSession());
+        when(ourContext.getRuntime())
+                .thenReturn(instanceRuntime);
+
+        instanceRuntime.setContext(ourContext);
+
+        test.addText("${Apple}");
+
+        assertNull("No attribute", ourBean.fruit);
+
+        test.init(instanceRuntime, ourContext);
+
+        assertNull("No attribute because not constant.",
+                   ourBean.fruit);
+
+        test.listenerConfigure(instanceRuntime, ourContext);
+
+        assertEquals("Runtime attribute set.",
+                     "Orange",
+                     ourBean.fruit);
+    }
+
+    @Test
+    public void testAddConstText() {
+
+        TestTextContext parentContext = new TestTextContext();
+
+        SomeBean ourBean = new SomeBean();
+
+        ObjectConfiguration test = new ObjectConfiguration(
+                new SimpleArooaClass(SomeBean2.class),
+                ourBean,
+                new MutableAttributes());
+
+        AnInstanceRuntime instanceRuntime = new AnInstanceRuntime(test, parentContext);
+
+        ArooaContext ourContext = mock(ArooaContext.class);
+        when(ourContext.getSession())
+                .thenReturn(parentContext.getSession());
+        when(ourContext.getRuntime())
+                .thenReturn(instanceRuntime);
+
+        test.addText("Apple");
+
+        test.init(instanceRuntime, parentContext);
+
+        assertEquals("Constant attribute set.",
+                     "Apple",
+                     ourBean.fruit);
+
+        test.listenerConfigure(instanceRuntime, parentContext);
+
+        assertEquals("Still Constant attribute set.",
+                     "Apple",
+                     ourBean.fruit);
+    }
+
 }

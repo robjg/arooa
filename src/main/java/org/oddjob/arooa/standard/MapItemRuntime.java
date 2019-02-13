@@ -50,10 +50,10 @@ class MapItemRuntime extends InstanceRuntime {
 						
 						@SuppressWarnings("unchecked")
 						Map<String, Object> map = (Map<String, Object>) value;
-						for (Map.Entry<String, Object> mapEntry : (Set<Map.Entry<String, Object>>) map.entrySet() ) {
+						for (Map.Entry<String, Object> mapEntry : map.entrySet()) {
 							parentRuntime.setMappedProperty(
-									null, 
-									(String) mapEntry.getKey(), 
+									null,
+									mapEntry.getKey(),
 									mapEntry.getValue());
 						}
 					}

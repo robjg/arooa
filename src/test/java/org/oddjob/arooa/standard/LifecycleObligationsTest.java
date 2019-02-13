@@ -185,7 +185,7 @@ public class LifecycleObligationsTest extends Assert {
 		
 		assertEquals(0, events.size());
 		
-		assertNull(session.getComponentPool().contextFor(check));
+		assertNotNull(session.getComponentPool().contextFor(check));
 
 		ourContext.getRuntime().init();
 		

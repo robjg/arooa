@@ -20,13 +20,9 @@ class SimpleInstanceRuntime extends InstanceRuntime {
 
 	@Override
 	ParentPropertySetter getParentPropertySetter() {
-		return new ParentPropertySetter() {
-			public void parentSetProperty(Object value) 
-			throws ArooaPropertyException {
-				
-				getParentContext().getRuntime().setProperty(null, value);
-			}
-		};
+		return value -> getParentContext()
+				.getRuntime()
+				.setProperty(null, value);
 	}
 	
 }

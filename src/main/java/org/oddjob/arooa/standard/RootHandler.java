@@ -21,7 +21,7 @@ import org.oddjob.arooa.parsing.ArooaHandler;
  * can then process the document element in it's onStartElement
  * method as per the typical pattern of an ArooaHandler.
  *
- * @see ArooaHandler.
+ * @see ArooaHandler
  * @author Rob Gordon.
  */
 public class RootHandler implements ArooaHandler {
@@ -35,7 +35,7 @@ public class RootHandler implements ArooaHandler {
 	/**
 	 * Constructor.
 	 *
-	 * @param handler The handler to use for the top level element.
+	 * @param startHandler The handler to use for the top level element.
 	 */
 	public RootHandler(ElementAction<? extends InstanceRuntime> startHandler) {
 		this.documentTag = null;	
@@ -47,9 +47,10 @@ public class RootHandler implements ArooaHandler {
 	 * 
 	 * @param documentTag The document tag which will be validated
 	 * against the top level element if not null.
-	 * @param handler The handler to use for the top level element.
+	 * @param startHandler The handler to use for the top level element.
 	 */
-	public RootHandler(ArooaElement documentTag, ElementAction<? extends InstanceRuntime> startHandler) {
+	public RootHandler(ArooaElement documentTag,
+					   ElementAction<? extends InstanceRuntime> startHandler) {
 		this.documentTag = documentTag;	
 		this.startAction = startHandler;
 	}

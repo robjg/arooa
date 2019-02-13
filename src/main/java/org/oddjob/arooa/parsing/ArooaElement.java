@@ -107,13 +107,13 @@ public class ArooaElement implements Serializable {
 	static class SimpleAttributes implements ArooaAttributes, Serializable {
 		private static final long serialVersionUID = 2011060800L;
 		
-		private final Map<String, String> atts = new LinkedHashMap<String, String>();
+		private final Map<String, String> atts = new LinkedHashMap<>();
 
 		SimpleAttributes() {
 		}
 		
 		SimpleAttributes(ArooaAttributes attributes) {
-			String[] names = attributes.getAttributNames();
+			String[] names = attributes.getAttributeNames();
 			for (String name: names) {
 				atts.put(name, attributes.get(name));
 			}
@@ -130,8 +130,8 @@ public class ArooaElement implements Serializable {
 			return atts.get(name)	;
 		}
 		
-		public String[] getAttributNames() {
-			return (String[]) atts.keySet().toArray(new String[0]);
+		public String[] getAttributeNames() {
+			return atts.keySet().toArray(new String[0]);
 		}
 		
 		SimpleAttributes remove(String name) {

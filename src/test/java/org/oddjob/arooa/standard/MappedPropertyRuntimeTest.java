@@ -242,7 +242,7 @@ public class MappedPropertyRuntimeTest extends Assert {
 		public InstanceConfiguration onElement(ArooaElement element, ArooaContext context) {
 			
 			ArooaAttributes attributes = element.getAttributes();
-			assertEquals(2, attributes.getAttributNames().length);
+			assertEquals(2, attributes.getAttributeNames().length);
 			assertEquals("Colour is", "red", attributes.get("colour"));
 			assertEquals("Key is", "cox", attributes.get("key"));
 			return new ObjectConfiguration(

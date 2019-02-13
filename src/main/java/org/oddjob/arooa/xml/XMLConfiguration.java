@@ -20,6 +20,8 @@ import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.Location;
+import org.oddjob.arooa.parsing.ParsingSession;
+import org.oddjob.arooa.parsing.ParsingSessionRollback;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -269,7 +271,9 @@ public class XMLConfiguration implements ArooaConfiguration {
 		} catch (IOException e) {
 			throw new ArooaException(e);
 		}
-		
+
+        ParsingSessionRollback rollback = ParsingSession.begin();
+
     	final SAXHandler xmlHandler = new SAXHandler(parentContext);
 
         try {
@@ -283,9 +287,12 @@ public class XMLConfiguration implements ArooaConfiguration {
             parser.setErrorHandler(xmlHandler);
             parser.setDTDHandler(xmlHandler);
             parser.parse(inputSource);
+
         } catch (SAXParseException exc) {
             Location location = new Location(exc.getSystemId(),
                 exc.getLineNumber(), exc.getColumnNumber());
+
+            rollback.rollback();
 
             Throwable t = exc.getException();
             if (t == null) {
@@ -299,15 +306,19 @@ public class XMLConfiguration implements ArooaConfiguration {
                 ArooaException ae = (ArooaException) t;
                 throw new ArooaParseException(ae.getMessage(), location, ae);
             }
+
             throw new ArooaParseException(exc.getMessage(), location, t);
         } catch (SAXException exc) {
+            rollback.rollback();
             throw new RuntimeException(exc);
         } catch (UnsupportedEncodingException exc) {
+            rollback.rollback();
             Location location = new Location(inputSource.getSystemId(),
                     0, 0);
               throw new ArooaParseException("Encoding of input is invalid.", 
             		  location, exc);
         } catch (IOException exc) {
+            rollback.rollback();
             Location location = new Location(inputSource.getSystemId(),
                     0, 0);
             throw new ArooaParseException("Error reading input.",
@@ -315,7 +326,8 @@ public class XMLConfiguration implements ArooaConfiguration {
         } 
         finally {
         	try {
-				inputSource.close();
+                rollback.clear();
+                inputSource.close();
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}

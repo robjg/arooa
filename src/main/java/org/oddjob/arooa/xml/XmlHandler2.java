@@ -191,7 +191,7 @@ public class XmlHandler2 implements ArooaHandler {
 				uriString, tag.toString());
 		
 		ArooaAttributes attrs = element.getAttributes();
-		String[] attributeNames = attrs.getAttributNames();
+		String[] attributeNames = attrs.getAttributeNames();
 		for (int i = 0; i < attributeNames.length; ++i) {
 			elementNode.setAttribute(
 					attributeNames[i], attrs.get(attributeNames[i]));

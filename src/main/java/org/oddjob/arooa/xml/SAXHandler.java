@@ -57,23 +57,22 @@
  */
 package org.oddjob.arooa.xml;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Stack;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.runtime.ConfigurationNodeEvent;
 import org.oddjob.arooa.runtime.ConfigurationNodeListener;
 import org.oddjob.arooa.runtime.ModificationRefusedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.LinkedList;
 
 /**
  * Handler for ant processing. Uses a stack of AntHandlers to
@@ -85,7 +84,7 @@ class SAXHandler extends DefaultHandler {
 	    
     private Locator locator;
     
-    private Stack<ArooaContext> contexts = new Stack<ArooaContext>();
+    private LinkedList<ArooaContext> contexts = new LinkedList<>();
 
     private ArooaContext documentContext;
     
@@ -132,7 +131,7 @@ class SAXHandler extends DefaultHandler {
     	
 		XMLArooaAttributes arooaAttrs = new XMLArooaAttributes(uri, attrs);
 		
-		ArooaElement element = null;
+		ArooaElement element;
 		try {
 			URI theUri = null;
 			if (uri != null && !"".equals(uri.trim())) {
@@ -147,11 +146,14 @@ class SAXHandler extends DefaultHandler {
 		}
 		
     	try {
-
-			
     		ArooaContext context = contexts.peek();
     		
-    		logger.debug("onStartElement(" + qname + "),  handler [" + 
+            if (context == null) {
+                throw new IllegalStateException(
+                        "Context null - this should never happen.");
+            }
+
+    		logger.debug("onStartElement(" + qname + "),  handler [" +
     				context.getArooaHandler() + "]");
 
     		ArooaContext newContext = context.getArooaHandler(
@@ -180,7 +182,7 @@ class SAXHandler extends DefaultHandler {
      * by the onEndElement() method and then the original handler
      * is restored to the parser.
      *
-     * @exception SAXException in case of error (not thrown in
+     * @exception SAXParseException in case of error (not thrown in
      *                         this implementation)
      *
      */
@@ -191,7 +193,13 @@ class SAXHandler extends DefaultHandler {
 
     		ArooaContext currentContext = contexts.pop();
 
-    		ArooaContext parentContext = contexts.peek(); 
+    		ArooaContext parentContext = contexts.peek();
+
+    		if (parentContext == null) {
+                throw new IllegalStateException(
+                        "Context is null - this should never happen.");
+            }
+
     		// order is important here:
     		// add node before init() so indexed properties
     		// know their index.
@@ -217,12 +225,15 @@ class SAXHandler extends DefaultHandler {
      * @param buf  A character array of the test.
      * @param start The start offset in the array.
      * @param count The number of characters to read.
-     * @exception SAXParseException if an error occurs
      */
-    public void characters(char[] buf, int start, int count)
-    throws SAXParseException {
-    	contexts.peek().getConfigurationNode().addText(
-    			new String(buf, start, count));
+    public void characters(char[] buf, int start, int count) {
+        ArooaContext context = contexts.peek();
+        if (context == null) {
+            throw new IllegalStateException(
+                    "Context is null - this should never happen.");
+        }
+        context.getConfigurationNode()
+               .addText(new String(buf, start, count));
     }
 
     /**
@@ -233,12 +244,19 @@ class SAXHandler extends DefaultHandler {
      */
     public void startPrefixMapping(String prefix, String uri) 
     throws SAXParseException {
+        ArooaContext context = contexts.peek();
+        if (context == null) {
+            throw new IllegalStateException(
+                    "Context is null - this should never happen.");
+        }
     	try {
-    		contexts.peek().getPrefixMappings().put(
-    				prefix, new URI(uri));
-    	} catch (URISyntaxException e) {
+    		context.getPrefixMappings()
+                   .put(prefix, new URI(uri));
+    	}
+    	catch (URISyntaxException e) {
     		throw new SAXParseException(e.getMessage(), locator, e);        	
-    	} catch (ArooaException e) {
+    	}
+    	catch (ArooaException e) {
     		throw new SAXParseException(e.getMessage(), locator, e);        	
         }
     }
@@ -255,4 +273,6 @@ class SAXHandler extends DefaultHandler {
     public ArooaContext getDocumentContext() {
     	return documentContext;
     }
+
+
 }

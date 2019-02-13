@@ -174,7 +174,7 @@ public class IndexedPropertyRuntimeTest extends Assert {
 		public InstanceConfiguration onElement(ArooaElement element, ArooaContext context) {
 			// check the attribute name is removed but the colour is left.
 			ArooaAttributes attributes = element.getAttributes();
-			assertEquals("Only one attribute", 1, attributes.getAttributNames().length);
+			assertEquals("Only one attribute", 1, attributes.getAttributeNames().length);
 			assertEquals("Colour is", "red", attributes.get("colour"));
 			
 			return new ObjectConfiguration(

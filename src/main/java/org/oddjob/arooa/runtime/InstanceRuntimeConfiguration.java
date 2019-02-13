@@ -15,5 +15,5 @@ public interface InstanceRuntimeConfiguration extends RuntimeConfiguration {
 	 * 
 	 * @return The instance or null if it is not yet available.
 	 */
-	public Object getWrappedInstance();
+	Object getWrappedInstance();
 }

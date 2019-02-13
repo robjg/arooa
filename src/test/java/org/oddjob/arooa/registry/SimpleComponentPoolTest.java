@@ -4,16 +4,21 @@ import org.junit.Test;
 
 import org.junit.Assert;
 
+import org.mockito.Mockito;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ComponentTrinity;
 import org.oddjob.arooa.MockArooaSession;
 import org.oddjob.arooa.life.ComponentPersistException;
 import org.oddjob.arooa.life.ComponentPersister;
 import org.oddjob.arooa.life.MockComponentPersister;
+import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.MockArooaContext;
 import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.standard.StandardArooaSession;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.mock;
 
 public class SimpleComponentPoolTest extends Assert {
 
@@ -241,4 +246,31 @@ public class SimpleComponentPoolTest extends Assert {
 		
 		assertTrue(context.configured);
 	}
+
+    @Test
+    public void whenSameIdThenRegisteredWithNewId() {
+
+	    SimpleComponentPool test = new SimpleComponentPool();
+
+        OurContext ourContext = new OurContext();
+
+        ComponentTrinity trinity1 =
+                new ComponentTrinity(new Object(), new Object(), ourContext);
+        ComponentTrinity trinity2 =
+                new ComponentTrinity(new Object(), new Object(), ourContext);
+
+	    String id1 = test.registerComponent(
+	            trinity1,
+                "someId");
+
+        String id2 = test.registerComponent(
+                trinity2,
+                "someId");
+
+        assertThat(id1, is("someId"));
+        assertThat(id2, is("someId2"));
+
+        assertThat(test.trinityForId("someId"), is(trinity1));
+        assertThat(test.trinityForId("someId2"), is(trinity2));
+    }
 }

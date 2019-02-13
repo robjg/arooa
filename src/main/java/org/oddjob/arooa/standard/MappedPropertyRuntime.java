@@ -8,23 +8,32 @@ import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.parsing.ArooaHandler;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 
+/**
+ * A {@link org.oddjob.arooa.runtime.RuntimeConfiguration} for an
+ * indexed property.
+ *
+ * @author Rob
+ */
 class MappedPropertyRuntime extends ContainerRuntime {
 
-	private final ElementAction<InstanceConfiguration> childCreator;
+	/** Creates the configuration for the instance that is the value of this
+	 * property. */
+	private final ElementAction<InstanceConfiguration> nestedAction;
 
 	/**
-	 * 
-	 * @param childCreator
-	 * @param runtimeClass
-	 * @param property
+	 * Constructor.
+	 *
+	 * @param nestedAction The child Instance Configuration creator.
+	 * @param propertyDefinition The definition of the property this is for.
+	 * @param parentContext The parent context.
 	 */
 	public MappedPropertyRuntime(
-			ElementAction<InstanceConfiguration> childCreator, 
+			ElementAction<InstanceConfiguration> nestedAction,
 			PropertyDefinition propertyDefinition,
-			ArooaContext context) {
-		super(propertyDefinition, context);
+			ArooaContext parentContext) {
+		super(propertyDefinition, parentContext);
 		
-		this.childCreator = childCreator;
+		this.nestedAction = nestedAction;
 	}
 
 	@Override
@@ -37,7 +46,7 @@ class MappedPropertyRuntime extends ContainerRuntime {
 
 				String key = element.getAttributes().get(ArooaConstants.KEY_PROPERTY);
 	
-				final InstanceConfiguration child = childCreator.onElement(
+				final InstanceConfiguration child = nestedAction.onElement(
 						element, parentContext);
 
 				child.getAttributeSetter().addOptionalAttribute(ArooaConstants.KEY_PROPERTY);

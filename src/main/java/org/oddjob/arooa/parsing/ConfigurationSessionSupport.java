@@ -29,7 +29,7 @@ public class ConfigurationSessionSupport extends ListenerSupportBase<SessionStat
 	public void modified() {
 		List<SessionStateListener> copy = copy();
 		for (SessionStateListener listener : copy) {
-			listener.sessionModifed(new ConfigSessionEvent(source));
+			listener.sessionModified(new ConfigSessionEvent(source));
 		}
 	}
 	

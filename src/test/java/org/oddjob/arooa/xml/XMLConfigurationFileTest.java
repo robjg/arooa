@@ -1,42 +1,33 @@
 package org.oddjob.arooa.xml;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import org.oddjob.OurDirs;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-import org.oddjob.arooa.ArooaAnnotations;
-import org.oddjob.arooa.ArooaParseException;
-import org.oddjob.arooa.ConfigurationHandle;
-import org.oddjob.arooa.ConfiguredHow;
-import org.oddjob.arooa.MockArooaBeanDescriptor;
-import org.oddjob.arooa.ParsingInterceptor;
+import org.oddjob.OurDirs;
+import org.oddjob.arooa.*;
 import org.oddjob.arooa.deploy.NoAnnotations;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.CutAndPasteSupport;
 import org.oddjob.arooa.standard.StandardArooaParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 
 public class XMLConfigurationFileTest {
 
     private static final Logger logger = LoggerFactory.getLogger(XMLConfigurationFileTest.class);
 
-    private File workDir;
-
-    private File file;
+    private Path file;
 
     @Rule
     public TestName name = new TestName();
@@ -50,45 +41,22 @@ public class XMLConfigurationFileTest {
 
         logger.info("----------------------   " + getName() + "   -------------------------");
 
-        this.workDir = OurDirs.workPathDir(getClass().getSimpleName(), true)
-                .toFile();
-        this.file = new File(workDir, "XMLConfigurationFileText.xml");
+        Path workDir = OurDirs.workPathDir(getClass().getSimpleName(),
+                                           true);
+        this.file = workDir.resolve("XMLConfigurationFileText.xml");
 
-        // For some reason occasionally the file is left open?
-        logger.info("Check file exists: " + file.exists());
-
-        for (int i = 0; i < 3; ++i) {
-            logger.info("Try Creating file " + file);
-            try {
-                PrintWriter writer = new PrintWriter(
-                        new FileWriter(file));
-                writer.println("<snack/>");
-                writer.close();
-                return;
-            } catch (IOException e) {
-                logger.error("Failed creating " + file, e);
-            }
-        }
-        throw new RuntimeException("Failed attempting to create " + file);
-    }
-
-    @After
-    public void tearDown() {
-        logger.info("Deleting file " + file);
-        file.delete();
+        Files.write(this.file, "<snack/>".getBytes());
     }
 
     private final String EOL = System.lineSeparator();
 
-    /**
+    /*
      * Check the configuration is re-readable.
-     *
-     * @throws ArooaParseException
      */
     @Test
     public void testReParse() throws Exception {
 
-        XMLConfiguration config = new XMLConfiguration(file);
+        XMLConfiguration config = new XMLConfiguration(file.toFile());
 
         XMLArooaParser parser = new XMLArooaParser();
 
@@ -144,7 +112,7 @@ public class XMLConfigurationFileTest {
     @Test
     public void testChangeAndSave() throws ArooaParseException, SAXException, IOException {
 
-        XMLConfiguration config = new XMLConfiguration(file);
+        XMLConfiguration config = new XMLConfiguration(file.toFile());
 
         Snack root = new Snack();
 
@@ -167,7 +135,7 @@ public class XMLConfigurationFileTest {
 
         handle.save();
 
-        XMLConfiguration configCheck = new XMLConfiguration(file);
+        XMLConfiguration configCheck = new XMLConfiguration(file.toFile());
 
         XMLArooaParser xmlParser = new XMLArooaParser();
 
@@ -187,7 +155,7 @@ public class XMLConfigurationFileTest {
     @Test
     public void testChangeRoot() throws Exception {
 
-        XMLConfiguration config = new XMLConfiguration(file);
+        XMLConfiguration config = new XMLConfiguration(file.toFile());
 
         Snack root = new Snack();
 
@@ -196,6 +164,8 @@ public class XMLConfigurationFileTest {
         ConfigurationHandle handle = parser.parse(config);
 
         ArooaContext context = parser.getSession().getComponentPool().contextFor(root);
+
+        context.getRuntime().destroy();
 
         String pasteXML = "<meal/>";
 
@@ -206,7 +176,7 @@ public class XMLConfigurationFileTest {
 
         handle.save();
 
-        XMLConfiguration configCheck = new XMLConfiguration(file);
+        XMLConfiguration configCheck = new XMLConfiguration(file.toFile());
 
         XMLArooaParser xmlParser = new XMLArooaParser();
 

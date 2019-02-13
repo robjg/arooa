@@ -1,316 +1,373 @@
 package org.oddjob.arooa.standard;
 
-import org.junit.Test;
-
+import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
-
-import org.oddjob.arooa.ArooaBeanDescriptor;
-import org.oddjob.arooa.ArooaDescriptor;
-import org.oddjob.arooa.ArooaException;
-import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ArooaTools;
-import org.oddjob.arooa.ComponentTrinity;
-import org.oddjob.arooa.ConfiguredHow;
-import org.oddjob.arooa.MockArooaBeanDescriptor;
-import org.oddjob.arooa.MockArooaDescriptor;
-import org.oddjob.arooa.MockArooaSession;
-import org.oddjob.arooa.MockArooaTools;
+import org.junit.Test;
+import org.oddjob.arooa.*;
+import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
 import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.convert.DefaultConverter;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.MockArooaContext;
 import org.oddjob.arooa.parsing.MutableAttributes;
-import org.oddjob.arooa.reflect.ArooaClass;
-import org.oddjob.arooa.reflect.ArooaPropertyException;
-import org.oddjob.arooa.reflect.BeanOverview;
-import org.oddjob.arooa.reflect.MockBeanOverview;
-import org.oddjob.arooa.reflect.MockPropertyAccessor;
-import org.oddjob.arooa.reflect.PropertyAccessor;
+import org.oddjob.arooa.reflect.*;
 import org.oddjob.arooa.registry.BeanRegistry;
 import org.oddjob.arooa.registry.ComponentPool;
 import org.oddjob.arooa.registry.MockBeanRegistry;
 import org.oddjob.arooa.registry.MockComponentPool;
-import org.oddjob.arooa.runtime.Evaluator;
-import org.oddjob.arooa.runtime.ExpressionParser;
-import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
-import org.oddjob.arooa.runtime.PropertyFirstEvaluator;
-import org.oddjob.arooa.runtime.PropertyManager;
-import org.oddjob.arooa.runtime.RuntimeConfiguration;
+import org.oddjob.arooa.runtime.*;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ComponentConfigurationTest extends Assert {
 
-	private class ATools extends MockArooaTools {
-		String property;
-		String value;
-		
-		@Override
-		public ArooaConverter getArooaConverter() {
-			return new DefaultConverter();
-		}
-		
-		@Override
-		public PropertyAccessor getPropertyAccessor() {
-			return new MockPropertyAccessor()  {
-				@Override
-				public void setSimpleProperty(Object bean, String name, Object value)
-						throws ArooaException {
-					assertEquals(MockObject.class, bean.getClass());
-					
-					ATools.this.property = name;
-					ATools.this.value = (String) value;
-				}
-				
-				@Override
-				public BeanOverview getBeanOverview(Class<?> classId) 
-				throws ArooaException {
-					return new MockBeanOverview() {
-						@Override
-						public boolean hasWriteableProperty(String property) {
-							if ("colour".equals(property)) {
-								return true;
-							}
-							else if ("id".equals(property)) {
-								return false;
-							}
-							else {
-								throw new ArooaPropertyException(property);
-							}
-						}
-						
-						@Override
-						public String[] getProperties() {
-							return new String[0];
-						}
-						@Override
-						public Class<?> getPropertyType(String property) {
-							assertEquals("colour", property);
-							return String.class;
-						}
-					};
-				}
-				
-				@Override
-				public ArooaClass getClassName(Object bean) {
-					Class<?> cl = (Class<?>) bean.getClass();
-					return new SimpleArooaClass(cl);
-				}
-				
-				@Override
-				public PropertyAccessor accessorWithConversions(
-						ArooaConverter converter) {
-					return this;
-				}
-			};
-		}
-		
-		@Override
-		public ExpressionParser getExpressionParser() {
-			return new StandardPropertyHelper();
-		}
-		
-		@Override
-		public Evaluator getEvaluator() {
-			return new PropertyFirstEvaluator();
-		}
-		
-	}
-	
-	private class ASession extends MockArooaSession {
-		ATools tools = new ATools();
-		
-		ComponentTrinity trinity;
-		
-		@Override
-		public ArooaDescriptor getArooaDescriptor() {
-			return new MockArooaDescriptor() {
-				@Override
-				public ArooaBeanDescriptor getBeanDescriptor(
-						ArooaClass forClass, PropertyAccessor accessor) {
-					return new MockArooaBeanDescriptor() {
-						@Override
-						public ConfiguredHow getConfiguredHow(String property) {
-							assertEquals("colour", property);
-							return ConfiguredHow.ATTRIBUTE;
-						}
-						@Override
-						public String getComponentProperty() {
-							return null;
-						}
-					};
-				}
-			};
-		}
-		
-		@Override
-		public ComponentPool getComponentPool() {
-			return new MockComponentPool() {
-				@Override
-				public void registerComponent(ComponentTrinity trinity, String id) {
-					assertEquals("anid", id);
-					if (ASession.this.trinity != null) {
-						throw new RuntimeException("Registering twice??");
-					}
-					ASession.this.trinity = trinity;
-				}
-				
-			};
-		}
-		
-		@Override
-		public BeanRegistry getBeanRegistry() {
-			return new MockBeanRegistry() {
-				@SuppressWarnings("unchecked")
-				@Override
-				public <T> T lookup(String path, Class<T> required) {
-					assertEquals("Value to replace.", "To be replaced", path);
-					assertEquals(String.class, required);
-					return (T) "red";
-				}
-			};
-		}
+    private class ATools extends MockArooaTools {
 
-		@Override
-		public PropertyManager getPropertyManager() {
-			return new MockPropertyManager() {
-				@Override
-				public String lookup(String propertyName) {
-					return null;
-				}
-			};
-		}
-		
-		@Override
-		public ArooaTools getTools() {
-			return tools;
-		}
-	}
-	
-	private class AContext extends MockArooaContext {
-		ASession session = new ASession();
+        @Override
+        public ArooaConverter getArooaConverter() {
+            return new DefaultConverter();
+        }
 
-		@Override
-		public ArooaSession getSession() {
-			return session;
-		}
+        @Override
+        public PropertyAccessor getPropertyAccessor() {
+            return new BeanUtilsPropertyAccessor();
+        }
 
-		@Override
-		public RuntimeConfiguration getRuntime() {
-			return new MockRuntimeConfiguration() {
-				@Override
-				public ArooaClass getClassIdentifier() {
-					return new SimpleArooaClass(
-							String.class);
-				}
-			};
-		}
-	}
-	
-	private class ProxyObject {
-		
-	}
-	
-	private class MockObject {
-		
-	}
-	
-	private class AnInstanceRuntime extends MockInstanceRuntime {
-		
-		Object value;
-		
-		public AnInstanceRuntime(InstanceConfiguration instance, ArooaContext parentContext) {
-			super(instance, parentContext);
-		}
+        @Override
+        public ExpressionParser getExpressionParser() {
+            return new StandardPropertyHelper();
+        }
 
-		@Override
-		ParentPropertySetter getParentPropertySetter() {
-			return new ParentPropertySetter() {
-				public void parentSetProperty(Object value) {
-					
-					// Test registered.
-					ASession ourSess = (ASession) getParentContext().getSession(); 
-					assertNotNull(ourSess.trinity);
-					
-					AnInstanceRuntime.this.value = value;
-				}
-			};
-		}
-		
-	}
+        @Override
+        public Evaluator getEvaluator() {
+            return new PropertyFirstEvaluator();
+        }
 
-   @Test
-	public void testInit() {
-		
-		AContext context = new AContext();
-		
-		MockObject object = new MockObject();
-		
-		ProxyObject proxy = new ProxyObject();
-		
-		MutableAttributes attrs = new MutableAttributes();
-		attrs.set("id", "anid");
-		attrs.set("colour", "${To be replaced}");
-		
-		ComponentConfiguration test = new ComponentConfiguration(
-				new SimpleArooaClass(object.getClass()),
-				object, 
-				proxy, 
-				attrs);
-		
-		AnInstanceRuntime instanceRuntime = new AnInstanceRuntime(
-				test, context);
-		
-		
-		assertNull("Property not set", instanceRuntime.value);
-		
-		test.init(instanceRuntime, context);
-		
-		assertNotNull("Property not set", instanceRuntime.value);
+    }
 
-		assertEquals("Registered", object, context.session.trinity.getTheComponent());
-		assertEquals("Registered", proxy, context.session.trinity.getTheProxy());
-		
-		assertEquals("Parent property set", proxy, instanceRuntime.value);
-		
-		assertNull("Property not set", context.session.tools.value);
-	}
-	
-	private class AnInstanceRuntime2 extends MockInstanceRuntime {
-		
-		public AnInstanceRuntime2(InstanceConfiguration instance, ArooaContext parentContext) {
-			super(instance, parentContext);
-		}
-		
-		@Override
-		ParentPropertySetter getParentPropertySetter() {
-			return null;
-		}
-	}
-	
-   @Test
-	public void testConfigure() {
-		
-		AContext context = new AContext();
-		
-		MutableAttributes attrs = new MutableAttributes();
-		attrs.set("colour", "${To be replaced}");
-		
-		ComponentConfiguration test = new ComponentConfiguration(
-				new SimpleArooaClass(MockObject.class),
-				new MockObject(), 
-				new ProxyObject(), 
-				attrs);
-		
-		assertNull("Property not set", context.session.tools.value);
-		
-		test.listenerConfigure(
-				new AnInstanceRuntime2(test, context), context);
-		
-		assertNull("Property not set", context.session.tools.value);
+    private class ASession extends MockArooaSession {
+        ATools tools = new ATools();
 
-		test.configure(new AnInstanceRuntime(test, context), context);
+        ComponentTrinity trinity;
 
-		assertEquals("property", "colour", context.session.tools.property);
-		assertEquals("value", "red", context.session.tools.value);
-	}
+        @Override
+        public ArooaDescriptor getArooaDescriptor() {
+            return new StandardArooaDescriptor();
+        }
+
+        @Override
+        public ComponentPool getComponentPool() {
+            return new MockComponentPool() {
+                @Override
+                public String registerComponent(ComponentTrinity trinity, String id) {
+                    assertEquals("anid", id);
+                    assertThat(trinity, notNullValue());
+
+                    if (ASession.this.trinity != null) {
+                        throw new RuntimeException("Registering twice??");
+                    }
+
+                    ASession.this.trinity = trinity;
+                    return id;
+                }
+
+
+                @Override
+                public boolean remove(Object component) {
+                    assertThat(trinity.getTheProxy(), is(component));
+                    ASession.this.trinity = null;
+                    return true;
+                }
+            };
+        }
+
+        @Override
+        public BeanRegistry getBeanRegistry() {
+            return new MockBeanRegistry() {
+                @SuppressWarnings("unchecked")
+                @Override
+                public <T> T lookup(String path, Class<T> required) {
+                    assertEquals("Value to replace.", "To be replaced", path);
+                    assertEquals(String.class, required);
+                    return (T) "red";
+                }
+            };
+        }
+
+        @Override
+        public PropertyManager getPropertyManager() {
+            return new MockPropertyManager() {
+                @Override
+                public String lookup(String propertyName) {
+                    return null;
+                }
+            };
+        }
+
+        @Override
+        public ArooaTools getTools() {
+            return tools;
+        }
+    }
+
+    private class AContext extends MockArooaContext {
+        final ASession session = new ASession();
+
+        final ConfigurationNode configurationNode =
+                mock(ConfigurationNode.class);
+
+        RuntimeListener runtimeListener;
+
+        {
+            when(configurationNode.indexOf(any(ConfigurationNode.class)))
+                    .thenReturn(-1);
+        }
+
+
+        @Override
+        public ArooaSession getSession() {
+            return session;
+        }
+
+        @Override
+        public RuntimeConfiguration getRuntime() {
+            return new MockRuntimeConfiguration() {
+                @Override
+                public ArooaClass getClassIdentifier() {
+                    return new SimpleArooaClass(
+                            String.class);
+                }
+
+                @Override
+                public void addRuntimeListener(RuntimeListener listener) {
+                    assertThat(listener, notNullValue());
+                    assertThat(runtimeListener, nullValue());
+                    runtimeListener = listener;
+                }
+
+                @Override
+                public void removeRuntimeListener(RuntimeListener listener) {
+                    assertThat(listener, notNullValue());
+                    assertThat(runtimeListener, is( listener ));
+                    runtimeListener = null;
+                }
+            };
+        }
+
+        @Override
+        public ConfigurationNode getConfigurationNode() {
+            return configurationNode;
+        }
+    }
+
+    private class ProxyObject {
+
+    }
+
+    public static class TheObject {
+
+        String colour;
+
+        public String getColour() {
+            return colour;
+        }
+
+        public void setColour(String colour) {
+            this.colour = colour;
+        }
+    }
+
+    private class AnInstanceRuntime extends MockInstanceRuntime {
+
+        Object value;
+
+        public AnInstanceRuntime(InstanceConfiguration instance, ArooaContext parentContext) {
+            super(instance, parentContext);
+        }
+
+        @Override
+        ParentPropertySetter getParentPropertySetter() {
+            return value -> {
+                // Test registered.
+                ASession ourSess = (ASession) getParentContext().getSession();
+
+                AnInstanceRuntime.this.value = value;
+            };
+        }
+
+    }
+
+    @Test
+    public void testInit() {
+
+        AContext parentContext = new AContext();
+
+        TheObject object = new TheObject();
+
+        ProxyObject proxy = new ProxyObject();
+
+        MutableAttributes attrs = new MutableAttributes();
+        attrs.set("id", "anid");
+        attrs.set("colour", "${To be replaced}");
+
+        ComponentConfiguration test = new ComponentConfiguration(
+                new SimpleArooaClass(object.getClass()),
+                object,
+                proxy,
+                attrs);
+
+        AnInstanceRuntime instanceRuntime = new AnInstanceRuntime(
+                test, parentContext);
+
+        ArooaContext ourContext = mock(ArooaContext.class);
+        when(ourContext.getSession())
+               .thenReturn(parentContext.getSession());
+        when(ourContext.getRuntime())
+                .thenReturn(instanceRuntime);
+
+        // Check component registered after context set.
+        assertThat("Component Should not be registered",
+                   parentContext.session.trinity,
+                   nullValue());
+
+        instanceRuntime.setContext(ourContext);
+
+        // Check component registered after context set.
+        assertEquals("Registered", object,
+                     parentContext.session.trinity.getTheComponent());
+        assertEquals("Registered", proxy,
+                     parentContext.session.trinity.getTheProxy());
+
+        assertNull("Property not set", instanceRuntime.value);
+
+        test.init(instanceRuntime, ourContext);
+
+        assertNotNull("Property not set", instanceRuntime.value);
+
+        assertEquals("Parent property set", proxy, instanceRuntime.value);
+
+        assertNull("Property not set",
+                   object.colour);
+
+        RuntimeConfiguration parentRuntime = mock(RuntimeConfiguration.class);
+
+        parentContext.runtimeListener.beforeDestroy(
+                new RuntimeEvent(parentRuntime));
+
+        assertThat(parentContext.runtimeListener, nullValue());
+    }
+
+    @Test
+    public void testInitConstantProperty() {
+
+        AContext parentContext = new AContext();
+
+        TheObject object = new TheObject();
+
+        ProxyObject proxy = new ProxyObject();
+
+        MutableAttributes attrs = new MutableAttributes();
+        attrs.set("id", "anid");
+        attrs.set("colour", "red");
+
+        ComponentConfiguration test = new ComponentConfiguration(
+                new SimpleArooaClass(object.getClass()),
+                object,
+                proxy,
+                attrs);
+
+        AnInstanceRuntime instanceRuntime = new AnInstanceRuntime(
+                test, parentContext);
+
+        ArooaContext ourContext = mock(ArooaContext.class);
+        when(ourContext.getSession())
+                .thenReturn(parentContext.getSession());
+        when(ourContext.getRuntime())
+                .thenReturn(instanceRuntime);
+
+        instanceRuntime.setContext(ourContext);
+
+        assertNull("Property not set", instanceRuntime.value);
+
+        test.init(instanceRuntime, ourContext);
+
+        assertNotNull("Property not set", instanceRuntime.value);
+
+        assertThat(object.getColour(), is("red"));
+    }
+
+    private class AnInstanceRuntime2 extends MockInstanceRuntime {
+
+        public AnInstanceRuntime2(InstanceConfiguration instance,
+                                  ArooaContext parentContext) {
+            super(instance, parentContext);
+        }
+
+        @Override
+        ParentPropertySetter getParentPropertySetter() {
+            return null;
+        }
+    }
+
+    @Test
+    public void testListenerConfigure() {
+
+        AContext parentContext = new AContext();
+
+        MutableAttributes attrs = new MutableAttributes();
+        attrs.set("colour", "${To be replaced}");
+
+        TheObject theObject = new TheObject();
+
+        ComponentConfiguration test = new ComponentConfiguration(
+                new SimpleArooaClass(TheObject.class),
+                theObject,
+                new ProxyObject(),
+                attrs);
+
+        assertNull("Property not set", theObject.colour);
+
+        ArooaContext ourContext = mock(ArooaContext.class);
+
+        test.listenerConfigure(
+                new AnInstanceRuntime2(test, parentContext), ourContext);
+
+        assertNull("Property not set", theObject.colour);
+    }
+
+    @Test
+    public void testConfigure() {
+
+        AContext parentContext = new AContext();
+
+        MutableAttributes attrs = new MutableAttributes();
+        attrs.set("colour", "${To be replaced}");
+
+        TheObject theObject = new TheObject();
+
+        ComponentConfiguration test = new ComponentConfiguration(
+                new SimpleArooaClass(TheObject.class),
+                theObject,
+                new ProxyObject(),
+                attrs);
+
+        assertNull("Property not set", theObject.getColour());
+
+        AnInstanceRuntime instanceRuntime =
+                new AnInstanceRuntime(test, parentContext);
+
+        ArooaContext ourContext = mock(ArooaContext.class);
+        when(ourContext.getRuntime()).thenReturn(instanceRuntime);
+        when(ourContext.getSession()).thenReturn(parentContext.getSession());
+
+        test.configure(instanceRuntime, ourContext);
+
+        assertThat(theObject.getColour(), is("red"));
+    }
 }

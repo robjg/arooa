@@ -8,17 +8,15 @@ import org.oddjob.arooa.reflect.ArooaClass;
 
 public class MockInstanceConfiguration extends InstanceConfiguration {
 
-	Object proxy;
-	
-	public MockInstanceConfiguration() {
-		super(null, null, new MutableAttributes());
-	}
-	
+	final Object proxy;
+
+	final AttributeSetter attributeSetter;
+
 	public MockInstanceConfiguration(
 			ArooaClass arooaClass,
 			Object wrappedObject,
 			ArooaAttributes attrs) {
-		super(arooaClass, wrappedObject, attrs);
+		this(arooaClass, wrappedObject, wrappedObject, attrs);
 	}
 
 	public MockInstanceConfiguration(
@@ -26,11 +24,17 @@ public class MockInstanceConfiguration extends InstanceConfiguration {
 			Object wrappedObject, 
 			Object proxy,
 			ArooaAttributes attrs) {
-		super(arooaClass, wrappedObject, attrs);
-		this.proxy = proxy;
+		super(arooaClass, wrappedObject);
+        this.proxy = proxy;
+        this.attributeSetter = new AttributeSetter(this, attrs);
 	}
-	
-	@Override
+
+    @Override
+    AttributeSetter getAttributeSetter() {
+        return attributeSetter;
+    }
+
+    @Override
 	Object getObjectToSet() {
 		if (proxy == null) {
 			throw new RuntimeException("Unexpected from " + 
@@ -41,12 +45,6 @@ public class MockInstanceConfiguration extends InstanceConfiguration {
 		}
 	}
 		
-	@Override
-	InjectionStrategy injectionStrategy() {
-		throw new RuntimeException("Unexpected from " + 
-				this.getClass().getName());
-	}
-	
 	@Override
 	void configure(InstanceRuntime ourWrapper, 
 			ArooaContext context) throws ArooaException {

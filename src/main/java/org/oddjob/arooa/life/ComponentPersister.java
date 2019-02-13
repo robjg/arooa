@@ -22,7 +22,7 @@ public interface ComponentPersister {
 	 * @param proxy The object to persist.
 	 * @param session The session.
 	 */
-	public void persist(String id, Object proxy, ArooaSession session)
+	void persist(String id, Object proxy, ArooaSession session)
 	throws ComponentPersistException;
 
 	/**
@@ -33,16 +33,16 @@ public interface ComponentPersister {
 	 * 
 	 * @return The restored object.
 	 */
-	public Object restore(String id, ClassLoader classLoader, ArooaSession session)
+	Object restore(String id, ClassLoader classLoader, ArooaSession session)
 	throws ComponentPersistException;
 
 	/**
 	 * Remove an object from the store.
 	 * 
-	 * @param id
-	 * @param session
+	 * @param id The id of the component.
+	 * @param session The owning session.
 	 */
-	public void remove(String id, ArooaSession session)
+	void remove(String id, ArooaSession session)
 	throws ComponentPersistException;
 			
 	/**
@@ -50,18 +50,18 @@ public interface ComponentPersister {
 	 * 
 	 * @return The ids of the persisted components.
 	 */
-	public String[] list()
+	String[] list()
 	throws ComponentPersistException;
 
 	/**
 	 * Clear this persister of everything stored.
 	 * 
 	 */
-	public void clear()
+	void clear()
 	throws ComponentPersistException;	
 		
 	/**
 	 * Free resources used by the implementation.
 	 */
-	public void close();
+	void close();
 }

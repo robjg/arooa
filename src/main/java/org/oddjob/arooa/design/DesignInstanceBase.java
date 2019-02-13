@@ -76,7 +76,7 @@ abstract class DesignInstanceBase implements ParsableDesignInstance {
 					classIdentifier, accessor);
 		
 		ArooaAttributes attributes = element.getAttributes(); 
-		for (String attributeName : attributes.getAttributNames()) {
+		for (String attributeName : attributes.getAttributeNames()) {
 			if (ArooaConstants.ID_PROPERTY.equals(attributeName)) {
 				if (this instanceof DesignComponentBase) {
 					continue;

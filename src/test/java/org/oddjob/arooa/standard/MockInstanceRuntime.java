@@ -6,10 +6,6 @@ import org.oddjob.arooa.runtime.RuntimeListener;
 
 public class MockInstanceRuntime extends InstanceRuntime {
 	
-	MockInstanceRuntime() {
-		super(null, null);
-	}
-	
 	MockInstanceRuntime(InstanceConfiguration instance,
 			ArooaContext context) {
 		super(instance, context);

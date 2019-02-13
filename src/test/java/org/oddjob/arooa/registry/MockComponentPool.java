@@ -32,12 +32,12 @@ public class MockComponentPool implements ComponentPool {
 				this.getClass().getName() + ".");
 	}
 	
-	public void remove(Object component) {
+	public boolean remove(Object component) {
 		throw new RuntimeException("Unexpected in " + 
 				this.getClass().getName() + ".");
 	}
 
-	public void registerComponent(ComponentTrinity trinity, String id) {
+	public String registerComponent(ComponentTrinity trinity, String id) {
 		throw new RuntimeException("Unexpected in " + 
 				this.getClass().getName() + ".");
 	}

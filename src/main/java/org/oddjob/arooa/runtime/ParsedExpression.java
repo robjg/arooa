@@ -15,11 +15,12 @@ public interface ParsedExpression {
 	/**
 	 * Evaluate the expression as an attribute.
 	 * 
-	 * @param session
+	 * @param session Session to get values from.
+	 * @param type The type of result expected.
 	 * 
 	 * @return An object result. May be null.
 	 */
-	public <T> T evaluate(ArooaSession session, Class<T> type)
+	<T> T evaluate(ArooaSession session, Class<T> type)
 	throws ArooaConversionException;
 		
 	/**
@@ -27,6 +28,6 @@ public interface ParsedExpression {
 	 * 
 	 * @return true/false.
 	 */
-	public boolean isConstant();
+	boolean isConstant();
 	
 }

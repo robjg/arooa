@@ -49,7 +49,7 @@ public class HandleConfigurationSessionTest {
 	class OurListener implements SessionStateListener {
 		boolean modified;
 		
-		public void sessionModifed(ConfigSessionEvent event) {
+		public void sessionModified(ConfigSessionEvent event) {
 			modified = true;
 		}
 		

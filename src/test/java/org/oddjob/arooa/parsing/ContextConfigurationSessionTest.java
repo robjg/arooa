@@ -86,7 +86,7 @@ public class ContextConfigurationSessionTest {
 	class OurListener implements SessionStateListener {
 		boolean modified;
 		
-		public void sessionModifed(ConfigSessionEvent event) {
+		public void sessionModified(ConfigSessionEvent event) {
 			modified = true;
 		}
 		
@@ -97,8 +97,7 @@ public class ContextConfigurationSessionTest {
 	
     @Test
 	public void testModified() 
-	throws ArooaParseException, SAXException, 
-			IOException, ArooaPropertyException {
+	throws ArooaParseException, ArooaPropertyException {
 		
 		XMLConfiguration config = new XMLConfiguration("TEST", 
 				"<snack>" +
@@ -107,7 +106,7 @@ public class ContextConfigurationSessionTest {
 				" </fruit>" +
 				"</snack>");
 
-		final AtomicReference<String > savedXML = new AtomicReference<String>();
+		final AtomicReference<String > savedXML = new AtomicReference<>();
 		config.setSaveHandler(new XMLConfiguration.SaveHandler() {
 			@Override
 			public void acceptXML(String xml) {

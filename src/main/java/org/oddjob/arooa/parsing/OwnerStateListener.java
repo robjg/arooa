@@ -12,8 +12,10 @@ public interface OwnerStateListener {
 	 * Called when the {@link ConfigurationOwner}s session
 	 * changes. Either when a new one is created or 
 	 * an existing one is destroyed.
-	 * 
-	 * @param event
+	 * <p/>
+	 * This happens, for instance, when Oddjob is loaded and reset.
+     *
+	 * @param event The event.
 	 */
-	public void sessionChanged(ConfigOwnerEvent event);
+	void sessionChanged(ConfigOwnerEvent event);
 }

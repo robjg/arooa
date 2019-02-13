@@ -12,11 +12,17 @@ import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.runtime.RuntimeEvent;
 import org.oddjob.arooa.runtime.RuntimeListener;
 
+import java.util.Objects;
+
 /**
- * Base class for runtimes that contain properties.
- * 
- * @author rob
+ * Base class for {@link org.oddjob.arooa.runtime.RuntimeConfiguration}s
+ * that inject properties into parents.
  *
+ * @see SimplePropertyRuntime
+ * @see IndexedPropertyRuntime
+ * @see MappedPropertyRuntime
+ *
+ * @author rob
  */
 abstract class ContainerRuntime extends StandardRuntime {	
 	
@@ -51,11 +57,19 @@ abstract class ContainerRuntime extends StandardRuntime {
 		}
 	};
 
-	
+	/**
+	 * Constructor.
+     *
+ 	 * @param propertyDefinition The definition of the property this is for.
+	 * @param parentContext The parent context.
+	 */
 	public ContainerRuntime(
 			PropertyDefinition propertyDefinition,
 			ArooaContext parentContext) {
+
 		super(parentContext);
+
+        Objects.requireNonNull(propertyDefinition);
 		this.propertyDefinition = propertyDefinition;
 	}
 	

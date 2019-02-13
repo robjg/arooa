@@ -27,9 +27,9 @@ public class PropertyIdentifier<R, N> {
 	 */
 	public interface ElementActionFactory<N> {
 		
-		public ElementAction<N> createComponentElementAction();
+		ElementAction<N> createComponentElementAction();
 		
-		public ElementAction<N> createValueElementAction();
+		ElementAction<N> createValueElementAction();
 
 	}
 	
@@ -41,15 +41,15 @@ public class PropertyIdentifier<R, N> {
 	 */
 	public interface PropertyTypeActions<R, N> {
 		
-		public R onMappedElement(ArooaElement element, 
+		R onMappedElement(ArooaElement element,
 				ArooaContext context, ElementAction<N> action)
 		throws ArooaPropertyException;
 		
-		public R onIndexedElement(ArooaElement element, 
+		R onIndexedElement(ArooaElement element,
 				ArooaContext context, ElementAction<N> action)
 		throws ArooaPropertyException;
 		
-		public R onVariantElement(ArooaElement element, 
+		R onVariantElement(ArooaElement element,
 				ArooaContext context, ElementAction<N> action)
 		throws ArooaPropertyException;
 	}
@@ -69,7 +69,17 @@ public class PropertyIdentifier<R, N> {
 		this.actionFactory = actionFactory;
 		this.elementAction = elementAction;
 	}
-	
+
+    /**
+     *
+     * @param classId
+     * @param element
+     * @param context
+
+     * @return
+
+     * @throws ArooaConfigurationException
+     */
 	public R identifyPropertyFor(ArooaClass classId,
 		ArooaElement element, ArooaContext context) 
 	throws ArooaConfigurationException {

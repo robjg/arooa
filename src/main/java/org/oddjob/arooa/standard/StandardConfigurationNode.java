@@ -9,18 +9,22 @@ import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.parsing.Location;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 
+import java.util.function.Supplier;
+
+/**
+ * An {@link ConfigurationNode} for standard parsing.
+ */
 abstract class StandardConfigurationNode extends AbstractConfigurationNode {
 
-	private final ArooaElement element;
+	private final Supplier<ArooaElement> element;
 
     /**
      * Constructor
      * 
-     * @param element
-     * @param prefixMappings
+     * @param element The element this is a configuration node for.
      */
 	public StandardConfigurationNode(
-			ArooaElement element) {
+            Supplier<ArooaElement> element) {
 		this.element = element;
 	}
 	
@@ -35,7 +39,7 @@ abstract class StandardConfigurationNode extends AbstractConfigurationNode {
 		ArooaContext newContext;
 		try {
 			newContext = parentContext.getArooaHandler(
-					).onStartElement(element, parentContext);
+					).onStartElement(element.get(), parentContext);
 		} catch (ArooaConfigurationException e) {
     		throw new ArooaParseException("Failed parsing configuration.", 
     				new Location("Unknown", 0, 0), e);

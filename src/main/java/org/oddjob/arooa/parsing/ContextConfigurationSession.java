@@ -13,8 +13,8 @@ import org.oddjob.arooa.runtime.RuntimeEvent;
 import org.oddjob.arooa.runtime.RuntimeListenerAdapter;
 
 /**
- * A {@link ConfigurationSession} based on the parsing {@link ArooaContext} 
- * of an element.
+ * A {@link ConfigurationSession} based on the {@link ArooaContext}. This context is intended to be that of
+ * a Component that wishes to be {@link ConfigurationOwner} but is not the root component.
  * <p>
  * It is assumed that the component is within the hierarchy of another
  * {@link ConfigurationOwner} that will be the root of the hierarchy and
@@ -25,16 +25,22 @@ import org.oddjob.arooa.runtime.RuntimeListenerAdapter;
  */
 public class ContextConfigurationSession implements ConfigurationSession {
 
+    /** The session of this context */
 	private final ArooaSession session;
-	
+
+	/** Handles listeners. */
 	private final ConfigurationSessionSupport sessionSupport;
-	
+
+	/** Is this session modified. */
 	private boolean modified;
-		
+
+	/** The parent owner. */
 	private ConfigurationOwner parentOwner;
-	
-	private ConfigurationSession parentSession;
-	
+
+	/** The parent session. */
+	private ConfigurationSession parentConfigurationSession;
+
+	/** For listening to the parents session. */
 	private final SessionStateListener sessionStateListener =
 			new SessionStateListener() {
 		
@@ -44,11 +50,12 @@ public class ContextConfigurationSession implements ConfigurationSession {
 		}
 		
 		@Override
-		public void sessionModifed(ConfigSessionEvent event) {
+		public void sessionModified(ConfigSessionEvent event) {
 			setModified(true);
 		}
 	};
-	
+
+	/** For listening to when the parent changes session. */
 	private final OwnerStateListener ownerStateListener =
 			new OwnerStateListener() {
 	
@@ -58,25 +65,25 @@ public class ContextConfigurationSession implements ConfigurationSession {
 
 				parentOwner = event.getSource();
 				
-				parentSession = 
+				parentConfigurationSession =
 						parentOwner.provideConfigurationSession();
 				
-				parentSession.addSessionStateListener(
+				parentConfigurationSession.addSessionStateListener(
 						sessionStateListener);
 			}
 			else {
-				parentSession.removeSessionStateListener(
+				parentConfigurationSession.removeSessionStateListener(
 						sessionStateListener);
 				
-				parentSession = null;
+				parentConfigurationSession = null;
 			}
 		}
 	};
 	
 	/**
-	 * Construct the session.
+	 * Construct this Configuration Session.
 	 * 
-	 * @param context
+	 * @param context The context that belongs to the element that has
 	 */
 	public ContextConfigurationSession(ArooaContext context) {
 		
@@ -90,8 +97,8 @@ public class ContextConfigurationSession implements ConfigurationSession {
 				
 				// Will this every be true because destroy will have removed
 				// the owner first?
-				if (parentSession != null) {
-					parentSession.removeSessionStateListener(
+				if (parentConfigurationSession != null) {
+					parentConfigurationSession.removeSessionStateListener(
 							sessionStateListener);
 				}
 				
@@ -116,7 +123,11 @@ public class ContextConfigurationSession implements ConfigurationSession {
 				context = parent;
 			}
 		}
-		
+
+		if (root == null) {
+		    throw new IllegalStateException("Always expect ot be a child of another ConfigurationOwner.");
+        }
+
 		final ArooaContext finalRoot = root;
 		
 		RuntimeConfiguration runtime = root.getRuntime();
@@ -157,15 +168,16 @@ public class ContextConfigurationSession implements ConfigurationSession {
 		
 			parentOwner.addOwnerStateListener(ownerStateListener);			
 			
-			// This shouldn't be null because session is in play.
-			parentSession = parentOwner.provideConfigurationSession();
-			
-			parentSession.addSessionStateListener(
-					sessionStateListener);
-			
-			if (parentSession.isModified()) {
-				setModified(true);
-			}
+			parentConfigurationSession = parentOwner.provideConfigurationSession();
+
+            if (parentConfigurationSession != null) {
+                parentConfigurationSession.addSessionStateListener(
+                        sessionStateListener);
+
+                if (parentConfigurationSession.isModified()) {
+                    setModified(true);
+                }
+            }
 		}
 	}
 		
@@ -214,7 +226,7 @@ public class ContextConfigurationSession implements ConfigurationSession {
 	}
 		
 	public void save() throws ArooaParseException {
-		parentSession.save();
+		parentConfigurationSession.save();
 	}
 	
 	public ArooaDescriptor getArooaDescriptor() {

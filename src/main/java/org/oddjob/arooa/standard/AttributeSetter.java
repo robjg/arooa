@@ -3,16 +3,14 @@
  */
 package org.oddjob.arooa.standard;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaConfigurationException;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ConfiguredHow;
+import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.deploy.BeanDescriptorHelper;
 import org.oddjob.arooa.parsing.ArooaAttributes;
 import org.oddjob.arooa.parsing.ArooaContext;
@@ -38,13 +36,20 @@ import org.oddjob.arooa.types.BeanType;
  */
 class AttributeSetter {
 
-	private final Set<String> optionalAttributes = new HashSet<String>();
-	
+	/** Attributes that may exist in the component but don't have to, e.g. 'id'. */
+	private final Set<String> optionalAttributes = new HashSet<>();
+
+	/** Attributes always evaluated on init. */
+	private final Set<String> initAttributes = new HashSet<>();
+
     private final InstanceConfiguration instance;
     
     private final ArooaAttributes attributes;
     
     AttributeSetter(InstanceConfiguration instance, ArooaAttributes attributes) {
+        Objects.requireNonNull(instance);
+        Objects.requireNonNull(attributes);
+
     	this.instance = instance;
 		this.attributes = attributes;
     }
@@ -52,13 +57,21 @@ class AttributeSetter {
 	public void addOptionalAttribute(String name) {
 		optionalAttributes.add(name);
 	}
-	
-	List<AttributeRuntime> runtimes(
+
+    public void addInitAttribute(String name) {
+        initAttributes.add(name);
+    }
+
+    public ArooaAttributes getAttributes() {
+        return attributes;
+    }
+
+    List<AttributeRuntime> runtimes(
 			ArooaContext context)
 	throws ArooaException {
 
-	    List<AttributeRuntime> attributeRuntimes = 
-	    	new ArrayList<AttributeRuntime>();
+	    List<AttributeRuntime> attributeRuntimes =
+                new ArrayList<>();
 	    
 		MutableAttributes attrs = new MutableAttributes(attributes);
 				
@@ -91,7 +104,7 @@ class AttributeSetter {
 			session.getArooaDescriptor().getBeanDescriptor(
 				classIdentifier, propertyAcessor);
 		
-		for (String propertyName : attrs.getAttributNames()) {
+		for (String propertyName : attrs.getAttributeNames()) {
 			
 			// special handling for 'class' attribute.
 			if (BeanType.ATTRIBUTE.equals(propertyName)) {
@@ -115,14 +128,32 @@ class AttributeSetter {
 			
 			ExpressionParser expressionParser = context.getSession(
 					).getTools().getExpressionParser();
-			ParsedExpression evaluator = expressionParser.parse(
+			final ParsedExpression evaluator = expressionParser.parse(
 					attrs.get(propertyName));
-	
+
+            ParsedExpression useEvalutator;
+            if (initAttributes.contains(propertyName)) {
+			    useEvalutator = new ParsedExpression() {
+                    @Override
+                    public <T> T evaluate(ArooaSession session, Class<T> type) throws ArooaConversionException {
+                        return evaluator.evaluate(session, type);
+                    }
+
+                    @Override
+                    public boolean isConstant() {
+                        return true;
+                    }
+                };
+            }
+            else {
+                useEvalutator = evaluator;
+            }
+
 			attributeRuntimes.add(
 					new AttributeRuntime(
 							instance, 
 							propertyName, 
-							evaluator,
+							useEvalutator,
 							beanOverview.getPropertyType(propertyName)));
 		}
 		

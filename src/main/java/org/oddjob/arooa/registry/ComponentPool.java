@@ -23,7 +23,7 @@ public interface ComponentPool {
 	 * 
 	 * @param component The component or it's proxy.
 	 */
-	public void configure(Object component)
+	void configure(Object component)
 	throws ArooaConfigurationException;
 
 	/**
@@ -36,14 +36,16 @@ public interface ComponentPool {
 	 * 
 	 * @param either A component or it's proxy.
 	 */
-	public void save(Object either) throws ComponentPersistException;
+	void save(Object either) throws ComponentPersistException;
 	
 	/**
 	 * Remove a component.
 	 * 
 	 * @param either A component or it's proxy.
+     *
+     * @return true if the component was removed.
 	 */
-	public void remove(Object either) throws ComponentPersistException;
+	boolean remove(Object either) throws ComponentPersistException;
 	
 	/**
 	 * Get the components {@link ArooaContext}.
@@ -53,7 +55,7 @@ public interface ComponentPool {
 	 * @return The context or null if the component/proxy is not 
 	 * in this pool.
 	 */
-	public ArooaContext contextFor(Object either);
+	ArooaContext contextFor(Object either);
 	
 	/**
 	 * Get the {@link ComponentTrinity} for the given {@link ArooaContext}.
@@ -66,7 +68,7 @@ public interface ComponentPool {
 	 * 
 	 * @since 1.3
 	 */
-	public ComponentTrinity trinityForContext(ArooaContext context);
+	ComponentTrinity trinityForContext(ArooaContext context);
 	
 	/**
 	 * Get the {@link ComponentTrinity} for either the component or 
@@ -80,15 +82,17 @@ public interface ComponentPool {
 	 * @since 1.3
 	 * 
 	 */
-	public ComponentTrinity trinityFor(Object either);
+	ComponentTrinity trinityFor(Object either);
 	
 	/**
 	 * Register a {@link ComponentTrinity}.
 	 * 
 	 * @param trinity The trinity.
 	 * @param id The id. May be null.
+	 *
+     * @return The new id if one was assigned.
 	 */
-	public void registerComponent(ComponentTrinity trinity, String id);	
+	String registerComponent(ComponentTrinity trinity, String id);
 	
 	/**
 	 * Provide the Id for either a component or it's proxy.
@@ -98,7 +102,7 @@ public interface ComponentPool {
 	 * @return The id, or null if the component wasn't registered with
 	 * an id, or the component doesn't exist in pool.
 	 */
-	public String getIdFor(Object either);
+	String getIdFor(Object either);
 	
 	/**
 	 * Provide the {@link ComponentTrinity} for a given id, if possible.
@@ -107,13 +111,13 @@ public interface ComponentPool {
 	 * 
 	 * @return The trinity, or null if none exists for the given id.
 	 */
-	public ComponentTrinity trinityForId(String id);
+	ComponentTrinity trinityForId(String id);
 	
 	/**
 	 * Provide a way of iterating over all trinities.
 	 * 
 	 * @return An Iterable of trinities. Will never be null.
 	 */
-	public Iterable<ComponentTrinity> allTrinities();
+	Iterable<ComponentTrinity> allTrinities();
 	
 }

@@ -9,7 +9,8 @@ import org.oddjob.arooa.runtime.ConfigurationNode;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
 /**
- * An {@link ArooaContext} for standard parsers.
+ * An {@link ArooaContext} for standard parsers. This is created for
+ * both components and values.
  * 
  * @author rob
  *
@@ -17,20 +18,30 @@ import org.oddjob.arooa.runtime.RuntimeConfiguration;
 class StandardArooaContext implements ArooaContext {
 
 	private final StandardRuntime runtime;
-	private final ConfigurationNode runtimeNode;
+
+	private final ConfigurationNode configurationNode;
 
 	private final ArooaContext parent;
 	
 	private final ArooaType type;
-	
+
+    /**
+     * Constructor.
+     *
+     * @param type The type of object or property
+     * @param runtime The runtime to be provided by this context.
+     * @param configurationNode The configuration node to be provided by
+     *                          this context.
+     * @param parent The parent context.
+     */
 	public StandardArooaContext(
 			ArooaType type,
 			StandardRuntime runtime, 
-			ConfigurationNode runtimeNode,
+			ConfigurationNode configurationNode,
 			ArooaContext parent) {
 		this.type = type;
 		this.runtime = runtime;
-		this.runtimeNode = runtimeNode;
+		this.configurationNode = configurationNode;
 		this.parent = parent;
 	}
 	
@@ -55,7 +66,7 @@ class StandardArooaContext implements ArooaContext {
 	}
 	
 	public ConfigurationNode getConfigurationNode() {
-		return runtimeNode;
+		return configurationNode;
 	}
 	
 	public ArooaHandler getArooaHandler() {

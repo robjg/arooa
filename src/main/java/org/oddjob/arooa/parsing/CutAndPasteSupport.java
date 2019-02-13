@@ -9,11 +9,14 @@ import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.deploy.BeanDescriptorHelper;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+import org.oddjob.arooa.runtime.ConfigurationNodeEvent;
+import org.oddjob.arooa.runtime.ConfigurationNodeListener;
+import org.oddjob.arooa.runtime.ModificationRefusedException;
 import org.oddjob.arooa.xml.XMLArooaParser;
 
 /**
  * Provide support for Cutting and Pasting from any form of parsed 
- * {@link ArooaConfiguraion}.
+ * {@link ArooaConfiguration}.
  * 
  * @author rob
  *
@@ -245,17 +248,22 @@ public class CutAndPasteSupport {
 		
 		parentContext.getConfigurationNode().setInsertPosition(index);
 		
-		ConfigurationHandle handle = null;
+		ConfigurationHandle handle;
 		ArooaParseException exception = null;
 		
 		try {
-			handle = config.parse(parentContext);
+			handle = ParsingSession
+                    .<ConfigurationHandle, ArooaParseException>doIn(
+                            () -> config.parse(parentContext));
 		}
 		catch (Exception e) {
-			
+
 			try {
 				// if parsing fails put back the original.
-				handle = rollbackHandle.getDocumentContext().getConfigurationNode().parse(parentContext);
+				handle = rollbackHandle.getDocumentContext()
+                                       .getConfigurationNode()
+                                       .parse(parentContext);
+
 				if (e instanceof ArooaParseException) {
 					exception = (ArooaParseException) e;
 				}

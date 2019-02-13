@@ -29,11 +29,11 @@ class LifecycleObligations {
 	 */
 	ArooaContext honour(InstanceRuntime instanceRuntime, ArooaContext context) {
 		
-		Object proxy = instanceRuntime.getInstance().getObjectToSet();
+		Object proxy = instanceRuntime.getInstanceConfiguration().getObjectToSet();
 		
 		honourObligations(proxy, instanceRuntime, context);
 		
-		Object object = instanceRuntime.getInstance().getWrappedObject();
+		Object object = instanceRuntime.getInstanceConfiguration().getWrappedObject();
 		
 		if (object != proxy) {
 			honourObligations(object, instanceRuntime, context);

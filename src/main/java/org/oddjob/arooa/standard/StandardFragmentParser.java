@@ -110,12 +110,12 @@ public class StandardFragmentParser implements ArooaParser {
 		@Override
 		public void configure() throws ArooaConfigurationException {
 			if (type == ArooaType.COMPONENT) {
-				getInstance().configure(
+				getInstanceConfiguration().configure(
 						this,
 						getContext());
 			}
 			else {
-				getInstance().listenerConfigure(
+				getInstanceConfiguration().listenerConfigure(
 						RootRuntime.this, 
 						getContext());				
 			}

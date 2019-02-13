@@ -8,9 +8,16 @@ import org.oddjob.arooa.reflect.ArooaPropertyException;
 
 
 /**
- * 
+ * Configuration for beans that aren't components.
+ *
+ * @see ComponentConfiguration
+ *
+ * @author rob
+ *
  */
 class ObjectConfiguration extends InstanceConfiguration {
+
+    private final AttributeSetter attributeSetter;
 
 	private final InjectionStrategy injectionStrategy = new InjectionStrategy() {
 		boolean configured;
@@ -41,15 +48,24 @@ class ObjectConfiguration extends InstanceConfiguration {
     /**
      * Constructor for creating a wrapper for the specified object.
      * <p>
-     * 
+     *
+     * @param arooaClass The arooa type of the object.
      * @param wrappedObject The element to configure. Must not be <code>null</code>.
+     * @param attributes The attributes.
      */
     public ObjectConfiguration(ArooaClass arooaClass, 
     		Object wrappedObject, ArooaAttributes attributes) {
-    	super(arooaClass, wrappedObject, attributes);
+    	super(arooaClass, wrappedObject);
+
+        this.attributeSetter = new AttributeSetter(this,
+                                                   attributes);
     }
-    
+
     @Override
+    AttributeSetter getAttributeSetter() {
+        return attributeSetter;
+    }
+
     InjectionStrategy injectionStrategy() {
     	return injectionStrategy;
     }

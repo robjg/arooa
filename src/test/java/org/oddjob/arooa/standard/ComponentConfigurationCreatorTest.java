@@ -157,10 +157,11 @@ public class ComponentConfigurationCreatorTest extends Assert {
 		public ComponentPool getComponentPool() {
 			return new MockComponentPool() {
 				@Override
-				public void registerComponent(ComponentTrinity trinity, String id) {
+				public String registerComponent(ComponentTrinity trinity, String id) {
 					ComponentSession.this.id = id;
 					ComponentSession.this.component = (DummyComponent) trinity.getTheComponent();
 					ComponentSession.this.proxy = trinity.getTheProxy();
+					return id;
 				}
 				
 			};

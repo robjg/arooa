@@ -8,6 +8,7 @@ import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.PropertyIdentifier;
 
+
 class ContainerRuntimeFactory {
 
 	private final ElementAction<InstanceConfiguration> valueElementAction;
@@ -48,7 +49,7 @@ class ContainerRuntimeFactory {
 				ArooaContext context, ElementAction<InstanceConfiguration> action) 
 		throws ArooaPropertyException {
 
-			if (element.getAttributes().getAttributNames().length > 0) {
+			if (element.getAttributes().getAttributeNames().length > 0) {
 				throw new ArooaException(
 						"Property name element [" + element.getTag() + 
 						"] does not take attributes.");
@@ -63,7 +64,7 @@ class ContainerRuntimeFactory {
 				ArooaContext context, ElementAction<InstanceConfiguration> action) 
 		throws ArooaPropertyException {
 			
-			if (element.getAttributes().getAttributNames().length > 0) {
+			if (element.getAttributes().getAttributeNames().length > 0) {
 				throw new ArooaException(
 						"Property name element [" + element.getTag() + 
 						"] does not take attributes.");
@@ -79,7 +80,7 @@ class ContainerRuntimeFactory {
 				ElementAction<InstanceConfiguration> action) 
 		throws ArooaPropertyException {
 
-			if (element.getAttributes().getAttributNames().length > 0) {
+			if (element.getAttributes().getAttributeNames().length > 0) {
 				throw new ArooaException(
 						"Property name element [" + element.getTag() + 
 						"] does not take attributes.");
@@ -92,10 +93,17 @@ class ContainerRuntimeFactory {
 	}
 	
 	private final PropertyIdentifier<ContainerRuntime, InstanceConfiguration> propertyIdentifier = 
-		new PropertyIdentifier<ContainerRuntime, InstanceConfiguration>(
+		new PropertyIdentifier<>(
 				new ActionFactory(),
 				new PropertyTypeSelector());
-	
+
+    /**
+     *
+     * @param element
+     * @param parentContext
+     * @return
+     * @throws ArooaConfigurationException
+     */
 	ContainerRuntime runtimeForProperty(
 			ArooaElement element, ArooaContext parentContext) 
 	throws ArooaConfigurationException {

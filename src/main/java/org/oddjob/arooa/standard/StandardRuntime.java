@@ -5,13 +5,35 @@ import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaHandler;
 import org.oddjob.arooa.runtime.AbstractRuntimeConfiguration;
 
+import java.util.Objects;
+
+/**
+ * Base class for all {@link org.oddjob.arooa.runtime.RuntimeConfiguration}s
+ * that are the result of the Standard Parser.
+ *
+ * @see StandardArooaParser
+ * @see ContainerRuntime
+ * @see InstanceRuntime
+ */
 abstract class StandardRuntime extends AbstractRuntimeConfiguration {
 
+    /** The parent context. */
 	private final ArooaContext parentContext;
-	
+
+	/** The context that owns this runtime. Due to the chicken and egg nature of
+     * contexts and runtimes, this can only be set once the context has been
+     * created with a reference to this runtime. */
 	private ArooaContext context;
-	
+
+    /**
+     * Constructor.
+     *
+     * @param parentContext The parent context.
+     */
 	StandardRuntime(ArooaContext parentContext) {
+
+        Objects.requireNonNull(parentContext);
+
 		this.parentContext = parentContext;
 	}
 	

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.oddjob.arooa.handlers;
 
 import org.oddjob.arooa.life.ArooaElementException;
@@ -9,7 +6,7 @@ import org.oddjob.arooa.parsing.ArooaElement;
 
 /**
  * Performs an action with an element. Typically this will
- * be creating a configuration node for the element.
+ * be creating some kind of parsed value for the element.
  * 
  * @author rob
  *
@@ -25,8 +22,8 @@ public interface ElementAction<R> {
 	 * 
 	 * @return The thing created as a result.
 	 * 
-	 * @throws ArooaElementException
+	 * @throws ArooaElementException If something went wrong.
 	 */
-	public R onElement(ArooaElement element, ArooaContext context)
+	R onElement(ArooaElement element, ArooaContext context)
 	throws ArooaElementException;
 }

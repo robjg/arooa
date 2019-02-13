@@ -20,11 +20,23 @@ class IndexItemRuntime extends InstanceRuntime {
 			throws ArooaPropertyException {
 				int index = getParentContext().getConfigurationNode().indexOf(
 							getContext().getConfigurationNode());
-				
-				getParentContext().getRuntime().setIndexedProperty(
-						null, 
-						index,
-						value);
+
+				if (index < 0) {
+					if (value == null) {
+						// Expected when destroy called before parsing complete
+						// i.e. from a rollback
+					}
+					else {
+						throw new IllegalStateException(
+								"Attempt to set child of index " + index);
+					}
+				}
+				else {
+					getParentContext().getRuntime().setIndexedProperty(
+							null,
+							index,
+							value);
+				}
 			}
 		};
 	}

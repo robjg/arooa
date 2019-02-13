@@ -195,7 +195,7 @@ public class DesignInstanceContext implements ArooaContext {
 
 				final int[] error = new int[] { 0 };
 				
-				if (element.getAttributes().getAttributNames().length > 0) {
+				if (element.getAttributes().getAttributeNames().length > 0) {
 					error[0] = 1;
 				}
 				

@@ -372,7 +372,10 @@ public class CutAndPasteSupportTest {
 		ArooaContext orangeContext = session.getComponentPool().contextFor(
 				snack.fruit);
 		
-		CutAndPasteSupport.ReplaceResult result = test.replace(orangeContext, new XMLConfiguration("PASTE", "<rubbish/>"));
+		CutAndPasteSupport.ReplaceResult result =
+				test.replace(orangeContext,
+                             new XMLConfiguration("PASTE",
+                                                  "<rubbish/>"));
 		assertNotNull(result.getException());
 		
 		assertEquals(Orange.class, snack.fruit.getClass());

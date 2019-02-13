@@ -33,7 +33,7 @@ public class XMLArooaAttributes implements ArooaAttributes {
 		return (String) attributes.get(name);
 	}
 	
-	public String[] getAttributNames() {
+	public String[] getAttributeNames() {
 		return (String[]) attributes.keySet().toArray(new String[0]);
 	}
 	

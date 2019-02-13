@@ -7,22 +7,36 @@ import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.parsing.ArooaHandler;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 
+import java.util.Objects;
+
+/**
+ * A {@link org.oddjob.arooa.runtime.RuntimeConfiguration} for an
+ * indexed property.
+ *
+ * @author Rob
+ */
 class IndexedPropertyRuntime extends ContainerRuntime {
 
-	private final ElementAction<InstanceConfiguration> childCreator;
+    /** Creates the configuration for the instance that is the value of this
+     * property. */
+	private final ElementAction<InstanceConfiguration> nestedAction;
 
 	/**
-	 * 
-	 * @param childCreator
-	 * @param runtimeClass
-	 * @param property
+	 * Constructor.
+     *
+	 * @param nestedAction The child Instance Configuration creator.
+	 * @param propertyDefinition The definition of the property this is for.
+	 * @param parentContext The parent context.
 	 */
 	public IndexedPropertyRuntime(
-			ElementAction<InstanceConfiguration> childCreator, 
+			ElementAction<InstanceConfiguration> nestedAction,
 			PropertyDefinition propertyDefinition,
 			ArooaContext parentContext) {
+
 		super(propertyDefinition, parentContext);
-		this.childCreator = childCreator;
+
+        Objects.requireNonNull(nestedAction);
+		this.nestedAction = nestedAction;
 	}
 
 	@Override
@@ -32,7 +46,7 @@ class IndexedPropertyRuntime extends ContainerRuntime {
 					ArooaContext parentContext) 
 			throws ArooaConfigurationException {
 	
-				final InstanceConfiguration child = childCreator.onElement(
+				final InstanceConfiguration child = nestedAction.onElement(
 						element,
 						parentContext);
 	

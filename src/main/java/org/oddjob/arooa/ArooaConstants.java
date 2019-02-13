@@ -12,7 +12,9 @@ public class ArooaConstants {
 	public static final String ID_PROPERTY = "id";
 
 	public static final String KEY_PROPERTY = "key";
-	
+
+	public static final String NAME_PROPERTY = "name";
+
 	public static final String ITEM_TAG = "is";
 	
 	public static final String DATE_FORMAT = "yyyy-MM-dd";

@@ -80,12 +80,13 @@ public class RootConfigurationCreatorTest extends Assert {
 		public ComponentPool getComponentPool() {
 			return new MockComponentPool() {
 				@Override
-				public void registerComponent(ComponentTrinity trinity,
+				public String registerComponent(ComponentTrinity trinity,
 						String id) {
 					OurSession.this.id = id;
 					OurSession.this.component = trinity.getTheComponent();
 					OurSession.this.proxy = trinity.getTheProxy();
 					OurSession.this.context = trinity.getTheContext();
+					return id;
 				}
 			};
 		}
