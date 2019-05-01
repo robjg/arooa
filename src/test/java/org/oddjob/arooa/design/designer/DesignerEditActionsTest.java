@@ -117,8 +117,8 @@ public class DesignerEditActionsTest extends Assert {
 
 	class OurActions implements ActionRegistry {
 		
-		Map<Object, Action> actions = 
-			new HashMap<Object, Action>();
+		Map<Object, Action> actions =
+				new HashMap<>();
 		
 		ActionMenu menu;
 		
@@ -156,7 +156,7 @@ public class DesignerEditActionsTest extends Assert {
 		
 		parser.parse(new XMLConfiguration("TEST", "<stuff/>"));
 		
-		DesignerModel model = new DesignerModel(parser);
+		DesignerModel model = new DesignerModelImpl(parser);
 		
 		DesignTreeNode root = model.getTreeModel().getRoot();
 		model.setCurrentSelection(root);
@@ -199,7 +199,7 @@ public class DesignerEditActionsTest extends Assert {
 		
 		parser.parse(new XMLConfiguration("TEST", "<stuff/>"));
 		
-		DesignerModel model = new DesignerModel(parser);
+		DesignerModel model = new DesignerModelImpl(parser);
 		
 		DesignTreeNode root = model.getTreeModel().getRoot();
 		model.setCurrentSelection(root);
@@ -240,7 +240,7 @@ public class DesignerEditActionsTest extends Assert {
 		
 		assertTrue(parser.getDesign() instanceof Unknown);
 		
-		DesignerModel model = new DesignerModel(parser);
+		DesignerModel model = new DesignerModelImpl(parser);
 		
 		DesignTreeNode root = model.getTreeModel().getRoot();
 		model.setCurrentSelection(root);

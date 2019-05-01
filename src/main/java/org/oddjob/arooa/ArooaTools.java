@@ -16,7 +16,7 @@ public interface ArooaTools {
 	 * 
 	 * @return An ArooaConverter. Will not be null.
 	 */
-	public ArooaConverter getArooaConverter();
+	ArooaConverter getArooaConverter();
 	
 	/**
 	 * Get a {@link PropertyAccessor} that does type
@@ -24,26 +24,26 @@ public interface ArooaTools {
 	 * 
 	 * @return A PropertyAccessor. Will not be null.
 	 */
-	public PropertyAccessor getPropertyAccessor();
+	PropertyAccessor getPropertyAccessor();
 
 	/**
 	 * Get an {@link ExpressionParser} to use.
 	 * 
 	 * @return An ExpressionParser. Will not be null.
 	 */
-	public ExpressionParser getExpressionParser();
+	ExpressionParser getExpressionParser();
 		
 	/**
 	 * Get an {@link Evaluator} to use.
 	 * 
 	 * @return An Evaluator. Will not be null.
 	 */
-	public Evaluator getEvaluator();
+	Evaluator getEvaluator();
 	
 	/**
 	 * Get a {@link ServiceHelper}.
 	 * 
 	 * @return A Service Helper. Will not be null.
 	 */
-	public ServiceHelper getServiceHelper();
+	ServiceHelper getServiceHelper();
 }

@@ -14,7 +14,7 @@ public interface ConfigurationOwner {
 	/**
 	 * Provide a {@link ConfigurationSession}.
 	 * 
-	 * @return A {@link ConfigurationSession}. My be null if no session is available.
+	 * @return A {@link ConfigurationSession}. May be null if no session is available.
 	 */
 	ConfigurationSession provideConfigurationSession();
 	
@@ -48,7 +48,7 @@ public interface ConfigurationOwner {
 	 * Get the root element.
 	 * 
 	 * @return The root element of the configuration. Must not be null if
-	 * a ConfiguraitonSession is available.
+	 * a {@link ConfigurationSession} is available.
 	 */
 	ArooaElement rootElement();
 	

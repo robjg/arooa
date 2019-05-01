@@ -25,7 +25,7 @@ abstract class DesignPropertyBase implements DesignElementProperty {
 	
 	/** listener notified when the design changes. */
 	private final List<DesignListener> listeners =
-		new ArrayList<DesignListener>();
+			new ArrayList<>();
 	
 	/**
 	 * Constructor that creates a {@link DesignProperty} using the given
@@ -97,17 +97,13 @@ abstract class DesignPropertyBase implements DesignElementProperty {
 	 * @return The thing that will insert the design into this property.
 	 */
 	DesignSetter getDesignSetter(final ArooaElement element) {
-		return new DesignSetter() {
-			public void setDesign(int index, DesignInstance design) {
-				synchronizedInsert(index, design);
-			}
-		};
+		return this::synchronizedInsert;
 	}
 	
 	/**
 	 * Used During parsing. 
 	 * 
-	 * @see MappedDesignProperty.
+	 * @see MappedDesignProperty
 	 * 
 	 * @return The key of this property if it is a mapped property. Null
 	 * otherwise.
@@ -152,6 +148,7 @@ abstract class DesignPropertyBase implements DesignElementProperty {
 	 */
 	abstract DesignInstance instanceAt(int index);
 
+	@Override
 	public void addDesignListener(DesignListener listener) {
 		synchronized (listeners) {
 			for (int i = 0; i < instanceCount(); ++i) {
@@ -161,7 +158,8 @@ abstract class DesignPropertyBase implements DesignElementProperty {
 			listeners.add(listener);
 		}
 	}
-	
+
+	@Override
 	public void removeDesignListener(DesignListener listener) {
 		synchronized (listeners) {
 			listeners.remove(listener);

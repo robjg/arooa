@@ -23,14 +23,14 @@ public class DesignTreeNode
 		implements TreeNode {
 
 	/** For list of children */
-	private final Vector<DesignTreeNode> nodeList = 
-		new Vector<DesignTreeNode>();
+	private final Vector<DesignTreeNode> nodeList =
+			new Vector<>();
 
 	/** Parent node */
 	final private DesignTreeNode parent;
 
 	/** Save the JobTreeModel. */
-	final private DesignTreeModel model;
+	final private DesignTreeModelImpl model;
 
 	/** The design component. */
 	private final DesignComponent designComponent;
@@ -44,7 +44,7 @@ public class DesignTreeNode
 	 * @param parent The parent node.
 	 * @param node The structure node this is modelling.
 	 */
-	public DesignTreeNode(DesignTreeModel model, 
+	public DesignTreeNode(DesignTreeModelImpl model,
 			DesignTreeNode parent, DesignComponent node) {
 	
 		this.model = model;			
@@ -85,7 +85,7 @@ public class DesignTreeNode
 					public void childRemoved(DesignStructureEvent e) {
 						
 						int index = e.getIndex();
-						DesignTreeNode child = null;
+						DesignTreeNode child;
 						synchronized (nodeList) {
 							child = nodeList.elementAt(index);
 							nodeList.removeElementAt(index);
@@ -122,12 +122,15 @@ public class DesignTreeNode
 	}
 
 	public boolean isLeaf() {
-		return nodeList.size() == 0 ? true : false;		
+		return nodeList.size() == 0;
 	}
 
 	public int getIndex(TreeNode child) {
 
-		return nodeList.indexOf(child);		
+		if (!(child instanceof DesignTreeNode)) {
+			throw new IllegalArgumentException("No our node");
+		}
+		return nodeList.indexOf(child);
 	}
 
 	public DesignTreeNode getParent() {
@@ -143,7 +146,7 @@ public class DesignTreeNode
 	public void destroy() {
 		while (nodeList.size() > 0) {			
 			int index = nodeList.size() - 1;
-			DesignTreeNode child = (DesignTreeNode) nodeList.remove(index);
+			DesignTreeNode child = nodeList.remove(index);
 			child.destroy();
 			model.fireTreeNodesRemoved(this, child, index);
 		}	

@@ -13,22 +13,23 @@ import org.oddjob.arooa.life.InstantiationContext;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaClass;
-import org.oddjob.arooa.types.ClassType;
-import org.oddjob.arooa.types.ConvertType;
-import org.oddjob.arooa.types.IdentifiableValueType;
-import org.oddjob.arooa.types.ImportType;
-import org.oddjob.arooa.types.ListType;
-import org.oddjob.arooa.types.MapType;
-import org.oddjob.arooa.types.ValueType;
-import org.oddjob.arooa.types.XMLType;
+import org.oddjob.arooa.types.*;
 
+/**
+ * Internal class containing the default value elements for an Arooa Configuration.
+ *
+ * @See StandardArooaDescriptor
+ * @See BaseArooaDescriptor
+ */
 class DefaultValuesMappings implements ElementMappings {
 
-	private final Map<ArooaElement, SimpleArooaClass> classNames = 
-		new HashMap<ArooaElement, SimpleArooaClass>();
-	
-	private final Map<ArooaElement, DesignFactory> designNames = 
-		new HashMap<ArooaElement, DesignFactory>();
+	/** Elements to Arooa Class Names. */
+	private final Map<ArooaElement, SimpleArooaClass> classNames =
+			new HashMap<>();
+
+	/** Elements to Design Factories. */
+	private final Map<ArooaElement, DesignFactory> designNames =
+			new HashMap<>();
 	
 	{
 		classNames.put(ClassType.ELEMENT, 
@@ -47,11 +48,15 @@ class DefaultValuesMappings implements ElementMappings {
 				new SimpleArooaClass(ImportType.class));
 		classNames.put(IdentifiableValueType.ELEMENT, 
 				new SimpleArooaClass(IdentifiableValueType.class));
-		
+		classNames.put(InlineType.ELEMENT,
+				new SimpleArooaClass(InlineType.class));
+
 		designNames.put(ValueType.ELEMENT, 
 				new ValueType.ValueDesignFactory());
 		designNames.put(XMLType.ELEMENT,
 				new XMLType.XMLDesignFactory());
+		designNames.put(InlineType.ELEMENT,
+				new InlineTypeDesignFactory());
 	}
 	
 	@Override
@@ -78,5 +83,5 @@ class DefaultValuesMappings implements ElementMappings {
 	@Override
 	public MappingsContents getBeanDoc(ArooaType arooaType) {
 		return new MappingsBeanDoc(classNames);
-	};
+	}
 }

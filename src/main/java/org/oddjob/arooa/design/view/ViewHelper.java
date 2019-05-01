@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JPopupMenu;
 
 import org.oddjob.arooa.design.screem.Form;
+import org.oddjob.arooa.design.screem.OkAware;
 
 /**
  * Utility methods for Swing Views.
@@ -40,7 +41,13 @@ public class ViewHelper {
 			public void actionPerformed(ActionEvent e) {
 				Component form = SwingFormFactory.create(def).dialog();
 
-				ValueDialog valueDialog = new ValueDialog(form);
+				ValueDialog valueDialog;
+				if ( def instanceof OkAware) {
+					valueDialog = new ValueDialog(form, ((OkAware) def).getOkAction());
+				}
+				else {
+					valueDialog = new ValueDialog(form);
+				}
 				valueDialog.showDialog(button, true);
 			}
 		});
@@ -48,13 +55,13 @@ public class ViewHelper {
 	}
 	
 	/**
-	 * Pad the lable of a field.
+	 * Pad the label of a field.
 	 * 
 	 * @param title The text.
 	 * @return Padded text.
 	 */
 	public static String padLabel(String title) {
-		StringBuffer paddedTitle = new StringBuffer();
+		StringBuilder paddedTitle = new StringBuilder();
 		paddedTitle.append(title);
 	      	for (int i = title.length(); i < Looks.LABEL_SIZE; ++i) {
 			paddedTitle.append(' ');
@@ -68,7 +75,7 @@ public class ViewHelper {
 	 *  
 	 * @param parentComponent The component who's window were finding.
 	 * 
-	 * @return The wondow.
+	 * @return The window.
 	 * @throws HeadlessException If the component has no window.
 	 */
 	public static Window getWindowForComponent(Component parentComponent)

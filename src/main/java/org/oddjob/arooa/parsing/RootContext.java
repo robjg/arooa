@@ -1,11 +1,10 @@
 package org.oddjob.arooa.parsing;
 
-import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.ConfigurationHandle;
-import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.runtime.ConfigurationNode;
+import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
 /**
  * A Context for the parsing. This context is kind of like a
@@ -37,8 +36,7 @@ public class RootContext implements ArooaContext {
 				throw new UnsupportedOperationException("Should be Impossible!");
 			}
 
-			public ConfigurationHandle parse(ArooaContext parentContext)
-					throws ArooaParseException {
+			public ConfigurationHandle parse(ArooaContext parentContext) {
 				throw new UnsupportedOperationException("Should be Impossible!");
 			}
 	};
@@ -91,5 +89,13 @@ public class RootContext implements ArooaContext {
 	
 	public ArooaHandler getArooaHandler() {
 		return rootHandler;
+	}
+
+	@Override
+	public String toString() {
+		return "RootContext{" +
+				"type=" + type +
+				", rootHandler=" + rootHandler +
+				'}';
 	}
 }

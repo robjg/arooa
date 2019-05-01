@@ -5,12 +5,13 @@ package org.oddjob.arooa;
 
 
 /**
- * An ArooaConfigurationParser is able to parse an {@link ArooaConfiguration}. 
+ * Something that is able to parse an {@link ArooaConfiguration}.
  * <p>
- * The parser will either produce a {@link ArooaText} object or throw
+ * The parser will either produce a {@link ConfigurationHandle} object or throw
  * an {@link ArooaParseException} if parsing fails.
  * <p>
  *
+ * @author rob
  */
 public interface ArooaParser {
 	
@@ -22,7 +23,7 @@ public interface ArooaParser {
 	 * 
 	 * @throws ArooaParseException If parsing fails.
 	 */
-	public ConfigurationHandle parse(ArooaConfiguration configuration)
+	ConfigurationHandle parse(ArooaConfiguration configuration)
 	throws ArooaParseException ;
 		
 }

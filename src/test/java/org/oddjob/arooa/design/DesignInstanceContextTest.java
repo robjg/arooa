@@ -62,7 +62,7 @@ public class DesignInstanceContextTest {
 				new StandardArooaSession(new NullArooaDescriptor()),
 				new OurDesignF());
 		
-		test.setExpectedDoucmentElement(new ArooaElement("car"));
+		test.setExpectedDocumentElement(new ArooaElement("car"));
 		
 		String xml = 
 			"<car>" + EOL +
@@ -85,7 +85,7 @@ public class DesignInstanceContextTest {
 				new StandardArooaSession(new NullArooaDescriptor()),
 				new OurDesignF());
 		
-		test.setExpectedDoucmentElement(new ArooaElement("car"));
+		test.setExpectedDocumentElement(new ArooaElement("car"));
 		
 		String xml = 
 			"<car>" + EOL +

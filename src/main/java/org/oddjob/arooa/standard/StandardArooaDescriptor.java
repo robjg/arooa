@@ -22,21 +22,19 @@ import org.oddjob.arooa.reflect.PropertyAccessor;
  * Provides default behaviour for Arooa configuration. This includes
  * support for the &lt;value&gt;, &lt;list&gt;, &lt;import&gt;
  * and &lt;xml&gt; elements.
- * 
- * elements.
- * 
+ *
  * @author rob
  *
  */
 public class StandardArooaDescriptor implements ArooaDescriptor {
 
 	private final Map<ArooaClass, ArooaBeanDescriptor>
-		beanDescriptors = new HashMap<ArooaClass, ArooaBeanDescriptor>();
+		beanDescriptors = new HashMap<>();
 
 	private MappingsSwitch mappings = 
 		new MappingsSwitch(new BaseElementMappings(), 
 				new LinkedClassMapping(
-						new DefaultValuesMappings(), 
+						new DefaultValuesMappings(),
 						new BaseElementMappings()));
 	
 	

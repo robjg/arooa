@@ -21,6 +21,6 @@ public interface BeanDescriptorProvider {
 	 * @return The bean descriptor, null if this provider
 	 * isn't capable of providing it.
 	 */
-	public ArooaBeanDescriptor getBeanDescriptor(
+	ArooaBeanDescriptor getBeanDescriptor(
 			ArooaClass forClass, PropertyAccessor accessor);
 }

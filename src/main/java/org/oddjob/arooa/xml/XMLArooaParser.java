@@ -16,6 +16,8 @@ import org.oddjob.arooa.registry.BeanRegistry;
 import org.oddjob.arooa.registry.ComponentPool;
 import org.oddjob.arooa.runtime.PropertyManager;
 
+import java.util.Objects;
+
 /**
  * An {@link ArooaParser} that parses an {@link ArooaConfiguration}
  * into an XML string.
@@ -32,6 +34,8 @@ public class XMLArooaParser implements ArooaParser {
 	private XmlHandler2 handler; 
 		
 	public ConfigurationHandle parse(ArooaConfiguration configuration) throws ArooaParseException {
+
+		Objects.requireNonNull(configuration);
 
 		handler = new XmlHandler2();
 		

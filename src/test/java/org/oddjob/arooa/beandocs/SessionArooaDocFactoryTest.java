@@ -28,20 +28,20 @@ public class SessionArooaDocFactoryTest extends Assert {
 		
 		WriteableArooaDoc arooaDoc = test.createBeanDocs(ArooaType.VALUE);
 		
-		Map<String, WriteableBeanDoc> results = 
-			new HashMap<String, WriteableBeanDoc>();
+		Map<String, WriteableBeanDoc> results =
+				new HashMap<>();
 		
 		for (WriteableBeanDoc beanDoc: arooaDoc.getBeanDocs()) {
 			results.put(beanDoc.getClassName(), beanDoc);
 		}
 		
-		assertEquals(10, results.size());
+		assertEquals(11, results.size());
 		
 		// Is
 		
 		BeanDoc isDoc = results.get(IsType.class.getName());
 		
-		Map<String, PropertyDoc> isProperties = new HashMap<String, PropertyDoc>();
+		Map<String, PropertyDoc> isProperties = new HashMap<>();
 		
 		for (PropertyDoc propertyDoc: isDoc.getPropertyDocs()) {
 			isProperties.put(propertyDoc.getPropertyName(), propertyDoc);
@@ -53,7 +53,7 @@ public class SessionArooaDocFactoryTest extends Assert {
 		
 		BeanDoc beanDoc = results.get(BeanType.class.getName());
 		
-		Map<String, PropertyDoc> beanProperties = new HashMap<String, PropertyDoc>();
+		Map<String, PropertyDoc> beanProperties = new HashMap<>();
 		
 		for (PropertyDoc propertyDoc: beanDoc.getPropertyDocs()) {
 			beanProperties.put(propertyDoc.getPropertyName(), propertyDoc);
@@ -65,8 +65,8 @@ public class SessionArooaDocFactoryTest extends Assert {
 		
 		WriteableBeanDoc classDoc = results.get(ClassType.class.getName());
 		
-		Map<String, WriteablePropertyDoc> classProperties = 
-			new HashMap<String, WriteablePropertyDoc>();
+		Map<String, WriteablePropertyDoc> classProperties =
+				new HashMap<>();
 		
 		for (WriteablePropertyDoc propertyDoc: classDoc.getPropertyDocs()) {
 			classProperties.put(propertyDoc.getPropertyName(), propertyDoc);
@@ -105,8 +105,8 @@ public class SessionArooaDocFactoryTest extends Assert {
 		
 		WriteableBeanDoc listDoc = results.get(ListType.class.getName());
 		
-		Map<String, WriteablePropertyDoc> listProperties = 
-			new HashMap<String, WriteablePropertyDoc>();
+		Map<String, WriteablePropertyDoc> listProperties =
+				new HashMap<>();
 		
 		for (WriteablePropertyDoc propertyDoc: listDoc.getPropertyDocs()) {
 			listProperties.put(propertyDoc.getPropertyName(), propertyDoc);
@@ -135,8 +135,8 @@ public class SessionArooaDocFactoryTest extends Assert {
 
 		WriteableBeanDoc mapDoc = results.get(MapType.class.getName());
 
-		Map<String, WriteablePropertyDoc> mapProperties = 
-				new HashMap<String, WriteablePropertyDoc>();
+		Map<String, WriteablePropertyDoc> mapProperties =
+				new HashMap<>();
 
 		for (WriteablePropertyDoc propertyDoc: mapDoc.getPropertyDocs()) {
 			mapProperties.put(propertyDoc.getPropertyName(), propertyDoc);

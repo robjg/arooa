@@ -1,29 +1,25 @@
 package org.oddjob.arooa.design.designer;
 
-import java.awt.Component;
-
-import javax.swing.JComponent;
-import javax.swing.JOptionPane;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
-
 import org.oddjob.arooa.design.DesignNotifier;
 import org.oddjob.arooa.design.actions.ActionContributor;
 import org.oddjob.arooa.design.actions.ConfigurableMenus;
 import org.oddjob.arooa.design.view.SwingFormView;
 import org.oddjob.arooa.design.view.ViewHelper;
 import org.oddjob.arooa.logging.Appender;
-import org.oddjob.arooa.logging.LoggerAdapter;
 import org.oddjob.arooa.logging.LogLevel;
-import org.oddjob.arooa.logging.LoggingEvent;
+import org.oddjob.arooa.logging.LoggerAdapter;
+
+import javax.swing.*;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
+import java.awt.*;
 
 /**
  * The Swing GUI designer dialogue for Oddjob.
  * 
  * @author Rob Gordon
  */
-
-public class ArooaDesignerFormView 
+public class ArooaDesignerFormView
 implements SwingFormView {
 
 	private final JComponent component;	
@@ -46,11 +42,11 @@ implements SwingFormView {
 	 *
 	 */
 	public ArooaDesignerFormView(ArooaDesignerForm designerForm,
-			boolean noErrorDialg) {
+			boolean noErrorDialog) {
 		
 		DesignNotifier designerNotifier = designerForm.getConfigHelper();		
 		
-		DesignerModel designerModel = new DesignerModel(designerNotifier);
+		DesignerModel designerModel = new DesignerModelImpl(designerNotifier);
 		
 		ConfigurableMenus menus = new ConfigurableMenus();	
 		
@@ -68,23 +64,19 @@ implements SwingFormView {
 		
 		cell = ViewHelper.createDetailButton(designerForm);
 
-		if (!noErrorDialg) {
-			final Appender errorListener = 
-				new Appender() {
-				
-				@Override
-				public void append(LoggingEvent event) {
-	
-					if (!event.getLevel().isLessThan(LogLevel.ERROR)) {
-					
-						JOptionPane.showMessageDialog(
-								component, 
-								event.getMessage(),
-								"Error",
-								JOptionPane.ERROR_MESSAGE);
-					}	
-				}				
-			};
+		if (!noErrorDialog) {
+			final Appender errorListener =
+					event -> {
+
+						if (!event.getLevel().isLessThan(LogLevel.ERROR)) {
+
+							JOptionPane.showMessageDialog(
+									component,
+									event.getMessage(),
+									"Error",
+									JOptionPane.ERROR_MESSAGE);
+						}
+					};
 			
 			component.addAncestorListener(new AncestorListener() {
 				public void ancestorAdded(AncestorEvent event) {

@@ -3,23 +3,10 @@
  */
 package org.oddjob.arooa.deploy;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.oddjob.arooa.ArooaBeanDescriptor;
-import org.oddjob.arooa.ArooaDescriptor;
-import org.oddjob.arooa.ArooaException;
-import org.oddjob.arooa.ArooaType;
-import org.oddjob.arooa.ClassResolver;
-import org.oddjob.arooa.ElementMappings;
-import org.oddjob.arooa.beandocs.MappingsContents;
+import org.oddjob.arooa.*;
 import org.oddjob.arooa.beandocs.MappingsBeanDoc;
+import org.oddjob.arooa.beandocs.MappingsContents;
 import org.oddjob.arooa.convert.ConversionProvider;
-import org.oddjob.arooa.convert.ConversionRegistry;
 import org.oddjob.arooa.deploy.annotations.ArooaAttribute;
 import org.oddjob.arooa.design.DesignFactory;
 import org.oddjob.arooa.life.ClassLoaderClassResolver;
@@ -32,6 +19,9 @@ import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.utils.ClassUtils;
 import org.oddjob.arooa.utils.ListSetterHelper;
+
+import java.net.URI;
+import java.util.*;
 
 /**
  * A bean style implementation of an {@link ArooaDescriptorFactory}.
@@ -78,24 +68,24 @@ implements ArooaDescriptorFactory {
      * the {@link ConversionProvider} interface.
      * @oddjob.required No.
 	 */
-	private List<String> convertlets = 
-		new ArrayList<String>();
+	private List<String> convertlets =
+			new ArrayList<>();
 	
 	/** 
      * @oddjob.property 
      * @oddjob.description A list of {@link BeanDefinition}s for components.
      * @oddjob.required No.
 	 */
-	private List<BeanDefinition> components = 
-		new ArrayList<BeanDefinition>();
+	private List<BeanDefinition> components =
+			new ArrayList<>();
 	
 	/** 
      * @oddjob.property 
      * @oddjob.description A list of {@link BeanDefinition}s for values.
      * @oddjob.required No.
 	 */
-	private List<BeanDefinition> values = 
-		new ArrayList<BeanDefinition>();
+	private List<BeanDefinition> values =
+			new ArrayList<>();
 		
 	/**
 	 * Setter for conversions.
@@ -110,21 +100,22 @@ implements ArooaDescriptorFactory {
 
 	/**
 	 * Setter for components.
-	 * 
-	 * @param components
+	 *
+	 * @param index The index of the component definition.
+	 * @param component The component definition.
 	 */
 	public void setComponents(int index, BeanDefinition component) {
-		new ListSetterHelper<BeanDefinition>(this.components).set(index, component);
+		new ListSetterHelper<>(this.components).set(index, component);
 	}
 	
 	/**
 	 * Setter for values.
 	 * 
-	 * 
-	 * @param value
+	 * @param index The index of the value definition.
+	 * @param value The value definition.
 	 */
 	public void setValues(int index, BeanDefinition value)	{
-		new ListSetterHelper<BeanDefinition>(this.values).set(index, value);
+		new ListSetterHelper<>(this.values).set(index, value);
 	}
 	
 	/**
@@ -134,10 +125,10 @@ implements ArooaDescriptorFactory {
 	static class Mappings implements ElementMappings {
 		
 		private final Map<ArooaElement, SimpleArooaClass> mappings =
-			new LinkedHashMap<ArooaElement, SimpleArooaClass>();
+				new LinkedHashMap<>();
 			
 		private final Map<ArooaElement, DesignFactory> designs =
-			new LinkedHashMap<ArooaElement, DesignFactory>();
+				new LinkedHashMap<>();
 		
 		@Override
 		public ArooaClass mappingFor(ArooaElement element, 
@@ -187,7 +178,7 @@ implements ArooaDescriptorFactory {
 					namespace,
 					beanDefinition.getElement()); 
 			
-			SimpleArooaClass classIdentifier = null;
+			SimpleArooaClass classIdentifier;
 				
 			try {
 				Class<?> theClass = ClassUtils.classFor(
@@ -231,11 +222,11 @@ implements ArooaDescriptorFactory {
 	 */
 	public ArooaDescriptor createDescriptor(final ClassLoader classLoader) {
 
-		final Map<ArooaClass, BeanDefinition> beanDefinitions = 
-			new HashMap<ArooaClass, BeanDefinition>();
+		final Map<ArooaClass, BeanDefinition> beanDefinitions =
+				new HashMap<>();
 		
-		final Map<ArooaClass, ArooaBeanDescriptor> beanDescriptors = 
-				new HashMap<ArooaClass, ArooaBeanDescriptor>();
+		final Map<ArooaClass, ArooaBeanDescriptor> beanDescriptors =
+				new HashMap<>();
 		
 		final Mappings componentMappings= new Mappings();
 			
@@ -298,17 +289,14 @@ implements ArooaDescriptorFactory {
 
 			@Override
 			public ConversionProvider getConvertletProvider() {
-				return new ConversionProvider() {
-					
-					public void registerWith(ConversionRegistry registry) {
-						for (String className: convertlets) {
-							if (className == null) {
-								continue;
-							}
-							ConversionProvider convertletProvider = (ConversionProvider)
-								ClassUtils.instantiate(className, classLoader);
-							convertletProvider.registerWith(registry);
+				return registry -> {
+					for (String className: convertlets) {
+						if (className == null) {
+							continue;
 						}
+						ConversionProvider convertletProvider = (ConversionProvider)
+							ClassUtils.instantiate(className, classLoader);
+						convertletProvider.registerWith(registry);
 					}
 				};
 			}

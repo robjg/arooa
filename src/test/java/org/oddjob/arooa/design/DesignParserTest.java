@@ -97,7 +97,7 @@ public class DesignParserTest {
 				new StandardArooaSession(new OurDescriptor()),
 				new OurDesignF());
 		
-		test.setExpectedDoucmentElement(new ArooaElement(new URI("http://cars"), "car"));
+		test.setExpectedDocumentElement(new ArooaElement(new URI("http://cars"), "car"));
 		
 		String xml = "<cars:car xmlns:cars='http://cars' " +
 				"colour='red'/>";
@@ -118,7 +118,7 @@ public class DesignParserTest {
 				new StandardArooaSession(new OurDescriptor()),
 				new OurDesignF());
 		
-		test.setExpectedDoucmentElement(new ArooaElement("car"));
+		test.setExpectedDocumentElement(new ArooaElement("car"));
 		
 		String xml = 
 			"<lorry colour=\"red\"><![CDATA[This isn't a Car!]]></lorry>";

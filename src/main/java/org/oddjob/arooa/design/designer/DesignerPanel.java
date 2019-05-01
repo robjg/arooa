@@ -38,7 +38,8 @@ public class DesignerPanel extends JPanel {
 	/**
 	 * Constructor.
 	 * 
-	 * @param start The starting point for the tree.
+	 * @param model The model.
+	 * @param menuBar The menu provider.
 	 */
 	
 	public DesignerPanel(final DesignerModel model, MenuProvider menuBar) {

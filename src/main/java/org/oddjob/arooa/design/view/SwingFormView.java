@@ -20,7 +20,7 @@ public interface SwingFormView {
 	 * 
 	 * @return The component.
 	 */
-	public Component cell();
+	Component cell();
 	
 	
 	/**
@@ -29,6 +29,6 @@ public interface SwingFormView {
 	 * 
 	 * @return The component.
 	 */
-	public Component dialog();
+	Component dialog();
 	
 }

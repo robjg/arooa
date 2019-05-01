@@ -19,5 +19,5 @@ public interface ServiceHelper {
 	 * 
 	 * @return A Service Finder. Will not be null.
 	 */
-	public ServiceFinder serviceFinderFor(ArooaContext context);
+	ServiceFinder serviceFinderFor(ArooaContext context);
 }

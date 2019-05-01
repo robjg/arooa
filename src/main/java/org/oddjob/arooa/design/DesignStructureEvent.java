@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.EventObject;
 
 /**
- * This event is fire by an implementer of the Strucutral interface when its
- * strucuture changes.
+ * This event is fire by an implementations of {@link DesignNotifier}s when their
+ * structure changes.
  * 
  * @author Rob Gordon
  */
@@ -18,7 +18,7 @@ public class DesignStructureEvent extends EventObject
 	
 	/** The position the child was added or removed (starting at 0). */
 	private final int index;
-	
+
 	/**
 	 * Constructor.
 	 * 
@@ -26,7 +26,7 @@ public class DesignStructureEvent extends EventObject
 	 * @param child The child object that has been added or removed.
 	 * @param index The position where it was added or removed (starting at 0).
 	 */
-	public DesignStructureEvent(Object source,
+	public DesignStructureEvent(DesignNotifier source,
 			DesignInstance child, int index) {
 		
 		super(source);
@@ -52,5 +52,10 @@ public class DesignStructureEvent extends EventObject
 	public int getIndex() {
 		
 		return this.index;
+	}
+
+	@Override
+	public DesignNotifier getSource() {
+		return (DesignNotifier) super.getSource();
 	}
 }

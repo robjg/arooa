@@ -10,7 +10,7 @@ import java.util.Set;
  */
 public interface PropertyLookup {
 
-	public static final PropertySource SYSTEM_PROPERTY_SOURCE = 
+	PropertySource SYSTEM_PROPERTY_SOURCE =
 			new PropertySource() {
 		public String toString() {
 			return "SYSTEM";
@@ -24,7 +24,7 @@ public interface PropertyLookup {
 	 * 
 	 * @return The value or null.
 	 */
-	public String lookup(String propertyName);	
+	String lookup(String propertyName);
 	
 	/**
 	 * Return a source for the property.
@@ -33,14 +33,14 @@ public interface PropertyLookup {
 	 * 
 	 * @return The source, or null if the property isn't known.
 	 */
-	public PropertySource sourceFor(String propertyName);
+	PropertySource sourceFor(String propertyName);
 	
 	/**
 	 * Return all property names in this property lookup.
 	 * 
 	 * @return The property names. Never null.
 	 */
-	public Set<String> propertyNames();
+	Set<String> propertyNames();
 	
 	
 	

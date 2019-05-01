@@ -1,9 +1,13 @@
 package org.oddjob.arooa.design;
 
+/**
+ * A design where the actual form of the design is unknown. This is usually because it
+ * couldn't be parsed.
+ */
 public interface Unknown {
 
-	public void setXml(String xml);
+	void setXml(String xml);
 
-	public String getXml();
+	String getXml();
 	
 }

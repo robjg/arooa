@@ -26,12 +26,13 @@ import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.xml.XMLConfiguration;
 import org.oddjob.arooa.xml.XMLInterceptor;
 
+import java.util.Objects;
+
 /**
- *
+ *	A {@link DesignInstance} that is {@link Unknown}. This captures
  */
 public class UnknownInstance 
-implements DesignInstance,
-		Unknown {
+implements DesignInstance, Unknown {
 
 	private String xml = "";
 	
@@ -40,8 +41,11 @@ implements DesignInstance,
 	private final ArooaElement element;
 
 	public UnknownInstance(ArooaElement element, ArooaContext parentContext) {
+		Objects.requireNonNull(element);
+		Objects.requireNonNull(parentContext);
+
 		this.element = element;
-		arooaContext = new UnknownContext(parentContext);
+		this.arooaContext = new UnknownContext(parentContext);
 	}
 	
 	public ArooaElement element() {
@@ -74,17 +78,22 @@ implements DesignInstance,
 			}
 		});
 	}
-	
-	
+
 	public ArooaContext getArooaContext() {
 		return arooaContext;
 	}
-	
+
+	/**
+	 * An {@link ArooaContext} that defines its own:
+	 * {@link ConfigurationNode} so that our {@link UnknownInstance} can be parsed back from the XML,
+	 * {@link RuntimeConfiguration} so that we can capture the XML from the {@link XMLInterceptor},
+	 * {@link ArooaHandler} which is that of the {@link XMLInterceptor}.
+	 */
 	class UnknownContext implements ArooaContext {
 
-		ArooaContext parentContext;
+		private final ArooaContext parentContext;
 		
-		ConfigurationNode configurationNode = 
+		private final ConfigurationNode configurationNode =
 			new AbstractConfigurationNode() {
 				public void addText(String text) {
 					firstElementContext.getConfigurationNode().addText(text);
@@ -109,9 +118,11 @@ implements DesignInstance,
 				
 		};
 
-		RuntimeConfiguration runtime = 
+		private final RuntimeConfiguration runtime =
 			new AbstractRuntimeConfiguration() {
-			
+
+			private boolean initialised;
+
 			public ArooaClass getClassIdentifier() {
 				return new SimpleArooaClass(Object.class);
 			}
@@ -138,30 +149,38 @@ implements DesignInstance,
 				}
 				
 				fireAfterInit();
+
+				initialised = true;
 			}
 			public void configure() {
 				fireBeforeConfigure();
 				fireAfterConfigure();
 			}
 			public void destroy() throws ArooaConfigurationException {
-				fireBeforeDestroy();
-				
-				RuntimeConfiguration parentRuntime = parentContext.getRuntime(); 
 
-				// check it's not the root
-				if (parentRuntime != null) {
-					
-					int index = parentContext.getConfigurationNode().indexOf(
-							arooaContext.getConfigurationNode());
-					
-					if (index < 0) {
-						throw new IllegalStateException(
-								"Configuration node not added to parent.");
+				fireBeforeDestroy();
+
+				if (initialised) {
+					firstElementContext.getRuntime().destroy();
+
+					RuntimeConfiguration parentRuntime = parentContext.getRuntime();
+
+					// check it's not the root
+					if (parentRuntime != null) {
+
+						int index = parentContext.getConfigurationNode().indexOf(
+								arooaContext.getConfigurationNode());
+
+						if (index < 0) {
+							throw new IllegalStateException(
+									"Configuration node not added to parent.");
+						}
+
+						parentContext.getRuntime().setIndexedProperty(null, index, null);
 					}
-					
-					parentContext.getRuntime().setIndexedProperty(null, index, null);
+					initialised = false;
 				}
-				
+
 				fireAfterDestroy();
 			}				
 			
@@ -185,12 +204,13 @@ implements DesignInstance,
 			}
 		};
 
-		private ArooaContext firstElementContext;
-				
+		private final ArooaContext firstElementContext;
+
 		public UnknownContext(ArooaContext parentContext) {
 			this.parentContext = parentContext;
 			
-			ArooaContext interceptContext = new XMLInterceptor("xml").intercept(this);
+			ArooaContext interceptContext = new XMLInterceptor("xml")
+					.intercept(this);
 			
 			firstElementContext = interceptContext.getArooaHandler().onStartElement(
 					element, interceptContext);

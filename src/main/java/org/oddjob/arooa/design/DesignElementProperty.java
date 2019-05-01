@@ -8,27 +8,12 @@ import org.oddjob.arooa.parsing.ArooaContext;
  * @author rob
  *
  */
-public interface DesignElementProperty extends DesignProperty {
+public interface DesignElementProperty extends DesignProperty, DesignNotifier {
 
 	/**
 	 * Get the {@link ArooaContext} associated with the element.
 	 * 
 	 * @return The ArooaContext. Never Null.
 	 */
-	public ArooaContext getArooaContext();
-	
-	/**
-	 * Add a {@link DesignListener}. The listener will be notified when
-	 * instances of either components or types are added to this property.
-	 * 
-	 * @param listener The listener. Must not be null.
-	 */
-	public void addDesignListener(DesignListener listener);
-	
-	/**
-	 * Remove a {@link DesignListener}. 
-	 * 
-	 * @param listener The listener. Must not be null.
-	 */
-	public void removeDesignListener(DesignListener listener);	
+	ArooaContext getArooaContext();
 }

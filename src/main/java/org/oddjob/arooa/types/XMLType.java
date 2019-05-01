@@ -1,13 +1,10 @@
 package org.oddjob.arooa.types;
 
-import java.io.Serializable;
-
 import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.ArooaValue;
 import org.oddjob.arooa.convert.ConversionProvider;
 import org.oddjob.arooa.convert.ConversionRegistry;
-import org.oddjob.arooa.convert.Convertlet;
 import org.oddjob.arooa.design.DesignFactory;
 import org.oddjob.arooa.design.DesignInstance;
 import org.oddjob.arooa.design.etc.UnknownInstance;
@@ -15,6 +12,8 @@ import org.oddjob.arooa.life.ArooaContextAware;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.parsing.ChildCatcher;
+
+import java.io.Serializable;
 
 /**
  * @oddjob.description A type that converts it's XML contents into
@@ -48,27 +47,20 @@ public class XMLType implements ArooaContextAware, ArooaValue, Serializable {
 		
 		public void registerWith(ConversionRegistry registry) {
 
-			registry.register(XMLType.class, String.class, 
-					new Convertlet<XMLType, String>() {
-				public String convert(XMLType from) {
-	    			return from.xml;
-				}
-			});
+			registry.register(XMLType.class, String.class,
+					from -> from.xml);
 			
-			registry.register(XMLType.class, ArooaConfiguration.class, 
-					new Convertlet<XMLType, ArooaConfiguration>() {
-				public ArooaConfiguration convert(XMLType from) {
-					
-					ArooaContext childContext = 
-						new ChildCatcher(from.arooaContext, 0).getChild();
-					
-					if (childContext == null) {
-						return null;
-					}
-					
-					return childContext.getConfigurationNode();					
-				}
-			});
+			registry.register(XMLType.class, ArooaConfiguration.class,
+					from -> {
+						ArooaContext childContext =
+							new ChildCatcher(from.arooaContext, 0).getChild();
+
+						if (childContext == null) {
+							return null;
+						}
+
+						return childContext.getConfigurationNode();
+					});
 		}
 	}
 	
@@ -98,6 +90,6 @@ public class XMLType implements ArooaContextAware, ArooaValue, Serializable {
 				return new UnknownInstance(element, parentContext);		
 			}
 		}
-	};
+	}
 
 }

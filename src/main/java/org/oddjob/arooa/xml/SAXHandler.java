@@ -60,6 +60,7 @@ package org.oddjob.arooa.xml;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
+import org.oddjob.arooa.runtime.ConfigurationNode;
 import org.oddjob.arooa.runtime.ConfigurationNodeEvent;
 import org.oddjob.arooa.runtime.ConfigurationNodeListener;
 import org.oddjob.arooa.runtime.ModificationRefusedException;
@@ -200,12 +201,16 @@ class SAXHandler extends DefaultHandler {
                         "Context is null - this should never happen.");
             }
 
-    		// order is important here:
+			ConfigurationNode currentConfigurationNode = currentContext.getConfigurationNode();
+			if (currentConfigurationNode == null) {
+				throw new IllegalArgumentException("Null Configuration Node for Context " + currentContext);
+			}
+
+			// order is important here:
     		// add node before init() so indexed properties
     		// know their index.
-    		int index = parentContext.getConfigurationNode(
-    			).insertChild( 
-    				currentContext.getConfigurationNode());
+    		int index = parentContext.getConfigurationNode()
+					.insertChild(currentConfigurationNode);
     		
     		try {
     			currentContext.getRuntime().init();
@@ -227,13 +232,23 @@ class SAXHandler extends DefaultHandler {
      * @param count The number of characters to read.
      */
     public void characters(char[] buf, int start, int count) {
-        ArooaContext context = contexts.peek();
+
+    	String text = new String(buf, start, count);
+
+    	ArooaContext context = contexts.peek();
+
         if (context == null) {
             throw new IllegalStateException(
-                    "Context is null - this should never happen.");
+                    "Context is null adding text [" + text + "] - this should never happen.");
         }
-        context.getConfigurationNode()
-               .addText(new String(buf, start, count));
+
+        ConfigurationNode configurationNode = context.getConfigurationNode();
+        if (configurationNode == null) {
+			throw new IllegalStateException(
+					"Configuration Node is null adding text [" + text + "] to context [" + context + "].");
+		}
+
+        configurationNode.addText(text);
     }
 
     /**

@@ -1,22 +1,16 @@
 package org.oddjob.arooa.deploy;
 
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ClassResolver;
 import org.oddjob.arooa.ElementMappings;
 import org.oddjob.arooa.convert.ConversionProvider;
-import org.oddjob.arooa.convert.ConversionRegistry;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+
+import java.net.URI;
+import java.net.URL;
+import java.util.*;
 
 /**
  * A collection of descriptors.
@@ -29,7 +23,7 @@ import org.oddjob.arooa.reflect.PropertyAccessor;
 public class ListDescriptor implements ArooaDescriptor {
 
 	private final List<ArooaDescriptor> descriptors =
-		new ArrayList<ArooaDescriptor>();
+			new ArrayList<>();
 
 	private final ClassMappingsList mappings = 
 		new ClassMappingsList();
@@ -37,7 +31,7 @@ public class ListDescriptor implements ArooaDescriptor {
 	public ListDescriptor() {
 	}
 	
-	public ListDescriptor(ArooaDescriptor[] descriptors) {
+	public ListDescriptor(ArooaDescriptor... descriptors) {
 		for (ArooaDescriptor descriptor: descriptors) {
 			addDescriptor(descriptor);
 		}
@@ -59,21 +53,19 @@ public class ListDescriptor implements ArooaDescriptor {
 	
 	public ConversionProvider getConvertletProvider() {
 		
-		return new ConversionProvider() {
-			public void registerWith(ConversionRegistry registry) {
-				
-				List<ArooaDescriptor> reversed =
-					new ArrayList<ArooaDescriptor>(descriptors);
-				Collections.reverse(reversed);
-				
-				for (ArooaDescriptor descriptor: reversed) {
-					ConversionProvider convertletProvider =
-						descriptor.getConvertletProvider();
-					
-					if (convertletProvider != null) {
-						convertletProvider.registerWith(
-								registry);
-					}
+		return registry -> {
+
+			List<ArooaDescriptor> reversed =
+					new ArrayList<>(descriptors);
+			Collections.reverse(reversed);
+
+			for (ArooaDescriptor descriptor: reversed) {
+				ConversionProvider convertletProvider =
+					descriptor.getConvertletProvider();
+
+				if (convertletProvider != null) {
+					convertletProvider.registerWith(
+							registry);
 				}
 			}
 		};
@@ -141,7 +133,7 @@ public class ListDescriptor implements ArooaDescriptor {
 				return null;
 			}
 			public URL[] getResources(String resource) {
-				Collection<URL> results = new LinkedHashSet<URL>();
+				Collection<URL> results = new LinkedHashSet<>();
 				for (ArooaDescriptor descriptor : descriptors) {
 					ClassResolver resolver = descriptor.getClassResolver();
 					if (resolver == null) {
@@ -149,7 +141,7 @@ public class ListDescriptor implements ArooaDescriptor {
 					}
 					URL[] urls = resolver.getResources(resource);
 					if (urls == null) {
-						new NullPointerException(
+						throw new NullPointerException(
 								"Null resource from Descriptor ClassResolver " +
 								descriptor + ".");
 					}
@@ -158,8 +150,8 @@ public class ListDescriptor implements ArooaDescriptor {
 				return results.toArray(new URL[0]);
 			}
 			public ClassLoader[] getClassLoaders() {
-				Collection<ClassLoader> results = 
-					new LinkedHashSet<ClassLoader>();
+				Collection<ClassLoader> results =
+						new LinkedHashSet<>();
 				
 				for (ArooaDescriptor descriptor : descriptors) {
 					ClassResolver resolver = descriptor.getClassResolver();
@@ -168,7 +160,7 @@ public class ListDescriptor implements ArooaDescriptor {
 					}
 					ClassLoader[] classLoaders = resolver.getClassLoaders();
 					if (classLoaders  == null) {
-						new NullPointerException(
+						throw new NullPointerException(
 								"Null ClassLoader from Descriptor ClassResolver " +
 								descriptor + ".");
 					}

@@ -12,26 +12,20 @@ public class ArooaParseException extends Exception {
 	private final Location location;
 
 	public ArooaParseException(String message, Location location) {
-		super(message);
+		super(message(message, location));
 		this.location = location;
 	}
 	
 	public ArooaParseException(String message, Location location, Throwable t) {	
-		super(message, t);
+		super(message(message, location), t);
 		this.location = location;
 	}
-	 	
-	/**
-	 * Returns the location of the error and the error message.
-	 *
-	 * @return the location of the error and the error message
-	 */
-	public String toString() {
-		return (location == null ? 
-				"(Unknown Location): " : location.toString()) + " " +
-				getMessage();
-	}
 
+	static String message(String message, Location location) {
+		return (location == null ?
+				"(Unknown Location): " : location.toString()) + " " +
+				message;
+	}
 
 	/**
 	 * Returns the file location where the error occurred.

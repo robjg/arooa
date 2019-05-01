@@ -35,7 +35,7 @@ public class ListDescriptorBean implements ArooaDescriptorFactory {
 	 * @oddjob.required. No, but pointless if missing.
 	 */
 	private final List<ArooaDescriptorFactory> descriptors =
-		new ArrayList<ArooaDescriptorFactory>();
+			new ArrayList<>();
 	
 	/**
 	 * Create an empty instance.
@@ -61,7 +61,7 @@ public class ListDescriptorBean implements ArooaDescriptorFactory {
 	 * @param descriptor
 	 */
 	public void setDescriptors(int index, ArooaDescriptorFactory descriptor) {
-		new ListSetterHelper<ArooaDescriptorFactory>(descriptors).set(
+		new ListSetterHelper<>(descriptors).set(
 				index, descriptor);
 	}
 	

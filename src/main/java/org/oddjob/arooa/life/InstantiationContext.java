@@ -31,12 +31,12 @@ public class InstantiationContext {
 	/**
 	 * Construct from context.
 	 * 
-	 * @param context
+	 * @param parentContext
 	 */
-	public InstantiationContext(ArooaContext context) {
-		this.arooaType = context.getArooaType();
+	public InstantiationContext(ArooaContext parentContext) {
+		this.arooaType = parentContext.getArooaType();
 		
-		RuntimeConfiguration runtime = context.getRuntime();
+		RuntimeConfiguration runtime = parentContext.getRuntime();
 		if (runtime == null) {
 			this.arooaClass = null;
 		}
@@ -44,9 +44,9 @@ public class InstantiationContext {
 			this.arooaClass = runtime.getClassIdentifier();
 		}
 		
-		this.classResolver = context.getSession(
+		this.classResolver = parentContext.getSession(
 				).getArooaDescriptor().getClassResolver();
-		this.converter = context.getSession().getTools(
+		this.converter = parentContext.getSession().getTools(
 				).getArooaConverter();
 		
 		validate();

@@ -11,12 +11,12 @@ import org.oddjob.arooa.ArooaDescriptor;
 public interface ArooaDescriptorFactory {
 
 	/**
-	 * Create an ArooaDesciptor.
+	 * Create an ArooaDescriptor.
 	 * 
 	 * @param classLoader The classLoader to use.
 	 * 
 	 * @return An ArooaDescriptor. May be null.
 	 */
-	public ArooaDescriptor createDescriptor(ClassLoader classLoader);
+	ArooaDescriptor createDescriptor(ClassLoader classLoader);
 	
 }

@@ -13,30 +13,30 @@ public interface DesignComponent extends DesignInstance {
 	/**
 	 * Add a listener that will notified when child 
 	 * {@link DesignComponent}s are added or removed from this 
-	 * DesignComponent. This is used by the {@link DesignTreeModel}.
+	 * DesignComponent. This is used by the {@link org.oddjob.arooa.design.designer.DesignTreeModel}.
 	 * 
 	 * @param listener The listener.
 	 */
-	public void addStructuralListener(DesignListener listener);
+	void addStructuralListener(DesignListener listener);
 
 	/**
 	 * Remove a listener.
 	 * 
 	 * @param listener The listener.
 	 */
-	public void removeStructuralListener(DesignListener listener);
+	void removeStructuralListener(DesignListener listener);
 	
 	/**
 	 * Get the id of the instance, if there is one.
 	 * 
 	 * @return The id. May be null.
 	 */
-	public String getId();
+	String getId();
 	
 	/**
 	 * Set the id of the instance.
 	 * 
 	 * @param id The id. May be null.
 	 */
-	public void setId(String id);
+	void setId(String id);
 }

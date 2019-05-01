@@ -38,7 +38,7 @@ public class DesignParser implements ArooaParser, DesignNotifier {
 	
 	/** Listeners to notify when the root design instance changes. */
 	private final List<DesignListener> listeners =
-		new ArrayList<DesignListener>();
+			new ArrayList<>();
 	
 	/** The session to use during the parse. */
 	private final ArooaSession session;
@@ -53,7 +53,7 @@ public class DesignParser implements ArooaParser, DesignNotifier {
 	private ArooaType type = ArooaType.VALUE;
 
 	/** The expected document element. */
-	private ArooaElement expectedDocumentElement; 
+	private ArooaElement expectedDocumentElement;
 	
 	/**
 	 * Default Constructor. Creates a DesignParser with a 
@@ -179,7 +179,7 @@ public class DesignParser implements ArooaParser, DesignNotifier {
 					ArooaContext parentContext)
 			throws ArooaPropertyException {
 				
-				if (expectedDocumentElement != null && 
+				if (expectedDocumentElement != null &&
 						!expectedDocumentElement.equals(element)) {
 					throw new ArooaException("Wrong document element " + 
 							element + ", expected " + expectedDocumentElement);
@@ -232,7 +232,7 @@ public class DesignParser implements ArooaParser, DesignNotifier {
 	/**
 	 * Set if this is the design of a Value or a Component.
 	 * 
-	 * @param component True if this is a Component Design.
+	 * @param type The type. Component or Value Design.
 	 */
 	public void setArooaType(ArooaType type) {
 		this.type = type;
@@ -254,7 +254,7 @@ public class DesignParser implements ArooaParser, DesignNotifier {
 	 * @param element The expected document element. Can be
 	 * null if element can be anything.
 	 */
-	public void setExpectedDoucmentElement(ArooaElement element) {
+	public void setExpectedDocumentElement(ArooaElement element) {
 		this.expectedDocumentElement = element;
 	}
 	

@@ -127,33 +127,45 @@ abstract public class AbstractConfigurationNode implements ConfigurationNode {
         /**
          * The parent context of this parse.
          */
-        private final ArooaContext parseParent;
+        private final ArooaContext parseParentContext;
 
         private final int index;
 
+        /**
+         * Constructor.
+         *
+         * @param existingContext The context of our {@code ConfigurationNode} that is being parsed.
+         *                        This can be viewed as the input context.
+         * @param parseParentContext The context in which the node is being parsed. This can be viewed
+         *                           as the output context;
+         * @param index The index of the newly created node with respect to its parent.
+         */
         public ChainingConfigurationHandle(
                 ArooaContext existingContext,
-                ArooaContext parentContext,
+                ArooaContext parseParentContext,
                 int index) {
-            this.existingContext = existingContext;
-            this.parseParent = parentContext;
 
             if (index < 0) {
                 throw new IllegalStateException("Illegal index " + index);
             }
 
+            this.existingContext = existingContext;
+            this.parseParentContext = parseParentContext;
             this.index = index;
         }
 
         public void save() throws ArooaParseException {
 
-            ChildCatcher childCatcher = new ChildCatcher(parseParent, index);
+            ConfigurationNode replacementConfiguration =
+                    new ChildCatcher(parseParentContext, index)
+                            .getChild()
+                            .getConfigurationNode();
 
             CutAndPasteSupport.ReplaceResult replaceResult =
                     CutAndPasteSupport.replace(
                             existingContext.getParent(),
                             existingContext,
-                            childCatcher.getChild().getConfigurationNode());
+                            replacementConfiguration);
 
             existingContext = replaceResult.getHandle().getDocumentContext();
 
@@ -163,7 +175,7 @@ abstract public class AbstractConfigurationNode implements ConfigurationNode {
         }
 
         public ArooaContext getDocumentContext() {
-            ChildCatcher childCatcher = new ChildCatcher(parseParent, index);
+            ChildCatcher childCatcher = new ChildCatcher(parseParentContext, index);
 
             return childCatcher.getChild();
         }

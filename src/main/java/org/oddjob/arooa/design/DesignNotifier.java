@@ -16,13 +16,13 @@ public interface DesignNotifier {
 	 * @param listener The listener.
 	 * 
 	 */
-	public void addDesignListener(DesignListener listener);
+	void addDesignListener(DesignListener listener);
 	
 	/**
 	 * Remove a listener.
 	 * 
 	 * @param listener The listener.
 	 */
-	public void removeDesignListener(DesignListener listener);
+	void removeDesignListener(DesignListener listener);
 
 }

@@ -17,6 +17,6 @@ public interface ParsableDesignInstance extends DesignInstance {
 	 * 
 	 * @return Child properties. Must not be null.
 	 */
-	public DesignProperty[] children();
+	DesignProperty[] children();
 
 }

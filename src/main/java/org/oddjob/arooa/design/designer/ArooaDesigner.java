@@ -240,7 +240,7 @@ implements ArooaSessionAware, Runnable {
 		DesignParser parser = new DesignParser(session, rootFactory);
 		
 		parser.setArooaType(arooaType);
-		parser.setExpectedDoucmentElement(documentElement);
+		parser.setExpectedDocumentElement(documentElement);
 						
 		try {
 			configHandle = parser.parse(config);
@@ -423,7 +423,7 @@ implements ArooaSessionAware, Runnable {
 			}
 
 			parser.setArooaType(arooaType);
-			parser.setExpectedDoucmentElement(documentElement);
+			parser.setExpectedDocumentElement(documentElement);
 			
 			try {
 				final ConfigurationHandle newHandle = parser.parse(

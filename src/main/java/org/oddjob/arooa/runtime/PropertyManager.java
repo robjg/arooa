@@ -13,15 +13,15 @@ public interface PropertyManager extends PropertyLookup {
 	 * 
 	 * @param propertyLookup
 	 */
-	public void addPropertyLookup(PropertyLookup propertyLookup);
+	void addPropertyLookup(PropertyLookup propertyLookup);
 	
 	
 	/**
 	 * Add a property overrides. Overrides are used first.
 	 * 
 	 * @param propertyLookup
-	 */	
-	public void addPropertyOverride(PropertyLookup propertyLookup);
+	 */
+	void addPropertyOverride(PropertyLookup propertyLookup);
 	
 	
 	/**
@@ -29,5 +29,5 @@ public interface PropertyManager extends PropertyLookup {
 	 * 
 	 * @param propertyLookup
 	 */
-	public void removePropertyLookup(PropertyLookup propertyLookup);
+	void removePropertyLookup(PropertyLookup propertyLookup);
 }

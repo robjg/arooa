@@ -1,16 +1,16 @@
 package org.oddjob.arooa.standard;
 
+import org.junit.Assert;
 import org.junit.Test;
+import org.oddjob.arooa.ArooaParseException;
+import org.oddjob.arooa.deploy.annotations.ArooaAttribute;
+import org.oddjob.arooa.xml.XMLConfiguration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Assert;
-
-import org.oddjob.arooa.ArooaParseException;
-import org.oddjob.arooa.deploy.annotations.ArooaAttribute;
-import org.oddjob.arooa.xml.XMLConfiguration;
+import static org.hamcrest.CoreMatchers.is;
 
 public class IndexedPropertyTest extends Assert {
 
@@ -70,15 +70,15 @@ public class IndexedPropertyTest extends Assert {
             parser.parse(new XMLConfiguration("TEST", xml));
             fail("Should fail.");
         } catch (ArooaParseException e) {
-            assertEquals("Property things is not configured as an element.",
-                         e.getMessage());
+            assertThat(e.getMessage().endsWith("Property things is not configured as an element."),
+                    is( true ));
         }
 
     }
 
     public static class SimpleAndIndexed2 {
 
-        List<String> things = new ArrayList<String>();
+        List<String> things = new ArrayList<>();
 
         public void setThings(String[] things) {
             throw new RuntimeException("This should be ignored.");

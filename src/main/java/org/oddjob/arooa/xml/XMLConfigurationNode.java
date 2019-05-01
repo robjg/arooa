@@ -9,20 +9,26 @@ import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.parsing.TextHandler;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 
+import java.util.Objects;
+import java.util.function.Supplier;
+
 public class XMLConfigurationNode extends AbstractConfigurationNode {
 
+	/** The element */
 	private final ArooaElement element;
 
     /** Text appearing within the element. */
     private final TextHandler textHandler = new TextHandler();
-    
+
+    /** The context that owns this configuration node. It can't be set in the constructor
+	 * because there is a chicken and egg situation between this and the context. It
+	 * is set only once after the context has been created with this */
     private ArooaContext context;
         
     /**
      * Constructor
      * 
      * @param element
-     * @param prefixMappings
      */
 	public XMLConfigurationNode(
 			ArooaElement element) {
@@ -43,13 +49,13 @@ public class XMLConfigurationNode extends AbstractConfigurationNode {
     	return textHandler.getText();
     }
     	
-	public ConfigurationHandle parse(ArooaContext parentContext) throws ArooaParseException {
+	public ConfigurationHandle parse(ArooaContext parseParentContext) throws ArooaParseException {
 		
-		parentContext.getPrefixMappings().add(
+		parseParentContext.getPrefixMappings().add(
 				context.getPrefixMappings());
 		
-		final ArooaContext newContext = parentContext.getArooaHandler(
-				).onStartElement(element, parentContext);
+		final ArooaContext newContext = parseParentContext.getArooaHandler(
+				).onStartElement(element, parseParentContext);
 
 		if (textHandler.getText() != null) {
 			newContext.getConfigurationNode().addText(textHandler.getText());
@@ -59,19 +65,19 @@ public class XMLConfigurationNode extends AbstractConfigurationNode {
 			child.parse(newContext);			
 		}
 		
-		int index = parentContext.getConfigurationNode().insertChild(
+		int index = parseParentContext.getConfigurationNode().insertChild(
 				newContext.getConfigurationNode());
 		
 		try {
 			newContext.getRuntime().init();
 		}
 		catch (RuntimeException e) {
-			parentContext.getConfigurationNode().removeChild(index);
+			parseParentContext.getConfigurationNode().removeChild(index);
 			throw e;
 		}
 		
 		return new ChainingConfigurationHandle(
-				getContext(), parentContext, index);
+				getContext(), parseParentContext, index);
 	}
 	
 	public ArooaContext getContext() {
@@ -79,6 +85,10 @@ public class XMLConfigurationNode extends AbstractConfigurationNode {
 	}
 
 	public void setContext(ArooaContext context) {
+		Objects.requireNonNull(context);
+		if (this.context != null) {
+			throw new IllegalStateException("Can't change context once set.");
+		}
 		this.context = context;
 	}
 	

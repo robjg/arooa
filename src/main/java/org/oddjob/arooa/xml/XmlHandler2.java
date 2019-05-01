@@ -2,6 +2,7 @@ package org.oddjob.arooa.xml;
 
 import java.io.StringWriter;
 import java.net.URI;
+import java.util.Objects;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,192 +36,210 @@ import org.w3c.dom.Text;
 /**
  * Converts {@link ArooaHandler#onStartElement(ArooaElement, ArooaContext)}
  * events into an internal DOM.
- * 
- * @author rob
  *
+ * @author rob
  */
 public class XmlHandler2 implements ArooaHandler {
 
-	private final Document document;
+    private final Document document;
 
-	private final Node current;
-	
-	class XMLRuntime extends AbstractRuntimeConfiguration {
-		ArooaContext context;
-		Element element;
+    private final Node current;
 
-		XMLRuntime(Element element) {
-			this.element = element;
-		}
+    class XMLRuntime extends AbstractRuntimeConfiguration {
+        ArooaContext context;
+        final Element element;
 
-		public ArooaClass getClassIdentifier() {
-			return null;
-		}
+        XMLRuntime(Element element) {
+            this.element = element;
+        }
 
-		public void configure() 
-		throws ArooaConfigurationException {
-			fireBeforeConfigure();
-			fireAfterConfigure();
-		}
+        public ArooaClass getClassIdentifier() {
+            return null;
+        }
 
-		void addText(String text) {
-			Text textNode = document.createCDATASection(text);
-			element.appendChild(textNode);
-		}
+        public void configure()
+                throws ArooaConfigurationException {
+            fireBeforeConfigure();
+            fireAfterConfigure();
+        }
 
-		public void init() 
-		throws ArooaConfigurationException {
+        void addText(String text) {
+            Text textNode = document.createCDATASection(text);
+            element.appendChild(textNode);
+        }
 
-			fireBeforeInit();
-			
-			String text = ((XMLConfigurationNode) context.getConfigurationNode()).getText();
-			if (text != null) {
-				addText(text);
-			}
-			current.appendChild(element);
-			
-			fireAfterInit();
-		}
+        public void init()
+                throws ArooaConfigurationException {
 
-		public void destroy() 
-		throws ArooaConfigurationException {
-			fireBeforeDestroy();
-			current.removeChild(element);
-			fireAfterDestroy();
-		}
+            fireBeforeInit();
 
-		public void setIndexedProperty(String name, int index, Object value) {
-			throw new ArooaException(
-					"It's not possible to set a propoerty on an XML handler.");
-		}
+            String text = ((XMLConfigurationNode) context.getConfigurationNode()).getText();
+            if (text != null) {
+                addText(text);
+            }
 
-		public void setMappedProperty(String name, String key, Object value) {
-			throw new ArooaException(
-					"It's not possible to set a propoerty on an XML handler.");
-		}
+            current.appendChild(element);
 
-		public void setProperty(String name, Object value)
-				throws ArooaException {
-			throw new ArooaException(
-					"It's not possible to set a propoerty on an XML handler.");
-		}
-	}
+            fireAfterInit();
+        }
 
-	class XMLContext implements ArooaContext {
+        public void destroy()
+                throws ArooaConfigurationException {
+            fireBeforeDestroy();
+            current.removeChild(element);
+            fireAfterDestroy();
+        }
 
-		final XMLRuntime runtime;
-		final ConfigurationNode runtimeNode;
-		final ArooaContext parentContext;
+        public void setIndexedProperty(String name, int index, Object value) {
+            throw new ArooaException(
+                    "It's not possible to set a property on an XML handler.");
+        }
 
-		final Element current;
-		
-		XMLContext(XMLRuntime runtime, 
-				ConfigurationNode runtimeNode, 
-				ArooaContext parentContext,
-				Element current) {
-			this.runtime = runtime;
-			this.runtimeNode = runtimeNode;
-			this.parentContext = parentContext;
-			this.current = current;
-		}
-		
-		public ArooaType getArooaType() {
-			return null;
-		}
+        public void setMappedProperty(String name, String key, Object value) {
+            throw new ArooaException(
+                    "It's not possible to set a property on an XML handler.");
+        }
 
-		public ArooaContext getParent() {
-			return parentContext;
-		}
-		
-		public ArooaSession getSession() {
-			return parentContext.getSession();
-		}
-		
-		public ConfigurationNode getConfigurationNode() {
-			return runtimeNode;
-		}
-		
-		public RuntimeConfiguration getRuntime() {
-			return runtime;
-		}
-		
-		public PrefixMappings getPrefixMappings() {
-			return parentContext.getPrefixMappings();
-		}
-		
-		public ArooaHandler getArooaHandler() {
-			return new XmlHandler2(document, current);
-		}
-	}
-	
-	public XmlHandler2() {
-		
-		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-		
-		builderFactory.setNamespaceAware(true);
+        public void setProperty(String name, Object value)
+                throws ArooaException {
+            throw new ArooaException(
+                    "It's not possible to set a property on an XML handler.");
+        }
+    }
 
-		DocumentBuilder builder;
-		try {
-			builder = builderFactory.newDocumentBuilder();
-			this.document = builder.newDocument();
-			this.current = document;
-		} catch (ParserConfigurationException e) {
-			throw new ArooaException(e);
-		}
-	}
+    class XMLContext implements ArooaContext {
 
-	XmlHandler2(Document out, Element current) {
-		this.document = out;
-		this.current = current;
-	}
+        final XMLRuntime runtime;
+        final ConfigurationNode runtimeNode;
+        final ArooaContext parentContext;
 
-	public ArooaContext onStartElement(ArooaElement element,
-			ArooaContext parentContext) {
+        final Element current;
 
-		URI uri = element.getUri();
-		String uriString = null;
-		if (uri != null) {
-			uriString = uri.toString();
-		}
-		
-		PrefixMappings pms = parentContext.getPrefixMappings();
+        XMLContext(XMLRuntime runtime,
+                   ConfigurationNode runtimeNode,
+                   ArooaContext parentContext,
+                   Element current) {
 
-		QTag tag = pms.getQName(element);
-		
-		Element elementNode = document.createElementNS(
-				uriString, tag.toString());
-		
-		ArooaAttributes attrs = element.getAttributes();
-		String[] attributeNames = attrs.getAttributeNames();
-		for (int i = 0; i < attributeNames.length; ++i) {
-			elementNode.setAttribute(
-					attributeNames[i], attrs.get(attributeNames[i]));
-		}
+            Objects.requireNonNull(runtime);
+            Objects.requireNonNull(runtimeNode);
+            Objects.requireNonNull(parentContext);
+            Objects.requireNonNull(current);
 
-		XMLConfigurationNode node = new XMLConfigurationNode(
-				element);
-		
-		XMLRuntime runtime = new XMLRuntime(elementNode);
-		
-		XMLContext ourContext = new XMLContext(
-				runtime, 
-				node, 
-				parentContext,
-				elementNode);
-		
-		runtime.context = ourContext;
-		node.setContext(ourContext);
-		
-		return ourContext;
-	}
+            this.runtime = runtime;
+            this.runtimeNode = runtimeNode;
+            this.parentContext = parentContext;
+            this.current = current;
+        }
 
-	public Node getNode() {
-		return current;
-	}
-	
-	public String getXml() {
-		
-		TransformerFactory tfactory = TransformerFactory.newInstance();
+        @Override
+        public ArooaType getArooaType() {
+            return null;
+        }
+
+        @Override
+        public ArooaContext getParent() {
+            return parentContext;
+        }
+
+        @Override
+        public ArooaSession getSession() {
+            return parentContext.getSession();
+        }
+
+        @Override
+        public ConfigurationNode getConfigurationNode() {
+            return runtimeNode;
+        }
+
+        @Override
+        public RuntimeConfiguration getRuntime() {
+            return runtime;
+        }
+
+        @Override
+        public PrefixMappings getPrefixMappings() {
+            return parentContext.getPrefixMappings();
+        }
+
+        @Override
+        public ArooaHandler getArooaHandler() {
+            return new XmlHandler2(document, current);
+        }
+
+        @Override
+        public String toString() {
+            return getClass().getSimpleName() + "{element=" + current.getTagName() + "}";
+        }
+    }
+
+    public XmlHandler2() {
+
+        DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+
+        builderFactory.setNamespaceAware(true);
+
+        DocumentBuilder builder;
+        try {
+            builder = builderFactory.newDocumentBuilder();
+            this.document = builder.newDocument();
+            this.current = document;
+        } catch (ParserConfigurationException e) {
+            throw new ArooaException(e);
+        }
+    }
+
+    XmlHandler2(Document out, Element current) {
+        this.document = out;
+        this.current = current;
+    }
+
+    public ArooaContext onStartElement(ArooaElement element,
+                                       ArooaContext parentContext) {
+
+        URI uri = element.getUri();
+        String uriString = null;
+        if (uri != null) {
+            uriString = uri.toString();
+        }
+
+        PrefixMappings pms = parentContext.getPrefixMappings();
+
+        QTag tag = pms.getQName(element);
+
+        Element elementNode = document.createElementNS(
+                uriString, tag.toString());
+
+        ArooaAttributes attrs = element.getAttributes();
+        String[] attributeNames = attrs.getAttributeNames();
+        for (String attributeName : attributeNames) {
+            elementNode.setAttribute(
+                    attributeName, attrs.get(attributeName));
+        }
+
+        XMLConfigurationNode node = new XMLConfigurationNode(
+                element);
+
+        XMLRuntime runtime = new XMLRuntime(elementNode);
+
+        XMLContext ourContext = new XMLContext(
+                runtime,
+                node,
+                parentContext,
+                elementNode);
+
+        runtime.context = ourContext;
+        node.setContext(ourContext);
+
+        return ourContext;
+    }
+
+    public Node getNode() {
+        return current;
+    }
+
+    public String getXml() {
+
+        TransformerFactory tfactory = TransformerFactory.newInstance();
         Transformer serializer;
         try {
             serializer = tfactory.newTransformer();
@@ -228,14 +247,14 @@ public class XmlHandler2 implements ArooaHandler {
             serializer.setOutputProperty(OutputKeys.INDENT, "yes");
             serializer.setOutputProperty(OutputKeys.STANDALONE, "yes");
             serializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-            
+
             StringWriter writer = new StringWriter();
             serializer.transform(new DOMSource(current), new StreamResult(writer));
-            
+
             return writer.toString();
-            
+
         } catch (TransformerException e) {
             throw new RuntimeException(e);
-        }	
-	}
+        }
+    }
 }

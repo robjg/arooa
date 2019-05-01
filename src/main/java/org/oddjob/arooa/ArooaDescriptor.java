@@ -23,7 +23,7 @@ public interface ArooaDescriptor extends BeanDescriptorProvider {
 	 * 
 	 * @return A ConvertletProvider. May be null.
 	 */
-	public ConversionProvider getConvertletProvider();
+	ConversionProvider getConvertletProvider();
 	
 
 	/**
@@ -31,7 +31,7 @@ public interface ArooaDescriptor extends BeanDescriptorProvider {
 	 * 
 	 * @return ElementMappings. Must not be null.
 	 */
-	public ElementMappings getElementMappings();
+	ElementMappings getElementMappings();
 	
 	/**
 	 * Provide the default prefix for a URI. This is required when
@@ -41,7 +41,7 @@ public interface ArooaDescriptor extends BeanDescriptorProvider {
 	 * @param namespace The namespace.
 	 * @return The prefix.
 	 */
-	public String getPrefixFor(URI namespace);
+	String getPrefixFor(URI namespace);
 	
 	/**
 	 * Provide a {@link ClassResolver}. The resolver will typically
@@ -50,6 +50,6 @@ public interface ArooaDescriptor extends BeanDescriptorProvider {
 	 * 
 	 * @return A ClassResolver. Must not be null.
 	 */
-	public ClassResolver getClassResolver();
+	ClassResolver getClassResolver();
 	
 }

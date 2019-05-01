@@ -1,11 +1,6 @@
 package org.oddjob.arooa.design.designer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -113,10 +108,10 @@ public class DesignerModelTest {
 		
 		ConfigurationHandle handle = parser.parse(config);
 		
-		DesignerModel model = new DesignerModel(parser);
+		DesignerModel model = new DesignerModelImpl(parser);
 
-		DesignTreeNode rootTreeNode = 
-			(DesignTreeNode) model.getTreeModel().getRoot();
+		DesignTreeNode rootTreeNode =
+				model.getTreeModel().getRoot();
 		
 		model.setCurrentSelection(rootTreeNode);
 
@@ -141,13 +136,8 @@ public class DesignerModelTest {
 		
 		unknown.setXml("<lunch/>");
 		
-		final AtomicReference<String > savedXML = new AtomicReference<String>();
-		config.setSaveHandler(new XMLConfiguration.SaveHandler() {
-			@Override
-			public void acceptXML(String xml) {
-				savedXML.set(xml);
-			}
-		});
+		final AtomicReference<String > savedXML = new AtomicReference<>();
+		config.setSaveHandler(savedXML::set);
 		
 		handle.save();
 		
@@ -266,7 +256,7 @@ public class DesignerModelTest {
 		SnackDesign root = new SnackDesign(
 				new ArooaElement("snack"), context);
 				
-		DesignerModel model = new DesignerModel(
+		DesignerModel model = new DesignerModelImpl(
 				new RootConfigHelper(root));
 
 		TreeModel treeModel = model.getTreeModel(); 
@@ -304,7 +294,7 @@ public class DesignerModelTest {
 		support.insertTag(0, new QTag("snack"));
 		support.insertTag(0, new QTag("snack"));
 
-		DesignerModel model = new DesignerModel(
+		DesignerModel model = new DesignerModelImpl(
 				new RootConfigHelper(root));
 
 		TreeModel treeModel = model.getTreeModel(); 
@@ -351,7 +341,7 @@ public class DesignerModelTest {
 		SnackDesign root = new SnackDesign(
 				new ArooaElement("snack"), context);
 				
-		DesignerModel model = new DesignerModel(
+		DesignerModel model = new DesignerModelImpl(
 				new RootConfigHelper(root));
 
 		TreeModel treeModel = model.getTreeModel(); 
@@ -387,7 +377,7 @@ public class DesignerModelTest {
 		support.insertTag(0, new QTag("snack"));
 		support.insertTag(0, new QTag("snack"));
 				
-		DesignerModel model = new DesignerModel(
+		DesignerModel model = new DesignerModelImpl(
 				new RootConfigHelper(root));
 
 		TreeModel treeModel = model.getTreeModel();
@@ -402,9 +392,9 @@ public class DesignerModelTest {
 				treeModel.getRoot(), 1);
 
 		assertEquals(2, treeModel.getChildCount(treeModel.getRoot()));
-		assertTrue(newChild != child);
-		
-		assertTrue(model.getCurrentSelection() == newChild);
+	   assertNotSame(newChild, child);
+
+	   assertSame(model.getCurrentSelection(), newChild);
 	}
 
 	// need to do this because the anonymous class ConfiguHelper
@@ -421,7 +411,7 @@ public class DesignerModelTest {
 		
 		parser.parse(new XMLConfiguration("TEST", "<snack/>"));
 		
-		model = new DesignerModel(parser);
+		model = new DesignerModelImpl(parser);
 
 		TreeModel treeModel = model.getTreeModel();
 
@@ -431,17 +421,17 @@ public class DesignerModelTest {
 				originalRoot);
 		
 		model.replaceSelected(new XMLConfiguration("TEST", "<snack/>"));
-		
-		assertTrue(model.getCurrentSelection() == treeModel.getRoot());
+
+	   assertSame(model.getCurrentSelection(), treeModel.getRoot());
 		
 		// The root should change.
-		assertFalse(originalRoot == treeModel.getRoot());
+	   assertNotSame(originalRoot, treeModel.getRoot());
 
 		// Sanity check by putting The original back 
 		
 		model.replaceSelected(originalRoot.getDesignComponent().getArooaContext().getConfigurationNode());
-		
-		assertTrue(model.getCurrentSelection() == treeModel.getRoot());
+
+	   assertSame(model.getCurrentSelection(), treeModel.getRoot());
 	}
 	
    @Test
@@ -457,7 +447,7 @@ public class DesignerModelTest {
 		support.insertTag(0, new QTag("snack"));
 		support.insertTag(0, new QTag("snack"));
 				
-		DesignerModel model = new DesignerModel(
+		DesignerModel model = new DesignerModelImpl(
 				new RootConfigHelper(root));
 
 		TreeModel treeModel = model.getTreeModel();
@@ -473,7 +463,7 @@ public class DesignerModelTest {
 
 		DesignTreeNode newChild = (DesignTreeNode) treeModel.getChild(treeModel.getRoot(), 1);
 
-		assertTrue(model.getCurrentSelection() == newChild);
+	   assertSame(model.getCurrentSelection(), newChild);
 		
 		Unknown unknown = (Unknown) newChild.getDesignComponent(); 
 		

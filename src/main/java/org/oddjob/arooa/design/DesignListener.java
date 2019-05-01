@@ -13,12 +13,12 @@ public interface DesignListener {
 	 * 
 	 * @param event The structural event.
 	 */
-	public void childAdded(DesignStructureEvent event);
+	void childAdded(DesignStructureEvent event);
 	
 	/**
 	 * Called when a child is removed from a Structural object.
 	 * 
 	 * @param event The structural event.
 	 */
-	public void childRemoved(DesignStructureEvent event);
+	void childRemoved(DesignStructureEvent event);
 }

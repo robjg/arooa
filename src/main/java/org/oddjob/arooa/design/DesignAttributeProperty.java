@@ -13,13 +13,13 @@ public interface DesignAttributeProperty extends DesignProperty {
 	 *  
 	 * @return The attribute text. Can be null.
 	 */
-	public String attribute();
+	String attribute();
 	
 	/**
 	 * Set the attribute text.
 	 * 
 	 * @param attribute The attribute. May be null.
 	 */
-	public void attribute(String attribute);
+	void attribute(String attribute);
 
 }

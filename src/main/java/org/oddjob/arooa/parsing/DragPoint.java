@@ -21,21 +21,21 @@ public interface DragPoint extends ArooaConfiguration {
 	 * @param how Should an existing transaction be in progress or not.
 	 * @return A transaction. Never null.
 	 */
-	public DragTransaction beginChange(ChangeHow how);
+	DragTransaction beginChange(ChangeHow how);
 
 	/**
 	 * True if this DragPoint supports the cut operation.
 	 * 
 	 * @return true/false.
 	 */
-	public boolean supportsCut();
+	boolean supportsCut();
 	
 	/**
 	 * True if this DragPoint supports the paste operation.
 	 * 
 	 * @return true/false.
 	 */
-	public boolean supportsPaste();
+	boolean supportsPaste();
 	
 	/**
 	 * Provide a copy of the configuration at from this DragPoint
@@ -43,7 +43,7 @@ public interface DragPoint extends ArooaConfiguration {
 	 * 
 	 * @return Text XML.
 	 */
-	public String copy();
+	String copy();
 	
 	/**
 	 * Remove this DragPoint from it's underlying configuration and
@@ -52,7 +52,7 @@ public interface DragPoint extends ArooaConfiguration {
 	 * <p>
 	 * This operation must be done within the context of a transaction.
 	 */
-	public void cut();
+	void cut();
 		
 	/**
 	 * Parse an XML Text configuration and add the resultant component
@@ -66,7 +66,7 @@ public interface DragPoint extends ArooaConfiguration {
 	 * @throws ArooaParseException If the configuration could not be
 	 * parsed.
 	 */
-	public void paste(int index, String config) 
+	void paste(int index, String config)
 	throws ArooaParseException;
 	
 }
