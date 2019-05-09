@@ -39,7 +39,14 @@ public interface ArooaTools {
 	 * @return An Evaluator. Will not be null.
 	 */
 	Evaluator getEvaluator();
-	
+
+	/**
+	 * Get an {@link Evaluator} to use for evaluating a script.
+	 *
+	 * @return An Evaluator. Will not be null.
+	 */
+	Evaluator getScriptEvaluator();
+
 	/**
 	 * Get a {@link ServiceHelper}.
 	 * 

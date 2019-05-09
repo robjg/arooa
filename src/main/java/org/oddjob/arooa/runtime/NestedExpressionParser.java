@@ -26,7 +26,7 @@ public class NestedExpressionParser implements ExpressionParser {
 	 */
 	@Override
 	public ParsedExpression parse(String expression) {
-		return recusiveParse(expression, 
+		return recursiveParse(expression,
 				new AtomicInteger(0), false);
 	}
 			
@@ -39,8 +39,9 @@ public class NestedExpressionParser implements ExpressionParser {
 	 * 
 	 * @return A ParsedExpression.
 	 */
-	private ParsedExpression recusiveParse(String value, 
-			AtomicInteger position, boolean runtime) {
+	private ParsedExpression recursiveParse(String value,
+											AtomicInteger position,
+											boolean runtime) {
 	
 		CompositeParsedExpression expression = 
 				new CompositeParsedExpression();
@@ -65,7 +66,7 @@ public class NestedExpressionParser implements ExpressionParser {
 				continue;
 			}				
 				
-			if (current == '$') {
+			if (current == '$' || current == '#') {
 				
 				char following = value.charAt(position.get() + 1);
 				
@@ -79,16 +80,23 @@ public class NestedExpressionParser implements ExpressionParser {
 
 					position.addAndGet(2);
 					
-					ParsedExpression nested = recusiveParse(
+					ParsedExpression nested = recursiveParse(
 							value, position, true);
-					expression.addRuntime(
-							new RuntimeExpression(nested));
-					
+
+					if ( current == '#' ) {
+						expression.addRuntime(
+								new ScriptExpression(nested));
+					}
+					else {
+						expression.addRuntime(
+								new RuntimeExpression(nested));
+					}
 					start = position.get();
 					
 					continue;
 				}
-				else if (following == '$') {
+				else if ((current == '$' && following == '$')
+				|| current == '#' && following =='#' ) {
 					// $$ becomes $ so split out what we have into
 					// constant$
 						expression.addConstant(new ConstantExpression(
@@ -179,7 +187,37 @@ public class NestedExpressionParser implements ExpressionParser {
 			return false;
 		}
 	}
-	
+
+	/**
+	 *
+	 */
+	class ScriptExpression implements ParsedExpression {
+
+		private final ParsedExpression expression;
+
+		/**
+		 * Constructor.
+		 *
+		 * @param expression The inner expression.
+		 */
+		public ScriptExpression(ParsedExpression expression) {
+			this.expression = expression;
+		}
+
+		@Override
+		public <T> T evaluate(ArooaSession session, Class<T> type)
+				throws ArooaConversionException {
+			String script = expression.evaluate(session, String.class);
+			Evaluator evaluator = session.getTools().getScriptEvaluator();
+			return evaluator.evaluate(script, session, type);
+		}
+
+		@Override
+		public boolean isConstant() {
+			return false;
+		}
+	}
+
 	/**
 	 * A collection of expression fragments.
 	 * 
@@ -188,13 +226,12 @@ public class NestedExpressionParser implements ExpressionParser {
 	 */
 	class CompositeParsedExpression implements ParsedExpression {
 		
-		private final List<ParsedExpression> expressions = 
-				new ArrayList<ParsedExpression>();
+		private final List<ParsedExpression> expressions =
+				new ArrayList<>();
 		
 		private boolean constant = true;
-				
-		
-		void addRuntime(RuntimeExpression expression) {
+
+		void addRuntime(ParsedExpression expression) {
 			expressions.add(expression);
 			constant = false;
 		}

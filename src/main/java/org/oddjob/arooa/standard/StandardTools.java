@@ -12,10 +12,7 @@ import org.oddjob.arooa.registry.ContextHierarchyServiceFinder;
 import org.oddjob.arooa.registry.DirectoryServiceFinder;
 import org.oddjob.arooa.registry.ServiceFinder;
 import org.oddjob.arooa.registry.ServiceHelper;
-import org.oddjob.arooa.runtime.Evaluator;
-import org.oddjob.arooa.runtime.ExpressionParser;
-import org.oddjob.arooa.runtime.NestedExpressionParser;
-import org.oddjob.arooa.runtime.PropertyFirstEvaluator;
+import org.oddjob.arooa.runtime.*;
 
 /**
  * The standard implementation of {@link ArooaTools}.
@@ -36,7 +33,9 @@ public class StandardTools implements ArooaTools {
 
 	/** The evaluator to use for property resolution. */
 	private final Evaluator evaluator;
-	
+
+	private final Evaluator scriptEvaluator;
+
 	/**
 	 * Default constructor.
 	 */
@@ -45,6 +44,7 @@ public class StandardTools implements ArooaTools {
 		this.propertyAccessor = new BeanUtilsPropertyAccessor();
 		this.expressionParser = new NestedExpressionParser();
 		this.evaluator = new PropertyFirstEvaluator();
+		this.scriptEvaluator = new ScriptEvaluator();
 	}
 	
 	/*
@@ -79,7 +79,15 @@ public class StandardTools implements ArooaTools {
 	public Evaluator getEvaluator() {
 		return evaluator;
 	}
-	
+
+	/*
+	 * @see org.oddjob.arooa.ArooaTools#getScriptEvaluator()
+	 */
+	@Override
+	public Evaluator getScriptEvaluator() {
+		return scriptEvaluator;
+	}
+
 	@Override
 	public ServiceHelper getServiceHelper() {
 		return new ServiceHelper() {

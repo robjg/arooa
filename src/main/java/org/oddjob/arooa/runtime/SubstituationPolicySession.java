@@ -53,7 +53,12 @@ implements ArooaSession {
 			public Evaluator getEvaluator() {
 				return evaluator;
 			}
-			
+
+			@Override
+			public Evaluator getScriptEvaluator() {
+				return toolsDelegate.getScriptEvaluator();
+			}
+
 			@Override
 			public ArooaConverter getArooaConverter() {
 				return toolsDelegate.getArooaConverter();

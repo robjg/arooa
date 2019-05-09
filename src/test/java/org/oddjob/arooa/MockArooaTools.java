@@ -30,8 +30,14 @@ public class MockArooaTools implements ArooaTools {
 	public Evaluator getEvaluator() {
 		throw new RuntimeException("Unexpected from class: " + 
 				this.getClass().getName());
-	}		
-	
+	}
+
+	@Override
+	public Evaluator getScriptEvaluator() {
+		throw new RuntimeException("Unexpected from class: " +
+				this.getClass().getName());
+	}
+
 	@Override
 	public ServiceHelper getServiceHelper() {
 		throw new RuntimeException("Unexpected from class: " + 
