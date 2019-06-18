@@ -8,6 +8,10 @@ import org.oddjob.arooa.convert.DefaultConverter;
 import org.oddjob.arooa.registry.BeanRegistry;
 import org.oddjob.arooa.registry.SimpleBeanRegistry;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -16,8 +20,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class ScriptEvaluatorTest {
-
-
 
     @Test
     public void simpleEvaluateAddingTwoVariables() throws ArooaConversionException {
@@ -35,7 +37,59 @@ public class ScriptEvaluatorTest {
     }
 
     @Test
-    public void testSettingSomething() throws ArooaConversionException {
+    public void simpleEvaluatingMethods() throws ArooaConversionException {
+
+        ArooaSession session = createSession();
+
+        List<Integer> list = Arrays.asList(1,2,3,4,5);
+        session.getBeanRegistry().register("list", list);
+
+        ScriptEvaluator test = new ScriptEvaluator();
+
+
+        Collection<Integer> result = test.evaluate(
+                "list.stream().limit(3).collect(java.util.stream.Collectors.toList())",
+                session,
+                Collection.class);
+
+        assertThat(result, is(Arrays.asList(1, 2, 3)));
+    }
+
+    public static class SomeBean {
+
+        private String foo;
+
+        public String getFoo() {
+            return foo;
+        }
+
+        public void setFoo(String foo) {
+            this.foo = foo;
+        }
+    }
+
+    @Test
+    public void simpleEvaluatingPropertiesOfBeans() throws ArooaConversionException {
+
+        ArooaSession session = createSession();
+
+        SomeBean bean = new SomeBean();
+        bean.setFoo("Foo");
+
+        session.getBeanRegistry().register("bean", bean);
+
+        ScriptEvaluator test = new ScriptEvaluator();
+
+        String result = test.evaluate(
+                "bean.foo",
+                session,
+                String.class);
+
+        assertThat(result, is("Foo"));
+    }
+
+    @Test
+    public void testSettingSomethingDoesWriteBack() throws ArooaConversionException {
 
         ArooaSession session = createSession();
 
@@ -49,7 +103,7 @@ public class ScriptEvaluatorTest {
     }
 
     @Test
-    public void testVoidMethod() throws ArooaConversionException {
+    public void testVoidMethodEvaluateToNull() throws ArooaConversionException {
 
         ArooaSession session = createSession();
 
@@ -61,7 +115,7 @@ public class ScriptEvaluatorTest {
     }
 
     @Test
-    public void testEvaluateNull() throws ArooaConversionException {
+    public void testEvaluateNullIsNull() throws ArooaConversionException {
         ArooaSession session = createSession();
 
         ScriptEvaluator test = new ScriptEvaluator();
@@ -72,7 +126,7 @@ public class ScriptEvaluatorTest {
     }
 
     @Test
-    public void testEvaluateMissingVariable() {
+    public void testEvaluateMissingVariableThrowException() {
         ArooaSession session = createSession();
 
         ScriptEvaluator test = new ScriptEvaluator();
