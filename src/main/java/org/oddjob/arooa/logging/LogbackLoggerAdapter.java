@@ -94,7 +94,7 @@ public class LogbackLoggerAdapter extends LoggerAdapter {
 	}
 	
 	@Override
-	protected void _configre(String logConfigFileName) {
+	protected void _configure(String logConfigFileName) {
 		
 		
 		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();

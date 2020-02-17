@@ -73,7 +73,7 @@ public class Log4jLoggerAdapter extends LoggerAdapter {
 	}
 	
 	@Override
-	protected void _configre(String logConfigFileName) {
+	protected void _configure(String logConfigFileName) {
 		System.setProperty("log4j.defaultInitOverride", "true");
 	    PropertyConfigurator.configure(logConfigFileName);
 	}
