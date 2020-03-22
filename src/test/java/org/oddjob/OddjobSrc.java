@@ -8,8 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Calculate where the Oddjob source code is.
- * 
+ * Calculate where the Application code is.
+ * <p/>
+ * Note that {@code oddjob.src} is deprecated in favour of {@code oddjob.app}
+ *
  * @author rob
  *
  */
@@ -40,13 +42,24 @@ public class OddjobSrc {
 		}
 
 		String appDirFromProperty = System.getProperty("oddjob.app");
-		if (appDirFromProperty != null) {
-			oddjobApp = new File(appDirFromProperty).getCanonicalFile();
-			logger.info("oddjob.app=" + oddjobApp.toString());
+		if (appDirFromProperty == null) {
+			OurDirs whereWeAre = new OurDirs();
+
+			File buildDir = whereWeAre.relative("../run-oddjob/target");
+			if (!buildDir.exists()) {
+				buildDir = whereWeAre.relative("../run-oddjob/build");
+			}
+			if (!buildDir.exists()) {
+				throw new FileNotFoundException("No maven or ant build directory found from "
+						+ whereWeAre.base());
+			}
+
+			oddjobApp = new File(buildDir, "oddjob").getCanonicalFile();
+			logger.info("Guessed oddjob.app to be {}", oddjobApp);
 		}
 		else {
-			logger.info("Guess oddjob.app to be a ../run-oddjob/target/app directory.");
-			oddjobApp = new OurDirs().relative("../run-oddjob/target/app").getCanonicalFile();
+			oddjobApp = new File(appDirFromProperty).getCanonicalFile();
+			logger.info("oddjob.app={}", oddjobApp.toString());
 		}
 
 		if (!oddjobSrc.exists()) {
