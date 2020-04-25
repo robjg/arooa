@@ -1,10 +1,11 @@
 package org.oddjob.arooa.deploy;
 
+import org.oddjob.arooa.ArooaBeanDescriptor;
+import org.oddjob.arooa.ParsingInterceptor;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import org.oddjob.arooa.ParsingInterceptor;
 
 /**
  * @oddjob.description Provide an element to class name mapping for a 
