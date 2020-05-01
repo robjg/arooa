@@ -19,6 +19,7 @@ public class ParsingSession {
     private static final ThreadLocal<Session> sessions =
             new ThreadLocal<>();
 
+    @SuppressWarnings("unchecked")
     public static <T, E extends Exception> T doIn(Callable<T> callable)
     throws E {
         ParsingSessionRollback rollback = ParsingSession.begin();

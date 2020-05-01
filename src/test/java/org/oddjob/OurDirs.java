@@ -59,7 +59,7 @@ public class OurDirs {
             baseDir = ".";
             buildType = IDE;
         } else {
-            if (System.getProperty("ant.version") == null) {
+            if (System.getProperty("ant.file") == null) {
                 buildType = MAVEN;
             } else {
                 buildType = ANT;

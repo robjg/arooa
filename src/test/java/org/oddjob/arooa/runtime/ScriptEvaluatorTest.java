@@ -46,7 +46,7 @@ public class ScriptEvaluatorTest {
 
         ScriptEvaluator test = new ScriptEvaluator();
 
-
+        @SuppressWarnings("unchecked")
         Collection<Integer> result = test.evaluate(
                 "list.stream().limit(3).collect(java.util.stream.Collectors.toList())",
                 session,
