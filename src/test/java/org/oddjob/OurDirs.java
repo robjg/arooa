@@ -1,109 +1,130 @@
 package org.oddjob;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.oddjob.OurDirs.BuildType.*;
 
 /**
  * Used to work out relative directories, when running tests individually
- * from eclipse or from ant.
- * <p>
+ * from an IDE or from Ant or from Maven.
+ * <p/>
  * When running from ant the property basedir should be set which is the
  * project root.
- * 
+ * <p/>
+ * When running from maven
+ *
  * @author rob
  */
 public class OurDirs {
-	private static final Logger logger = LoggerFactory.getLogger(OurDirs.class);
+    private static final Logger logger = LoggerFactory.getLogger(OurDirs.class);
 
-	private static final OurDirs INSTANCE = new OurDirs();
+    private static final OurDirs INSTANCE = new OurDirs();
 
-	private final File base;
+    public enum BuildType {
+        ANT("build"),
+        MAVEN("target"),
+        IDE("target");
 
-	private final Path buildDirPath;
+        private final String buildDir;
 
-	public OurDirs() {
-		String baseDir = System.getProperty("basedir");
-		if (baseDir != null) {
-			base = new File(baseDir);
-		}
-		else {
-			base = new File(".");
-		}
+        BuildType(String buildDir) {
+            this.buildDir = buildDir;
+        }
 
-		logger.info("base is " + base.getAbsolutePath());
+        public String getBuildDir() {
+            return buildDir;
+        }
+    }
 
-		File build = new File(base, "build.xml");
-		if (!build.exists()) {
-			throw new IllegalStateException("Can't find " +
-					build + ", where you running this from?");
-		}
+    private final File base;
 
-		String buildDir = System.getProperty("project.build.directory");
-		if (buildDir == null) {
-			this.buildDirPath = base.toPath().resolve("target");
-		}
-		else {
-			this.buildDirPath = Paths.get(buildDir);
-		}
+    private final Path buildDirPath;
 
+    private final Path workDirPath;
+
+    private final BuildType buildType;
+
+    public OurDirs() {
+
+        String baseDir = System.getProperty("basedir");
+
+        if (baseDir == null) {
+            baseDir = ".";
+            buildType = IDE;
+        } else {
+            if (System.getProperty("ant.version") == null) {
+                buildType = MAVEN;
+            } else {
+                buildType = ANT;
+            }
+        }
+
+        base = new File(baseDir);
+        buildDirPath = base.toPath().resolve(buildType.buildDir);
         try {
-            mkDirs(this.buildDirPath, false);
+            workDirPath = mkDirs(buildDirPath.resolve("work"), false);
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed creating work dir.", e);
+        }
+
+        logger.info("Base directory is " + base.getAbsolutePath() + " (" +
+                buildType + " build)");
+
+    }
+
+    public File base() {
+        try {
+            return base.getCanonicalFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-	public File base() {
-		try {
-			return base.getCanonicalFile();
-		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	public File relative(String name) {
-		try {
-			return new File(base, name).getCanonicalFile();
-		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    public File relative(String name) {
+        try {
+            return new File(base, name).getCanonicalFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	public static Path basePath() {
-		return INSTANCE.base.toPath();
-	}
+    public static Path basePath() {
+        return INSTANCE.base.toPath();
+    }
 
-	public static Path relativePath(String other) {
-		return basePath().resolve(other);
-	}
+    public static Path relativePath(String other) {
+        return basePath().resolve(other);
+    }
 
-	public static Path buildDirPath() {
-		return INSTANCE.buildDirPath;
-	}
+    public static Path buildDirPath() {
+        return INSTANCE.buildDirPath;
+    }
 
-	public static Path workDirPath() throws IOException {
+    public static Path workDirPath() throws IOException {
 
-        return mkDirs(buildDirPath().resolve("work"), false);
-	}
+        return INSTANCE.workDirPath;
+    }
 
-    public static Path workPathDir(String other, boolean recreate) throws IOException {
-        return mkDirs(workDirPath().resolve(other), recreate);
+    public static BuildType buildType() {
+        return INSTANCE.buildType;
+    }
+
+    public static Path workPathDir(String dirName, boolean recreate) throws IOException {
+        return mkDirs(workDirPath().resolve(dirName), recreate);
     }
 
     private static Path mkDirs(Path dir, boolean recreate) throws IOException {
         if (Files.exists(dir)) {
             if (recreate) {
                 deleteDir(dir);
-            }
-            else {
+            } else {
                 if (!Files.isDirectory(dir)) {
                     throw new IllegalArgumentException(dir + " is not a directory");
                 }
@@ -129,7 +150,7 @@ public class OurDirs {
         });
     }
 
-    public static Path classesDir( Class<?> forClass) throws URISyntaxException {
+    public static Path classesDir(Class<?> forClass) throws URISyntaxException {
 
         Path classes = Paths.get(forClass.getResource(
                 forClass.getSimpleName() + ".class").toURI())
