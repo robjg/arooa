@@ -60,10 +60,8 @@ package org.oddjob.arooa.xml;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
+import org.oddjob.arooa.parsing.ChildCatcher;
 import org.oddjob.arooa.runtime.ConfigurationNode;
-import org.oddjob.arooa.runtime.ConfigurationNodeEvent;
-import org.oddjob.arooa.runtime.ConfigurationNodeListener;
-import org.oddjob.arooa.runtime.ModificationRefusedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
@@ -94,22 +92,9 @@ class SAXHandler extends DefaultHandler {
      *
      */
     public SAXHandler(ArooaContext rootContext) {
-    	
-       	rootContext.getConfigurationNode().addNodeListener(new ConfigurationNodeListener() {
-    		public void childInserted(ConfigurationNodeEvent nodeEvent) {
-    			documentContext = nodeEvent.getChild().getContext();
-    		}
-    		public void childRemoved(ConfigurationNodeEvent nodeEvent) {
-    			documentContext = null;
-    		}
-       		public void insertRequest(ConfigurationNodeEvent nodeEvent)
-					throws ModificationRefusedException {
-       		}
-       		public void removalRequest(ConfigurationNodeEvent nodeEvent)
-       				throws ModificationRefusedException {
-       		}
-    	});
-    	
+
+		ChildCatcher.watchRootContext(rootContext, dc -> this.documentContext = dc);
+
          contexts.push(rootContext);
     }
 

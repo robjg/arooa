@@ -4,6 +4,9 @@ import org.oddjob.arooa.runtime.ConfigurationNodeEvent;
 import org.oddjob.arooa.runtime.ConfigurationNodeListener;
 import org.oddjob.arooa.runtime.ModificationRefusedException;
 
+import java.util.Objects;
+import java.util.function.Consumer;
+
 /**
  * Capture the child context of a current context;
  * 
@@ -27,7 +30,7 @@ public class ChildCatcher {
 			public void childRemoved(
 					ConfigurationNodeEvent nodeEvent) {
 				throw new RuntimeException(
-						"Unexepected - this listener should listen long enough!");
+						"Unexpected - this listener should listen long enough!");
 			}
 			
 			public void insertRequest(ConfigurationNodeEvent nodeEvent)
@@ -50,5 +53,27 @@ public class ChildCatcher {
 	 */
 	public ArooaContext getChild() {
 		return child;
-	}	
+	}
+
+
+	public static void watchRootContext(ArooaContext rootContext,
+										Consumer<ArooaContext> childContextConsumer) {
+		Objects.requireNonNull(childContextConsumer);
+
+		rootContext.getConfigurationNode().addNodeListener(new ConfigurationNodeListener() {
+			public void childInserted(ConfigurationNodeEvent nodeEvent) {
+				childContextConsumer.accept(nodeEvent.getChild().getContext());
+			}
+			public void childRemoved(ConfigurationNodeEvent nodeEvent) {
+				childContextConsumer.accept(null);
+			}
+			public void insertRequest(ConfigurationNodeEvent nodeEvent)
+					throws ModificationRefusedException {
+			}
+			public void removalRequest(ConfigurationNodeEvent nodeEvent)
+					throws ModificationRefusedException {
+			}
+		});
+	}
+
 }
