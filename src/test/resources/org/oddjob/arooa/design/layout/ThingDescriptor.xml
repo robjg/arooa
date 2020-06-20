@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<arooa:descriptor xmlns:arooa="http://rgordon.co.uk/oddjob/arooa">
+    <components>
+        <arooa:bean-def className="org.oddjob.arooa.design.layout.ThingWithEveryLayout" element="thing">
+            <design>
+                <import resource="org/oddjob/arooa/design/layout/ThingDesignForm.xml"/>
+            </design>
+        </arooa:bean-def>
+    </components>
+</arooa:descriptor>

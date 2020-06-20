@@ -1,24 +1,9 @@
 package org.oddjob.arooa.design;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
-
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import org.junit.Test;
-import org.oddjob.arooa.ArooaBeanDescriptor;
-import org.oddjob.arooa.ArooaDescriptor;
-import org.oddjob.arooa.ArooaParseException;
-import org.oddjob.arooa.ArooaType;
-import org.oddjob.arooa.ElementMappings;
-import org.oddjob.arooa.MockArooaDescriptor;
-import org.oddjob.arooa.MockElementMappings;
+import org.oddjob.arooa.*;
 import org.oddjob.arooa.convert.ConversionProvider;
-import org.oddjob.arooa.deploy.LinkedDescriptor;
+import org.oddjob.arooa.deploy.ListDescriptor;
 import org.oddjob.arooa.deploy.MappingsSwitch;
 import org.oddjob.arooa.deploy.annotations.ArooaComponent;
 import org.oddjob.arooa.design.etc.UnknownInstance;
@@ -34,6 +19,13 @@ import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import static org.junit.Assert.*;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 public class DesignParserTest {
 
@@ -206,7 +198,7 @@ public class DesignParserTest {
    @Test
 	public void testWithComponentProperties() throws ArooaParseException {
 		
-		ArooaDescriptor descriptor = new LinkedDescriptor(new OtherDescriptor(), 
+		ArooaDescriptor descriptor = new ListDescriptor(new OtherDescriptor(),
 				new OurDescriptor());
 		
 		DesignParser test = new DesignParser(
@@ -240,7 +232,7 @@ public class DesignParserTest {
    @Test
 	public void testWithId() throws ArooaParseException, URISyntaxException, SAXException, IOException {
 		
-		ArooaDescriptor descriptor = new LinkedDescriptor(new OtherDescriptor(), 
+		ArooaDescriptor descriptor = new ListDescriptor(new OtherDescriptor(),
 				new OurDescriptor());
 		
 		DesignParser test = new DesignParser(

@@ -1,15 +1,11 @@
 package org.oddjob.arooa.deploy;
 
-import java.net.URI;
-
-import org.oddjob.arooa.ArooaBeanDescriptor;
-import org.oddjob.arooa.ArooaConfiguration;
-import org.oddjob.arooa.ArooaDescriptor;
-import org.oddjob.arooa.ClassResolver;
-import org.oddjob.arooa.ElementMappings;
+import org.oddjob.arooa.*;
 import org.oddjob.arooa.convert.ConversionProvider;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+
+import java.net.URI;
 
 /**
  * An {@link ArooaDescriptor} for a {@link ArooaConfiguration}
@@ -53,7 +49,17 @@ public class ArooaDescriptorDescriptor implements ArooaDescriptor {
 	public String getPrefixFor(URI namespace) {
 		return descriptor.getPrefixFor(namespace);
 	}
-	
+
+	@Override
+	public String[] getPrefixes() {
+		return descriptor.getPrefixes();
+	}
+
+	@Override
+	public URI getUriFor(String prefix) {
+		return descriptor.getUriFor(prefix);
+	}
+
 	@Override
 	public ClassResolver getClassResolver() {
 		return descriptor.getClassResolver();

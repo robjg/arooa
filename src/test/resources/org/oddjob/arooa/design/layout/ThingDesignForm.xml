@@ -1,0 +1,35 @@
+<design:form xmlns:design="arooa:design" title="Our Thing">
+    <formItems>
+        <design:text property="name" title="Name"/>
+        <design:group title="Some A and B" bordered="true">
+            <formItems>
+                <design:text property="a" title="Some A"/>
+                <design:text property="b" title="Some B"/>
+            </formItems>
+        </design:group>
+        <design:radio title="Some C or D and E">
+            <formItems>
+                <design:text property="c" title="Some C"/>
+                <design:group>
+                    <formItems>
+                        <design:text property="d" title="Some D"/>
+                        <design:text property="e" title="Some E"/>
+                    </formItems>
+                </design:group>
+            </formItems>
+        </design:radio>
+        <design:tabs title="Selection Types">
+            <formItems>
+                <design:single property="single" title="Single"/>
+                <design:indexed property="indexed" title="Indexed"/>
+                <design:mapped property="mapped" title="Mapped"/>
+                <design:group title="Other">
+                    <formItems>
+                        <design:text property="x" title="Some X"/>
+                        <design:text property="y" title="Some Y"/>
+                    </formItems>
+                </design:group>
+            </formItems>
+        </design:tabs>
+    </formItems>
+</design:form>

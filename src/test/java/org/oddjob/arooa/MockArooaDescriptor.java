@@ -1,10 +1,10 @@
 package org.oddjob.arooa;
 
-import java.net.URI;
-
 import org.oddjob.arooa.convert.ConversionProvider;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+
+import java.net.URI;
 
 
 public class MockArooaDescriptor implements ArooaDescriptor {
@@ -33,7 +33,18 @@ public class MockArooaDescriptor implements ArooaDescriptor {
 		throw new RuntimeException("Unexpected from " + 
 				this.getClass().getName());
 	}
-	
+
+	@Override
+	public String[] getPrefixes() {
+		return new String[0];
+	}
+
+	@Override
+	public URI getUriFor(String prefix) {
+		throw new RuntimeException("Unexpected from " +
+				this.getClass().getName());
+	}
+
 	@Override
 	public ClassResolver getClassResolver() {
 		throw new RuntimeException("Unexpected from " + 

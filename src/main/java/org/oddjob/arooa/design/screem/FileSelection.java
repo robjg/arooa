@@ -3,6 +3,7 @@
  */
 package org.oddjob.arooa.design.screem;
 
+import org.oddjob.arooa.design.DesignAttributeProperty;
 import org.oddjob.arooa.design.SimpleTextAttribute;
 
 
@@ -14,16 +15,16 @@ public class FileSelection
 implements FormItem, Form {
 
 	private String heading;
-	private final SimpleTextAttribute designElement;
+	private final DesignAttributeProperty attribute;
 	
 	public FileSelection(SimpleTextAttribute de) {
 		this.heading = de.property();
-		this.designElement = de;
+		this.attribute = de;
 	}
 	
 	public FileSelection(String heading, SimpleTextAttribute de) {
 		this.heading = heading;
-		this.designElement = de;
+		this.attribute = de;
 	}
 
 	public FormItem setTitle(String title) {
@@ -38,15 +39,19 @@ implements FormItem, Form {
 	/**
 	 * Used by the view to set text value of the field.
 	 * 
-	 * @param text The file name text.
+	 * @param file The file name text.
 	 */
 	public void setFile(String file) {
 		if (file == null) {
-			designElement.attribute(null);
+			attribute.attribute(null);
 		}
 		else {
-			designElement.attribute(file);
+			attribute.attribute(file);
 		}
+	}
+
+	public DesignAttributeProperty getAttribute() {
+		return attribute;
 	}
 
 	/**
@@ -55,13 +60,13 @@ implements FormItem, Form {
 	 * @return The file name text.
 	 */
 	public String getFile() {
-		return designElement.attribute();
+		return attribute.attribute();
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.oddjob.designer.model.DesignDefinition#isPopulated()
 	 */
 	public boolean isPopulated() {
-		return designElement.attribute() != null;
+		return attribute.attribute() != null;
 	}
 }

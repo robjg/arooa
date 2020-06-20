@@ -1,17 +1,6 @@
 package org.oddjob.arooa.beanutils;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.oddjob.arooa.ArooaBeanDescriptor;
-import org.oddjob.arooa.ArooaDescriptor;
-import org.oddjob.arooa.ArooaType;
-import org.oddjob.arooa.ClassResolver;
-import org.oddjob.arooa.ElementMappings;
+import org.oddjob.arooa.*;
 import org.oddjob.arooa.beandocs.MappingsBeanDoc;
 import org.oddjob.arooa.beandocs.MappingsContents;
 import org.oddjob.arooa.convert.ConversionProvider;
@@ -27,6 +16,9 @@ import org.oddjob.arooa.life.InstantiationContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+
+import java.net.URI;
+import java.util.*;
 
 /**
  * @oddjob.description Define Magic Beans. Magic Beans are beans who's
@@ -163,8 +155,32 @@ public class MagicBeanDescriptorFactory implements ArooaDescriptorFactory {
 				
 		@Override
 		public String getPrefixFor(URI namespace) {
-			if (MagicBeanDescriptorFactory.this.namespace == namespace) {
+			if (namespace == null) {
+				return null;
+			}
+			if (namespace.equals(MagicBeanDescriptorFactory.this.namespace)) {
 				return prefix;
+			}
+			return null;
+		}
+
+		@Override
+		public String[] getPrefixes() {
+			if (prefix == null) {
+				return new String[0];
+			}
+			else {
+				return new String[] { prefix };
+			}
+		}
+
+		@Override
+		public URI getUriFor(String prefix) {
+			if (prefix == null) {
+				return null;
+			}
+			if (prefix.equals((MagicBeanDescriptorFactory.this.prefix))) {
+				return namespace;
 			}
 			return null;
 		}

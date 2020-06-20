@@ -5,6 +5,7 @@ import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaParser;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.parsing.Location;
+import org.oddjob.arooa.parsing.NamespaceMappings;
 
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
@@ -13,7 +14,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 /**
@@ -21,16 +21,20 @@ import java.util.function.Consumer;
  */
 public class JsonArooaParser implements ArooaParser {
 
+    private final NamespaceMappings namespaceMappings;
+
     private final JsonGenerator jsonGenerator;
 
     private final Closeable done;
 
-    public JsonArooaParser(OutputStream out) {
+    public JsonArooaParser(NamespaceMappings namespaceMappings, OutputStream out) {
+        this.namespaceMappings = namespaceMappings;
         this.jsonGenerator = Json.createGenerator(out);
         done = out;
     }
 
-    public JsonArooaParser(Consumer<String> stringConsumer) {
+    public JsonArooaParser(NamespaceMappings namespaceMappings, Consumer<String> stringConsumer) {
+        this.namespaceMappings = namespaceMappings;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         this.jsonGenerator = Json.createGenerator(out);
         done = () -> stringConsumer.accept(new String(out.toByteArray()));
@@ -39,13 +43,11 @@ public class JsonArooaParser implements ArooaParser {
     @Override
     public ConfigurationHandle parse(ArooaConfiguration configuration) throws ArooaParseException {
 
-        AtomicReference<ConfigurationTree> treeRef = new AtomicReference<>();
-
-        ArooaParser treeParser = new ConfigurationTreeArooaParser(treeRef::set);
+        ConfigurationTreeArooaParser treeParser = new ConfigurationTreeArooaParser(namespaceMappings);
 
         ConfigurationHandle handle = treeParser.parse(configuration);
 
-        parseStart(treeRef.get());
+        parseStart(treeParser.getConfigurationTree());
 
         jsonGenerator.close();
 

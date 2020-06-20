@@ -2,6 +2,7 @@ package org.oddjob.arooa.deploy;
 
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ParsingInterceptor;
+import org.oddjob.arooa.design.DesignFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,8 +49,16 @@ public class BeanDefinition {
      * @oddjob.required No.
 	 */
 	private String designFactory;
-	
-	/** 
+
+	/**
+	 * @oddjob.property
+	 * @oddjob.description A class name that provides a
+	 * DesignFactory for the bean.
+	 * @oddjob.required No.
+	 */
+	private DesignFactory design;
+
+	/**
      * @oddjob.property
      * @oddjob.description A list of {@link PropertyDefinition}s
      * @oddjob.required No.
@@ -117,6 +126,24 @@ public class BeanDefinition {
 	 */
 	public void setDesignFactory(String designFactory) {
 		this.designFactory = designFactory;
+	}
+
+	/**
+	 * Getter for Design.
+	 *
+	 * @return A Design Factory or null.
+	 */
+	public DesignFactory getDesign() {
+		return design;
+	}
+
+	/**
+	 * Setter for Design.
+	 *
+	 * @param design A Design Factory or null.
+	 */
+	public void setDesign(DesignFactory design) {
+		this.design = design;
 	}
 
 	/**

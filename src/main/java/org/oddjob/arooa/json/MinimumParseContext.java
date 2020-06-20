@@ -1,13 +1,15 @@
 package org.oddjob.arooa.json;
 
-import org.oddjob.arooa.ArooaConfigurationException;
-import org.oddjob.arooa.ArooaException;
-import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ArooaType;
+import org.oddjob.arooa.*;
+import org.oddjob.arooa.life.ComponentPersister;
+import org.oddjob.arooa.life.ComponentProxyResolver;
 import org.oddjob.arooa.parsing.*;
 import org.oddjob.arooa.reflect.ArooaClass;
+import org.oddjob.arooa.registry.BeanRegistry;
+import org.oddjob.arooa.registry.ComponentPool;
 import org.oddjob.arooa.runtime.AbstractRuntimeConfiguration;
 import org.oddjob.arooa.runtime.ConfigurationNode;
+import org.oddjob.arooa.runtime.PropertyManager;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.xml.XMLConfigurationNode;
 
@@ -23,6 +25,11 @@ public class MinimumParseContext {
     public static ArooaContext createRootContext(ArooaHandler arooaHandler) {
 
         return new RootContext(null, null, arooaHandler);
+    }
+
+    public static ArooaContext createRootContext(ArooaDescriptor descriptor) {
+
+        return new RootContext(null, new DescriptorOnlySession(descriptor),null );
     }
 
     public static class Options {
@@ -186,6 +193,50 @@ public class MinimumParseContext {
 
         public void setProperty(String name, Object value)
                 throws ArooaException {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    static class DescriptorOnlySession implements ArooaSession {
+
+        private final ArooaDescriptor descriptor;
+
+        DescriptorOnlySession(ArooaDescriptor descriptor) {
+            this.descriptor = descriptor;
+        }
+
+        @Override
+        public ArooaDescriptor getArooaDescriptor() {
+            return descriptor;
+        }
+
+        @Override
+        public ComponentPool getComponentPool() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public BeanRegistry getBeanRegistry() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public PropertyManager getPropertyManager() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public ArooaTools getTools() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public ComponentPersister getComponentPersister() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public ComponentProxyResolver getComponentProxyResolver() {
             throw new UnsupportedOperationException();
         }
     }

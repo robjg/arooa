@@ -1,24 +1,19 @@
 package org.oddjob.arooa.beanutils;
-import org.junit.Before;
 
+import org.apache.commons.beanutils.DynaBean;
+import org.apache.commons.beanutils.DynaClass;
+import org.apache.commons.beanutils.DynaProperty;
+import org.hamcrest.Matchers;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.oddjob.arooa.life.SimpleArooaClass;
+import org.oddjob.arooa.reflect.*;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.junit.Assert;
-
-import org.apache.commons.beanutils.DynaBean;
-import org.apache.commons.beanutils.DynaClass;
-import org.apache.commons.beanutils.DynaProperty;
-import org.oddjob.arooa.life.SimpleArooaClass;
-import org.oddjob.arooa.reflect.ArooaClass;
-import org.oddjob.arooa.reflect.ArooaNoPropertyException;
-import org.oddjob.arooa.reflect.ArooaPropertyException;
-import org.oddjob.arooa.reflect.BeanOverview;
-import org.oddjob.arooa.reflect.PropertyAccessor;
 
 public class BeanUtilsBeanOverviewTest extends Assert {	
 
@@ -61,7 +56,10 @@ public class BeanUtilsBeanOverviewTest extends Assert {
 		
 		BeanOverview test = arooaClass.getBeanOverview(
 				propertyAccessor);
-		
+
+	   assertThat(Arrays.asList(test.getProperties()),
+			   Matchers.contains("a", "b", "c", "d", "class"));
+
 		assertEquals(String.class, test.getPropertyType("a"));
 		assertTrue(test.hasReadableProperty("a"));		
 		assertFalse(test.hasWriteableProperty("a"));

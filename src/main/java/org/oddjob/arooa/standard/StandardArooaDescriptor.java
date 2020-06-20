@@ -1,9 +1,5 @@
 package org.oddjob.arooa.standard;
 
-import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ClassResolver;
@@ -17,6 +13,10 @@ import org.oddjob.arooa.life.BaseElementMappings;
 import org.oddjob.arooa.life.ClassLoaderClassResolver;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Provides default behaviour for Arooa configuration. This includes
@@ -82,6 +82,16 @@ public class StandardArooaDescriptor implements ArooaDescriptor {
 	@Override
 	public String getPrefixFor(URI namespace) {
 		return null;
+	}
+
+	@Override
+	public URI getUriFor(String prefix) {
+		return null;
+	}
+
+	@Override
+	public String[] getPrefixes() {
+		return new String[0];
 	}
 
 	@Override

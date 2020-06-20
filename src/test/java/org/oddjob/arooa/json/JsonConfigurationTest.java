@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
+import org.oddjob.arooa.parsing.SimplePrefixMappings;
 import org.oddjob.arooa.standard.StandardFragmentParser;
 import org.oddjob.arooa.utils.ListSetterHelper;
 import org.oddjob.arooa.xml.XMLArooaParser;
@@ -36,7 +37,8 @@ public class JsonConfigurationTest {
                 "    }\n" +
                 "}";
 
-        JsonConfiguration test = new JsonConfiguration(jsonString);
+        JsonConfiguration test = new JsonConfiguration(jsonString)
+                .withNamespaceMappings(new SimplePrefixMappings());
 
         XMLArooaParser parser = new XMLArooaParser();
 
@@ -44,7 +46,7 @@ public class JsonConfigurationTest {
 
         AtomicReference<String> result = new AtomicReference<>();
 
-        JsonArooaParser jsonParser = new JsonArooaParser(result::set);
+        JsonArooaParser jsonParser = new JsonArooaParser(new SimplePrefixMappings(), result::set);
 
         jsonParser.parse(handle.getDocumentContext().getConfigurationNode());
 
@@ -84,7 +86,7 @@ public class JsonConfigurationTest {
 
         AtomicReference<String> result = new AtomicReference<>();
 
-        JsonArooaParser jsonParser = new JsonArooaParser(result::set);
+        JsonArooaParser jsonParser = new JsonArooaParser(new SimplePrefixMappings(), result::set);
 
         jsonParser.parse(handle.getDocumentContext().getConfigurationNode());
 

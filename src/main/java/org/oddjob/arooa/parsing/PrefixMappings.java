@@ -11,20 +11,13 @@ import java.net.URI;
  * @author rob
  *
  */
-public interface PrefixMappings {
+public interface PrefixMappings extends NamespaceMappings {
 	
-	public void add(PrefixMappings otherMappings)
+	void add(NamespaceMappings otherMappings)
 	throws DuplicateMappingsException;
 	
-	public void put(String prefix, URI uri)
+	void put(String prefix, URI uri)
 	throws DuplicateMappingsException;
 
-	public String getPrefixFor(URI uri);
-
-	public URI getUriFor(String prefix);
-
-	public String[] getPrefixes();
-	
-	public QTag getQName(ArooaElement element);
 
 }

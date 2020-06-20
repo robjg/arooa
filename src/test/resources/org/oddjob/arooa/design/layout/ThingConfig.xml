@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<thing a="Ark" b="Ball" d="Dog" e="Egg" name="Lots of Design">
+    <single>
+        <value value="One Thing"/>
+    </single>
+    <indexed>
+        <value value="First"/>
+        <value value="Second"/>
+    </indexed>
+    <mapped>
+        <value key="red" value="Rose"/>
+        <value key="blue" value="Sky"/>
+    </mapped>
+</thing>

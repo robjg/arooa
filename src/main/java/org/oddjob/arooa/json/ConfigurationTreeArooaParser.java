@@ -4,7 +4,10 @@ import org.oddjob.arooa.*;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.parsing.ArooaHandler;
+import org.oddjob.arooa.parsing.NamespaceMappings;
 
+import java.net.URI;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -12,10 +15,23 @@ import java.util.function.Consumer;
  */
 public class ConfigurationTreeArooaParser implements ArooaParser {
 
+    private final NamespaceMappings namespaceMappings;
+
     private final Consumer<ConfigurationTree> treeConsumer;
 
-    public ConfigurationTreeArooaParser(Consumer<ConfigurationTree> treeConsumer) {
-        this.treeConsumer = treeConsumer;
+    private ConfigurationTree configurationTree;
+
+    public ConfigurationTreeArooaParser(NamespaceMappings namespaceMappings) {
+        this(namespaceMappings, null);
+    }
+
+    public ConfigurationTreeArooaParser(NamespaceMappings namespaceMappings, Consumer<ConfigurationTree> treeConsumer) {
+        this.namespaceMappings = Objects.requireNonNull(namespaceMappings);
+        if (treeConsumer == null) {
+            this.treeConsumer = ct -> this.configurationTree = ct;
+        } else {
+            this.treeConsumer = treeConsumer;
+        }
     }
 
     @Override
@@ -23,14 +39,17 @@ public class ConfigurationTreeArooaParser implements ArooaParser {
 
         return configuration.parse(
                 MinimumParseContext.createRootContext(
-                        new ElementHandler(this.treeConsumer)));
+                        new ElementHandler(this.namespaceMappings, this.treeConsumer)));
     }
 
     static class ElementHandler implements ArooaHandler {
 
+        private final NamespaceMappings namespaceMappings;
+
         private final Consumer<ConfigurationTree> treeConsumer;
 
-        ElementHandler(Consumer<ConfigurationTree> treeConsumer) {
+        ElementHandler(NamespaceMappings namespaceMappings, Consumer<ConfigurationTree> treeConsumer) {
+            this.namespaceMappings = namespaceMappings;
             this.treeConsumer = treeConsumer;
         }
 
@@ -38,8 +57,9 @@ public class ConfigurationTreeArooaParser implements ArooaParser {
         @Override
         public ArooaContext onStartElement(ArooaElement element, ArooaContext parentContext) throws ArooaConfigurationException {
 
-            ConfigurationTreeBuilder treeBuilder = ConfigurationTreeBuilder.newInstance();
-            treeBuilder.setTag(element.getTag());
+            ConfigurationTreeBuilder.WithElement treeBuilder = ConfigurationTreeBuilder
+                    .withElement(this.namespaceMappings)
+                    .setElement(element);
 
             for (String name : element.getAttributes().getAttributeNames()) {
                 treeBuilder.addAttribute(name, element.getAttributes().get(name));
@@ -47,7 +67,7 @@ public class ConfigurationTreeArooaParser implements ArooaParser {
 
             return MinimumParseContext.
                     withOptions()
-                    .childHandler(new KeyHandler(treeBuilder))
+                    .childHandler(new KeyHandler(namespaceMappings, treeBuilder))
                     .initCallback(() -> this.treeConsumer.accept(treeBuilder.build()))
                     .textCallback(treeBuilder::setText)
                     .createChild(element, parentContext);
@@ -57,9 +77,12 @@ public class ConfigurationTreeArooaParser implements ArooaParser {
 
     static class KeyHandler implements ArooaHandler {
 
-        private final ConfigurationTreeBuilder treeBuilder;
+        private final NamespaceMappings namespaceMappings;
 
-        KeyHandler(ConfigurationTreeBuilder treeBuilder) {
+        private final ConfigurationTreeBuilder<?> treeBuilder;
+
+        KeyHandler(NamespaceMappings namespaceMappings, ConfigurationTreeBuilder<?> treeBuilder) {
+            this.namespaceMappings = namespaceMappings;
             this.treeBuilder = treeBuilder;
         }
 
@@ -67,10 +90,20 @@ public class ConfigurationTreeArooaParser implements ArooaParser {
         public ArooaContext onStartElement(ArooaElement element, ArooaContext parentContext)
                 throws ArooaConfigurationException {
 
+            URI uri = element.getUri();
+            if (uri != null) {
+                throw new ArooaConfigurationException("Unexpected URI on key element " + element);
+            }
+
             return MinimumParseContext.withOptions()
                     .childHandler(new ElementHandler(
-                    tree -> this.treeBuilder.addChild(element.getTag(), tree)))
-            .createChild(element, parentContext);
+                            namespaceMappings,
+                            tree -> this.treeBuilder.addChild(element.getTag(), tree)))
+                    .createChild(element, parentContext);
         }
+    }
+
+    public ConfigurationTree getConfigurationTree() {
+        return configurationTree;
     }
 }

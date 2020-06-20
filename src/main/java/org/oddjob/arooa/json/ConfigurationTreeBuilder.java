@@ -6,17 +6,19 @@ import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.parsing.ChildCatcher;
+import org.oddjob.arooa.parsing.NamespaceMappings;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 
+import java.net.URI;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Builds an {@link ConfigurationTree}.
  */
-public class ConfigurationTreeBuilder {
+abstract public class ConfigurationTreeBuilder<T extends ConfigurationTreeBuilder<T>> {
 
-    private String tag;
+    private ArooaElement element;
 
     private String text;
 
@@ -24,35 +26,99 @@ public class ConfigurationTreeBuilder {
 
     private final Map<String, List<ConfigurationTree>> children = new LinkedHashMap<>();
 
-    public static ConfigurationTreeBuilder newInstance() {
-        return new ConfigurationTreeBuilder();
+    private final NamespaceMappings namespaceMappings;
+
+    protected ConfigurationTreeBuilder(NamespaceMappings namespaceMappings) {
+        Objects.requireNonNull(namespaceMappings);
+        this.namespaceMappings = namespaceMappings;
     }
 
-    public ConfigurationTreeBuilder setTag(String tag) {
-        this.tag = tag;
-        return this;
+    public static WithQualifiedTag withTag(NamespaceMappings namespaceMappings) {
+        return new WithQualifiedTag(namespaceMappings);
     }
 
-    public ConfigurationTreeBuilder setText(String text) {
+    public static WithElement withElement(NamespaceMappings namespaceMappings) {
+        return new WithElement(namespaceMappings);
+    }
+
+    public T setText(String text) {
         this.text = text;
-        return this;
+        return castThis();
     }
 
-    public ConfigurationTreeBuilder addAttribute(String name, String value) {
-        attributes.put(name, value);
-        return this;
+    public T addAttribute(String name, String value) {
+        Objects.requireNonNull(name);
+        if (value != null) {
+            attributes.put(name, value);
+        }
+        return castThis();
     }
 
-    public ConfigurationTreeBuilder addChild(String name, ConfigurationTree child) {
+    public T addChild(String name, ConfigurationTree child) {
         this.children.computeIfAbsent(name, k -> new ArrayList<>()).add(child);
-        return this;
+        return castThis();
+    }
+
+    protected void setTheElement(ArooaElement arooaElement) {
+        this.element = arooaElement;
+    }
+
+    protected NamespaceMappings getNamespaceMappings() {
+        return this.namespaceMappings;
     }
 
     public ConfigurationTree build() {
         return new Impl(this);
     }
 
+    abstract public T newInstance();
+
+    T castThis() {
+        return (T) this;
+    }
+
+    public static class WithElement extends ConfigurationTreeBuilder<WithElement> {
+
+        protected WithElement(NamespaceMappings namespaceMappings) {
+            super(namespaceMappings);
+        }
+
+        public WithElement newInstance() {
+            return new WithElement(getNamespaceMappings());
+        }
+
+        public WithElement setElement(ArooaElement arooaElement) {
+            URI uri = arooaElement.getUri();
+            if (uri!= null
+                    && getNamespaceMappings().getPrefixFor(uri) == null) {
+                throw new IllegalArgumentException("No prefix for " + uri);
+            }
+            setTheElement(arooaElement);
+            return this;
+        }
+    }
+
+    public static class WithQualifiedTag extends ConfigurationTreeBuilder<WithQualifiedTag> {
+
+        private WithQualifiedTag(NamespaceMappings namespaceMappings) {
+            super(namespaceMappings);
+        }
+
+        public WithQualifiedTag newInstance() {
+            return new WithQualifiedTag(getNamespaceMappings());
+        }
+
+        public WithQualifiedTag setTag(String tag) {
+            setTheElement(getNamespaceMappings().elementFor(
+                    Objects.requireNonNull(tag, "No Element")));
+            return this;
+        }
+
+    }
+
     private static class Impl implements ConfigurationTree {
+
+        private final NamespaceMappings namespaceMappings;
 
         private final ArooaElement element;
 
@@ -62,9 +128,13 @@ public class ConfigurationTreeBuilder {
 
         Impl(ConfigurationTreeBuilder builder) {
 
-            ArooaElement element = new ArooaElement(
-                     Objects.requireNonNull(builder.tag, "No Element"));
-            for (Map.Entry<String, String> entry: builder.attributes.entrySet()) {
+            this.namespaceMappings = builder.namespaceMappings;
+
+            ArooaElement element = Objects.requireNonNull(builder.element,
+                    "No Element");
+
+            Map<String, String> atts = builder.attributes;
+            for (Map.Entry<String, String> entry: atts.entrySet()) {
                 element = element.addAttribute(entry.getKey(), entry.getValue());
             }
             this.element = element;
@@ -96,6 +166,9 @@ public class ConfigurationTreeBuilder {
         public ArooaConfiguration toConfiguration(SaveOperation saveMethod) {
 
             return parseParentContext -> {
+
+                parseParentContext.getPrefixMappings().add(this.namespaceMappings);
+
                 parseTree(parseParentContext, Impl.this);
 
                 AtomicReference<ArooaContext> documentContext = new AtomicReference<>();

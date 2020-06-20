@@ -3,10 +3,11 @@
  */
 package org.oddjob.arooa;
 
-import java.net.URI;
-
 import org.oddjob.arooa.convert.ConversionProvider;
 import org.oddjob.arooa.deploy.BeanDescriptorProvider;
+import org.oddjob.arooa.parsing.NamespaceMappings;
+
+import java.net.URI;
 
 
 /**
@@ -16,7 +17,7 @@ import org.oddjob.arooa.deploy.BeanDescriptorProvider;
  *
  * @author Rob Gordon
  */
-public interface ArooaDescriptor extends BeanDescriptorProvider {
+public interface ArooaDescriptor extends BeanDescriptorProvider, NamespaceMappings {
 
 	/**
 	 * Provide type conversions.

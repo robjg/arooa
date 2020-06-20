@@ -3,11 +3,12 @@
  */
 package org.oddjob.arooa.design.screem;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.oddjob.arooa.design.DesignInstance;
 import org.oddjob.arooa.design.InstanceSupport;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * A form definition provides a definition for creating the
@@ -23,11 +24,12 @@ public class StandardForm implements Form {
 		new ArrayList<FormItem>();
 	
 	public StandardForm(DesignInstance design) {
-		this(InstanceSupport.tagFor(design).toString(), design);
+		this(null, design);
 	}
 	
 	public StandardForm(String name, DesignInstance design) {
-		this.title = name;
+		this.title = Optional.ofNullable(name)
+				.orElseGet(() -> InstanceSupport.tagFor(design).toString());
 		this.design = design;
 	}
 	

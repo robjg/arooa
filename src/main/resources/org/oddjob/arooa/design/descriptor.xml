@@ -1,0 +1,23 @@
+<bean class="org.oddjob.arooa.deploy.ArooaDescriptorBean"
+      namespace="arooa:design" prefix="design">
+    <values>
+        <is element="form"
+            className="org.oddjob.arooa.design.layout.LtMainForm"/>
+        <is element="group"
+            className="org.oddjob.arooa.design.layout.LtFieldGroup"/>
+        <is element="indexed"
+            className="org.oddjob.arooa.design.layout.LtIndexedTypeSelection"/>
+        <is element="mapped"
+            className="org.oddjob.arooa.design.layout.LtMappedTypeSelection"/>
+        <is element="radio"
+            className="org.oddjob.arooa.design.layout.LtRadioSelection"/>
+        <is element="single"
+            className="org.oddjob.arooa.design.layout.LtSingleTypeSelection"/>
+        <is element="tabs"
+            className="org.oddjob.arooa.design.layout.LtTabGroup"/>
+        <is element="text"
+            className="org.oddjob.arooa.design.layout.LtTextField"/>
+        <is element="textarea"
+            className="org.oddjob.arooa.design.layout.LtTextArea"/>
+    </values>
+</bean>

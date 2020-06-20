@@ -1,38 +1,23 @@
 package org.oddjob.arooa.deploy;
 
-import org.junit.Test;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.junit.Assert;
-
-import org.oddjob.arooa.ArooaBeanDescriptor;
-import org.oddjob.arooa.ArooaDescriptor;
-import org.oddjob.arooa.ArooaType;
-import org.oddjob.arooa.ClassResolver;
-import org.oddjob.arooa.ElementMappings;
-import org.oddjob.arooa.MockArooaBeanDescriptor;
-import org.oddjob.arooa.MockArooaDescriptor;
-import org.oddjob.arooa.MockClassResolver;
-import org.oddjob.arooa.MockElementMappings;
-import org.oddjob.arooa.convert.ArooaConverter;
-import org.oddjob.arooa.convert.ConversionFailedException;
-import org.oddjob.arooa.convert.ConversionProvider;
-import org.oddjob.arooa.convert.ConversionRegistry;
-import org.oddjob.arooa.convert.Convertlet;
-import org.oddjob.arooa.convert.ConvertletException;
-import org.oddjob.arooa.convert.DefaultConversionRegistry;
-import org.oddjob.arooa.convert.DefaultConverter;
-import org.oddjob.arooa.convert.Joker;
-import org.oddjob.arooa.convert.MockConvertletRegistry;
-import org.oddjob.arooa.convert.NoConversionAvailableException;
+import org.junit.Test;
+import org.oddjob.arooa.*;
+import org.oddjob.arooa.convert.*;
 import org.oddjob.arooa.life.InstantiationContext;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.MockArooaClass;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Arrays;
+
+import static org.hamcrest.Matchers.*;
 
 public class ListDescriptorTest extends Assert {
 
@@ -474,5 +459,35 @@ public class ListDescriptorTest extends Assert {
 				new MockArooaClass(), null);
 		
 		assertEquals(BeanDescriptorB.class, result.getClass());
+	}
+
+	@Test
+	public void testNamespaceMappings() throws URISyntaxException {
+
+		URI uri1 = new URI("test:red");
+
+		ArooaDescriptorBean df1 = new ArooaDescriptorBean();
+		df1.setNamespace(uri1);
+		df1.setPrefix("r");
+
+		URI uri2 = new URI("test:green");
+
+		ArooaDescriptorBean df2 = new ArooaDescriptorBean();
+		df2.setNamespace(uri2);
+		df2.setPrefix("g");
+
+		ClassLoader cl = getClass().getClassLoader();
+
+		ArooaDescriptor test = new ListDescriptor(df1.createDescriptor(cl),
+				df2.createDescriptor(cl));
+
+		assertThat(test.getUriFor("r"), is(uri1));
+		assertThat(test.getPrefixFor(uri1), is("r"));
+		assertThat(test.getUriFor("g"), is(uri2));
+		assertThat(test.getPrefixFor(uri2), is("g"));
+
+		assertThat(test.getPrefixFor(new URI("test:blue")), nullValue());
+
+		assertThat(Arrays.asList(test.getPrefixes()), contains("r", "g"));
 	}
 }

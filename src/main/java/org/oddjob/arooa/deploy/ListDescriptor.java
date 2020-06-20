@@ -5,6 +5,8 @@ import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ClassResolver;
 import org.oddjob.arooa.ElementMappings;
 import org.oddjob.arooa.convert.ConversionProvider;
+import org.oddjob.arooa.parsing.PrefixMappings;
+import org.oddjob.arooa.parsing.SimplePrefixMappings;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 
@@ -23,11 +25,13 @@ import java.util.*;
 public class ListDescriptor implements ArooaDescriptor {
 
 	private final List<ArooaDescriptor> descriptors =
-			new ArrayList<>();
+			new LinkedList<>();
 
 	private final ClassMappingsList mappings = 
 		new ClassMappingsList();
-	
+
+	private final PrefixMappings prefixMappings = new SimplePrefixMappings();
+
 	public ListDescriptor() {
 	}
 	
@@ -44,7 +48,8 @@ public class ListDescriptor implements ArooaDescriptor {
 		if (mappings != null) {
 			this.mappings.addMappings(mappings);
 		}
-		
+
+		prefixMappings.add(descriptor);
 	}
 
 	public int size() {
@@ -92,17 +97,19 @@ public class ListDescriptor implements ArooaDescriptor {
 	
 	@Override
 	public String getPrefixFor(URI namespace) {
-
-		for (ArooaDescriptor descriptor : descriptors) {
-			String prefix = descriptor.getPrefixFor(namespace);
-			if (prefix != null) {
-				return prefix;
-			}
-		}
-		
-		return null;
+		return prefixMappings.getPrefixFor(namespace);
 	}
-	
+
+	@Override
+	public URI getUriFor(String prefix) {
+		return prefixMappings.getUriFor(prefix);
+	}
+
+	@Override
+	public String[] getPrefixes() {
+		return prefixMappings.getPrefixes();
+	}
+
 	@Override
 	public ClassResolver getClassResolver() {
 		return new ClassResolver() {

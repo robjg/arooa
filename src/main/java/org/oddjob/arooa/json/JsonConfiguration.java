@@ -5,10 +5,8 @@ import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.parsing.ArooaContext;
-import org.oddjob.arooa.parsing.ArooaHandler;
 import org.oddjob.arooa.parsing.Location;
-import org.oddjob.arooa.runtime.ConfigurationNode;
-import org.oddjob.arooa.xml.XMLConfiguration;
+import org.oddjob.arooa.parsing.NamespaceMappings;
 
 import javax.json.Json;
 import javax.json.stream.JsonLocation;
@@ -16,7 +14,7 @@ import javax.json.stream.JsonParser;
 import javax.json.stream.JsonParser.Event;
 import java.io.IOException;
 import java.io.StringReader;
-import java.text.ParseException;
+import java.util.Optional;
 
 /**
  * An {@link ArooaConfiguration} based on a source of JSON.
@@ -26,6 +24,8 @@ public class JsonConfiguration implements ArooaConfiguration {
     public static final String ELEMENT_FIELD = "@element";
 
     public static final String TEXT_FIELD = "@text";
+
+    private NamespaceMappings namespaceMappings;
 
     interface SourceFactory {
         JsonParser createInput() throws IOException;
@@ -56,6 +56,11 @@ public class JsonConfiguration implements ArooaConfiguration {
         };
     }
 
+    public JsonConfiguration withNamespaceMappings(NamespaceMappings namespaceMappings) {
+        this.namespaceMappings = namespaceMappings;
+        return this;
+    }
+
     /*
      * (non-Javadoc)
      * @see org.oddjob.arooa.ArooaConfiguration#parse(org.oddjob.arooa.parsing.ArooaContext)
@@ -76,8 +81,13 @@ public class JsonConfiguration implements ArooaConfiguration {
                     toArooaLocation(jsonParser));
         }
 
+        NamespaceMappings namespaceMappings =
+                Optional.ofNullable(this.namespaceMappings)
+                .orElseGet(() -> parentContext.getSession().getArooaDescriptor());
+
         try {
-            ConfigurationTree tree = recurse(jsonParser);
+            ConfigurationTree tree = recurse(jsonParser,
+                    namespaceMappings);
 
             return tree.toConfiguration(sourceFactory::save).parse(parentContext);
         }
@@ -91,9 +101,10 @@ public class JsonConfiguration implements ArooaConfiguration {
         }
     }
 
-    ConfigurationTree recurse(JsonParser jsonParser) throws ArooaParseException {
+    ConfigurationTree recurse(JsonParser jsonParser, NamespaceMappings prefixMapping) throws ArooaParseException {
 
-        ConfigurationTreeBuilder treeBuilder = ConfigurationTreeBuilder.newInstance();
+        ConfigurationTreeBuilder.WithQualifiedTag treeBuilder = ConfigurationTreeBuilder
+                .withTag(prefixMapping);
 
         String key = null;
 
@@ -125,7 +136,7 @@ public class JsonConfiguration implements ArooaConfiguration {
                     if (key == null) {
                         throw new ArooaParseException("No key", toArooaLocation(jsonParser));
                     }
-                    treeBuilder.addChild(key, recurse(jsonParser));
+                    treeBuilder.addChild(key, recurse(jsonParser, prefixMapping));
                     break;
                 case END_OBJECT:
                     return treeBuilder.build();

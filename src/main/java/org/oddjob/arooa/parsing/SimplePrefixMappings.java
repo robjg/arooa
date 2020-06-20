@@ -14,15 +14,17 @@ public class SimplePrefixMappings implements PrefixMappings {
 
 	private final Map<String, URI> byPrefix = new LinkedHashMap<String, URI>();
 
-	public void add(PrefixMappings otherMappings) 
+	@Override
+	public void add(NamespaceMappings otherMappings)
 	throws DuplicateMappingsException {
 		for (String prefix: otherMappings.getPrefixes()) {
 			put(prefix, otherMappings.getUriFor(prefix));
 		}
 		
 	}
-	
-	public void put(String prefix, URI uri) 
+
+	@Override
+	public void put(String prefix, URI uri)
 	throws DuplicateMappingsException {
 		if (uri == null) {
 			throw new NullPointerException("Null URI");
@@ -46,34 +48,19 @@ public class SimplePrefixMappings implements PrefixMappings {
 		byPrefix.put(prefix, uri);
 	}
 
+	@Override
 	public String getPrefixFor(URI uri) {
 		return byUri.get(uri);
 	}
 
+	@Override
 	public URI getUriFor(String prefix) {
 		return byPrefix.get(prefix);
 	}
 
+	@Override
 	public String[] getPrefixes() {
 		return (String[]) byPrefix.keySet().toArray(new String[0]);
 	}
 	
-	public QTag getQName(ArooaElement element) {
-		if (element.getUri() == null) {
-				return new QTag(element.getTag());
-		}
-		
-		String prefix = byUri.get(element.getUri());
-
-		if (prefix == null) {
-			throw new NullPointerException("No prefix for " + element.getUri());
-		}
-		
-		// default NS.
-		if ("".equals(prefix)) {
-			return new QTag(element.getTag());
-		}
-		
-		return new QTag(prefix, element);
-	}
 }

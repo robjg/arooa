@@ -27,315 +27,325 @@ import java.util.*;
  * A bean style implementation of an {@link ArooaDescriptorFactory}.
  * As such it is able to be configured using a {@link StandardArooaParser}.
  *
- * @oddjob.description A definition of an Arooa descriptor.
- * 
- * @oddjob.example
- * 
- * See the Dev Guide. There is an example of a custom descriptor
- * <a href="http://rgordon.co.uk/projects/oddjob/devguide/oddballs.html">here</a>.
- * 
- * @oddjob.example
- * 
- * The descriptor for the JMX client and server. This is the internal descriptor 
- * used by Oddjob.
- * 
- * {@oddjob.xml.resource org/oddjob/jmx/jmx.xml}
- *  
  * @author rob
- *
+ * @oddjob.description A definition of an Arooa descriptor.
+ * @oddjob.example See the Dev Guide. There is an example of a custom descriptor
+ * <a href="http://rgordon.co.uk/projects/oddjob/devguide/oddballs.html">here</a>.
+ * @oddjob.example The descriptor for the JMX client and server. This is the internal descriptor
+ * used by Oddjob.
+ * <p>
+ * {@oddjob.xml.resource org/oddjob/jmx/jmx.xml}
  */
-public class ArooaDescriptorBean 
-implements ArooaDescriptorFactory {
-	
-	/** 
+public class ArooaDescriptorBean
+        implements ArooaDescriptorFactory {
+
+    /**
      * @oddjob.property
-     * @oddjob.description The name space that applies to 
+     * @oddjob.description The name space that applies to
      * all elements defined in definitions.
      * @oddjob.required No.
-	 */
-	private URI namespace;
-	
-	/** 
+     */
+    private URI namespace;
+
+    /**
      * @oddjob.property
      * @oddjob.description The default prefix for the name space.
      * @oddjob.required Yes if name space is provided.
-	 */
-	private String prefix;
-	
-	/** 
-     * @oddjob.property conversions 
+     */
+    private String prefix;
+
+    /**
+     * @oddjob.property conversions
      * @oddjob.description List of class names that must implement
      * the {@link ConversionProvider} interface.
      * @oddjob.required No.
-	 */
-	private List<String> convertlets =
-			new ArrayList<>();
-	
-	/** 
-     * @oddjob.property 
+     */
+    private List<String> convertlets =
+            new ArrayList<>();
+
+    /**
+     * @oddjob.property
      * @oddjob.description A list of {@link BeanDefinition}s for components.
      * @oddjob.required No.
-	 */
-	private List<BeanDefinition> components =
-			new ArrayList<>();
-	
-	/** 
-     * @oddjob.property 
+     */
+    private List<BeanDefinition> components =
+            new ArrayList<>();
+
+    /**
+     * @oddjob.property
      * @oddjob.description A list of {@link BeanDefinition}s for values.
      * @oddjob.required No.
-	 */
-	private List<BeanDefinition> values =
-			new ArrayList<>();
-		
-	/**
-	 * Setter for conversions.
-	 * 
-	 * @param index
-	 * @param convertletProvider
-	 */
-	public void setConversions(int index, 
-			String convertletProvider) {
-		convertlets.add(index, convertletProvider);
-	}
+     */
+    private List<BeanDefinition> values =
+            new ArrayList<>();
 
-	/**
-	 * Setter for components.
-	 *
-	 * @param index The index of the component definition.
-	 * @param component The component definition.
-	 */
-	public void setComponents(int index, BeanDefinition component) {
-		new ListSetterHelper<>(this.components).set(index, component);
-	}
-	
-	/**
-	 * Setter for values.
-	 * 
-	 * @param index The index of the value definition.
-	 * @param value The value definition.
-	 */
-	public void setValues(int index, BeanDefinition value)	{
-		new ListSetterHelper<>(this.values).set(index, value);
-	}
-	
-	/**
-	 * Internal class to hold mappings.
-	 * 
-	 */
-	static class Mappings implements ElementMappings {
-		
-		private final Map<ArooaElement, SimpleArooaClass> mappings =
-				new LinkedHashMap<>();
-			
-		private final Map<ArooaElement, DesignFactory> designs =
-				new LinkedHashMap<>();
-		
-		@Override
-		public ArooaClass mappingFor(ArooaElement element, 
-				InstantiationContext parentContext) {
+    /**
+     * Setter for conversions.
+     *
+     * @param index
+     * @param convertletProvider
+     */
+    public void setConversions(int index,
+                               String convertletProvider) {
+        convertlets.add(index, convertletProvider);
+    }
 
-			SimpleArooaClass identifier = mappings.get(element);
-			if (identifier == null) {
-				return null;
-			}
-			return identifier;
-		}
-		
-		@Override
-		public DesignFactory designFor(ArooaElement element, 
-				InstantiationContext parentContext) {
+    /**
+     * Setter for components.
+     *
+     * @param index     The index of the component definition.
+     * @param component The component definition.
+     */
+    public void setComponents(int index, BeanDefinition component) {
+        new ListSetterHelper<>(this.components).set(index, component);
+    }
 
-			return designs.get(element);
-		}
-		
-		@Override
-		public ArooaElement[] elementsFor(
-				InstantiationContext propertyContext) {
-			return new ElementsForIdentifier(
-					mappings).elementsFor(propertyContext);
-		}
-		
-		@Override
-		public MappingsContents getBeanDoc(ArooaType arooaType) {
-			return new MappingsBeanDoc(mappings);
-		}
-	}
-	
-	private void populateMappings(Mappings mappings, 
-			BeanDefinitions definitions,
-			Map<ArooaClass, BeanDefinition> definitionsMap,
-			ClassLoader classLoader) {
+    /**
+     * Setter for values.
+     *
+     * @param index The index of the value definition.
+     * @param value The value definition.
+     */
+    public void setValues(int index, BeanDefinition value) {
+        new ListSetterHelper<>(this.values).set(index, value);
+    }
 
-		URI namespace = definitions.getNamespace();
-		
-		for (BeanDefinition beanDefinition : definitions.getDefinitions()) {
-			
-			if (beanDefinition.getElement() == null) {
-				throw new ArooaException("No Element in Class Mappings.");
-			}
-			
-			ArooaElement element = new ArooaElement(
-					namespace,
-					beanDefinition.getElement()); 
-			
-			SimpleArooaClass classIdentifier;
-				
-			try {
-				Class<?> theClass = ClassUtils.classFor(
-						beanDefinition.getClassName(),
-						classLoader);
+    /**
+     * Internal class to hold mappings.
+     */
+    static class Mappings implements ElementMappings {
 
-				classIdentifier = new SimpleArooaClass(theClass);
-				
-				mappings.mappings.put(element, classIdentifier);
-			} 
-			catch (ClassNotFoundException e) {
-				throw new ArooaException("Failed loading class for element " +
-						element + " class [" + beanDefinition.getClassName() +
-						"] using class loader [" + classLoader + "]",
-						e);
-			}
-			
-			if (beanDefinition.getDesignFactory() != null) {
-				
-				try {
-					mappings.designs.put(element, 
-							(DesignFactory) ClassUtils.classFor(
-									beanDefinition.getDesignFactory(),
-									classLoader).newInstance());
-				}
-				catch (Exception e) {
-					throw new ArooaException("Failed loading design class for element " +
-							element + " class [" + beanDefinition.getClassName() +
-							"] using class loader [" + classLoader + "]",
-							e);
-				}
-			}
-			
-			definitionsMap.put(classIdentifier, beanDefinition);
-		}
-	}
+        private final Map<ArooaElement, SimpleArooaClass> mappings =
+                new LinkedHashMap<>();
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.oddjob.arooa.deploy.ArooaDescriptorFactory#createDescriptor(java.lang.ClassLoader)
-	 */
-	public ArooaDescriptor createDescriptor(final ClassLoader classLoader) {
+        private final Map<ArooaElement, DesignFactory> designs =
+                new LinkedHashMap<>();
 
-		final Map<ArooaClass, BeanDefinition> beanDefinitions =
-				new HashMap<>();
-		
-		final Map<ArooaClass, ArooaBeanDescriptor> beanDescriptors =
-				new HashMap<>();
-		
-		final Mappings componentMappings= new Mappings();
-			
-		BeanDefinitions components = new BeanDefinitions(
-				namespace, prefix, this.components);
-			
-		populateMappings(componentMappings, components, 
-				beanDefinitions,
-				classLoader);
-		
-		final Mappings valueMappings = new Mappings();
-			
-		BeanDefinitions values = new BeanDefinitions(
-				namespace, prefix, this.values);
+        @Override
+        public ArooaClass mappingFor(ArooaElement element,
+                                     InstantiationContext parentContext) {
 
-		populateMappings(valueMappings, values, 
-				beanDefinitions,
-				classLoader);
+            return mappings.get(element);
+        }
 
-		return new ArooaDescriptor() {
+        @Override
+        public DesignFactory designFor(ArooaElement element,
+                                       InstantiationContext parentContext) {
 
-			@Override
-			public ElementMappings getElementMappings() {
-				return new MappingsSwitch(componentMappings, valueMappings);
-			}
+            return designs.get(element);
+        }
 
-			@Override
-			public ArooaBeanDescriptor getBeanDescriptor(
-					ArooaClass forClass, PropertyAccessor accessor) {
+        @Override
+        public ArooaElement[] elementsFor(
+                InstantiationContext propertyContext) {
+            return new ElementsForIdentifier(
+                    mappings).elementsFor(propertyContext);
+        }
 
-				ArooaBeanDescriptor beanDescriptor = 
-						beanDescriptors.get(forClass);
+        @Override
+        public MappingsContents getBeanDoc(ArooaType arooaType) {
+            return new MappingsBeanDoc(mappings);
+        }
+    }
 
-				if (beanDescriptor != null) {
-					return beanDescriptor;
-				}
-				
-				BeanDefinition beanDefinition = 
-					beanDefinitions.get(forClass);
-				
-				if (beanDefinition == null) {
-					return null;
-				}
-								
-				beanDescriptor = new SupportedBeanDescriptorProvider(
-							).getBeanDescriptor(
-									forClass, accessor);
-				
-				if (beanDescriptor instanceof PropertyDefinitionsHelper) {
+    private void populateMappings(Mappings mappings,
+                                  BeanDefinitions definitions,
+                                  Map<ArooaClass, BeanDefinition> definitionsMap,
+                                  ClassLoader classLoader) {
 
-					((PropertyDefinitionsHelper) 
-							beanDescriptor).mergeFromBeanDefinition(
-									beanDefinition);
-				}
-				
-				beanDescriptors.put(forClass, beanDescriptor);
-				
-				return beanDescriptor;
-			}
+        URI namespace = definitions.getNamespace();
 
-			@Override
-			public ConversionProvider getConvertletProvider() {
-				return registry -> {
-					for (String className: convertlets) {
-						if (className == null) {
-							continue;
-						}
-						ConversionProvider convertletProvider = (ConversionProvider)
-							ClassUtils.instantiate(className, classLoader);
-						convertletProvider.registerWith(registry);
-					}
-				};
-			}
-			
-			@Override
-			public String getPrefixFor(URI namespace) {
-				if (namespace == null) {
-					return null;
-				}
-				
-				if (namespace.equals(getNamespace())) {
-					return getPrefix();
-				}
-				
-				return null;
-			}
+        for (BeanDefinition beanDefinition : definitions.getDefinitions()) {
 
-			@Override
-			public ClassResolver getClassResolver() {
-				return new ClassLoaderClassResolver(classLoader);
-			}
-		};
-	}
+            if (beanDefinition.getElement() == null) {
+                throw new ArooaException("No Element in Class Mappings.");
+            }
 
-	public URI getNamespace() {
-		return namespace;
-	}
+            ArooaElement element = new ArooaElement(
+                    namespace,
+                    beanDefinition.getElement());
 
-	@ArooaAttribute
-	public void setNamespace(URI namespace) {
-		this.namespace = namespace;
-	}
+            SimpleArooaClass classIdentifier;
 
-	public String getPrefix() {
-		return prefix;
-	}
+            try {
+                Class<?> theClass = ClassUtils.classFor(
+                        beanDefinition.getClassName(),
+                        classLoader);
 
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
-	}
-	
+                classIdentifier = new SimpleArooaClass(theClass);
+
+                mappings.mappings.put(element, classIdentifier);
+            } catch (ClassNotFoundException e) {
+                throw new ArooaException("Failed loading class for element " +
+                        element + " class [" + beanDefinition.getClassName() +
+                        "] using class loader [" + classLoader + "]",
+                        e);
+            }
+
+            DesignFactory designFactory = beanDefinition.getDesign();
+
+            if (beanDefinition.getDesignFactory() != null) {
+
+                try {
+                    designFactory = (DesignFactory) ClassUtils.classFor(
+                            beanDefinition.getDesignFactory(),
+                            classLoader).newInstance();
+                } catch (Exception e) {
+                    throw new ArooaException("Failed loading design class for element " +
+                            element + " class [" + beanDefinition.getClassName() +
+                            "] using class loader [" + classLoader + "]",
+                            e);
+                }
+            }
+
+            if (designFactory != null) {
+                mappings.designs.put(element, designFactory);
+            }
+
+            definitionsMap.put(classIdentifier, beanDefinition);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.oddjob.arooa.deploy.ArooaDescriptorFactory#createDescriptor(java.lang.ClassLoader)
+     */
+    public ArooaDescriptor createDescriptor(final ClassLoader classLoader) {
+
+        final Map<ArooaClass, BeanDefinition> beanDefinitions =
+                new HashMap<>();
+
+        final Map<ArooaClass, ArooaBeanDescriptor> beanDescriptors =
+                new HashMap<>();
+
+        final Mappings componentMappings = new Mappings();
+
+        BeanDefinitions components = new BeanDefinitions(
+                namespace, prefix, this.components);
+
+        populateMappings(componentMappings, components,
+                beanDefinitions,
+                classLoader);
+
+        final Mappings valueMappings = new Mappings();
+
+        BeanDefinitions values = new BeanDefinitions(
+                namespace, prefix, this.values);
+
+        populateMappings(valueMappings, values,
+                beanDefinitions,
+                classLoader);
+
+        return new ArooaDescriptor() {
+
+            @Override
+            public ElementMappings getElementMappings() {
+                return new MappingsSwitch(componentMappings, valueMappings);
+            }
+
+            @Override
+            public ArooaBeanDescriptor getBeanDescriptor(
+                    ArooaClass forClass, PropertyAccessor accessor) {
+
+                ArooaBeanDescriptor beanDescriptor =
+                        beanDescriptors.get(forClass);
+
+                if (beanDescriptor != null) {
+                    return beanDescriptor;
+                }
+
+                BeanDefinition beanDefinition =
+                        beanDefinitions.get(forClass);
+
+                if (beanDefinition == null) {
+                    return null;
+                }
+
+                beanDescriptor = new SupportedBeanDescriptorProvider(
+                ).getBeanDescriptor(
+                        forClass, accessor);
+
+                if (beanDescriptor instanceof PropertyDefinitionsHelper) {
+
+                    ((PropertyDefinitionsHelper)
+                            beanDescriptor).mergeFromBeanDefinition(
+                            beanDefinition);
+                }
+
+                beanDescriptors.put(forClass, beanDescriptor);
+
+                return beanDescriptor;
+            }
+
+            @Override
+            public ConversionProvider getConvertletProvider() {
+                return registry -> {
+                    for (String className : convertlets) {
+                        if (className == null) {
+                            continue;
+                        }
+                        ConversionProvider convertletProvider = (ConversionProvider)
+                                ClassUtils.instantiate(className, classLoader);
+                        convertletProvider.registerWith(registry);
+                    }
+                };
+            }
+
+            @Override
+            public String getPrefixFor(URI namespace) {
+                if (namespace == null) {
+                    return null;
+                }
+
+                if (namespace.equals(getNamespace())) {
+                    return getPrefix();
+                }
+
+                return null;
+            }
+
+            @Override
+            public URI getUriFor(String prefix) {
+                if (prefix == null) {
+                    return null;
+                }
+
+                if (prefix.equals(getPrefix())) {
+                    return getNamespace();
+                }
+
+                return null;
+            }
+
+            @Override
+            public String[] getPrefixes() {
+                return Optional.ofNullable(getPrefix())
+                        .map(prefix -> new String[]{prefix})
+                        .orElseGet(() -> new String[0]);
+            }
+
+            @Override
+            public ClassResolver getClassResolver() {
+                return new ClassLoaderClassResolver(classLoader);
+            }
+        };
+    }
+
+    public URI getNamespace() {
+        return namespace;
+    }
+
+    @ArooaAttribute
+    public void setNamespace(URI namespace) {
+        this.namespace = namespace;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
 }
