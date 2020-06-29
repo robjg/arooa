@@ -25,14 +25,20 @@
 	    	rev="${beanutils.version}" conf="default->default" />
 		<dependency org="javax.inject" name="javax.inject" rev="1"
 			conf="default->default" />
+		<dependency org="org.glassfish" name="javax.json" rev="${javax.json.version}"
+			conf="default->default" />
         <dependency org="junit" name="junit" rev="${junit.version}"
 			conf="test->default"/>
+		<dependency org="org.hamcrest" name="hamcrest" rev="${hamcrest.version}"
+			conf="test->default" />
 		<dependency org="org.mockito" name="mockito-all" rev="${mockito.version}"
 			conf="test->default" />
 		<dependency org="org.xmlunit" name="xmlunit-core" rev="${xmlunit.version}" 
 			conf="test->default"/>
         <dependency org="org.xmlunit" name="xmlunit-matchers" rev="${xmlunit.version}" 
             conf="test->default"/>
+		<dependency org="org.skyscreamer" name="jsonassert" rev="${jsonassert.version}"
+			conf="test->default" />
 	</dependencies>
   
 </ivy-module>
