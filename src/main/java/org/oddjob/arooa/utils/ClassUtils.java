@@ -1,11 +1,11 @@
 package org.oddjob.arooa.utils;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.oddjob.arooa.ArooaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.oddjob.arooa.ArooaException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Various utility methods relating to class.
@@ -18,41 +18,43 @@ public class ClassUtils {
 	/**
 	 * Primitive type class names to types.
 	 */
-	private static final Map<String, Class<?>> primitiveNameToTypeMap = 
-			new HashMap<String, Class<?>>(8);
+	private static final Map<String, Class<?>> primitiveNameToTypeMap =
+			new HashMap<>(9);
 	
 	/**
 	 * Primitive type to wrapper class type.
 	 */
-	private static final Map<Class<?>, Class<?>> primitiveTypeToWrapperMap = 
-			new HashMap<Class<?>, Class<?>>(8);
+	private static final Map<Class<?>, Class<?>> primitiveTypeToWrapperMap =
+			new HashMap<>(9);
 
 	/**
 	 * Wrapper class type to primitive type.
 	 */
-	private static final Map<Class<?>, Class<?>> wrapperToPrimitiveTypeMap = 
-			new HashMap<Class<?>, Class<?>>(8);
+	private static final Map<Class<?>, Class<?>> wrapperToPrimitiveTypeMap =
+			new HashMap<>(9);
 	
 	static {
-		Class<?>[] primatives = {
+		Class<?>[] primitives = {
+				void.class,
 				boolean.class, byte.class, char.class, double.class,
 				float.class, int.class, long.class, short.class };
 
 		Class<?>[] wrappers = {
+				Void.class,
 				Boolean.class, Byte.class, Character.class, Double.class,
 				Float.class, Integer.class, Long.class, Short.class };
 		
-		for (int i = 0; i < 8; ++i) {
-			primitiveNameToTypeMap.put(primatives[i].getName(), 
-					primatives[i]);
+		for (int i = 0; i < primitives.length; ++i) {
+			primitiveNameToTypeMap.put(primitives[i].getName(),
+					primitives[i]);
 		}		
 		
-		for (int i = 0; i < 8; ++i) {
-			primitiveTypeToWrapperMap.put(primatives[i], wrappers[i]);
+		for (int i = 0; i < primitives.length; ++i) {
+			primitiveTypeToWrapperMap.put(primitives[i], wrappers[i]);
 		}		
 		
-		for (int i = 0; i < 8; ++i) {
-			wrapperToPrimitiveTypeMap.put(wrappers[i], primatives[i]);
+		for (int i = 0; i < primitives.length; ++i) {
+			wrapperToPrimitiveTypeMap.put(wrappers[i], primitives[i]);
 		}		
 	}
 
@@ -92,7 +94,7 @@ public class ClassUtils {
 	}
 	
 	/**
-	 * Same as Class.forName exception logs the class loader stack before
+	 * Same as {@link Class#forName} except that exception logs the class loader stack before
 	 * crashing.
 	 * 
 	 * @param className
@@ -109,7 +111,7 @@ public class ClassUtils {
 		if (primitiveNameToTypeMap.containsKey(className)) {
 			return primitiveNameToTypeMap.get(className);
 		}
-		
+
 		try {
 			return Class.forName(className, true, loader);
 		}
@@ -123,7 +125,41 @@ public class ClassUtils {
 			throw e;
 		}
 	}
-	
+
+	/**
+	 * String array to class array.
+	 *
+	 * @param classNames The class names.
+	 * @param loader The classloader to use.
+	 *
+	 * @return Class array.
+	 *
+	 * @throws ClassNotFoundException If a class isn't found.
+	 */
+	public static Class<?>[] classesFor(String[] classNames, ClassLoader loader) throws ClassNotFoundException {
+
+		Class<?>[] classes = new Class<?>[classNames.length];
+		for (int i = 0; i < classNames.length; i++) {
+			classes[i] = classFor(classNames[i], loader);
+		}
+
+		return classes;
+	}
+
+	/**
+	 * Convenience method to convert and array of classes to an array of strings.
+	 *
+	 * @param classes The class array.
+	 * @return The strings.
+	 */
+	public static String[] classesToStrings(Class<?>[] classes) {
+		String[] strings = new String[classes.length];
+		for (int i = 0; i < strings.length; ++i) {
+			strings[i] = classes[i].getName();
+		}
+		return strings;
+	}
+
 	/**
 	 * Report an exception and print the class loader stack to the logger.
 	 * 
@@ -155,6 +191,23 @@ public class ClassUtils {
 		} catch (Exception e) {
 			throw new ArooaException("Failed creating class [" + className +"]", e);
 		}
+	}
+
+	/**
+	 * Cast an Object to the type including primitive types. The standard {@link Class#cast(Object)} method
+	 * won't cope with primitive type casting it's wrapper. This simple little bodge gets round that.
+	 *
+	 * @param ignored The class which may be primitive. For type inference only.
+	 * @param object The object wrapper.
+	 *
+	 * @param <T> The type.
+	 *
+	 * @return An object cast to the correct type.
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T cast(Class<T> ignored, Object object) {
+
+		return (T) object;
 	}
 	
 }
