@@ -3,20 +3,17 @@
  */
 package org.oddjob.arooa.registry;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.convert.DefaultConverter;
+import org.oddjob.arooa.convert.NullConversions;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Register components by id and look them up by path. A ComponentRegistry is a
@@ -164,18 +161,18 @@ public class SimpleBeanRegistry implements BeanRegistry {
 			bean = ids.get(breakdown.getId());
 		}
 		if (bean == null) {
-			return null;
+			return NullConversions.nullConversionFor(required);
 		}
 		if (breakdown.isNested()) {
 			if (bean instanceof BeanDirectoryOwner) {
 				BeanDirectory next = ((BeanDirectoryOwner) bean).provideBeanDirectory();
 				if (next == null) {
-					return null;
+					return NullConversions.nullConversionFor(required);
 				}
 				return next.lookup(breakdown.getNestedPath(), required);
 			}
 			else {
-				return null;
+				return NullConversions.nullConversionFor(required);
 			}
 		}
 		else {

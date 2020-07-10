@@ -3,6 +3,7 @@ package org.oddjob.arooa.runtime;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.convert.ArooaConverter;
+import org.oddjob.arooa.convert.NullConversions;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 
 /**
@@ -19,11 +20,11 @@ public class PropertyFirstEvaluator implements Evaluator {
 	throws ArooaPropertyException, ArooaConversionException {
 		
 		if (propertyExpression == null) {
-			return null;
+			return NullConversions.nullConversionFor(cl);
 		}
 		
 		if (propertyExpression.length() == 0) {
-			return null;
+			return NullConversions.nullConversionFor(cl);
 		}
 		
 		String value = session.getPropertyManager().lookup(propertyExpression);

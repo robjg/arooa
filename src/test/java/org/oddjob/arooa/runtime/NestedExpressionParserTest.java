@@ -1,9 +1,7 @@
 package org.oddjob.arooa.runtime;
 
-import org.junit.Test;
-
 import org.junit.Assert;
-
+import org.junit.Test;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.reflect.ArooaNoPropertyException;
@@ -142,6 +140,7 @@ public class NestedExpressionParserTest extends Assert {
 
         checker.assertExpandsTo("", null, Integer.class);
         checker.assertExpandsTo("", 0, int.class);
+        checker.assertExpandsTo("${unassigned}", 0, int.class);
     }
 
     public static class NestedProp {

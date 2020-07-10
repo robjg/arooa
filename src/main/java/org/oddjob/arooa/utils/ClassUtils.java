@@ -209,5 +209,24 @@ public class ClassUtils {
 
 		return (T) object;
 	}
-	
+
+	/**
+	 * Try and work out the simple name from anonymous classes and the like.
+	 * @param cl
+	 * @return
+	 */
+	public static String getSimpleName(Class<?> cl) {
+
+		String simpleName = cl.getSimpleName();
+		if ("".equals(simpleName)) {
+			if (cl.getEnclosingClass() != null) {
+				simpleName = cl.getEnclosingClass().getSimpleName();
+			}
+			else {
+				// Can't work it out just give the full class.
+				simpleName = cl.getName();
+			}
+		}
+		return simpleName;
+	}
 }
