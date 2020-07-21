@@ -1,24 +1,7 @@
 package org.oddjob.arooa.design;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo;
-import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
-
-import java.net.URISyntaxException;
-
 import org.junit.Test;
-import org.oddjob.arooa.ArooaBeanDescriptor;
-import org.oddjob.arooa.ArooaDescriptor;
-import org.oddjob.arooa.ArooaParseException;
-import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ArooaTools;
-import org.oddjob.arooa.ArooaType;
-import org.oddjob.arooa.MockArooaDescriptor;
-import org.oddjob.arooa.MockArooaSession;
+import org.oddjob.arooa.*;
 import org.oddjob.arooa.design.screem.Form;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaContext;
@@ -34,6 +17,12 @@ import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.standard.StandardTools;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
+
+import java.net.URISyntaxException;
+
+import static org.junit.Assert.*;
+import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 public class DesignInstanceBaseTest {
 
@@ -84,6 +73,7 @@ public class DesignInstanceBaseTest {
 	public void testLoadAndSave() throws Exception {
 		
 		ArooaSession session = new StandardArooaSession();
+
 		String xml = "<?xml version='1.0' encoding='UTF-8' standalone='no'?>" + EOL +
 				"<food:snack xmlns:food=\"http://food\">" + EOL +
 				"    <fruit>" + EOL +
@@ -98,7 +88,7 @@ public class DesignInstanceBaseTest {
 		
 		DesignInstance design = designParser.getDesign();
 		
-		XMLArooaParser parser = new XMLArooaParser();
+		XMLArooaParser parser = new XMLArooaParser(session.getArooaDescriptor());
 		
 		parser.parse(design.getArooaContext().getConfigurationNode());
 		
@@ -128,7 +118,7 @@ public class DesignInstanceBaseTest {
 		
 		DesignInstance design = designParser.getDesign();
 		
-		XMLArooaParser parser = new XMLArooaParser();
+		XMLArooaParser parser = new XMLArooaParser(session.getArooaDescriptor());
 		
 		parser.parse(design.getArooaContext().getConfigurationNode());
 		

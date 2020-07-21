@@ -1,10 +1,6 @@
 package org.oddjob.arooa.parsing;
 
-import org.oddjob.arooa.ArooaConfiguration;
-import org.oddjob.arooa.ArooaDescriptor;
-import org.oddjob.arooa.ArooaParseException;
-import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ConfigurationHandle;
+import org.oddjob.arooa.*;
 import org.oddjob.arooa.xml.XMLArooaParser;
 
 /**
@@ -28,11 +24,11 @@ public class ConfigConfigurationSession implements ConfigurationSession {
 
 	private final HandleConfigurationSession delegate;
 	
-	private final ConfigurationHandle handle;
+	private final ConfigurationHandle<?> handle;
 	
 	public ConfigConfigurationSession(ArooaSession session, ArooaConfiguration configuration) {
 		
-		XMLArooaParser parser = new XMLArooaParser();
+		XMLArooaParser parser = new XMLArooaParser(session.getArooaDescriptor());
 		
 		try {
 			handle = parser.parse(configuration);
@@ -46,7 +42,8 @@ public class ConfigConfigurationSession implements ConfigurationSession {
 	
 	public DragPoint dragPointFor(Object component) {
 		
-		return new DragConfiguration(handle.getDocumentContext().getConfigurationNode());
+		return new DragConfiguration(handle.getDocumentContext().getConfigurationNode(),
+				delegate.getArooaDescriptor());
 
 	}
 	

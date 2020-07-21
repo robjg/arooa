@@ -1,11 +1,11 @@
 package org.oddjob.arooa.parsing;
 
-import java.net.URI;
-
 import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaConfigurationException;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
+
+import java.net.URI;
 
 public class QTagConfiguration implements ArooaConfiguration {
 
@@ -14,8 +14,9 @@ public class QTagConfiguration implements ArooaConfiguration {
 	public QTagConfiguration(QTag tag) {
 		this.tag = tag;
 	}
-	
-	public ConfigurationHandle parse(final ArooaContext parentContext) 
+
+	@Override
+	public <P extends ParseContext<P>> ConfigurationHandle<P> parse(final P parentContext)
 	throws ArooaParseException {
 
 		ArooaElement element = tag.getElement();
@@ -23,24 +24,18 @@ public class QTagConfiguration implements ArooaConfiguration {
 		URI uri = element.getUri();
 		
 		if (uri != null) {
-			
 			// Add prefix.
 			parentContext.getPrefixMappings().put(
 					tag.getPrefix(), uri); 
 		}
-		
-		ArooaContext newContext = parentContext.getArooaHandler().onStartElement(element, parentContext);
-		
-		parentContext.getConfigurationNode().insertChild(
-				newContext.getConfigurationNode());
 
-		final int index = parentContext.getConfigurationNode().indexOf(
-				newContext.getConfigurationNode());
+		ParseHandle<P> handle = parentContext.getElementHandler().onStartElement(element, parentContext);
+
+		int index;
 
 		try {
-			newContext.getRuntime().init();
-    	} catch (ArooaConfigurationException e) {
-    		parentContext.getConfigurationNode().removeChild(index);
+			index = handle.init();
+		} catch (ArooaConfigurationException e) {
     		throw new ArooaParseException(
     				"Failed initialising new node.", 
     				new Location("QTag " + tag.toString(), 0, 0),
@@ -53,9 +48,9 @@ public class QTagConfiguration implements ArooaConfiguration {
 				
 				// Should this throw UnsupportedOperationException?
 			}
-			
-			public ArooaContext getDocumentContext() {
-				ChildCatcher childCatcher = new ChildCatcher(
+
+			public P getDocumentContext() {
+				ChildCatcher<P> childCatcher = new ChildCatcher<>(
 						parentContext, index);
 				
 				return childCatcher.getChild();

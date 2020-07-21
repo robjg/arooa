@@ -9,6 +9,7 @@ import org.oddjob.arooa.*;
 import org.oddjob.arooa.deploy.NoAnnotations;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.CutAndPasteSupport;
+import org.oddjob.arooa.parsing.NamespaceMappings;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,13 +59,13 @@ public class XMLConfigurationFileTest {
 
         XMLConfiguration config = new XMLConfiguration(file.toFile());
 
-        XMLArooaParser parser = new XMLArooaParser();
+        XMLArooaParser parser = new XMLArooaParser(NamespaceMappings.empty());
 
         parser.parse(config);
 
         assertThat(parser.getXml(), isSimilarTo("<snack/>" + EOL));
 
-        parser = new XMLArooaParser();
+        parser = new XMLArooaParser(NamespaceMappings.empty());
 
         // should force re-read of the file.
         parser.parse(config);
@@ -137,7 +138,7 @@ public class XMLConfigurationFileTest {
 
         XMLConfiguration configCheck = new XMLConfiguration(file.toFile());
 
-        XMLArooaParser xmlParser = new XMLArooaParser();
+        XMLArooaParser xmlParser = new XMLArooaParser(parser.getSession().getArooaDescriptor());
 
         xmlParser.parse(configCheck);
 
@@ -178,7 +179,7 @@ public class XMLConfigurationFileTest {
 
         XMLConfiguration configCheck = new XMLConfiguration(file.toFile());
 
-        XMLArooaParser xmlParser = new XMLArooaParser();
+        XMLArooaParser xmlParser = new XMLArooaParser(parser.getSession().getArooaDescriptor());
 
         xmlParser.parse(configCheck);
 

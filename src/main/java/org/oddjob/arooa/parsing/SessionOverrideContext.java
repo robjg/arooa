@@ -1,12 +1,13 @@
 package org.oddjob.arooa.parsing;
 
 import org.oddjob.arooa.ArooaSession;
+import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
 /**
  * An {@link ArooaContext} that provides a new session but delegate all other methods
  * to an existing context.
  */
-public class SessionOverrideContext extends OverrideContext {
+public class SessionOverrideContext extends OverrideContext<ArooaContext> implements ArooaContext {
 
 	private final ArooaSession sessionOverride;
 
@@ -20,5 +21,14 @@ public class SessionOverrideContext extends OverrideContext {
 	public ArooaSession getSession() {
 		return sessionOverride;
 	}
-	
+
+	@Override
+	public RuntimeConfiguration getRuntime() {
+		return getExistingContext().getRuntime();
+	}
+
+	@Override
+	public ArooaHandler getArooaHandler() {
+		return getExistingContext().getArooaHandler();
+	}
 }

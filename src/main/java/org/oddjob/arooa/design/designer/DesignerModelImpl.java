@@ -180,7 +180,8 @@ public class DesignerModelImpl extends Observable implements DesignerModel {
 
 		DesignComponent component = currentSelection.getDesignComponent();
 
-		XMLArooaParser parser = new XMLArooaParser();
+		XMLArooaParser parser = new XMLArooaParser(
+				component.getArooaContext().getPrefixMappings());
 
 		ArooaConfiguration config =
 			component.getArooaContext().getConfigurationNode();

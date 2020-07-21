@@ -5,6 +5,7 @@ import org.oddjob.arooa.*;
 import org.oddjob.arooa.deploy.ArooaDescriptorBean;
 import org.oddjob.arooa.deploy.BeanDefinition;
 import org.oddjob.arooa.deploy.ListDescriptor;
+import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.CutAndPasteSupport;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 import org.oddjob.arooa.runtime.ConfigurationNodeEvent;
@@ -70,7 +71,7 @@ public class InlineTypeTest {
         ArooaSession arooaSession = new StandardArooaSession(arooaDescriptor());
 
         StuffBean root = new StuffBean();
-        ConfigurationHandle handle1 = new StandardArooaParser(root, arooaSession )
+        ConfigurationHandle<ArooaContext> handle1 = new StandardArooaParser(root, arooaSession )
                 .parse(new XMLConfiguration("XML", SOME_XML));
         handle1.getDocumentContext().getRuntime().configure();
 
@@ -134,15 +135,15 @@ public class InlineTypeTest {
         final AtomicReference<String> savedXML = new AtomicReference<>();
         config.setSaveHandler(savedXML::set);
 
-        ConfigurationHandle handle = parser.parse(config);
+        ConfigurationHandle<ArooaContext> handle = parser.parse(config);
 
         ArooaSession session = parser.getSession();
 
         session.getComponentPool().configure(bean);
 
-        XMLArooaParser xmlParser = new XMLArooaParser();
+        XMLArooaParser xmlParser = new XMLArooaParser(parser.getSession().getArooaDescriptor());
 
-        ConfigurationHandle xmlHandle = xmlParser.parse(bean.getConfig());
+        ConfigurationHandle<ArooaContext> xmlHandle = xmlParser.parse(bean.getConfig());
 
 
         assertThat(xmlParser.getXml(), isSimilarTo(INNER_CONFIG));
@@ -175,7 +176,7 @@ public class InlineTypeTest {
                         "    </config>\n" +
                         "</stuff>\n";
 
-        XMLArooaParser xmlParser2 = new XMLArooaParser();
+        XMLArooaParser xmlParser2 = new XMLArooaParser(parser.getSession().getArooaDescriptor());
         xmlParser2.parse(handle.getDocumentContext().getConfigurationNode());
         String actualSaved = xmlParser2.getXml();
 

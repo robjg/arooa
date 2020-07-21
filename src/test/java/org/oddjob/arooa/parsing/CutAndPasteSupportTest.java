@@ -1,33 +1,7 @@
 package org.oddjob.arooa.parsing;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo;
-import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.junit.Test;
-import org.oddjob.arooa.ArooaAnnotations;
-import org.oddjob.arooa.ArooaBeanDescriptor;
-import org.oddjob.arooa.ArooaParseException;
-import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ConfigurationHandle;
-import org.oddjob.arooa.ConfiguredHow;
-import org.oddjob.arooa.ElementMappings;
-import org.oddjob.arooa.MockArooaBeanDescriptor;
-import org.oddjob.arooa.MockArooaDescriptor;
-import org.oddjob.arooa.MockElementMappings;
-import org.oddjob.arooa.ParsingInterceptor;
+import org.oddjob.arooa.*;
 import org.oddjob.arooa.convert.ConversionProvider;
 import org.oddjob.arooa.deploy.MappingsSwitch;
 import org.oddjob.arooa.deploy.NoAnnotations;
@@ -38,6 +12,16 @@ import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static org.junit.Assert.*;
+import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 public class CutAndPasteSupportTest {
 
@@ -146,7 +130,7 @@ public class CutAndPasteSupportTest {
 		String expected = "<?xml version='1.0' encoding='UTF-8' standalone='no'?>" + LS +
 				"<snack/>" + LS;
 		
-		XMLArooaParser xmlParser = new XMLArooaParser();
+		XMLArooaParser xmlParser = new XMLArooaParser(NamespaceMappings.empty());
 	
 		xmlParser.parse(
 				session.getComponentPool().contextFor(snack).getConfigurationNode());
@@ -189,7 +173,7 @@ public class CutAndPasteSupportTest {
 				"    </fruit>" + LS + 
 				"</snack>" + LS;
 		
-		XMLArooaParser xmlParser = new XMLArooaParser();
+		XMLArooaParser xmlParser = new XMLArooaParser(NamespaceMappings.empty());
 	
 		xmlParser.parse(
 				session.getComponentPool().contextFor(snack).getConfigurationNode());
@@ -268,7 +252,7 @@ public class CutAndPasteSupportTest {
 				"    </fruit>" + LS + 
 				"</snack>" + LS;
 		
-		XMLArooaParser xmlParser = new XMLArooaParser();
+		XMLArooaParser xmlParser = new XMLArooaParser(NamespaceMappings.empty());
 	
 		xmlParser.parse(
 				session.getComponentPool().contextFor(snack).getConfigurationNode());
@@ -380,7 +364,7 @@ public class CutAndPasteSupportTest {
 		
 		assertEquals(Orange.class, snack.fruit.getClass());
 		
-		XMLArooaParser xmlParser = new XMLArooaParser();
+		XMLArooaParser xmlParser = new XMLArooaParser(NamespaceMappings.empty());
 	
 		xmlParser.parse(
 				session.getComponentPool().contextFor(snack).getConfigurationNode());
@@ -464,7 +448,7 @@ public class CutAndPasteSupportTest {
 				"    </fruit>" + LS + 
 				"</snack>" + LS;
 		
-		XMLArooaParser xmlParser = new XMLArooaParser();
+		XMLArooaParser xmlParser = new XMLArooaParser(NamespaceMappings.empty());
 	
 		xmlParser.parse(
 				session.getComponentPool().contextFor(snack).getConfigurationNode());
@@ -517,7 +501,7 @@ public class CutAndPasteSupportTest {
 				"    </fruit>" + LS + 
 				"</snack>" + LS;
 		
-		XMLArooaParser xmlParser = new XMLArooaParser();
+		XMLArooaParser xmlParser = new XMLArooaParser(NamespaceMappings.empty());
 	
 		xmlParser.parse(
 				session.getComponentPool().contextFor(snack).getConfigurationNode());
@@ -568,7 +552,7 @@ public class CutAndPasteSupportTest {
 				"    </fruit>" + LS + 
 				"</snack>" + LS;
 		
-		XMLArooaParser xmlParser = new XMLArooaParser();
+		XMLArooaParser xmlParser = new XMLArooaParser(NamespaceMappings.empty());
 	
 		xmlParser.parse(
 				session.getComponentPool().contextFor(snack).getConfigurationNode());
@@ -631,7 +615,7 @@ public class CutAndPasteSupportTest {
 				"    </fruit>" + LS + 
 				"</snack>" + LS;
 		
-		XMLArooaParser xmlParser = new XMLArooaParser();
+		XMLArooaParser xmlParser = new XMLArooaParser(NamespaceMappings.empty());
 	
 		xmlParser.parse(
 				session.getComponentPool().contextFor(snack).getConfigurationNode());
@@ -684,7 +668,7 @@ public class CutAndPasteSupportTest {
 				"    </fruit>" + LS + 
 				"</snack>" + LS;
 		
-		XMLArooaParser xmlParser = new XMLArooaParser();
+		XMLArooaParser xmlParser = new XMLArooaParser(NamespaceMappings.empty());
 	
 		xmlParser.parse(
 				session.getComponentPool().contextFor(snack).getConfigurationNode());
@@ -734,7 +718,7 @@ public class CutAndPasteSupportTest {
 				"    </fruit>" + LS + 
 				"</snack>" + LS;
 		
-		XMLArooaParser xmlParser = new XMLArooaParser();
+		XMLArooaParser xmlParser = new XMLArooaParser(session.getArooaDescriptor());
 	
 		xmlParser.parse(
 				session.getComponentPool().contextFor(snack).getConfigurationNode());

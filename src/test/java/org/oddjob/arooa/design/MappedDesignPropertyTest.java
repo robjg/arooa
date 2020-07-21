@@ -1,10 +1,5 @@
 package org.oddjob.arooa.design;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
-
 import org.junit.Test;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaType;
@@ -14,9 +9,13 @@ import org.oddjob.arooa.design.view.ViewMainHelper;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
+import org.oddjob.arooa.parsing.NamespaceMappings;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
+
+import static org.junit.Assert.*;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 public class MappedDesignPropertyTest {
 
@@ -83,12 +82,11 @@ public class MappedDesignPropertyTest {
 		
 		assertEquals(1, test.instanceCount());
 		
-		DesignInstance instance = ((MappedDesignProperty.InstanceWrapper)
-				test.instanceAt(0)).getWrapping();
+		DesignInstance instance = test.instanceAt(0);
 		
 		assertFalse(instance instanceof Unknown);
 		
-		XMLArooaParser xmlParser = new XMLArooaParser();
+		XMLArooaParser xmlParser = new XMLArooaParser(NamespaceMappings.empty());
 		xmlParser.parse(design.getArooaContext().getConfigurationNode());
 		
 		assertThat(xmlParser.getXml(),isSimilarTo(xml));

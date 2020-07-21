@@ -4,9 +4,9 @@ import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
-import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.Location;
 import org.oddjob.arooa.parsing.NamespaceMappings;
+import org.oddjob.arooa.parsing.ParseContext;
 
 import javax.json.Json;
 import javax.json.stream.JsonLocation;
@@ -40,12 +40,12 @@ public class JsonConfiguration implements ArooaConfiguration {
     public JsonConfiguration(String jsonString) {
         this.sourceFactory = new SourceFactory() {
             @Override
-            public JsonParser createInput() throws IOException {
+            public JsonParser createInput() {
                 return Json.createParser(new StringReader(jsonString));
             }
 
             @Override
-            public void save(ArooaConfiguration rootConfiguration) throws ArooaParseException {
+            public void save(ArooaConfiguration rootConfiguration) {
 
             }
 
@@ -65,7 +65,8 @@ public class JsonConfiguration implements ArooaConfiguration {
      * (non-Javadoc)
      * @see org.oddjob.arooa.ArooaConfiguration#parse(org.oddjob.arooa.parsing.ArooaContext)
      */
-    public ConfigurationHandle parse(ArooaContext parentContext)
+    @Override
+    public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parentContext)
             throws ArooaParseException {
 
         JsonParser jsonParser;
@@ -83,18 +84,14 @@ public class JsonConfiguration implements ArooaConfiguration {
 
         NamespaceMappings namespaceMappings =
                 Optional.ofNullable(this.namespaceMappings)
-                .orElseGet(() -> parentContext.getSession().getArooaDescriptor());
+                .orElseGet(parentContext::getPrefixMappings);
 
         try {
             ConfigurationTree tree = recurse(jsonParser,
                     namespaceMappings);
 
             return tree.toConfiguration(sourceFactory::save).parse(parentContext);
-        }
-        catch (ArooaParseException e) {
-            throw e;
-        }
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             throw new ArooaParseException(e.getMessage(),
                     toArooaLocation(jsonParser),
                     e);

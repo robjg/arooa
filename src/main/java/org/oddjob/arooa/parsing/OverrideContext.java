@@ -1,12 +1,7 @@
 package org.oddjob.arooa.parsing;
 
-import org.oddjob.arooa.ArooaParseException;
-import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaType;
-import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.runtime.ConfigurationNode;
-import org.oddjob.arooa.runtime.ConfigurationNodeListener;
-import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
 /**
  * Wraps an {@link ArooaContext} to allow behaviour to be altered. This is 
@@ -15,85 +10,46 @@ import org.oddjob.arooa.runtime.RuntimeConfiguration;
  * @author rob
  *
  */
-public class OverrideContext implements ArooaContext {
+public class OverrideContext<P extends ParseContext<P>> implements ParseContext<P> {
 
-	private final ArooaContext existingContext;
-	 
-	private final ConfigurationNode configurationNode = new ConfigurationNode() {
+	private final P existingContext;
 
-		public void addNodeListener(ConfigurationNodeListener listener) {
-			existingContext.getConfigurationNode().addNodeListener(listener);
-		}
-
-		public void addText(String text) {
-			existingContext.getConfigurationNode().addText(text);		
-		}
-
-		public ArooaContext getContext() {
-			return OverrideContext.this;
-		}
-
-		public int indexOf(ConfigurationNode child) {
-			return existingContext.getConfigurationNode().indexOf(child);
-		}
-
-		public int insertChild(ConfigurationNode child) {
-			return existingContext.getConfigurationNode().insertChild(child);
-		}
-
-		public void removeChild(int index) {
-			existingContext.getConfigurationNode().removeChild(index);
-		}
-
-		public void removeNodeListener(ConfigurationNodeListener listener) {
-			existingContext.getConfigurationNode().removeNodeListener(listener);
-		}
-
-		public void setInsertPosition(int insertAt) {
-			existingContext.getConfigurationNode().setInsertPosition(insertAt);
-		}
-
-		public ConfigurationHandle parse(ArooaContext parentContext)
-				throws ArooaParseException {
-			return existingContext.getConfigurationNode().parse(parentContext);
-		}
-		
-	};
-	
-	public OverrideContext(ArooaContext context) {
+	public OverrideContext(P context) {
 		this.existingContext = context;
 	}
 	
-	protected ArooaContext getExistingContext() {
+	protected P getExistingContext() {
 		return existingContext;
 	}
 
+	@Override
 	public ArooaType getArooaType() {
 		return existingContext.getArooaType();
 	}
 	
-	public ArooaContext getParent() {
+	public P getParent() {
 		return existingContext.getParent();
 	}
-	
-	public ArooaHandler getArooaHandler() {
-		return existingContext.getArooaHandler();
+
+	@Override
+	public ElementHandler<P> getElementHandler() {
+		return existingContext.getElementHandler();
 	}
-	
-	public RuntimeConfiguration getRuntime() {
-		return existingContext.getRuntime();
-	}
-	
+
+	@Override
 	public PrefixMappings getPrefixMappings() {
 		return existingContext.getPrefixMappings();
 	}
-	
-	public ConfigurationNode getConfigurationNode() {
-		return configurationNode;
+
+	@Override
+	public ConfigurationNode<P> getConfigurationNode() {
+		return existingContext.getConfigurationNode();
 	}
-	
-	public ArooaSession getSession() {
-		return existingContext.getSession();
+
+	@Override
+	public void destroy() {
+		existingContext.destroy();
 	}
-	
+
+
 }

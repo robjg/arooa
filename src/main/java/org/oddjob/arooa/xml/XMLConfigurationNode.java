@@ -3,14 +3,10 @@ package org.oddjob.arooa.xml;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
-import org.oddjob.arooa.parsing.AbstractConfigurationNode;
-import org.oddjob.arooa.parsing.ArooaContext;
-import org.oddjob.arooa.parsing.ArooaElement;
-import org.oddjob.arooa.parsing.TextHandler;
+import org.oddjob.arooa.parsing.*;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 
 import java.util.Objects;
-import java.util.function.Supplier;
 
 public class XMLConfigurationNode extends AbstractConfigurationNode {
 
@@ -48,31 +44,30 @@ public class XMLConfigurationNode extends AbstractConfigurationNode {
     public String getText() {
     	return textHandler.getText();
     }
-    	
-	public ConfigurationHandle parse(ArooaContext parseParentContext) throws ArooaParseException {
+
+    @Override
+	public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parseParentContext)
+			throws ArooaParseException {
 		
-		parseParentContext.getPrefixMappings().add(
-				context.getPrefixMappings());
-		
-		final ArooaContext newContext = parseParentContext.getArooaHandler(
-				).onStartElement(element, parseParentContext);
+		ParseHandle<P> handle = parseParentContext.getElementHandler()
+				.onStartElement(element, parseParentContext);
+
+		final P newContext = handle.getContext();
 
 		if (textHandler.getText() != null) {
-			newContext.getConfigurationNode().addText(textHandler.getText());
+			handle.addText(textHandler.getText());
 		}
 		
 		for (ConfigurationNode child: children()) {
 			child.parse(newContext);			
 		}
 		
-		int index = parseParentContext.getConfigurationNode().insertChild(
-				newContext.getConfigurationNode());
+		int index;
 		
 		try {
-			newContext.getRuntime().init();
+			index = handle.init();;
 		}
 		catch (RuntimeException e) {
-			parseParentContext.getConfigurationNode().removeChild(index);
 			throw e;
 		}
 		

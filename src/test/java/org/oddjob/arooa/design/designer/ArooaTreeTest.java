@@ -1,34 +1,23 @@
 package org.oddjob.arooa.design.designer;
 
-import org.junit.Test;
-
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.Action;
-import javax.swing.DropMode;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTree;
-import javax.swing.WindowConstants;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreeSelectionModel;
-
 import org.junit.Assert;
-
+import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.deploy.annotations.ArooaComponent;
+import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.DragContext;
 import org.oddjob.arooa.parsing.DragPoint;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
+
+import javax.swing.*;
+import javax.swing.tree.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ArooaTreeTest extends Assert {
@@ -150,7 +139,7 @@ public class ArooaTreeTest extends Assert {
 		
 		StandardArooaParser parser = new StandardArooaParser(root);
 		
-		final ConfigurationHandle handler = parser.parse(config);
+		final ConfigurationHandle<ArooaContext> handler = parser.parse(config);
 
 		final ArooaSession session = handler.getDocumentContext().getSession();
 		
@@ -228,7 +217,7 @@ public class ArooaTreeTest extends Assert {
 		
 		StandardArooaParser parser = new StandardArooaParser(root);
 		
-		final ConfigurationHandle handler = parser.parse(config);
+		final ConfigurationHandle<ArooaContext> handler = parser.parse(config);
 
 		final ArooaSession session = handler.getDocumentContext().getSession();
 		

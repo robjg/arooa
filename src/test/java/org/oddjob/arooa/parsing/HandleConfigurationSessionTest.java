@@ -1,11 +1,5 @@
 package org.oddjob.arooa.parsing;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
@@ -17,6 +11,12 @@ import org.oddjob.arooa.xml.XMLConfiguration;
 import org.xml.sax.SAXException;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Diff;
+
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class HandleConfigurationSessionTest {
 
@@ -155,7 +155,7 @@ public class HandleConfigurationSessionTest {
 		
 		StandardArooaParser parser = new StandardArooaParser(root);
 
-		ConfigurationHandle handle = parser.parse(config);
+		ConfigurationHandle<ArooaContext> handle = parser.parse(config);
 		
 		HandleConfigurationSession test = 
 			new HandleConfigurationSession(parser.getSession(), handle);

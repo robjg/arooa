@@ -20,36 +20,46 @@ import org.oddjob.arooa.xml.XMLArooaParser;
 public class DragConfiguration implements DragPoint {
 
 	private final ArooaConfiguration configuration;
-	
-	public DragConfiguration(ArooaConfiguration configuration) {
+
+	private final NamespaceMappings namespaceMappings;
+
+	public DragConfiguration(ArooaConfiguration configuration, NamespaceMappings namespaceMappings) {
 		this.configuration = configuration;
+		this.namespaceMappings = namespaceMappings;
 	}
 
+	@Override
 	public DragTransaction beginChange(ChangeHow how) {
 		// Changing a configuration - transaction doesn't apply.
 		return new DragTransaction() {
+			@Override
 			public void commit() {
 			}
+			@Override
 			public void rollback() {
 			}
 		};
 	}
-	
-	public ConfigurationHandle parse(ArooaContext parentContext)
+
+	@Override
+	public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parentContext)
 			throws ArooaParseException {
 		return configuration.parse(parentContext);
 	}
-	
+
+	@Override
 	public boolean supportsPaste() {
 		return false;
 	}
-	
+
+	@Override
 	public boolean supportsCut() {
 		return false;
 	}
-	
+
+	@Override
 	public String copy() {
-		XMLArooaParser xmlParser = new XMLArooaParser();
+		XMLArooaParser xmlParser = new XMLArooaParser(namespaceMappings);
 		
 		try {
 			xmlParser.parse(configuration);
@@ -59,11 +69,13 @@ public class DragConfiguration implements DragPoint {
 		}
 		return xmlParser.getXml();
 	}
-	
+
+	@Override
 	public void cut() {
 		throw new UnsupportedOperationException("Check supportsCut first!");
 	}
-	
+
+	@Override
 	public void paste(int index, String config) {
 		throw new UnsupportedOperationException("Check supportsPaste first!");
 	}

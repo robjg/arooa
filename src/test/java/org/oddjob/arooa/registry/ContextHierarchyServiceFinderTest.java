@@ -1,15 +1,10 @@
 package org.oddjob.arooa.registry;
+
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-
-import javax.inject.Inject;
-
-import org.junit.Assert;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ConfigurationHandle;
@@ -19,6 +14,10 @@ import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
 
 public class ContextHierarchyServiceFinderTest extends Assert {
 
@@ -111,7 +110,7 @@ public class ContextHierarchyServiceFinderTest extends Assert {
 				
 		StandardArooaParser parser = new StandardArooaParser(appleService);
 		
-		ConfigurationHandle handle = parser.parse(
+		ConfigurationHandle<ArooaContext> handle = parser.parse(
 				new XMLConfiguration("XML", xml));
 		
 		ArooaSession session = handle.getDocumentContext().getSession();

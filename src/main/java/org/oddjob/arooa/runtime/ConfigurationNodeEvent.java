@@ -1,5 +1,7 @@
 package org.oddjob.arooa.runtime;
 
+import org.oddjob.arooa.parsing.ParseContext;
+
 import java.util.EventObject;
 import java.util.Objects;
 
@@ -8,13 +10,13 @@ import java.util.Objects;
  *
  * @author rob
  */
-public class ConfigurationNodeEvent extends EventObject {
+public class ConfigurationNodeEvent<P extends ParseContext<P>> extends EventObject {
     private static final long serialVersionUID = 20080205;
 
     /**
      * The child node changed.
      */
-    private final ConfigurationNode child;
+    private final ConfigurationNode<P> child;
 
     /**
      * The position of the change.
@@ -28,9 +30,9 @@ public class ConfigurationNodeEvent extends EventObject {
      * @param index  The index of the child being inserted/removed.
      * @param child  The child being inserted or removed. Never null.
      */
-    public ConfigurationNodeEvent(ConfigurationNode source,
+    public ConfigurationNodeEvent(ConfigurationNode<P> source,
                                   int index,
-                                  ConfigurationNode child) {
+                                  ConfigurationNode<P> child) {
         super(source);
         Objects.requireNonNull(child);
 
@@ -52,7 +54,7 @@ public class ConfigurationNodeEvent extends EventObject {
      *
      * @return The child. Never null.
      */
-    public ConfigurationNode getChild() {
+    public ConfigurationNode<P> getChild() {
         return child;
     }
 
@@ -61,7 +63,8 @@ public class ConfigurationNodeEvent extends EventObject {
      *
      * @return The ConfigurationChange that is the source of the change.
      */
-    public ConfigurationNode getSource() {
-        return (ConfigurationNode) super.getSource();
+    @SuppressWarnings("unchecked")
+    public ConfigurationNode<P> getSource() {
+        return (ConfigurationNode<P>) super.getSource();
     }
 }

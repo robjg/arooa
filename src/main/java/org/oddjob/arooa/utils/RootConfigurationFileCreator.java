@@ -1,20 +1,24 @@
 package org.oddjob.arooa.utils;
 
+import org.oddjob.arooa.ArooaException;
+import org.oddjob.arooa.parsing.ArooaElement;
+import org.oddjob.arooa.parsing.ElementConfiguration;
+import org.oddjob.arooa.parsing.NamespaceMappings;
+import org.oddjob.arooa.xml.XMLArooaParser;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 
-import org.oddjob.arooa.ArooaException;
-import org.oddjob.arooa.parsing.ArooaElement;
-import org.oddjob.arooa.parsing.ElementConfiguration;
-import org.oddjob.arooa.xml.XMLArooaParser;
-
 public class RootConfigurationFileCreator {
 
 	private final ArooaElement rootElement;
-	
-	public RootConfigurationFileCreator(ArooaElement rootElement) {
+
+	private final NamespaceMappings namespaceMappings;
+
+	public RootConfigurationFileCreator(ArooaElement rootElement, NamespaceMappings namespaceMappings) {
 		this.rootElement = rootElement;
+		this.namespaceMappings = namespaceMappings;
 	}
 	
 	/**
@@ -31,7 +35,7 @@ public class RootConfigurationFileCreator {
 		}
 		
 		try {
-			XMLArooaParser xmlParser = new XMLArooaParser();
+			XMLArooaParser xmlParser = new XMLArooaParser(namespaceMappings);
 			xmlParser.parse(new ElementConfiguration(rootElement));			
 			
 			PrintWriter writer = new PrintWriter(new FileWriter(file));

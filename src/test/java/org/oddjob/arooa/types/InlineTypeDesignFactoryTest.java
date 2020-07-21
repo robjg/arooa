@@ -7,10 +7,7 @@ import org.oddjob.arooa.design.*;
 import org.oddjob.arooa.design.screem.Form;
 import org.oddjob.arooa.design.screem.StandardForm;
 import org.oddjob.arooa.design.view.ViewMainHelper;
-import org.oddjob.arooa.parsing.ArooaContext;
-import org.oddjob.arooa.parsing.ArooaElement;
-import org.oddjob.arooa.parsing.SessionOverrideContext;
-import org.oddjob.arooa.parsing.SimplePrefixMappings;
+import org.oddjob.arooa.parsing.*;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.utils.MutablesOverrideSession;
 import org.oddjob.arooa.xml.XMLArooaParser;
@@ -98,7 +95,7 @@ public class InlineTypeDesignFactoryTest {
 
         DesignInstance designInstance = designParser.getDesign();
 
-        XMLArooaParser xmlParser = new XMLArooaParser();
+        XMLArooaParser xmlParser = new XMLArooaParser(NamespaceMappings.empty());
         xmlParser.parse(handle.getDocumentContext().getConfigurationNode());
 
         assertThat(xmlParser.getXml(), isSimilarTo(xml).ignoreWhitespace());
@@ -119,7 +116,7 @@ public class InlineTypeDesignFactoryTest {
 
         StuffDesign design = (StuffDesign) parser.getDesign();
 
-        XMLArooaParser xmlParser = new XMLArooaParser();
+        XMLArooaParser xmlParser = new XMLArooaParser(NamespaceMappings.empty());
 
         xmlParser.parse(design.getArooaContext().getConfigurationNode());
 

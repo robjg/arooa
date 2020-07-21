@@ -1,11 +1,5 @@
 package org.oddjob.arooa.design.view.multitype;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
-
-import javax.swing.table.TableModel;
-
 import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaType;
@@ -14,17 +8,18 @@ import org.oddjob.arooa.design.IndexedDesignProperty;
 import org.oddjob.arooa.design.MappedDesignProperty;
 import org.oddjob.arooa.design.screem.Form;
 import org.oddjob.arooa.design.screem.MultiTypeTable;
-import org.oddjob.arooa.parsing.ArooaContext;
-import org.oddjob.arooa.parsing.ArooaElement;
-import org.oddjob.arooa.parsing.CutAndPasteSupport;
-import org.oddjob.arooa.parsing.MockArooaHandler;
-import org.oddjob.arooa.parsing.QTag;
-import org.oddjob.arooa.parsing.RootContext;
+import org.oddjob.arooa.parsing.*;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.types.BeanType;
 import org.oddjob.arooa.types.ValueType;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
+
+import javax.swing.table.TableModel;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 public class MultiTypeDesignModelTest {
 	
@@ -116,7 +111,7 @@ public class MultiTypeDesignModelTest {
 		
 		table.setValueAt("morning", 0, 1);
 
-		XMLArooaParser parser = new XMLArooaParser();
+		XMLArooaParser parser = new XMLArooaParser(NamespaceMappings.empty());
 		
 		parser.parse(property.getArooaContext().getConfigurationNode());
 

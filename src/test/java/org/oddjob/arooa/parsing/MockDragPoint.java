@@ -6,31 +6,38 @@ import org.oddjob.arooa.registry.ChangeHow;
 
 public class MockDragPoint implements DragPoint {
 
+	@Override
 	public DragTransaction beginChange(ChangeHow how) {
 		throw new RuntimeException("Unexpected from " + getClass());
 	}
 
+	@Override
 	public String copy() {
 		throw new RuntimeException("Unexpected from " + getClass());
 	}
 
+	@Override
 	public void cut() {
 		throw new RuntimeException("Unexpected from " + getClass());
 	}
 
+	@Override
 	public void paste(int index, String config) throws ArooaParseException {
 		throw new RuntimeException("Unexpected from " + getClass());
 	}
 
+	@Override
 	public boolean supportsCut() {
 		throw new RuntimeException("Unexpected from " + getClass());
 	}
 
+	@Override
 	public boolean supportsPaste() {
 		throw new RuntimeException("Unexpected from " + getClass());
 	}
 
-	public ConfigurationHandle parse(ArooaContext parentContext)
+	@Override
+	public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parentContext)
 			throws ArooaParseException {
 		throw new RuntimeException("Unexpected from " + getClass());
 	}

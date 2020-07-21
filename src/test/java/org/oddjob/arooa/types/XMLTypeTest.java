@@ -9,10 +9,7 @@ import org.oddjob.arooa.design.screem.Form;
 import org.oddjob.arooa.design.screem.StandardForm;
 import org.oddjob.arooa.design.view.ViewMainHelper;
 import org.oddjob.arooa.life.SimpleArooaClass;
-import org.oddjob.arooa.parsing.ArooaContext;
-import org.oddjob.arooa.parsing.ArooaElement;
-import org.oddjob.arooa.parsing.ChildCatcher;
-import org.oddjob.arooa.parsing.CutAndPasteSupport;
+import org.oddjob.arooa.parsing.*;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 import org.oddjob.arooa.runtime.ConfigurationNodeEvent;
 import org.oddjob.arooa.runtime.ConfigurationNodeListener;
@@ -216,7 +213,7 @@ public class XMLTypeTest {
 
         HasXMLPropertyDesign design = (HasXMLPropertyDesign) parser.getDesign();
 
-        XMLArooaParser xmlParser = new XMLArooaParser();
+        XMLArooaParser xmlParser = new XMLArooaParser(NamespaceMappings.empty());
 
         xmlParser.parse(design.getArooaContext().getConfigurationNode());
 
@@ -300,9 +297,9 @@ public class XMLTypeTest {
 
         session.getComponentPool().configure(bean);
 
-        XMLArooaParser xmlParser = new XMLArooaParser();
+        XMLArooaParser xmlParser = new XMLArooaParser(NamespaceMappings.empty());
 
-        ConfigurationHandle xmlHandle = xmlParser.parse(bean.ourConfig);
+        ConfigurationHandle<ArooaContext> xmlHandle = xmlParser.parse(bean.ourConfig);
 
         String expected =
                 "<snack>" + EOL +
@@ -321,7 +318,7 @@ public class XMLTypeTest {
         changed.set(false);
 
         CutAndPasteSupport.cut(xmlHandle.getDocumentContext(),
-                new ChildCatcher(xmlHandle.getDocumentContext(), 0).getChild());
+                new ChildCatcher<>(xmlHandle.getDocumentContext(), 0).getChild());
 
         assertFalse(changed.get());
 
@@ -340,7 +337,7 @@ public class XMLTypeTest {
                         " </ourConfig>" +
                         "</whatever>";
 
-        XMLArooaParser xmlParser2 = new XMLArooaParser();
+        XMLArooaParser xmlParser2 = new XMLArooaParser(NamespaceMappings.empty());
 
         xmlParser2.parse(handle.getDocumentContext().getConfigurationNode());
 

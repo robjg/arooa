@@ -1,27 +1,18 @@
 package org.oddjob.arooa.standard;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
-
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.junit.Test;
-import org.oddjob.arooa.ArooaConfiguration;
-import org.oddjob.arooa.ArooaDescriptor;
-import org.oddjob.arooa.ArooaParseException;
-import org.oddjob.arooa.ConfigurationHandle;
-import org.oddjob.arooa.MockConfigurationHandle;
+import org.oddjob.arooa.*;
 import org.oddjob.arooa.deploy.ConfigurationDescriptorFactory;
 import org.oddjob.arooa.deploy.annotations.ArooaComponent;
-import org.oddjob.arooa.parsing.ArooaContext;
-import org.oddjob.arooa.parsing.ArooaElement;
-import org.oddjob.arooa.parsing.CutAndPasteSupport;
-import org.oddjob.arooa.parsing.RootContext;
+import org.oddjob.arooa.parsing.*;
 import org.oddjob.arooa.registry.ComponentPool;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
+
+import java.util.concurrent.atomic.AtomicReference;
+
+import static org.junit.Assert.*;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 public class StandardArooaParserSaveTest {
 
@@ -43,17 +34,15 @@ public class StandardArooaParserSaveTest {
 		
 	private class OrangeConfiguration implements ArooaConfiguration {
 		
-		public ConfigurationHandle parse(ArooaContext parentContext)
+		public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parentContext)
 				throws ArooaParseException {
-			ArooaContext c1 = parentContext.getArooaHandler().onStartElement(
+
+			ParseHandle<P> h = parentContext.getElementHandler().onStartElement(
 					new ArooaElement("orange"), parentContext);
 
-			parentContext.getConfigurationNode().insertChild(
-					c1.getConfigurationNode());
+			h.init();
 			
-			c1.getRuntime().init();
-			
-			return new MockConfigurationHandle() {
+			return new MockConfigurationHandle<P>() {
 			};
 		}
 	}
@@ -89,7 +78,7 @@ public class StandardArooaParserSaveTest {
 		
 		parser.parse(config);
 
-		XMLArooaParser parser2 = new XMLArooaParser();
+		XMLArooaParser parser2 = new XMLArooaParser(descriptor);
 		
 		ArooaContext contextForRoot = parser.getSession().getComponentPool().contextFor(
 				root);
@@ -270,12 +259,12 @@ public class StandardArooaParserSaveTest {
 		StandardArooaParser parser = new StandardArooaParser(root,
 				descriptor);
 		
-		ConfigurationHandle handle1 = parser.parse(config);
+		ConfigurationHandle<ArooaContext> handle1 = parser.parse(config);
 		
 		StandardArooaParser parser2 = new StandardArooaParser(root,
 				descriptor);
 		
-		ConfigurationHandle handle2 = parser2.parse(
+		ConfigurationHandle<ArooaContext> handle2 = parser2.parse(
 				handle1.getDocumentContext().getConfigurationNode());
 		
 		ArooaContext rootContext = handle2.getDocumentContext();

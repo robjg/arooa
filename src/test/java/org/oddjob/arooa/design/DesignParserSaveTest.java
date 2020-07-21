@@ -1,13 +1,5 @@
 package org.oddjob.arooa.design;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo;
-
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.StreamSupport;
-
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
@@ -26,6 +18,12 @@ import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.StreamSupport;
+
+import static org.junit.Assert.*;
+import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo;
 
 public class DesignParserSaveTest {
 
@@ -226,7 +224,7 @@ public class DesignParserSaveTest {
 
         XMLConfiguration config = new XMLConfiguration("TEST", xml);
 
-        ConfigurationHandle standardHandle = standardParser.parse(config);
+        ConfigurationHandle<ArooaContext> standardHandle = standardParser.parse(config);
 
         // Component initialised
         assertEquals(1, snack.count);
@@ -243,7 +241,7 @@ public class DesignParserSaveTest {
                 standardParser.getSession(), new SnackDesignF());
         designParser.setArooaType(ArooaType.COMPONENT);
 
-        ConfigurationHandle designHandle = designParser.parse(
+        ConfigurationHandle<ArooaContext> designHandle = designParser.parse(
                 standardHandle.getDocumentContext().getConfigurationNode());
 
         // No destroys yet.
@@ -269,8 +267,7 @@ public class DesignParserSaveTest {
                                 e.getCause().getMessage());
         }
 
-        // destroy has been called twice?
-        assertEquals(-1, snack.count);
+        assertEquals(0, snack.count);
 
         // Only one component
         assertThat(StreamSupport.stream(
@@ -291,12 +288,12 @@ public class DesignParserSaveTest {
         assertThat(savedXML.get(), isIdenticalTo(xml));
 
         // no more destroys yet.
-        assertEquals(-1, snack.count);
+        assertEquals(0, snack.count);
 
         standardHandle.getDocumentContext().getRuntime().destroy();
 
         // destroy reduces the count again
-        assertEquals(-2, snack.count);
+        assertEquals(-1, snack.count);
 
     }
 }

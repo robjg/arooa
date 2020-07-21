@@ -247,7 +247,7 @@ public class DesignParserTest {
 		
 		assertEquals ("apple", design.getId());
 		
-		XMLArooaParser xmlParser = new XMLArooaParser();
+		XMLArooaParser xmlParser = new XMLArooaParser(descriptor);
 		
 		xmlParser.parse(design.getArooaContext().getConfigurationNode());
 		

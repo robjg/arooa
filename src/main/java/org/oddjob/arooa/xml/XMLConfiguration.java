@@ -3,23 +3,12 @@
  */
 package org.oddjob.arooa.xml;
 
-import java.io.ByteArrayInputStream;
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-
 import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
-import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.Location;
+import org.oddjob.arooa.parsing.ParseContext;
 import org.oddjob.arooa.parsing.ParsingSession;
 import org.oddjob.arooa.parsing.ParsingSessionRollback;
 import org.oddjob.arooa.runtime.ConfigurationNode;
@@ -27,6 +16,9 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
+
+import java.io.*;
+import java.net.URL;
 
 /**
  * An {@link ArooaConfiguration} that wraps some XML data and
@@ -56,9 +48,10 @@ public class XMLConfiguration implements ArooaConfiguration {
 		void save(ConfigurationNode rootConfigurationNode) throws ArooaParseException;
 	}
 
+	@FunctionalInterface
 	public interface SaveHandler {
 		
-		public void acceptXML(String xml);
+		void acceptXML(String xml);
 	}
 	
 	/** The source factory created on construction. */
@@ -262,7 +255,8 @@ public class XMLConfiguration implements ArooaConfiguration {
 	 * (non-Javadoc)
 	 * @see org.oddjob.arooa.ArooaConfiguration#parse(org.oddjob.arooa.parsing.ArooaContext)
 	 */
-	public ConfigurationHandle parse(ArooaContext parentContext) 
+	@Override
+	public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parentContext)
 	throws ArooaParseException {
 	
 		CloseableInputSource inputSource = null;
@@ -274,7 +268,7 @@ public class XMLConfiguration implements ArooaConfiguration {
 
         ParsingSessionRollback rollback = ParsingSession.begin();
 
-    	final SAXHandler xmlHandler = new SAXHandler(parentContext);
+    	final SAXHandler<P> xmlHandler = new SAXHandler<>(parentContext);
 
         try {
             /**
@@ -333,13 +327,13 @@ public class XMLConfiguration implements ArooaConfiguration {
 			}
         }
         
-        return new ConfigurationHandle() { 
+        return new ConfigurationHandle<P>() {
         	public void save() throws ArooaParseException {
         		sourceFactory.save(
         				xmlHandler.getDocumentContext().getConfigurationNode());
         	}
         	
-        	public ArooaContext getDocumentContext() {
+        	public P getDocumentContext() {
         		return xmlHandler.getDocumentContext();
         	}
         };
@@ -350,7 +344,7 @@ public class XMLConfiguration implements ArooaConfiguration {
 			throw new NullPointerException("No Configuration To Save.");
 		}
 		
-		XMLArooaParser parser = new XMLArooaParser();
+		XMLArooaParser parser = new XMLArooaParser(rootConfigurationNode.getContext().getPrefixMappings());
 		
 		parser.parse(
 				rootConfigurationNode);

@@ -1,25 +1,10 @@
 package org.oddjob.arooa.design.view.multitype;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import javax.swing.Action;
-import javax.swing.ActionMap;
-
 import org.junit.Test;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.deploy.ConfigurationDescriptorFactory;
-import org.oddjob.arooa.design.DesignFactory;
-import org.oddjob.arooa.design.DesignInstance;
-import org.oddjob.arooa.design.DesignParser;
-import org.oddjob.arooa.design.DesignProperty;
-import org.oddjob.arooa.design.DesignValueBase;
-import org.oddjob.arooa.design.MappedDesignProperty;
+import org.oddjob.arooa.design.*;
 import org.oddjob.arooa.design.screem.Form;
 import org.oddjob.arooa.design.screem.MultiTypeTable;
 import org.oddjob.arooa.design.screem.StandardForm;
@@ -33,6 +18,14 @@ import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 import org.xml.sax.SAXException;
 import org.xmlunit.matchers.CompareMatcher;
+
+import javax.swing.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class MultiTypeTableWidgetTest {
 
@@ -124,9 +117,11 @@ public class MultiTypeTableWidgetTest {
 	
    @Test
 	public void testSwapActions() throws ArooaParseException, SAXException, IOException {
-		
+
+   		ArooaDescriptor descriptor = createDescriptor();
+
 		DesignParser designParser = new DesignParser(
-				new StandardArooaSession(createDescriptor()));
+				new StandardArooaSession(descriptor));
 		
 		String xml = 
 				"<fruit:snack xmlns:fruit='oddjob:fruit'>" +
@@ -199,7 +194,7 @@ public class MultiTypeTableWidgetTest {
 		assertEquals(true, up.isEnabled());
 		assertEquals(true, down.isEnabled());
 		
-		XMLArooaParser parser = new XMLArooaParser();
+		XMLArooaParser parser = new XMLArooaParser(descriptor);
 		
 		parser.parse(design.getArooaContext().getConfigurationNode());
 		

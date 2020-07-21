@@ -1,22 +1,7 @@
 package org.oddjob.arooa.design.designer;
 
-import org.junit.Test;
-
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.JComponent;
-import javax.swing.TransferHandler;
-import javax.swing.TransferHandler.TransferSupport;
-
 import org.junit.Assert;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.Test;
 import org.oddjob.arooa.ArooaConfigurationException;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
@@ -29,6 +14,17 @@ import org.oddjob.arooa.parsing.DragPoint;
 import org.oddjob.arooa.registry.ComponentPool;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import javax.swing.TransferHandler.TransferSupport;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ArooaTransferHandlerIdsTest extends Assert {
 	private static final Logger logger = LoggerFactory.getLogger(ArooaTransferHandlerIdsTest.class);
@@ -106,7 +102,7 @@ public class ArooaTransferHandlerIdsTest extends Assert {
 
 		StandardArooaParser parser = new StandardArooaParser(root);
 		
-		ConfigurationHandle handle = parser.parse(new XMLConfiguration("XML", xml));
+		ConfigurationHandle<ArooaContext> handle = parser.parse(new XMLConfiguration("XML", xml));
 		
 		ArooaSession session = parser.getSession();
 		
@@ -217,7 +213,7 @@ public class ArooaTransferHandlerIdsTest extends Assert {
 		
 		StandardArooaParser parser = new StandardArooaParser(root);
 		
-		ConfigurationHandle handle = parser.parse(new XMLConfiguration("XML", xml));
+		ConfigurationHandle<ArooaContext> handle = parser.parse(new XMLConfiguration("XML", xml));
 		
 		ArooaSession session = parser.getSession();
 		

@@ -1,13 +1,7 @@
 package org.oddjob.arooa.parsing;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Assert;
-
+import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ConfigurationHandle;
@@ -15,6 +9,9 @@ import org.oddjob.arooa.deploy.annotations.ArooaComponent;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.utils.ListSetterHelper;
 import org.oddjob.arooa.xml.XMLConfiguration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CutAndPasteSupport3Test extends Assert {
 
@@ -54,7 +51,7 @@ public class CutAndPasteSupport3Test extends Assert {
 
         StandardArooaParser parser = new StandardArooaParser(root);
 
-        ConfigurationHandle handle = parser.parse(new XMLConfiguration("XML", xml));
+        ConfigurationHandle<ArooaContext> handle = parser.parse(new XMLConfiguration("XML", xml));
 
         CutAndPasteSupport test = new CutAndPasteSupport(handle.getDocumentContext());
 
@@ -94,7 +91,7 @@ public class CutAndPasteSupport3Test extends Assert {
 
         StandardArooaParser parser = new StandardArooaParser(root);
 
-        ConfigurationHandle handle = parser.parse(new XMLConfiguration("XML", xml));
+        ConfigurationHandle<ArooaContext> handle = parser.parse(new XMLConfiguration("XML", xml));
 
         CutAndPasteSupport test = new CutAndPasteSupport(handle.getDocumentContext());
 

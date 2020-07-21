@@ -2,6 +2,7 @@ package org.oddjob.arooa.runtime;
 
 import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.parsing.ArooaContext;
+import org.oddjob.arooa.parsing.ParseContext;
 
 /**
  * Encapsulates structure and values of a configuration. It must preserve
@@ -10,28 +11,28 @@ import org.oddjob.arooa.parsing.ArooaContext;
  * @author rob
  *
  */
-public interface ConfigurationNode extends ArooaConfiguration {
+public interface ConfigurationNode<P extends ParseContext<P>> extends ArooaConfiguration {
 
 	/**
 	 * Get the associated {@link ArooaContext} for this node. 
 	 * 
 	 * @return The ArooaContext. Never null.
 	 */
-	ArooaContext getContext();
+	P getContext();
 	
 	/**
 	 * Add a listener to listen to configuration changes.
 	 * 
 	 * @param listener A listener.
 	 */
-	void addNodeListener(ConfigurationNodeListener listener);
+	void addNodeListener(ConfigurationNodeListener<P> listener);
 	
 	/**
 	 * Remove a listener.
 	 * 
 	 * @param listener A listener.
 	 */
-	void removeNodeListener(ConfigurationNodeListener listener);
+	void removeNodeListener(ConfigurationNodeListener<P> listener);
 	
 	/**
 	 * Set the position for the next inserted node.
@@ -47,7 +48,7 @@ public interface ConfigurationNode extends ArooaConfiguration {
 	 * 
 	 * @return The insert position. 
 	 */
-	int insertChild(ConfigurationNode child);
+	int insertChild(ConfigurationNode<P> child);
 	
 	/**
 	 * Remove a child.
@@ -71,6 +72,6 @@ public interface ConfigurationNode extends ArooaConfiguration {
 	 * 
 	 * @return The index, or -1 if the node is not a child.
 	 */
-	int indexOf(ConfigurationNode child);
+	int indexOf(ConfigurationNode<P> child);
 		
 }

@@ -9,71 +9,78 @@ import java.util.function.Consumer;
 
 /**
  * Capture the child context of a current context;
- * 
- * @author rob
  *
+ * @author rob
  */
-public class ChildCatcher {
+public class ChildCatcher<P extends ParseContext<P>> {
 
-	private ArooaContext child;
-	
-	public ChildCatcher(ArooaContext parentContext, final int index) {
-		
-		ConfigurationNodeListener listener = new ConfigurationNodeListener() {
-			public void childInserted(
-					ConfigurationNodeEvent nodeEvent) {
-				if (nodeEvent.getIndex() == index) {
-					child = nodeEvent.getChild().getContext();
-				}
-			}
+    private P child;
 
-			public void childRemoved(
-					ConfigurationNodeEvent nodeEvent) {
-				throw new RuntimeException(
-						"Unexpected - this listener should listen long enough!");
-			}
-			
-			public void insertRequest(ConfigurationNodeEvent nodeEvent)
-					throws ModificationRefusedException {
-			}
+    public ChildCatcher(P parentContext, final int index) {
 
-			public void removalRequest(ConfigurationNodeEvent nodeEvent)
-					throws ModificationRefusedException {
-			}
-		};
-		
-		parentContext.getConfigurationNode().addNodeListener(listener);
-		parentContext.getConfigurationNode().removeNodeListener(listener);			
-	}
-	
-	/**
-	 * The child context.
-	 * 
-	 * @return The context. Null if no child exists.
-	 */
-	public ArooaContext getChild() {
-		return child;
-	}
+        ConfigurationNodeListener<P> listener = new ConfigurationNodeListener<P>() {
+            public void childInserted(
+                    ConfigurationNodeEvent<P> nodeEvent) {
+                if (nodeEvent.getIndex() == index) {
+                    child = nodeEvent.getChild().getContext();
+                }
+            }
+
+            public void childRemoved(
+                    ConfigurationNodeEvent<P> nodeEvent) {
+                throw new RuntimeException(
+                        "Unexpected - this listener should listen long enough!");
+            }
+
+            public void insertRequest(ConfigurationNodeEvent<P> nodeEvent)
+                    throws ModificationRefusedException {
+            }
+
+            public void removalRequest(ConfigurationNodeEvent<P> nodeEvent)
+                    throws ModificationRefusedException {
+            }
+        };
+
+        parentContext.getConfigurationNode().addNodeListener(listener);
+        parentContext.getConfigurationNode().removeNodeListener(listener);
+    }
+
+    /**
+     * The child context.
+     *
+     * @return The context. Null if no child exists.
+     */
+    public P getChild() {
+        return child;
+    }
 
 
-	public static void watchRootContext(ArooaContext rootContext,
-										Consumer<ArooaContext> childContextConsumer) {
-		Objects.requireNonNull(childContextConsumer);
+    public static <P extends ParseContext<P>> void watchRootContext(P rootContext,
+                                                                    Consumer<P> childContextConsumer) {
+        Objects.requireNonNull(childContextConsumer);
 
-		rootContext.getConfigurationNode().addNodeListener(new ConfigurationNodeListener() {
-			public void childInserted(ConfigurationNodeEvent nodeEvent) {
-				childContextConsumer.accept(nodeEvent.getChild().getContext());
-			}
-			public void childRemoved(ConfigurationNodeEvent nodeEvent) {
-				childContextConsumer.accept(null);
-			}
-			public void insertRequest(ConfigurationNodeEvent nodeEvent)
-					throws ModificationRefusedException {
-			}
-			public void removalRequest(ConfigurationNodeEvent nodeEvent)
-					throws ModificationRefusedException {
-			}
-		});
-	}
+        rootContext.getConfigurationNode().addNodeListener(
+                new ConfigurationNodeListener<P>() {
+                    @Override
+                    public void childInserted(ConfigurationNodeEvent<P> nodeEvent) {
+                        childContextConsumer.accept(nodeEvent.getChild().getContext());
+                    }
+
+                    @Override
+                    public void childRemoved(ConfigurationNodeEvent<P> nodeEvent) {
+                        childContextConsumer.accept(null);
+                    }
+
+                    @Override
+                    public void insertRequest(ConfigurationNodeEvent<P> nodeEvent)
+                            throws ModificationRefusedException {
+                    }
+
+                    @Override
+                    public void removalRequest(ConfigurationNodeEvent<P> nodeEvent)
+                            throws ModificationRefusedException {
+                    }
+                });
+    }
 
 }

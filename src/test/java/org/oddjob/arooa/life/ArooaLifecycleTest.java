@@ -1,16 +1,9 @@
 package org.oddjob.arooa.life;
+
+import org.junit.Assert;
 import org.junit.Before;
-
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.oddjob.arooa.ArooaConfigurationException;
-import org.oddjob.arooa.ArooaParseException;
-import org.oddjob.arooa.ArooaParser;
-import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ConfigurationHandle;
+import org.oddjob.arooa.*;
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.deploy.annotations.ArooaComponent;
 import org.oddjob.arooa.parsing.ArooaContext;
@@ -21,7 +14,8 @@ import org.oddjob.arooa.runtime.RuntimeListener;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-import org.junit.Assert;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ArooaLifecycleTest extends Assert {
 
@@ -108,7 +102,7 @@ public class ArooaLifecycleTest extends Assert {
 		
 		ArooaParser parser = new StandardArooaParser(capture);
 
-		ConfigurationHandle handle = parser.parse(new XMLConfiguration("XML", 
+		ConfigurationHandle<ArooaContext> handle = parser.parse(new XMLConfiguration("XML",
 				xml	));
 		
 		ArooaSession session = handle.getDocumentContext().getSession();
@@ -162,7 +156,7 @@ public class ArooaLifecycleTest extends Assert {
 		
 		ArooaParser parser = new StandardArooaParser(root);
 
-		ConfigurationHandle handle = parser.parse(new XMLConfiguration("XML", 
+		ConfigurationHandle<ArooaContext> handle = parser.parse(new XMLConfiguration("XML",
 				xml	));
 		
 		ArooaSession session = handle.getDocumentContext().getSession();
@@ -220,7 +214,7 @@ public class ArooaLifecycleTest extends Assert {
 		
 		ArooaParser parser = new StandardArooaParser(root);
 
-		ConfigurationHandle handle = parser.parse(new XMLConfiguration("XML", 
+		ConfigurationHandle<ArooaContext> handle = parser.parse(new XMLConfiguration("XML",
 				xml	));
 		
 		ArooaSession session = handle.getDocumentContext().getSession();
@@ -275,7 +269,7 @@ public class ArooaLifecycleTest extends Assert {
 		
 		ArooaParser parser = new StandardArooaParser(root);
 
-		ConfigurationHandle handle = parser.parse(new XMLConfiguration("XML", 
+		ConfigurationHandle<ArooaContext> handle = parser.parse(new XMLConfiguration("XML",
 				xml	));
 		
 		ArooaSession session = handle.getDocumentContext().getSession();

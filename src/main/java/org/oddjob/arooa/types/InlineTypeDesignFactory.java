@@ -60,7 +60,7 @@ class InlineDesignInstance implements DesignInstance {
         }
 
         ArooaContext childContext =
-                new ChildCatcher(thisContext, 0).getChild();
+                new ChildCatcher<>(thisContext, 0).getChild();
 
         ArooaConfiguration configuration;
 
@@ -68,7 +68,7 @@ class InlineDesignInstance implements DesignInstance {
             try {
                 new ElementConfiguration(configurationDefinition.rootElement()).parse(thisContext);
                 childContext =
-                        new ChildCatcher(thisContext, 0).getChild();
+                        new ChildCatcher<>(thisContext, 0).getChild();
             } catch (ArooaParseException e) {
                 throw new RuntimeException(e);
             }

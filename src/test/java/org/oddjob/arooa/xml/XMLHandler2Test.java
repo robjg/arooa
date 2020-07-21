@@ -1,17 +1,12 @@
 package org.oddjob.arooa.xml;
 
-import static org.junit.Assert.assertThat;
-import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
+import org.junit.Test;
+import org.oddjob.arooa.parsing.*;
 
 import java.net.URI;
 
-import org.junit.Test;
-import org.oddjob.arooa.parsing.ArooaContext;
-import org.oddjob.arooa.parsing.ArooaElement;
-import org.oddjob.arooa.parsing.MockArooaContext;
-import org.oddjob.arooa.parsing.MutableAttributes;
-import org.oddjob.arooa.parsing.PrefixMappings;
-import org.oddjob.arooa.parsing.SimplePrefixMappings;
+import static org.junit.Assert.assertThat;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 public class XMLHandler2Test {
 
@@ -248,7 +243,7 @@ public class XMLHandler2Test {
 
 		assertThat(test.getXml(), isSimilarTo(expected));
 	
-		XMLArooaParser parser = new XMLArooaParser();
+		XMLArooaParser parser = new XMLArooaParser(NamespaceMappings.empty());
 		
 		parser.parse(context1.getConfigurationNode());
 		

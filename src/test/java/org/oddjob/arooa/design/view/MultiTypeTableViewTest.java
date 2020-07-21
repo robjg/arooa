@@ -286,10 +286,10 @@ public class MultiTypeTableViewTest extends Assert {
     public void testViewStartUp() throws ArooaParseException {
 
         String xml =
-                "<stuff xmlns:f='http://fruit.com'>" +
+                "<stuff xmlns:fruit='http://fruit'>" +
                         "  <fruit>" +
-                        "    <f:apple/>" +
-                        "    <f:orange/>" +
+                        "    <fruit:apple/>" +
+                        "    <fruit:orange/>" +
                         "  </fruit>" +
                         "</stuff>";
 

@@ -1,14 +1,5 @@
 package org.oddjob.arooa.standard;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
@@ -17,6 +8,12 @@ import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.CutAndPasteSupport;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
+import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo;
 
 public class StandardConfigurationNodeX2Test {
 
@@ -69,9 +66,9 @@ public class StandardConfigurationNodeX2Test {
         ArooaContext childContext = parser.getSession(
         ).getComponentPool().contextFor(root.children.get(0));
 
-        XMLArooaParser xmlParser = new XMLArooaParser();
+        XMLArooaParser xmlParser = new XMLArooaParser(parser.getSession().getArooaDescriptor());
 
-        ConfigurationHandle handle = xmlParser.parse(
+        ConfigurationHandle<ArooaContext> handle = xmlParser.parse(
                 childContext.getConfigurationNode());
 
         ArooaContext xmlDoc = handle.getDocumentContext();
@@ -117,9 +114,9 @@ public class StandardConfigurationNodeX2Test {
         ArooaContext childContext = parser.getSession(
         ).getComponentPool().contextFor(root.children.get(0));
 
-        XMLArooaParser xmlParser = new XMLArooaParser();
+        XMLArooaParser xmlParser = new XMLArooaParser(parser.getSession().getArooaDescriptor());
 
-        ConfigurationHandle handle = xmlParser.parse(
+        ConfigurationHandle<ArooaContext> handle = xmlParser.parse(
                 childContext.getConfigurationNode());
 
         ArooaContext xmlDoc = handle.getDocumentContext();
@@ -134,7 +131,7 @@ public class StandardConfigurationNodeX2Test {
             // expected.
         }
 
-        XMLArooaParser xmlParser2 = new XMLArooaParser();
+        XMLArooaParser xmlParser2 = new XMLArooaParser(parser.getSession().getArooaDescriptor());
 
         xmlParser2.parse(parser.getSession(
         ).getComponentPool().contextFor(root).getConfigurationNode());
@@ -186,7 +183,7 @@ public class StandardConfigurationNodeX2Test {
                 "    </child>" + EOL +
                 "</component>" + EOL;
 
-        ConfigurationHandle handle = parser.parse(
+        ConfigurationHandle<ArooaContext> handle = parser.parse(
                 new XMLConfiguration("TEST", xml));
 
         ArooaContext rootContext = parser.getSession()
@@ -210,7 +207,7 @@ public class StandardConfigurationNodeX2Test {
 
         assertNotNull(replaceResult.getException());
 
-        XMLArooaParser xmlParser2 = new XMLArooaParser();
+        XMLArooaParser xmlParser2 = new XMLArooaParser(parser.getSession().getArooaDescriptor());
 
         xmlParser2.parse(parser.getSession()
                                .getComponentPool()

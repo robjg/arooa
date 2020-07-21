@@ -1,30 +1,20 @@
 package org.oddjob.arooa.design.designer;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import javax.swing.Action;
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.design.DesignComponent;
 import org.oddjob.arooa.design.Unknown;
-import org.oddjob.arooa.design.actions.AbstractArooaAction;
-import org.oddjob.arooa.design.actions.ActionContributor;
-import org.oddjob.arooa.design.actions.ActionMenu;
-import org.oddjob.arooa.design.actions.ActionRegistry;
-import org.oddjob.arooa.design.actions.ArooaAction;
+import org.oddjob.arooa.design.actions.*;
 import org.oddjob.arooa.design.etc.UnknownInstance;
+import org.oddjob.arooa.parsing.NamespaceMappings;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 /**
  * Provides the designers 'View As XML' and 'View As Component' actions.
@@ -58,11 +48,8 @@ public class ViewActionsContributor implements ActionContributor {
 	private ActionListener delegate;
 	
 	public ViewActionsContributor(final DesignerModel model) {
-		model.addPropertyChangeListener("currentComponent", new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				updateActions(model);
-			}
-		});
+		model.addPropertyChangeListener("currentComponent",
+				evt -> updateActions(model));
 		updateActions(model);
 	}
 	
@@ -83,6 +70,7 @@ public class ViewActionsContributor implements ActionContributor {
 
 		DesignComponent currentComponent = model.getCurrentComponent();
 
+
 		if (currentComponent == null) {
 			viewAction.setEnabled(false);
 		}
@@ -93,48 +81,46 @@ public class ViewActionsContributor implements ActionContributor {
 				
 				viewAction.putValue(Action.NAME, "Component View");
 				
-				delegate = new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						
-						UnknownInstance unknown = (UnknownInstance) model.getCurrentSelection().getDesignComponent();
-						String xml = unknown.getXml();
+				delegate = e -> {
 
-						// check the xml.
-						try {
-							new XMLArooaParser().parse(
-									unknown.getArooaContext().getConfigurationNode());
-						} catch (ArooaParseException ex) {
-						
-							logger.error("Failed to parse XML: " + ex.getMessage(),
-									ex);
-							
-							return;
-						}
-						
-						try {
-							model.replaceSelected(new XMLConfiguration("XML", xml));
-						} catch (ArooaParseException ex) {
-							
-							logger.error("Failed to Create Component Tree: " + ex.getMessage(),
-									ex);			
-						}
-						
+					UnknownInstance unknown = (UnknownInstance) model.getCurrentSelection().getDesignComponent();
+					String xml = unknown.getXml();
+
+					NamespaceMappings namespaceMappings =
+							currentComponent.getArooaContext().getPrefixMappings();
+
+					// check the xml.
+					try {
+						new XMLArooaParser(namespaceMappings)
+								.parse(unknown.getArooaContext().getConfigurationNode());
+					} catch (ArooaParseException ex) {
+
+						logger.error("Failed to parse XML: " + ex.getMessage(),
+								ex);
+
+						return;
 					}
+
+					try {
+						model.replaceSelected(new XMLConfiguration("XML", xml));
+					} catch (ArooaParseException ex) {
+
+						logger.error("Failed to Create Component Tree: " + ex.getMessage(),
+								ex);
+					}
+
 				};
 			}
 			else {
 				
 				viewAction.putValue(Action.NAME, "XML View");
 				
-				delegate = new ActionListener() {
-					
-					public void actionPerformed(ActionEvent e) {
-						
-						try {
-							model.viewSelectedAsXML();
-						} catch (Exception ex) {
-							logger.error("Failed to view XML: " + ex.getMessage(), ex);
-						}
+				delegate = e -> {
+
+					try {
+						model.viewSelectedAsXML();
+					} catch (Exception ex) {
+						logger.error("Failed to view XML: " + ex.getMessage(), ex);
 					}
 				};
 			}

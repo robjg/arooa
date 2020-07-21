@@ -1,13 +1,5 @@
 package org.oddjob.arooa.parsing;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
-
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
@@ -20,6 +12,12 @@ import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 import org.xml.sax.SAXException;
 import org.xmlunit.matchers.CompareMatcher;
+
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static org.junit.Assert.*;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 public class ContextConfigurationSessionTest {
 
@@ -118,7 +116,7 @@ public class ContextConfigurationSessionTest {
 		
 		StandardArooaParser parser = new StandardArooaParser(root);
 
-		ConfigurationHandle handle = parser.parse(config);
+		ConfigurationHandle<ArooaContext> handle = parser.parse(config);
 		
 		ArooaSession session = handle.getDocumentContext().getSession();
 		
@@ -192,7 +190,7 @@ public class ContextConfigurationSessionTest {
 		
 		StandardArooaParser parser = new StandardArooaParser(root);
 
-		ConfigurationHandle handle = parser.parse(config);
+		ConfigurationHandle<ArooaContext> handle = parser.parse(config);
 		
 		ArooaSession session = handle.getDocumentContext().getSession();
 		

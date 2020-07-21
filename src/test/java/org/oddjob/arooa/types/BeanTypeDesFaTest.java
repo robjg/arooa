@@ -1,34 +1,28 @@
 package org.oddjob.arooa.types;
-import static org.junit.Assert.assertThat;
-import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaType;
-import org.oddjob.arooa.design.DesignElementProperty;
-import org.oddjob.arooa.design.DesignInstance;
-import org.oddjob.arooa.design.DesignListener;
-import org.oddjob.arooa.design.DesignParser;
-import org.oddjob.arooa.design.DesignStructureEvent;
-import org.oddjob.arooa.design.DynamicDesignInstance;
-import org.oddjob.arooa.design.GenericDesignFactory;
-import org.oddjob.arooa.design.MappedDesignProperty;
-import org.oddjob.arooa.design.ParsableDesignInstance;
+import org.oddjob.arooa.design.*;
 import org.oddjob.arooa.design.view.ViewMainHelper;
 import org.oddjob.arooa.life.SimpleArooaClass;
+import org.oddjob.arooa.parsing.NamespaceMappings;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertThat;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 public class BeanTypeDesFaTest {
 
@@ -70,7 +64,7 @@ public class BeanTypeDesFaTest {
 		
 		design = parser.getDesign();
 		
-		XMLArooaParser xmlParser = new XMLArooaParser();
+		XMLArooaParser xmlParser = new XMLArooaParser(NamespaceMappings.empty());
 		
 		xmlParser.parse(design.getArooaContext().getConfigurationNode());
 		
@@ -109,7 +103,7 @@ public class BeanTypeDesFaTest {
 		
 		design = parser.getDesign();
 		
-		XMLArooaParser xmlParser = new XMLArooaParser();
+		XMLArooaParser xmlParser = new XMLArooaParser(NamespaceMappings.empty());
 		
 		xmlParser.parse(design.getArooaContext().getConfigurationNode());
 		
@@ -141,7 +135,7 @@ public class BeanTypeDesFaTest {
 		
 		design = parser.getDesign();
 		
-		XMLArooaParser xmlParser = new XMLArooaParser();
+		XMLArooaParser xmlParser = new XMLArooaParser(NamespaceMappings.empty());
 		
 		xmlParser.parse(design.getArooaContext().getConfigurationNode());
 		
@@ -193,14 +187,10 @@ public class BeanTypeDesFaTest {
 		OurListener ourListener = new OurListener();
 		
 		things.addDesignListener(ourListener);
-		
-		MappedDesignProperty.InstanceWrapper wrapper = 
-				(MappedDesignProperty.InstanceWrapper) 
+
+		DynamicDesignInstance test =  (DynamicDesignInstance)
 				ourListener.children.get(0);
-		
-		DynamicDesignInstance test = (DynamicDesignInstance) 
-				wrapper.getWrapping();
-		
+
 		test.setClassName("java.lang.String");
 		
 		String expected =
@@ -210,7 +200,7 @@ public class BeanTypeDesFaTest {
 				"    </things>" + EOL +
 				"</stuff>" + EOL;
 		
-		XMLArooaParser xmlParser = new XMLArooaParser();
+		XMLArooaParser xmlParser = new XMLArooaParser(NamespaceMappings.empty());
 		xmlParser.parse(top.getArooaContext().getConfigurationNode());
 
 		String actual = xmlParser.getXml();

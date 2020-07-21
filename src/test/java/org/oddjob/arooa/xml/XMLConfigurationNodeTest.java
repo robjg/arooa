@@ -1,17 +1,13 @@
 package org.oddjob.arooa.xml;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
+import org.junit.Test;
+import org.oddjob.arooa.parsing.*;
 
 import java.net.URI;
 
-import org.junit.Test;
-import org.oddjob.arooa.parsing.ArooaElement;
-import org.oddjob.arooa.parsing.MockArooaContext;
-import org.oddjob.arooa.parsing.MutableAttributes;
-import org.oddjob.arooa.parsing.PrefixMappings;
-import org.oddjob.arooa.parsing.SimplePrefixMappings;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 public class XMLConfigurationNodeTest {
 
@@ -80,7 +76,7 @@ public class XMLConfigurationNodeTest {
 		parentNode.insertChild(appleNode);
 		parentNode.insertChild(pearNode);
 		
-		XMLArooaParser parser = new XMLArooaParser();
+		XMLArooaParser parser = new XMLArooaParser(NamespaceMappings.empty());
 		
 		parser.parse(parentNode);
 		
@@ -101,7 +97,14 @@ public class XMLConfigurationNodeTest {
 	public void testParseNS() throws Exception {
 
 		// The elements
-		
+		SimplePrefixMappings namespaceMappings = new SimplePrefixMappings();
+	   namespaceMappings.put(
+			   "arooa",
+			   new URI("http://www.rgordon.co.uk/arooa"));
+	   namespaceMappings.put(
+			   "fruit",
+			   new URI("http://www.rgordon.co.uk/fruit"));
+
 		ArooaElement parentElement = new ArooaElement(
 				new URI("http://www.rgordon.co.uk/arooa"), 
 				"fruit");
@@ -127,12 +130,6 @@ public class XMLConfigurationNodeTest {
 				"pear", attrs2);
 		
 		OurParseContext context = new OurParseContext();
-		context.getPrefixMappings().put(
-				"arooa",
-				new URI("http://www.rgordon.co.uk/arooa"));
-		context.getPrefixMappings().put(
-				"fruit",
-				new URI("http://www.rgordon.co.uk/fruit"));
 
 		XMLConfigurationNode parentNode = new XMLConfigurationNode(
 				parentElement);
@@ -157,7 +154,7 @@ public class XMLConfigurationNodeTest {
 		parentNode.insertChild(appleNode);
 		parentNode.insertChild(pearNode);
 		
-		XMLArooaParser parser = new XMLArooaParser();
+		XMLArooaParser parser = new XMLArooaParser(namespaceMappings);
 		
 		parser.parse(parentNode);
 		

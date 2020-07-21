@@ -53,7 +53,7 @@ public class AllLayoutTest {
 
         ArooaConfiguration configuration = designableInfo.getDesignConfiguration();
 
-        XMLArooaParser parser = new XMLArooaParser();
+        XMLArooaParser parser = new XMLArooaParser(session.getArooaDescriptor());
 
         parser.parse(configuration);
 

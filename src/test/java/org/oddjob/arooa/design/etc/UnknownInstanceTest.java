@@ -1,6 +1,7 @@
 package org.oddjob.arooa.design.etc;
 
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.oddjob.arooa.*;
 import org.oddjob.arooa.design.*;
 import org.oddjob.arooa.design.model.MockDesignInstance;
@@ -10,6 +11,7 @@ import org.oddjob.arooa.runtime.MockConfigurationNode;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -20,10 +22,40 @@ public class UnknownInstanceTest {
 
     String EOL = System.getProperty("line.separator");
 
+    static private class OurSession extends MockArooaSession {
+
+        private final NamespaceMappings namespaceMappings;
+
+        private OurSession(NamespaceMappings namespaceMappings) {
+            this.namespaceMappings = namespaceMappings;
+        }
+
+        @Override
+        public ArooaDescriptor getArooaDescriptor() {
+            return new MockArooaDescriptor() {
+
+                @Override
+                public String getPrefixFor(URI namespace) {
+                    return namespaceMappings.getPrefixFor(namespace);
+                }
+
+                @Override
+                public String[] getPrefixes() {
+                    return namespaceMappings.getPrefixes();
+                }
+
+                @Override
+                public URI getUriFor(String prefix) {
+                    return namespaceMappings.getUriFor(prefix);
+                }
+            };
+        }
+    }
+
     @Test
     public void testXmlCaptureByUnknownInstance() throws ArooaParseException {
 
-        ArooaSession session = new MockArooaSession();
+        ArooaSession session = new OurSession(NamespaceMappings.empty());
 
         DesignSeedContext context = new DesignSeedContext(
                 ArooaType.VALUE, session);
@@ -57,7 +89,7 @@ public class UnknownInstanceTest {
                 "</description>\n";
 
         CutAndPasteSupport.replace(test.getArooaContext(),
-                new ChildCatcher(test.getArooaContext(), 0).getChild(),
+                new ChildCatcher<>(test.getArooaContext(), 0).getChild(),
                 new XMLConfiguration("XML", replacement));
 
         test.getArooaContext().getRuntime().init();
@@ -75,7 +107,7 @@ public class UnknownInstanceTest {
     @Test
     public void testParse() throws Exception {
 
-        ArooaSession session = new MockArooaSession();
+        ArooaSession session = new OurSession(NamespaceMappings.empty());
 
         DesignSeedContext context = new DesignSeedContext(
                 ArooaType.VALUE, session);
@@ -88,7 +120,7 @@ public class UnknownInstanceTest {
 
         test.setXml(xml);
 
-        XMLArooaParser parser = new XMLArooaParser();
+        XMLArooaParser parser = new XMLArooaParser(test.getArooaContext().getPrefixMappings());
 
         parser.parse(test.getArooaContext().getConfigurationNode());
 
@@ -106,7 +138,10 @@ public class UnknownInstanceTest {
     @Test
     public void testParse2() throws Exception {
 
-        ArooaSession session = new MockArooaSession();
+        SimplePrefixMappings namespaceMappings = new SimplePrefixMappings();
+        namespaceMappings.put("fruit", new URI("http://fruit"));
+
+        ArooaSession session = new OurSession(namespaceMappings);
 
         DesignSeedContext context = new DesignSeedContext(
                 ArooaType.VALUE, session);
@@ -128,7 +163,7 @@ public class UnknownInstanceTest {
 
         test.setXml(xml);
 
-        XMLArooaParser parser = new XMLArooaParser();
+        XMLArooaParser parser = new XMLArooaParser(session.getArooaDescriptor());
 
         parser.parse(test.getArooaContext().getConfigurationNode());
 
@@ -144,7 +179,7 @@ public class UnknownInstanceTest {
     @Test
     public void testMissingPrefixMapping() {
 
-        ArooaSession session = new MockArooaSession();
+        ArooaSession session = Mockito.mock(ArooaSession.class);
 
         DesignSeedContext context = new DesignSeedContext(
                 ArooaType.VALUE, session);
@@ -157,7 +192,7 @@ public class UnknownInstanceTest {
 
         test.setXml(xml);
 
-        XMLArooaParser parser = new XMLArooaParser();
+        XMLArooaParser parser = new XMLArooaParser(NamespaceMappings.empty());
 
         try {
             parser.parse(test.getArooaContext().getConfigurationNode());
@@ -251,7 +286,10 @@ public class UnknownInstanceTest {
     @Test
     public void testTheContext() throws Exception {
 
-        ArooaSession session = new MockArooaSession();
+        SimplePrefixMappings namespaceMappings = new SimplePrefixMappings();
+        namespaceMappings.put("fruit", new URI("http://fruit"));
+
+        ArooaSession session = new OurSession(namespaceMappings);
 
         ArooaContext rootContext = new RootContext(
                 ArooaType.VALUE,
@@ -278,7 +316,7 @@ public class UnknownInstanceTest {
 
         assertThat(test.getXml(), isSimilarTo(xml));
 
-        XMLArooaParser parser = new XMLArooaParser();
+        XMLArooaParser parser = new XMLArooaParser(session.getArooaDescriptor());
 
         parser.parse(test.getArooaContext().getConfigurationNode());
 

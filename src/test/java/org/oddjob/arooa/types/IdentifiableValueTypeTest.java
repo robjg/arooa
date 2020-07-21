@@ -1,13 +1,12 @@
 package org.oddjob.arooa.types;
 
-import org.junit.Test;
-
 import org.junit.Assert;
-
+import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.convert.ArooaConversionException;
+import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.registry.InvalidIdException;
 import org.oddjob.arooa.standard.StandardArooaParser;
@@ -49,7 +48,7 @@ public class IdentifiableValueTypeTest extends Assert {
 		
 		StandardArooaParser parser = new StandardArooaParser(root);
 
-		ConfigurationHandle handle = parser.parse(new XMLConfiguration("TEST", xml));
+		ConfigurationHandle<ArooaContext> handle = parser.parse(new XMLConfiguration("TEST", xml));
 		
 		ArooaSession session = parser.getSession();
 		
@@ -89,7 +88,7 @@ public class IdentifiableValueTypeTest extends Assert {
 		
 		StandardArooaParser parser = new StandardArooaParser(root);
 
-		ConfigurationHandle handle = parser.parse(new XMLConfiguration("TEST", xml));
+		ConfigurationHandle<ArooaContext> handle = parser.parse(new XMLConfiguration("TEST", xml));
 		
 		ArooaSession session = parser.getSession();
 		

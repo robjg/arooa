@@ -1,30 +1,22 @@
 package org.oddjob.arooa.standard;
 
-import org.junit.Test;
-
-import javax.inject.Inject;
-
 import org.junit.Assert;
-
-import org.oddjob.arooa.ArooaBeanDescriptor;
-import org.oddjob.arooa.ArooaParseException;
-import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ArooaType;
-import org.oddjob.arooa.ConfigurationHandle;
-import org.oddjob.arooa.ElementMappings;
-import org.oddjob.arooa.MockArooaDescriptor;
-import org.oddjob.arooa.MockElementMappings;
+import org.junit.Test;
+import org.oddjob.arooa.*;
 import org.oddjob.arooa.convert.ConversionProvider;
 import org.oddjob.arooa.deploy.MappingsSwitch;
 import org.oddjob.arooa.life.ArooaLifeAware;
 import org.oddjob.arooa.life.InstantiationContext;
 import org.oddjob.arooa.life.SimpleArooaClass;
+import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.registry.ServiceProvider;
 import org.oddjob.arooa.registry.Services;
 import org.oddjob.arooa.xml.XMLConfiguration;
+
+import javax.inject.Inject;
 
 public class StandardFragmentParserTest extends Assert {
 
@@ -128,7 +120,7 @@ public class StandardFragmentParserTest extends Assert {
 		
 		StandardFragmentParser parser = new StandardFragmentParser(session);
 		
-		ConfigurationHandle handle = parser.parse(
+		ConfigurationHandle<ArooaContext> handle = parser.parse(
 				new XMLConfiguration("TEST", xml));
 		
 		Object result = parser.getRoot();
@@ -157,7 +149,7 @@ public class StandardFragmentParserTest extends Assert {
 				new OurDescriptor());
 		parser.setArooaType(ArooaType.COMPONENT);
 		
-		ConfigurationHandle handle = parser.parse(
+		ConfigurationHandle<ArooaContext> handle = parser.parse(
 				new XMLConfiguration("TEST", xml));
 		
 		Object result = parser.getRoot();

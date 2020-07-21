@@ -1,11 +1,11 @@
 package org.oddjob.arooa;
 
-import org.oddjob.arooa.parsing.ArooaContext;
+import org.oddjob.arooa.parsing.ParseContext;
 
 
-public class MockConfigurationHandle implements ConfigurationHandle {
+public class MockConfigurationHandle<P extends ParseContext<P>> implements ConfigurationHandle<P> {
 
-	public ArooaContext getDocumentContext() {
+	public P getDocumentContext() {
 		throw new RuntimeException("Unexpected from class: " + 
 				this.getClass().getName());
 	}

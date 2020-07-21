@@ -36,7 +36,7 @@ public class XmlInterceptorTest {
             }
 
             @Override
-            public ConfigurationHandle parse(ArooaContext parseParentContext) {
+            public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parentContext) {
                 throw new RuntimeException("Unexpected");
             }
         };
@@ -212,7 +212,7 @@ public class XmlInterceptorTest {
 
         CutAndPasteSupport.ReplaceResult replaceResult =
                 CutAndPasteSupport.replace(context,
-                new ChildCatcher(context, 0).getChild(),
+                new ChildCatcher<>(context, 0).getChild(),
                 new XMLConfiguration("REPLACEMENT", "<foo stuff='b'/>"));
 
         assertThat(replaceResult.getException(), nullValue());

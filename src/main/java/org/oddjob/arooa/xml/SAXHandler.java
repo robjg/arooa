@@ -58,10 +58,7 @@
 package org.oddjob.arooa.xml;
 
 import org.oddjob.arooa.ArooaException;
-import org.oddjob.arooa.parsing.ArooaContext;
-import org.oddjob.arooa.parsing.ArooaElement;
-import org.oddjob.arooa.parsing.ChildCatcher;
-import org.oddjob.arooa.runtime.ConfigurationNode;
+import org.oddjob.arooa.parsing.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
@@ -78,24 +75,39 @@ import java.util.LinkedList;
  * implement each element ( the original parser used a recursive behavior,
  * with the implicit execution stack )
  */
-class SAXHandler extends DefaultHandler {
+class SAXHandler<P extends ParseContext<P>> extends DefaultHandler {
 	private static final Logger logger = LoggerFactory.getLogger(SAXHandler.class);
 	    
     private Locator locator;
     
-    private LinkedList<ArooaContext> contexts = new LinkedList<>();
+    private final LinkedList<ParseHandle<P>> contexts = new LinkedList<>();
 
-    private ArooaContext documentContext;
+    private P documentContext;
     
     /**
      * Creates a new RootHandler instance.
      *
      */
-    public SAXHandler(ArooaContext rootContext) {
+    public SAXHandler(P rootContext) {
 
 		ChildCatcher.watchRootContext(rootContext, dc -> this.documentContext = dc);
 
-         contexts.push(rootContext);
+         contexts.push(new ParseHandle<P>() {
+			 @Override
+			 public P getContext() {
+				 return rootContext;
+			 }
+
+			 @Override
+			 public void addText(String text) {
+				throw new IllegalStateException("Shouldn't be called");
+			 }
+
+			 @Override
+			 public int init() {
+				 throw new IllegalStateException("Shouldn't be called");
+			 }
+		 });
     }
 
     /**
@@ -132,20 +144,24 @@ class SAXHandler extends DefaultHandler {
 		}
 		
     	try {
-    		ArooaContext context = contexts.peek();
-    		
-            if (context == null) {
-                throw new IllegalStateException(
-                        "Context null - this should never happen.");
-            }
+    		ParseHandle<P> handle = contexts.peek();
+
+			if (handle == null) {
+				throw new IllegalStateException(
+						"Context null - this should never happen.");
+			}
+
+    		P context = handle.getContext();
+
+
+            ElementHandler<P> handler = context.getElementHandler();
 
     		logger.debug("onStartElement(" + qname + "),  handler [" +
-    				context.getArooaHandler() + "]");
+    				handler + "]");
 
-    		ArooaContext newContext = context.getArooaHandler(
-    				).onStartElement(element, context);
-    			
-    		contexts.push(newContext);    		
+    		ParseHandle<P> newHandle = handler.onStartElement(element, context);
+
+    		contexts.push(newHandle);
     		
     	} catch (Exception e) {
     		throw new SAXParseException("<" + element + ">: " + 
@@ -177,33 +193,10 @@ class SAXHandler extends DefaultHandler {
     	try {
     		logger.debug("onEndElement(" + qName + ")");
 
-    		ArooaContext currentContext = contexts.pop();
+    		ParseHandle<P> currentHandle = contexts.pop();
 
-    		ArooaContext parentContext = contexts.peek();
+    		currentHandle.init();
 
-    		if (parentContext == null) {
-                throw new IllegalStateException(
-                        "Context is null - this should never happen.");
-            }
-
-			ConfigurationNode currentConfigurationNode = currentContext.getConfigurationNode();
-			if (currentConfigurationNode == null) {
-				throw new IllegalArgumentException("Null Configuration Node for Context " + currentContext);
-			}
-
-			// order is important here:
-    		// add node before init() so indexed properties
-    		// know their index.
-    		int index = parentContext.getConfigurationNode()
-					.insertChild(currentConfigurationNode);
-    		
-    		try {
-    			currentContext.getRuntime().init();
-    		} catch (RuntimeException e) {
-    			parentContext.getConfigurationNode().removeChild(index);
-    			throw e;
-    		}
-    		
     	} catch (Exception e) {
     		throw new SAXParseException(e.getMessage(), locator, e);
     	}
@@ -220,20 +213,14 @@ class SAXHandler extends DefaultHandler {
 
     	String text = new String(buf, start, count);
 
-    	ArooaContext context = contexts.peek();
+    	ParseHandle<P> handle = contexts.peek();
 
-        if (context == null) {
+        if (handle == null) {
             throw new IllegalStateException(
                     "Context is null adding text [" + text + "] - this should never happen.");
         }
 
-        ConfigurationNode configurationNode = context.getConfigurationNode();
-        if (configurationNode == null) {
-			throw new IllegalStateException(
-					"Configuration Node is null adding text [" + text + "] to context [" + context + "].");
-		}
-
-        configurationNode.addText(text);
+        handle.addText(text);
     }
 
     /**
@@ -244,7 +231,8 @@ class SAXHandler extends DefaultHandler {
      */
     public void startPrefixMapping(String prefix, String uri) 
     throws SAXParseException {
-        ArooaContext context = contexts.peek();
+
+        P context = contexts.peek().getContext();
         if (context == null) {
             throw new IllegalStateException(
                     "Context is null - this should never happen.");
@@ -253,13 +241,10 @@ class SAXHandler extends DefaultHandler {
     		context.getPrefixMappings()
                    .put(prefix, new URI(uri));
     	}
-    	catch (URISyntaxException e) {
+    	catch (URISyntaxException | ArooaException e) {
     		throw new SAXParseException(e.getMessage(), locator, e);        	
     	}
-    	catch (ArooaException e) {
-    		throw new SAXParseException(e.getMessage(), locator, e);        	
-        }
-    }
+	}
 
     /**
      * End a namepace prefix to uri mapping
@@ -270,7 +255,7 @@ class SAXHandler extends DefaultHandler {
     	
     }
 
-    public ArooaContext getDocumentContext() {
+    public P getDocumentContext() {
     	return documentContext;
     }
 

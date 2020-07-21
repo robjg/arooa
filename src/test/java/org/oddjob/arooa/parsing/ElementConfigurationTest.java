@@ -1,11 +1,5 @@
 package org.oddjob.arooa.parsing;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
-
-import java.net.URI;
-
 import org.junit.Test;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ConfigurationHandle;
@@ -15,6 +9,12 @@ import org.oddjob.arooa.deploy.PropertyDefinition;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLArooaParser;
+
+import java.net.URI;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 public class ElementConfigurationTest {
 
@@ -62,11 +62,11 @@ public class ElementConfigurationTest {
 		ElementConfiguration test = new ElementConfiguration(
 				new ArooaElement(new URI("http://stuff"), "stuff"));
 		
-		ConfigurationHandle handle = parser.parse(test);
+		ConfigurationHandle<ArooaContext> handle = parser.parse(test);
 		
 		CutAndPasteSupport cnp = new CutAndPasteSupport(handle.getDocumentContext());
 		
-		ConfigurationHandle h2 = cnp.paste(0, test);
+		ConfigurationHandle<ArooaContext> h2 = cnp.paste(0, test);
 		
 		assertNotNull(root.moreStuff);
 		
@@ -74,7 +74,7 @@ public class ElementConfigurationTest {
 		
 		assertNotNull(root.moreStuff);
 		
-		XMLArooaParser xmlParser = new XMLArooaParser();
+		XMLArooaParser xmlParser = new XMLArooaParser(descriptor);
 		
 		xmlParser.parse(handle.getDocumentContext().getConfigurationNode());
 		

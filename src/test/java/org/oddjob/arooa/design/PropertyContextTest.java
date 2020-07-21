@@ -1,10 +1,5 @@
 package org.oddjob.arooa.design;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
-
 import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
@@ -12,17 +7,14 @@ import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.design.screem.Form;
 import org.oddjob.arooa.life.SimpleArooaClass;
-import org.oddjob.arooa.parsing.AbstractConfigurationNode;
-import org.oddjob.arooa.parsing.ArooaContext;
-import org.oddjob.arooa.parsing.ArooaElement;
-import org.oddjob.arooa.parsing.ArooaHandler;
-import org.oddjob.arooa.parsing.MockArooaContext;
-import org.oddjob.arooa.parsing.PrefixMappings;
-import org.oddjob.arooa.parsing.SimplePrefixMappings;
+import org.oddjob.arooa.parsing.*;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.standard.StandardArooaSession;
+
+import static org.junit.Assert.*;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 public class PropertyContextTest {
 
@@ -46,7 +38,7 @@ public class PropertyContextTest {
 				throw new RuntimeException("Unexpected.");
 			}
 
-			public ConfigurationHandle parse(ArooaContext parentContext)
+			public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parentContext)
 					throws ArooaParseException {
 				throw new RuntimeException("Unexpected.");
 			}

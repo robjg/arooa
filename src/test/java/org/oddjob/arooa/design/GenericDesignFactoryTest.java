@@ -1,9 +1,7 @@
 package org.oddjob.arooa.design;
 
-import org.junit.Test;
-
 import org.junit.Assert;
-
+import org.junit.Test;
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.design.view.ViewMainHelper;
 import org.oddjob.arooa.life.SimpleArooaClass;
@@ -13,26 +11,33 @@ import org.oddjob.arooa.standard.StandardArooaSession;
 public class GenericDesignFactoryTest extends Assert {
 
 	
-	public static class Primatives {
+	public static class Primitives {
 		
-		public void setBoolean(boolean value) {};
-		public void setByte(byte value) {};
-		public void setChar(char value) {};
-		public void setShort(short value) {};
-		public void setInteger(int value) {};
-		public void setLong(long value) {};
-		public void setFloat(float value) {};
-		public void setDouble(double value) {};
-		
+		public void setBoolean(boolean value) {}
+
+		public void setByte(byte value) {}
+
+		public void setChar(char value) {}
+
+		public void setShort(short value) {}
+
+		public void setInteger(int value) {}
+
+		public void setLong(long value) {}
+
+		public void setFloat(float value) {}
+
+		public void setDouble(double value) {}
+
 	}
 	
 	DesignInstance design;
 	
    @Test
-	public void testPrimatives() {
+	public void testPrimitives() {
 		
 		GenericDesignFactory test = new GenericDesignFactory(
-				new SimpleArooaClass(Primatives.class));
+				new SimpleArooaClass(Primitives.class));
 
 		DesignSeedContext context = new DesignSeedContext(
 				ArooaType.VALUE, new StandardArooaSession());
@@ -83,12 +88,10 @@ public class GenericDesignFactoryTest extends Assert {
 		
 		GenericDesignFactory factory = new GenericDesignFactory(
 				new SimpleArooaClass(Fruit.class));
-		
-		DesignInstance design = factory.createDesign(
-				new ArooaElement("foo"), 
-				new DesignSeedContext(ArooaType.VALUE, new StandardArooaSession()));
-		
-		this.design = design;
+
+	   this.design = factory.createDesign(
+			   new ArooaElement("foo"),
+			   new DesignSeedContext(ArooaType.VALUE, new StandardArooaSession()));
 	}
 	
 //	public void testMagicBean() {

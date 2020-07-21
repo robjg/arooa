@@ -1,20 +1,5 @@
 package org.oddjob.arooa.types;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
-
-import java.awt.Component;
-import java.io.IOException;
-
-import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaType;
@@ -27,9 +12,22 @@ import org.oddjob.arooa.design.view.SwingFormView;
 import org.oddjob.arooa.design.view.ViewMainHelper;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
+import org.oddjob.arooa.parsing.NamespaceMappings;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLArooaParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
+
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
+import java.awt.*;
+import java.io.IOException;
+
+import static org.junit.Assert.*;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 public class ValueTypeDesignTest {
 	private static final Logger logger = LoggerFactory.getLogger(ValueTypeDesignTest.class);
@@ -80,7 +78,7 @@ public class ValueTypeDesignTest {
 		
 		text.getDocument().insertString(5, "More ", null);
 		
-		XMLArooaParser parser = new XMLArooaParser();
+		XMLArooaParser parser = new XMLArooaParser(NamespaceMappings.empty());
 		parser.parse(design.getArooaContext().getConfigurationNode());
 		
 		assertThat(parser.getXml(), isSimilarTo("<value value='Some More Text'/>"));

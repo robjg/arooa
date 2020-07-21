@@ -3,10 +3,7 @@ package org.oddjob.arooa.standard;
 import org.oddjob.arooa.ArooaConfigurationException;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
-import org.oddjob.arooa.parsing.AbstractConfigurationNode;
-import org.oddjob.arooa.parsing.ArooaContext;
-import org.oddjob.arooa.parsing.ArooaElement;
-import org.oddjob.arooa.parsing.Location;
+import org.oddjob.arooa.parsing.*;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 
 import java.util.function.Supplier;
@@ -29,38 +26,38 @@ abstract class StandardConfigurationNode extends AbstractConfigurationNode {
 	}
 	
     abstract public String getText();
-	
-	public ConfigurationHandle parse(ArooaContext parentContext) 
+
+	@Override
+	public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parentContext)
 	throws ArooaParseException {
 		
 		parentContext.getPrefixMappings().add(
 				getContext().getPrefixMappings());
-		
-		ArooaContext newContext;
+
+		ParseHandle<P> handle;
 		try {
-			newContext = parentContext.getArooaHandler(
+			handle = parentContext.getElementHandler(
 					).onStartElement(element.get(), parentContext);
 		} catch (ArooaConfigurationException e) {
     		throw new ArooaParseException("Failed parsing configuration.", 
     				new Location("Unknown", 0, 0), e);
 		}
 
+		P newContext = handle.getContext();
+
 		if (getText() != null) {
-			newContext.getConfigurationNode().addText(getText().toString());
+			handle.addText(getText());
 		}
 		
-		for (ConfigurationNode child: children()) {
+		for (ConfigurationNode<ArooaContext> child: children()) {
 			child.parse(newContext);			
 		}
-		
-		int index = parentContext.getConfigurationNode().insertChild(
-				newContext.getConfigurationNode());
- 
+
+		int index;
 		try {
-			newContext.getRuntime().init();
+			index = handle.init();
     	} catch (ArooaConfigurationException e) {
-    		parentContext.getConfigurationNode().removeChild(index);
-    		throw new ArooaParseException("Failed initialising.", 
+    		throw new ArooaParseException("Failed initialising.",
     				new Location("Unknown", 0, 0), e);
     	}
 

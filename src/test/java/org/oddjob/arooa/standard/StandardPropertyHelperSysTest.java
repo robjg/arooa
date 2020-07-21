@@ -1,11 +1,10 @@
 package org.oddjob.arooa.standard;
 
-import org.junit.Test;
-
 import org.junit.Assert;
-
+import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
+import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
 public class StandardPropertyHelperSysTest extends Assert {
@@ -30,7 +29,7 @@ public class StandardPropertyHelperSysTest extends Assert {
 		
 		StandardArooaParser parser = new StandardArooaParser(bean);
 		
-		ConfigurationHandle handle = parser.parse(new XMLConfiguration("XML", 
+		ConfigurationHandle<ArooaContext> handle = parser.parse(new XMLConfiguration("XML",
 				"<ignored thing='${java.version}'/>"));
 		
 		handle.getDocumentContext().getRuntime().configure();

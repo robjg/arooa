@@ -5,7 +5,7 @@ import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaHandler;
 import org.oddjob.arooa.parsing.PrefixMappings;
-import org.oddjob.arooa.parsing.SimplePrefixMappings;
+import org.oddjob.arooa.parsing.SessionPrefixMappings;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
@@ -22,12 +22,13 @@ public class DesignSeedContext implements ArooaContext {
 	
 	private final ArooaType type;
 	
-	private final PrefixMappings prefixMappings = 
-		new SimplePrefixMappings();
+	private final PrefixMappings prefixMappings;
 	
 	public DesignSeedContext(ArooaType type, ArooaSession session) {
 		this.type = type;
 		this.session = session;
+		this.prefixMappings = new SessionPrefixMappings(
+				session.getArooaDescriptor());
 	}
 
 	public ArooaType getArooaType() {
@@ -42,7 +43,7 @@ public class DesignSeedContext implements ArooaContext {
 		throw new UnsupportedOperationException();
 	}
 	
-	public ConfigurationNode getConfigurationNode() {
+	public ConfigurationNode<ArooaContext> getConfigurationNode() {
 		return null;
 	}
 	

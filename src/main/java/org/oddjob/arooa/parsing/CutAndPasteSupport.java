@@ -1,17 +1,9 @@
 package org.oddjob.arooa.parsing;
 
-import org.oddjob.arooa.ArooaBeanDescriptor;
-import org.oddjob.arooa.ArooaConfiguration;
-import org.oddjob.arooa.ArooaConfigurationException;
-import org.oddjob.arooa.ArooaParseException;
-import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ConfigurationHandle;
+import org.oddjob.arooa.*;
 import org.oddjob.arooa.deploy.BeanDescriptorHelper;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.PropertyAccessor;
-import org.oddjob.arooa.runtime.ConfigurationNodeEvent;
-import org.oddjob.arooa.runtime.ConfigurationNodeListener;
-import org.oddjob.arooa.runtime.ModificationRefusedException;
 import org.oddjob.arooa.xml.XMLArooaParser;
 
 /**
@@ -205,12 +197,12 @@ public class CutAndPasteSupport {
 	 * @param parentContext
 	 * @param index
 	 */
-	public static ConfigurationHandle paste(ArooaContext parentContext, int index, 
+	public static ConfigurationHandle<ArooaContext> paste(ArooaContext parentContext, int index,
 			ArooaConfiguration config) throws ArooaParseException {
 		
 		parentContext.getConfigurationNode().setInsertPosition(index);
 
-		ConfigurationHandle handle = null;
+		ConfigurationHandle<ArooaContext> handle;
 		
 		handle = config.parse(parentContext);
 			
@@ -225,8 +217,8 @@ public class CutAndPasteSupport {
 	 * @param config
 	 * @throws ArooaParseException
 	 */
-	public static ReplaceResult replace(final ArooaContext parentContext, 
-			final ArooaContext childContext,
+	public static <P extends ParseContext<P>> ReplaceResult<P> replace(final P parentContext,
+			final P childContext,
 			ArooaConfiguration config) 
 	throws ArooaParseException, ArooaConfigurationException {
 		
@@ -238,13 +230,10 @@ public class CutAndPasteSupport {
 					"Attempting to cut a configuration node that is not a child of it's parent.");
 		}
 		
-		XMLArooaParser xmlParser = new XMLArooaParser();
-		ConfigurationHandle rollbackHandle = xmlParser.parse(childContext.getConfigurationNode());
+		XMLArooaParser xmlParser = new XMLArooaParser(parentContext.getPrefixMappings());
+		ConfigurationHandle<P> rollbackHandle = xmlParser.parse(childContext.getConfigurationNode());
 		
-		childContext.getRuntime().destroy();
-		
-		parentContext.getConfigurationNode().removeChild(
-				index);		
+		childContext.destroy();
 		
 		parentContext.getConfigurationNode().setInsertPosition(index);
 		
@@ -279,20 +268,20 @@ public class CutAndPasteSupport {
 			}
 		}
 			
-		return new ReplaceResult(handle, exception);
+		return new ReplaceResult<>(handle, exception);
 	}
 	
 	/**
 	 * Result for replace.
 	 */
-	public static class ReplaceResult {
+	public static class ReplaceResult<P extends ParseContext<P>> {
 		
-		private final ConfigurationHandle handle;
+		private final ConfigurationHandle<P> handle;
 		
 		private final ArooaParseException exception;
 		
 		
-		public ReplaceResult(ConfigurationHandle handle,
+		public ReplaceResult(ConfigurationHandle<P> handle,
 					ArooaParseException exception) {
 			this.handle = handle;
 			this.exception = exception;
@@ -302,13 +291,13 @@ public class CutAndPasteSupport {
 			return exception;
 		}
 		
-		public ConfigurationHandle getHandle() {
+		public ConfigurationHandle<P> getHandle() {
 			return handle;
 		}
 	}
 	
 	public static String copy(ArooaContext context) {
-		XMLArooaParser xmlParser = new XMLArooaParser();
+		XMLArooaParser xmlParser = new XMLArooaParser(context.getPrefixMappings());
 		
 		try {
 			xmlParser.parse(context.getConfigurationNode());

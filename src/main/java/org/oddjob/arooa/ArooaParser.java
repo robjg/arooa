@@ -4,6 +4,8 @@
 package org.oddjob.arooa;
 
 
+import org.oddjob.arooa.parsing.ParseContext;
+
 /**
  * Something that is able to parse an {@link ArooaConfiguration}.
  * <p>
@@ -13,7 +15,7 @@ package org.oddjob.arooa;
  *
  * @author rob
  */
-public interface ArooaParser {
+public interface ArooaParser<P extends ParseContext<P>> {
 	
 	/**
 	 * Parse an {@link ArooaConfiguration}.
@@ -23,7 +25,7 @@ public interface ArooaParser {
 	 * 
 	 * @throws ArooaParseException If parsing fails.
 	 */
-	ConfigurationHandle parse(ArooaConfiguration configuration)
+	ConfigurationHandle<P> parse(ArooaConfiguration configuration)
 	throws ArooaParseException ;
 		
 }

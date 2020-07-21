@@ -53,7 +53,7 @@ public class XMLType implements ArooaContextAware, ArooaValue, Serializable {
 			registry.register(XMLType.class, ArooaConfiguration.class,
 					from -> {
 						ArooaContext childContext =
-							new ChildCatcher(from.arooaContext, 0).getChild();
+							new ChildCatcher<>(from.arooaContext, 0).getChild();
 
 						if (childContext == null) {
 							return null;

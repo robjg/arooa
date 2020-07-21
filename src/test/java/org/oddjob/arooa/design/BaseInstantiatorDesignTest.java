@@ -1,29 +1,8 @@
 package org.oddjob.arooa.design;
 
-import org.junit.Test;
-
-import java.awt.Component;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
-
 import org.junit.Assert;
-
-import org.oddjob.arooa.ArooaBeanDescriptor;
-import org.oddjob.arooa.ArooaConfiguration;
-import org.oddjob.arooa.ArooaDescriptor;
-import org.oddjob.arooa.ArooaParseException;
-import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ArooaTools;
-import org.oddjob.arooa.ArooaType;
-import org.oddjob.arooa.ConfigurationHandle;
-import org.oddjob.arooa.ElementMappings;
-import org.oddjob.arooa.MockArooaDescriptor;
-import org.oddjob.arooa.MockArooaSession;
-import org.oddjob.arooa.MockArooaTools;
-import org.oddjob.arooa.MockElementMappings;
+import org.junit.Test;
+import org.oddjob.arooa.*;
 import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
 import org.oddjob.arooa.deploy.MappingsSwitch;
 import org.oddjob.arooa.design.screem.Form;
@@ -32,11 +11,7 @@ import org.oddjob.arooa.design.view.SwingFormView;
 import org.oddjob.arooa.life.BaseElementMappings;
 import org.oddjob.arooa.life.InstantiationContext;
 import org.oddjob.arooa.life.SimpleArooaClass;
-import org.oddjob.arooa.parsing.ArooaContext;
-import org.oddjob.arooa.parsing.ArooaElement;
-import org.oddjob.arooa.parsing.MockArooaContext;
-import org.oddjob.arooa.parsing.PrefixMappings;
-import org.oddjob.arooa.parsing.SimplePrefixMappings;
+import org.oddjob.arooa.parsing.*;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.runtime.ConfigurationNode;
@@ -44,6 +19,9 @@ import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.types.IsType;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class BaseInstantiatorDesignTest extends Assert {
 	
@@ -104,13 +82,13 @@ public class BaseInstantiatorDesignTest extends Assert {
 	}
 	
 	class OurConfiguration implements ArooaConfiguration {
-		public ConfigurationHandle parse(ArooaContext parentContext)
+		public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parentContext)
 				throws ArooaParseException {
 			
 			ArooaElement element = new ArooaElement("snack");
 			element = element.addAttribute("fruit", "${apple}");
 			
-			parentContext.getArooaHandler().onStartElement(element, parentContext);
+			parentContext.getElementHandler().onStartElement(element, parentContext);
 			
 			return null;
 		}

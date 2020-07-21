@@ -1,26 +1,19 @@
 package org.oddjob.arooa.xml;
 
+import org.junit.Assert;
 import org.junit.Test;
+import org.oddjob.arooa.ArooaException;
+import org.oddjob.arooa.ArooaParseException;
+import org.oddjob.arooa.parsing.*;
+import org.oddjob.arooa.reflect.ArooaClass;
+import org.oddjob.arooa.runtime.ConfigurationNode;
+import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
+import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.junit.Assert;
-
-import org.oddjob.arooa.ArooaException;
-import org.oddjob.arooa.ArooaParseException;
-import org.oddjob.arooa.parsing.ArooaContext;
-import org.oddjob.arooa.parsing.ArooaElement;
-import org.oddjob.arooa.parsing.ArooaHandler;
-import org.oddjob.arooa.parsing.MockArooaContext;
-import org.oddjob.arooa.parsing.PrefixMappings;
-import org.oddjob.arooa.parsing.SimplePrefixMappings;
-import org.oddjob.arooa.reflect.ArooaClass;
-import org.oddjob.arooa.runtime.ConfigurationNode;
-import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
-import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
 public class XMLConfigurationTest extends Assert {
 
@@ -41,7 +34,7 @@ public class XMLConfigurationTest extends Assert {
 			XMLConfigurationNode runtimeNode = new XMLConfigurationNode(
 					element);
 			
-			ArooaContext newContext = new TestParseContext(this, runtimeNode);
+			ArooaContext newContext = new TestParseContext( context,this, runtimeNode);
 			runtimeNode.setContext(newContext);
 			
 			return newContext;
@@ -51,10 +44,12 @@ public class XMLConfigurationTest extends Assert {
 	
 	
 	class TestParseContext extends MockArooaContext {
+		final ArooaContext parent;
 		final MyHandler handler;
 		final ConfigurationNode runtimeNode;
 		
-		TestParseContext(MyHandler handler, ConfigurationNode runtimeNode) {
+		TestParseContext(ArooaContext parent, MyHandler handler, ConfigurationNode runtimeNode) {
+			this.parent = parent;
 			this.handler = handler;
 			this.runtimeNode = runtimeNode;
 		}
@@ -83,6 +78,11 @@ public class XMLConfigurationTest extends Assert {
 				}
 			};
 		}
+
+		@Override
+		public ArooaContext getParent() {
+			return parent;
+		}
 	}
 	
    @Test
@@ -95,7 +95,7 @@ public class XMLConfigurationTest extends Assert {
 		MyHandler myHandler = new MyHandler();
 		
 		TestParseContext testContext = 
-			new TestParseContext(myHandler, new XMLConfigurationNode(null));
+			new TestParseContext(null, myHandler, new XMLConfigurationNode(null));
 		
 		test.parse(testContext);
 		
@@ -104,6 +104,16 @@ public class XMLConfigurationTest extends Assert {
 	}
 	
 	class RootContext extends MockArooaContext {
+
+		private final RootContext parent;
+
+		RootContext() {
+			this(null);
+		}
+
+		RootContext(RootContext parent) {
+			this.parent = parent;
+		}
 
 		List<String> results = new ArrayList<String>();
 		
@@ -127,7 +137,7 @@ public class XMLConfigurationTest extends Assert {
 					
 					results.add("onStartElement: "  + element.getTag());
 
-					RootContext newContext = new RootContext();
+					RootContext newContext = new RootContext(RootContext.this);
 					newContext.results = results;
 					
 					return newContext;
@@ -138,6 +148,11 @@ public class XMLConfigurationTest extends Assert {
 		@Override
 		public RuntimeConfiguration getRuntime() {
 			return new ResultsRuntime(this);
+		}
+
+		@Override
+		public ArooaContext getParent() {
+			return parent;
 		}
 	}
 	

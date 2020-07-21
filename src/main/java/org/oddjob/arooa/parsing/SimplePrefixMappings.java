@@ -3,13 +3,18 @@
  */
 package org.oddjob.arooa.parsing;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 
 public class SimplePrefixMappings implements PrefixMappings {
-	
+
+	private static final Logger logger = LoggerFactory.getLogger(SimplePrefixMappings.class);
+
 	private final Map<URI, String> byUri = new LinkedHashMap<URI, String>();
 
 	private final Map<String, URI> byPrefix = new LinkedHashMap<String, URI>();
@@ -29,7 +34,9 @@ public class SimplePrefixMappings implements PrefixMappings {
 		if (uri == null) {
 			throw new NullPointerException("Null URI");
 		}
-		
+
+		logger.debug("Adding prefix {}={}", prefix, uri);
+
 		String existingPrefix = byUri.get(uri);
 		
 		if (existingPrefix != null && !existingPrefix.equals(prefix)) {

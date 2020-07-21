@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
+import org.oddjob.arooa.parsing.NamespaceMappings;
 import org.oddjob.arooa.parsing.SimplePrefixMappings;
 import org.oddjob.arooa.standard.StandardFragmentParser;
 import org.oddjob.arooa.utils.ListSetterHelper;
@@ -40,7 +41,7 @@ public class JsonConfigurationTest {
         JsonConfiguration test = new JsonConfiguration(jsonString)
                 .withNamespaceMappings(new SimplePrefixMappings());
 
-        XMLArooaParser parser = new XMLArooaParser();
+        XMLArooaParser parser = new XMLArooaParser(NamespaceMappings.empty());
 
         ConfigurationHandle handle = parser.parse(test);
 

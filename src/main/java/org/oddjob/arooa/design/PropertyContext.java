@@ -1,21 +1,10 @@
 package org.oddjob.arooa.design;
 
-import org.oddjob.arooa.ArooaConfigurationException;
-import org.oddjob.arooa.ArooaConstants;
-import org.oddjob.arooa.ArooaException;
-import org.oddjob.arooa.ArooaParseException;
-import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ArooaType;
-import org.oddjob.arooa.ConfigurationHandle;
+import org.oddjob.arooa.*;
 import org.oddjob.arooa.life.SimpleArooaClass;
-import org.oddjob.arooa.parsing.ArooaContext;
-import org.oddjob.arooa.parsing.ArooaElement;
-import org.oddjob.arooa.parsing.ArooaHandler;
-import org.oddjob.arooa.parsing.Location;
-import org.oddjob.arooa.parsing.OverrideContext;
-import org.oddjob.arooa.parsing.PrefixMappings;
-import org.oddjob.arooa.reflect.ArooaPropertyException;
+import org.oddjob.arooa.parsing.*;
 import org.oddjob.arooa.reflect.ArooaClass;
+import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
@@ -86,7 +75,7 @@ class PropertyContext implements ArooaContext {
 		void onAfterInit() {
 			ignoreInsert = false;
 		}
-	};
+	}
 	
 	private boolean ignoreInsert = false;
 	
@@ -149,10 +138,10 @@ class PropertyContext implements ArooaContext {
 				designProperty.synchronizedInsert(index, (DesignInstance) value);
 			}
 		}
-	};
-	
-	
-	private final ConfigurationNode configurationNode = new DesignConfigurationNode() {
+	}
+
+
+	private final ConfigurationNode<ArooaContext> configurationNode = new DesignConfigurationNode() {
 
 		public ArooaContext getContext() {
 			return PropertyContext.this;
@@ -164,8 +153,9 @@ class PropertyContext implements ArooaContext {
 				throw new ArooaException("No text expected: " + trimmedText);				
 			}
 		}
-		
-		public ConfigurationHandle parse(ArooaContext parentContext)
+
+		@Override
+		public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parentContext)
 				throws ArooaParseException {
 			
 			if (this.children().length == 0) {
@@ -175,11 +165,11 @@ class PropertyContext implements ArooaContext {
 			ArooaElement element = new ArooaElement(
 					designProperty.property());
 			
-			ArooaHandler handler = parentContext.getArooaHandler();
+			ElementHandler<P> handler = parentContext.getElementHandler();
 			
-			ArooaContext nextContext = null;			
+			ParseHandle<P> parseHandle;
 			try {
-				nextContext = handler.onStartElement(
+				parseHandle = handler.onStartElement(
 					element, parentContext);
 			}
 			catch (ArooaConfigurationException e) {
@@ -187,59 +177,31 @@ class PropertyContext implements ArooaContext {
 	    				new Location(designProperty.property(), 0, 0), e);
 			}
 
+			P nextContext = parseHandle.getContext();
+
 			// Do this rather than configuration node children because of
 			// mapped properties.
 			for (int i = 0; i < designProperty.instanceCount(); ++i) {
 				final DesignInstance design = designProperty.instanceAt(i);
 					
-				ConfigurationNode configurationNode = design.getArooaContext().getConfigurationNode();
-				
-				configurationNode.parse(new OverrideContext(nextContext) {
-					
-					@Override
-					public ArooaHandler getArooaHandler() {
-						return new ArooaHandler() {
-							public ArooaContext onStartElement(ArooaElement element, ArooaContext parentContext) 
-							throws ArooaConfigurationException {
-								String key = designProperty.getKey(design);
-								if (key != null) {
-									element = element.addAttribute(ArooaConstants.KEY_PROPERTY, key);
-								}
+				ArooaConfiguration configurationNode = design
+						.getArooaContext().getConfigurationNode();
 
-								return getExistingContext().getArooaHandler(
-										).onStartElement(element, parentContext);
-							};
-						};
-					}
-					
-				});
+				configurationNode.parse(nextContext);
 			}
-			
-			int index = parentContext.getConfigurationNode().insertChild( 
-					nextContext.getConfigurationNode());
-			
-			try {
-				nextContext.getRuntime().init();
-	    	} catch (Exception e) {
-	    		try {
-	    			parentContext.getConfigurationNode().removeChild(index);
-	    		} catch (Exception e2) {
-	    			throw new RuntimeException(
-	    					"Failed rolling back design change.", e);
-	    		}	
-	    		throw new ArooaParseException("Failed parsing property.", 
-	    				new Location(designProperty.property(), 0, 0), e);
-	    	}
 
-    		return new PropertyConfigurationHandle(nextContext);
+			parseHandle.init();
+
+    		return new PropertyConfigurationHandle<>(nextContext);
 		}
 	};
 
-	class PropertyConfigurationHandle implements ConfigurationHandle {
+	static class PropertyConfigurationHandle<P extends ParseContext<P>>
+			implements ConfigurationHandle<P> {
 
-		private final ArooaContext nextContext;
+		private final P nextContext;
 		
-		public PropertyConfigurationHandle(ArooaContext nextContext) {
+		public PropertyConfigurationHandle(P nextContext) {
 			this.nextContext = nextContext;
 		}
 		
@@ -247,7 +209,7 @@ class PropertyContext implements ArooaContext {
 			throw new UnsupportedOperationException("Can only save instances not properties.");
 		}
 		
-		public ArooaContext getDocumentContext() {
+		public P getDocumentContext() {
 			return nextContext;
 		}
 	}
@@ -285,12 +247,15 @@ class PropertyContext implements ArooaContext {
 		return runtime;
 	}
 	
-	public ConfigurationNode getConfigurationNode() {
+	public ConfigurationNode<ArooaContext> getConfigurationNode() {
 		return configurationNode;
 	}
 	
 	public ArooaSession getSession() {
 		return parentContext.getSession();
 	}
-	
+
+	public String getKey(DesignInstance designInstance) {
+		return designProperty.getKey(designInstance);
+	}
 }

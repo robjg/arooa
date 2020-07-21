@@ -5,7 +5,7 @@ import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
 
 /**
- * Create an {@link ArooaConfgiguration} out of a single element.
+ * Create an {@link ArooaConfiguration} out of a single element.
  * Used for creating new configurations.
  * 
  * @author rob
@@ -25,7 +25,7 @@ public class ElementConfiguration implements ArooaConfiguration {
 	 * (non-Javadoc)
 	 * @see org.oddjob.arooa.ArooaConfiguration#parse(org.oddjob.arooa.parsing.ArooaContext)
 	 */
-	public ConfigurationHandle parse(ArooaContext parentContext)
+	public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parentContext)
 			throws ArooaParseException {
 		
 		QTagConfiguration qTagConfiguration = new QTagConfiguration(

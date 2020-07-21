@@ -1,20 +1,12 @@
 package org.oddjob.arooa.standard;
 
-import org.junit.Test;
-
 import org.junit.Assert;
-
+import org.junit.Test;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.MockConfigurationHandle;
-import org.oddjob.arooa.parsing.AbstractConfigurationNode;
-import org.oddjob.arooa.parsing.ArooaContext;
-import org.oddjob.arooa.parsing.ArooaElement;
-import org.oddjob.arooa.parsing.ArooaHandler;
-import org.oddjob.arooa.parsing.MockArooaContext;
-import org.oddjob.arooa.parsing.PrefixMappings;
-import org.oddjob.arooa.parsing.SimplePrefixMappings;
+import org.oddjob.arooa.parsing.*;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 import org.oddjob.arooa.runtime.MockConfigurationNode;
 import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
@@ -34,7 +26,7 @@ public class StandardConfigurationNodeTest extends Assert {
 	
 	class ParentContext extends MockArooaContext {
 		
-		AppleContext appleContext = new AppleContext();
+		AppleContext appleContext = new AppleContext(this);
 		
 		ConfigurationNode configerationNode = new AbstractConfigurationNode() {
 
@@ -46,7 +38,7 @@ public class StandardConfigurationNodeTest extends Assert {
 				throw new RuntimeException("Unexpected.");
 			}
 
-			public ConfigurationHandle parse(ArooaContext parentContext)
+			public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parentContext)
 					throws ArooaParseException {
 				throw new RuntimeException("Unexpected.");
 			}
@@ -76,27 +68,26 @@ public class StandardConfigurationNodeTest extends Assert {
 	
 	class AppleContext extends MockArooaContext {
 
+		final ParentContext parent;
+
 		ConfigurationNode configurationNode =
 			new MockConfigurationNode() {
 			@Override
-			public ConfigurationHandle parse(ArooaContext parentContext)
+			public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parentContext)
 					throws ArooaParseException {
 				ArooaElement newElement = new ArooaElement("apple");
 				newElement = newElement.addAttribute("id", "fruit");
 				newElement = newElement.addAttribute("colour", "green");
-				
-				final ArooaContext newAppleContext =
-					parentContext.getArooaHandler().onStartElement(newElement, parentContext);
-				
-				parentContext.getConfigurationNode().insertChild(
-						newAppleContext.getConfigurationNode());
-				
-				newAppleContext.getRuntime().init();
-				
-				return new MockConfigurationHandle() {
+
+				ParseHandle<P> handle =
+					parentContext.getElementHandler().onStartElement(newElement, parentContext);
+
+				handle.init();
+
+				return new MockConfigurationHandle<P>() {
 					@Override
-					public ArooaContext getDocumentContext() {
-						return newAppleContext;
+					public P getDocumentContext() {
+						return handle.getContext();
 					}
 				};
 			}
@@ -106,7 +97,11 @@ public class StandardConfigurationNodeTest extends Assert {
 				return AppleContext.this;
 			}
 		};
-		
+
+		AppleContext(ParentContext parent) {
+			this.parent = parent;
+		}
+
 		@Override
 		public ConfigurationNode getConfigurationNode() {
 			return configurationNode;
@@ -119,6 +114,11 @@ public class StandardConfigurationNodeTest extends Assert {
 				public void init() throws ArooaException {
 				}
 			};
+		}
+
+		@Override
+		public ArooaContext getParent() {
+			return parent;
 		}
 	}
 	

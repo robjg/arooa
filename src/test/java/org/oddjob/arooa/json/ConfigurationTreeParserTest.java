@@ -40,7 +40,7 @@ public class ConfigurationTreeParserTest {
 
         ArooaConfiguration treeConfiguration = result.toConfiguration(c -> {});
 
-        XMLArooaParser xmlArooaParser = new XMLArooaParser();
+        XMLArooaParser xmlArooaParser = new XMLArooaParser(namespaceMappings);
 
         xmlArooaParser.parse(treeConfiguration);
 

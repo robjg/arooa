@@ -1,25 +1,16 @@
 package org.oddjob.arooa.design.view;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
-import javax.swing.WindowConstants;
-
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.design.DesignInstance;
 import org.oddjob.arooa.design.screem.Form;
 import org.oddjob.arooa.xml.XMLArooaParser;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class ViewMainHelper implements Runnable {
 
@@ -42,17 +33,16 @@ public class ViewMainHelper implements Runnable {
 		
 		JPanel panel = new JPanel(new BorderLayout());
 
-		ActionListener xmlAction = new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				XMLArooaParser parser = new XMLArooaParser();
-				try {
-					parser.parse(
-							design.getArooaContext().getConfigurationNode());
-				} catch (ArooaParseException ex) {
-					throw new RuntimeException(ex);
-				}
-				System.out.println(parser.getXml());
+		ActionListener xmlAction = e -> {
+			XMLArooaParser parser = new XMLArooaParser(
+					design.getArooaContext().getPrefixMappings());
+			try {
+				parser.parse(
+						design.getArooaContext().getConfigurationNode());
+			} catch (ArooaParseException ex) {
+				throw new RuntimeException(ex);
 			}
+			System.out.println(parser.getXml());
 		};
 		
 		JButton xml = new JButton("XML");
@@ -66,12 +56,7 @@ public class ViewMainHelper implements Runnable {
 		frame.pack();
 		frame.setVisible(true);
 
-		ActionListener cancelAction = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				frame.dispose();
-			}	
-		};
+		ActionListener cancelAction = e -> frame.dispose();
 		
 		KeyStroke escapeStroke = KeyStroke.getKeyStroke(
 				KeyEvent.VK_ESCAPE, 0);
@@ -98,7 +83,7 @@ public class ViewMainHelper implements Runnable {
 			try {
 				wait();
 			} catch (InterruptedException e) {
-				
+				Thread.currentThread().interrupt();
 			}
 		}
 	}

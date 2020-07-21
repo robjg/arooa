@@ -3,13 +3,7 @@
  */
 package org.oddjob.arooa.standard;
 
-import org.oddjob.arooa.ArooaConfiguration;
-import org.oddjob.arooa.ArooaDescriptor;
-import org.oddjob.arooa.ArooaParseException;
-import org.oddjob.arooa.ArooaParser;
-import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ArooaType;
-import org.oddjob.arooa.ConfigurationHandle;
+import org.oddjob.arooa.*;
 import org.oddjob.arooa.handlers.ElementAction;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
@@ -99,7 +93,7 @@ public class StandardArooaParser implements ArooaParser {
 	 * (non-Javadoc)
 	 * @see org.oddjob.arooa.ArooaParser#parse(org.oddjob.arooa.ArooaConfiguration)
 	 */
-	public ConfigurationHandle parse(ArooaConfiguration configuration) 
+	public ConfigurationHandle<ArooaContext> parse(ArooaConfiguration configuration)
 	throws ArooaParseException {
 
 		ElementAction<InstanceRuntime> elementAction = 

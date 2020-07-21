@@ -1,5 +1,7 @@
 package org.oddjob.arooa.runtime;
 
+import org.oddjob.arooa.parsing.ParseContext;
+
 import java.util.EventListener;
 
 /**
@@ -7,7 +9,7 @@ import java.util.EventListener;
  * 
  * @author rob
  */
-public interface ConfigurationNodeListener extends EventListener {
+public interface ConfigurationNodeListener<P extends ParseContext<P>> extends EventListener {
 
 	/**
 	 * A {@link ConfigurationNode} will make a request to all
@@ -20,7 +22,7 @@ public interface ConfigurationNodeListener extends EventListener {
      *
 	 * @throws ModificationRefusedException If the listener veto's the request.
 	 */
-	void insertRequest(ConfigurationNodeEvent nodeEvent)
+	void insertRequest(ConfigurationNodeEvent<P> nodeEvent)
 	throws ModificationRefusedException;
 	
 	/**
@@ -31,7 +33,7 @@ public interface ConfigurationNodeListener extends EventListener {
 	 *
 	 * @throws ModificationRefusedException If the listener veto's the request.
 	 */
-	void removalRequest(ConfigurationNodeEvent nodeEvent)
+	void removalRequest(ConfigurationNodeEvent<P> nodeEvent)
 	throws ModificationRefusedException;
 	
 	/**
@@ -39,13 +41,13 @@ public interface ConfigurationNodeListener extends EventListener {
 	 * 
 	 * @param nodeEvent The modification event.
 	 */
-	void childInserted(ConfigurationNodeEvent nodeEvent);
+	void childInserted(ConfigurationNodeEvent<P> nodeEvent);
 	
 	/**
 	 * Receive notification that a child has been removed.
 	 * 
 	 * @param nodeEvent The modification event.
 	 */
-	void childRemoved(ConfigurationNodeEvent nodeEvent);
+	void childRemoved(ConfigurationNodeEvent<P> nodeEvent);
 	
 }

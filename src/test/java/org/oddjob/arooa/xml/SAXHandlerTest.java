@@ -1,23 +1,20 @@
 package org.oddjob.arooa.xml;
+
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-import org.junit.Assert;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaException;
+import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaType;
-import org.oddjob.arooa.parsing.ArooaContext;
-import org.oddjob.arooa.parsing.ArooaElement;
-import org.oddjob.arooa.parsing.ArooaHandler;
-import org.oddjob.arooa.parsing.MockArooaContext;
-import org.oddjob.arooa.parsing.RootContext;
+import org.oddjob.arooa.parsing.*;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 import org.oddjob.arooa.runtime.MockConfigurationNode;
 import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -34,7 +31,13 @@ public class SAXHandlerTest extends Assert {
 	boolean init;
 	
 	class OurDocumentContext extends MockArooaContext {
-	
+
+		private final ArooaContext parent;
+
+		OurDocumentContext(ArooaContext parent) {
+			this.parent = parent;
+		}
+
 		@Override
 		public RuntimeConfiguration getRuntime() {
 			return new MockRuntimeConfiguration() {
@@ -54,6 +57,11 @@ public class SAXHandlerTest extends Assert {
 				}
 			};
 		}
+
+		@Override
+		public ArooaContext getParent() {
+			return parent;
+		}
 	}
 	
     @Before
@@ -66,17 +74,17 @@ public class SAXHandlerTest extends Assert {
    @Test
 	public void testDocumentContext() throws SAXException {
 
-		RootContext rootContext = new RootContext(ArooaType.COMPONENT, 
-				null,
+		RootContext rootContext = new RootContext(ArooaType.COMPONENT,
+				(ArooaSession) null,
 				new ArooaHandler() {
 
 			public ArooaContext onStartElement(ArooaElement element,
 					ArooaContext parentContext) throws ArooaException {
-				return new OurDocumentContext();
+				return new OurDocumentContext(parentContext);
 			}
 		});
 		
-		SAXHandler test = new SAXHandler(rootContext);
+		SAXHandler<ArooaContext> test = new SAXHandler<>(rootContext);
 
 		test.startDocument();
 		

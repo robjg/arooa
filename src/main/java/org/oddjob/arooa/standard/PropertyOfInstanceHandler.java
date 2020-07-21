@@ -1,16 +1,11 @@
 package org.oddjob.arooa.standard;
 
-import org.oddjob.arooa.ArooaBeanDescriptor;
-import org.oddjob.arooa.ArooaConfigurationException;
-import org.oddjob.arooa.ArooaException;
-import org.oddjob.arooa.ArooaParseException;
-import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ArooaType;
-import org.oddjob.arooa.ConfigurationHandle;
+import org.oddjob.arooa.*;
 import org.oddjob.arooa.deploy.BeanDescriptorHelper;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.parsing.ArooaHandler;
+import org.oddjob.arooa.parsing.ParseContext;
 import org.oddjob.arooa.reflect.ArooaClass;
 
 /**
@@ -75,8 +70,8 @@ class PropertyOfInstanceHandler implements ArooaHandler {
             }
 
             @Override
-            public ConfigurationHandle parse(
-                    ArooaContext parentContext)
+            public <P extends ParseContext<P>> ConfigurationHandle<P> parse(
+                    P parentContext)
                     throws ArooaParseException {
                 if (children().length == 0) {
                     return null;

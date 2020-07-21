@@ -1,12 +1,8 @@
 package org.oddjob.arooa.design;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.oddjob.arooa.ArooaConstants;
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.design.PropertyContext.DesignSetter;
-import org.oddjob.arooa.design.screem.Form;
 import org.oddjob.arooa.design.screem.MultiTypeTable;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
@@ -14,6 +10,11 @@ import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Mapped Design Property. This design property keeps track of
@@ -24,9 +25,12 @@ import org.oddjob.arooa.reflect.PropertyAccessor;
  */
 public class MappedDesignProperty extends DesignPropertyBase {
 
-	private final List<InstanceWrapper> instances = 
-		new ArrayList<InstanceWrapper>();	
-		
+	private final List<DesignInstance> instances =
+		new ArrayList<>();
+
+	private final Map<DesignInstance, String> keys =
+			new HashMap<>();
+
 	/**
 	 * Constructor.
 	 * 
@@ -73,6 +77,7 @@ public class MappedDesignProperty extends DesignPropertyBase {
 		if (!beanOverview.hasWriteableProperty(
 				ArooaConstants.KEY_PROPERTY)) {
 
+			// Element needs to be passed back. This is a bug.
 			element = element.removeAttribute(ArooaConstants.KEY_PROPERTY);
 		}
 		
@@ -91,24 +96,24 @@ public class MappedDesignProperty extends DesignPropertyBase {
 		}
 		
 		public void setDesign(int index, DesignInstance design) {
-			synchronizedInsert(index,  
-					new InstanceWrapper(design, key));
+			keys.put(design, key);
+			synchronizedInsert(index, design);
 		}
 	}
 	
 	
 	void insertInstance(int index, DesignInstance de) {
-		InstanceWrapper wrapper = (InstanceWrapper) de;
-		
+
 		if (de == null) {
-			instances.remove(index);
+			DesignInstance instance = instances.remove(index);
+			keys.remove(instance);
 		}
 		else {
 			if (index == -1) {
-				instances.add(wrapper);
+				instances.add(de);
 			}
 			else {
-				instances.add(index, wrapper);
+				instances.add(index, de);
 			}
 		}
 	}
@@ -125,10 +130,10 @@ public class MappedDesignProperty extends DesignPropertyBase {
 		MultiTypeTable table = new MultiTypeTable(this);
 		table.setKeyAccess(new MultiTypeTable.KeyAccess() {
 			public String getKey(int index) {
-				return instances.get(index).key;
+				return keys.get(instances.get(index));
 			}
 			public void setKey(int index, String value) {
-				instances.get(index).key = value;
+				keys.put(instances.get(index), value);
 			}
 		});
 		return table;
@@ -140,40 +145,7 @@ public class MappedDesignProperty extends DesignPropertyBase {
 	
 	@Override
 	String getKey(DesignInstance instance) {
-		return ((InstanceWrapper) instance).key;
+		return keys.get(instance);
 	}
-	
-	public static class InstanceWrapper implements DesignInstance {
-	
-		private final DesignInstance wrapping;
 
-		private String key;
-
-		public InstanceWrapper(DesignInstance wrapping, String key) {
-			this.key = key;
-			this.wrapping = wrapping;
-		}
-		
-		public Form detail() {
-			return wrapping.detail();
-		}
-
-		public ArooaElement element() {
-			return wrapping.element();
-		}
-		
-		public ArooaContext getArooaContext() {
-			return wrapping.getArooaContext();
-		}
-		
-		public DesignInstance getWrapping() {
-			return wrapping;
-		}
-		
-		@Override
-		public String toString() {
-			return getClass().getSimpleName() + " key=" + key;
-		}
-	}
-	
 }

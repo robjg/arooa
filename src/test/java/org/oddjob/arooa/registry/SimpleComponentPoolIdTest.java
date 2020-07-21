@@ -1,18 +1,17 @@
 package org.oddjob.arooa.registry;
 
-import org.junit.Test;
-
-import javax.inject.Inject;
-
 import org.junit.Assert;
-
+import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.deploy.annotations.ArooaComponent;
 import org.oddjob.arooa.life.ArooaSessionAware;
+import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
+
+import javax.inject.Inject;
 
 public class SimpleComponentPoolIdTest extends Assert {
 
@@ -98,7 +97,7 @@ public class SimpleComponentPoolIdTest extends Assert {
 		
 		StandardArooaParser parser = new StandardArooaParser(root);
 		
-		ConfigurationHandle handle = parser.parse(config);
+		ConfigurationHandle<ArooaContext> handle = parser.parse(config);
 
 		handle.getDocumentContext().getRuntime().configure();
 		

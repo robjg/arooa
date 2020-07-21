@@ -1,18 +1,17 @@
 package org.oddjob.arooa.standard;
 
-import org.junit.Test;
-
-import java.net.URISyntaxException;
-
 import org.junit.Assert;
-
+import org.junit.Test;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.deploy.ArooaDescriptorDescriptor;
 import org.oddjob.arooa.deploy.ArooaDescriptorFactory;
 import org.oddjob.arooa.life.ArooaLifeAware;
+import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.xml.XMLConfiguration;
+
+import java.net.URISyntaxException;
 
 public class DestructionTest extends Assert {
 
@@ -117,7 +116,7 @@ public class DestructionTest extends Assert {
 		
 		StandardArooaParser parser = new StandardArooaParser(root, session);
 
-		ConfigurationHandle handle = parser.parse(
+		ConfigurationHandle<ArooaContext> handle = parser.parse(
 				new XMLConfiguration("TEST", xml));
 
 		assertNotNull(session.getBeanRegistry().lookup("stuff"));
@@ -163,7 +162,7 @@ public class DestructionTest extends Assert {
 		
 		StandardArooaParser parser = new StandardArooaParser(root, session);
 
-		ConfigurationHandle handle = parser.parse(new XMLConfiguration("TEST", xml));
+		ConfigurationHandle<ArooaContext> handle = parser.parse(new XMLConfiguration("TEST", xml));
 
 		Stuff stuff = root.moreStuff;
 		assertNull(root.other);

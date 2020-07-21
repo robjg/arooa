@@ -21,26 +21,27 @@ public class HandleConfigurationSession implements ConfigurationSession {
 
 	private final ArooaSession session;
 	
-	private final ConfigurationHandle handle;
+	private final ConfigurationHandle<?> handle;
 
 	private final ConfigurationSessionSupport propertySupport;
 	
 	private boolean modified;
 	
-	class ChangeListener implements ConfigurationNodeListener {
+	class ChangeListener<P extends ParseContext<P>>
+			implements ConfigurationNodeListener<P> {
 		
-		public void childInserted(ConfigurationNodeEvent nodeEvent) {
-			ConfigurationNode node = nodeEvent.getChild();
-			node.addNodeListener(new ChangeListener());
+		public void childInserted(ConfigurationNodeEvent<P> nodeEvent) {
+			ConfigurationNode<P> node = nodeEvent.getChild();
+			node.addNodeListener(new ChangeListener<>());
 			setModified(true);
 		}
-		public void childRemoved(ConfigurationNodeEvent nodeEvent) {
+		public void childRemoved(ConfigurationNodeEvent<P> nodeEvent) {
 			setModified(true);
 		}
-		public void insertRequest(ConfigurationNodeEvent nodeEvent)
+		public void insertRequest(ConfigurationNodeEvent<P> nodeEvent)
 				throws ModificationRefusedException {
 		}
-		public void removalRequest(ConfigurationNodeEvent nodeEvent)
+		public void removalRequest(ConfigurationNodeEvent<P> nodeEvent)
 				throws ModificationRefusedException {
 		}
 	}
@@ -51,7 +52,7 @@ public class HandleConfigurationSession implements ConfigurationSession {
 	 * 
 	 * @param handle
 	 */
-	public HandleConfigurationSession(ConfigurationHandle handle) {
+	public HandleConfigurationSession(ConfigurationHandle<ArooaContext> handle) {
 		this(handle.getDocumentContext().getSession(), handle);
 	}
 	
@@ -63,7 +64,7 @@ public class HandleConfigurationSession implements ConfigurationSession {
 	 * @param handle The configuration handle.
 	 */
 	public HandleConfigurationSession(ArooaSession session, 
-			ConfigurationHandle handle) {
+			ConfigurationHandle<?> handle) {
 		
 		this.session = session;
 		this.handle = handle;
@@ -71,7 +72,7 @@ public class HandleConfigurationSession implements ConfigurationSession {
 		// Not we need add to the parent because the document context
 		// might be replaced.
 		handle.getDocumentContext().getParent().getConfigurationNode().addNodeListener(
-				new ChangeListener());
+				new ChangeListener<>());
 		
 		this.propertySupport = new ConfigurationSessionSupport(this);
 	}

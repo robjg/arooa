@@ -3,10 +3,7 @@ package org.oddjob.arooa.json;
 import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
-import org.oddjob.arooa.parsing.ArooaContext;
-import org.oddjob.arooa.parsing.ArooaElement;
-import org.oddjob.arooa.parsing.ChildCatcher;
-import org.oddjob.arooa.parsing.NamespaceMappings;
+import org.oddjob.arooa.parsing.*;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 
 import java.net.URI;
@@ -73,6 +70,7 @@ abstract public class ConfigurationTreeBuilder<T extends ConfigurationTreeBuilde
 
     abstract public T newInstance();
 
+    @SuppressWarnings("unchecked")
     T castThis() {
         return (T) this;
     }
@@ -126,15 +124,14 @@ abstract public class ConfigurationTreeBuilder<T extends ConfigurationTreeBuilde
 
         private final String text;
 
-        Impl(ConfigurationTreeBuilder builder) {
+        Impl(ConfigurationTreeBuilder<?> builder) {
 
             this.namespaceMappings = builder.namespaceMappings;
 
             ArooaElement element = Objects.requireNonNull(builder.element,
                     "No Element");
 
-            Map<String, String> atts = builder.attributes;
-            for (Map.Entry<String, String> entry: atts.entrySet()) {
+            for (Map.Entry<String, String> entry: builder.attributes.entrySet()) {
                 element = element.addAttribute(entry.getKey(), entry.getValue());
             }
             this.element = element;
@@ -165,86 +162,65 @@ abstract public class ConfigurationTreeBuilder<T extends ConfigurationTreeBuilde
         @Override
         public ArooaConfiguration toConfiguration(SaveOperation saveMethod) {
 
-            return parseParentContext -> {
+            return new ArooaConfiguration() {
+                @Override
+                public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parseParentContext) {
 
-                parseParentContext.getPrefixMappings().add(this.namespaceMappings);
+                    parseParentContext.getPrefixMappings().add(Impl.this.namespaceMappings);
 
-                parseTree(parseParentContext, Impl.this);
+                    parseTree(parseParentContext, Impl.this);
 
-                AtomicReference<ArooaContext> documentContext = new AtomicReference<>();
+                    AtomicReference<P> documentContext = new AtomicReference<>();
 
-                ChildCatcher.watchRootContext(parseParentContext, documentContext::set);
+                    ChildCatcher.watchRootContext(parseParentContext, documentContext::set);
 
-                return new ConfigurationHandle() {
-                    @Override
-                    public void save() throws ArooaParseException {
-                        Optional.ofNullable(saveMethod)
-                                .orElseThrow(() -> new UnsupportedOperationException("Unable to save"))
-                                .save(documentContext.get().getConfigurationNode());
-                    }
+                    return new ConfigurationHandle<P>() {
+                        @Override
+                        public void save() throws ArooaParseException {
+                            Optional.ofNullable(saveMethod)
+                                    .orElseThrow(() -> new UnsupportedOperationException("Unable to save"))
+                                    .save(documentContext.get().getConfigurationNode());
+                        }
 
-                    @Override
-                    public ArooaContext getDocumentContext() {
-                        return documentContext.get();
-                    }
-                };
+                        @Override
+                        public P getDocumentContext() {
+                            return documentContext.get();
+                        }
+                    };
+                }
             };
         }
-
     }
 
-    static void parseTree(ArooaContext parentContext, ConfigurationTree tree) {
+    static <P extends ParseContext<P>> void parseTree(P parentContext, ConfigurationTree tree) {
 
-        ArooaContext currentContext = parentContext.getArooaHandler()
+        ParseHandle<P> handle = parentContext.getElementHandler()
                 .onStartElement(tree.getElement(), parentContext);
+
+        P currentContext = handle.getContext();
 
         for (String name: tree.getChildNames()) {
 
-            ArooaContext nameContext = currentContext.getArooaHandler()
+            ParseHandle<P> nameHandle = currentContext.getElementHandler()
                     .onStartElement(new ArooaElement(name), currentContext);
+
+            P nameContext = nameHandle.getContext();
 
             for (ConfigurationTree child: tree.getChildConfigurations(name)) {
                 parseTree(nameContext, child);
             }
 
-            ConfigurationNode nameConfigurationNode = nameContext.getConfigurationNode();
+            ConfigurationNode<P> nameConfigurationNode = nameContext.getConfigurationNode();
             if (nameConfigurationNode == null) {
                 throw new IllegalArgumentException("Null Configuration Node for Context " + currentContext);
             }
 
-            // order is important here:
-            // add node before init() so indexed properties
-            // know their index.
-            int index = currentContext.getConfigurationNode()
-                    .insertChild(nameConfigurationNode);
-
-            try {
-                nameContext.getRuntime().init();
-            } catch (RuntimeException e) {
-                currentContext.getConfigurationNode().removeChild(index);
-                throw e;
-            }
+            nameHandle.init();
         }
 
-        ConfigurationNode currentConfigurationNode = currentContext.getConfigurationNode();
-        if (currentConfigurationNode == null) {
-            throw new IllegalArgumentException("Null Configuration Node for Context " + currentContext);
-        }
+        tree.getText().ifPresent(handle::addText);
 
-        tree.getText().ifPresent(currentConfigurationNode::addText);
-
-        // order is important here:
-        // add node before init() so indexed properties
-        // know their index.
-        int index = parentContext.getConfigurationNode()
-                .insertChild(currentConfigurationNode);
-
-        try {
-            currentContext.getRuntime().init();
-        } catch (RuntimeException e) {
-            parentContext.getConfigurationNode().removeChild(index);
-            throw e;
-        }
+        handle.init();
     }
 
 }

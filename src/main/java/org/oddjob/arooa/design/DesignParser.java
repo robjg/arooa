@@ -3,24 +3,16 @@
  */
 package org.oddjob.arooa.design;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.oddjob.arooa.ArooaConfiguration;
-import org.oddjob.arooa.ArooaDescriptor;
-import org.oddjob.arooa.ArooaException;
-import org.oddjob.arooa.ArooaParseException;
-import org.oddjob.arooa.ArooaParser;
-import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ArooaType;
-import org.oddjob.arooa.ConfigurationHandle;
-import org.oddjob.arooa.ElementMappings;
+import org.oddjob.arooa.*;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.parsing.ArooaHandler;
 import org.oddjob.arooa.parsing.RootContext;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.standard.StandardArooaSession;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Parses a configuration to create a {@link DesignInstance}.
@@ -163,7 +155,7 @@ public class DesignParser implements ArooaParser, DesignNotifier {
 	 * (non-Javadoc)
 	 * @see org.oddjob.arooa.ArooaParser#parse(org.oddjob.arooa.ArooaConfiguration)
 	 */
-	public ConfigurationHandle parse(ArooaConfiguration configuration) throws ArooaParseException {
+	public ConfigurationHandle<ArooaContext> parse(ArooaConfiguration configuration) throws ArooaParseException {
 		
 		if (configuration == null) {
 			throw new NullPointerException("No configuration.");

@@ -22,9 +22,9 @@ public class ConfigurationTreeBuilderTest {
     @Test
     public void testSingleElementParse() throws ArooaParseException {
 
-        XMLArooaParser parser = new XMLArooaParser();
-
         NamespaceMappings namespaceMappings = new SimplePrefixMappings();
+
+        XMLArooaParser parser = new XMLArooaParser(namespaceMappings);
 
         ConfigurationTree tree = ConfigurationTreeBuilder
                 .withTag(namespaceMappings)
@@ -43,7 +43,7 @@ public class ConfigurationTreeBuilderTest {
 
         handle.save();
 
-        XMLArooaParser parser2 = new XMLArooaParser();
+        XMLArooaParser parser2 = new XMLArooaParser(namespaceMappings);
 
         parser2.parse(saved.get());
 
@@ -53,9 +53,9 @@ public class ConfigurationTreeBuilderTest {
     @Test
     public void testTextParse() throws ArooaParseException {
 
-        XMLArooaParser parser = new XMLArooaParser();
-
         NamespaceMappings namespaceMappings = new SimplePrefixMappings();
+
+        XMLArooaParser parser = new XMLArooaParser(namespaceMappings);
 
         ConfigurationTree tree = ConfigurationTreeBuilder
                 .withTag(namespaceMappings)
@@ -74,7 +74,7 @@ public class ConfigurationTreeBuilderTest {
 
         handle.save();
 
-        XMLArooaParser parser2 = new XMLArooaParser();
+        XMLArooaParser parser2 = new XMLArooaParser(namespaceMappings);
 
         parser2.parse(saved.get());
 
@@ -86,7 +86,7 @@ public class ConfigurationTreeBuilderTest {
 
         NamespaceMappings namespaceMappings = new SimplePrefixMappings();
 
-        XMLArooaParser parser = new XMLArooaParser();
+        XMLArooaParser parser = new XMLArooaParser(namespaceMappings);
 
         ConfigurationTreeBuilder.WithQualifiedTag treeBuilder =
                 ConfigurationTreeBuilder.withTag(namespaceMappings);
@@ -111,7 +111,7 @@ public class ConfigurationTreeBuilderTest {
 
         handle.save();
 
-        XMLArooaParser parser2 = new XMLArooaParser();
+        XMLArooaParser parser2 = new XMLArooaParser(namespaceMappings);
 
         parser2.parse(saved.get());
 

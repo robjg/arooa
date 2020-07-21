@@ -1,12 +1,7 @@
 package org.oddjob.arooa.parsing;
 
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Assert;
-
+import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ConfigurationHandle;
@@ -16,6 +11,9 @@ import org.oddjob.arooa.registry.ChangeHow;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.utils.ListSetterHelper;
 import org.oddjob.arooa.xml.XMLConfiguration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Test to do with the RegistryTransaction.
@@ -49,7 +47,7 @@ public class DragContextTest extends Assert {
 		
 		StandardArooaParser parser = new StandardArooaParser(root);
 		
-		ConfigurationHandle handle = parser.parse(
+		ConfigurationHandle<ArooaContext> handle = parser.parse(
 				new XMLConfiguration("XML", xml));
 
 		ArooaSession session = parser.getSession();
@@ -86,7 +84,7 @@ public class DragContextTest extends Assert {
 		
 		StandardArooaParser parser = new StandardArooaParser(root);
 		
-		ConfigurationHandle handle = parser.parse(
+		ConfigurationHandle<ArooaContext> handle = parser.parse(
 				new XMLConfiguration("XML", xml));
 
 		ArooaSession session = parser.getSession();
@@ -124,7 +122,7 @@ public class DragContextTest extends Assert {
 		
 		StandardArooaParser parser = new StandardArooaParser(root);
 		
-		ConfigurationHandle handle = parser.parse(
+		ConfigurationHandle<ArooaContext> handle = parser.parse(
 				new XMLConfiguration("XML", xml));
 
 		ArooaSession session = parser.getSession();

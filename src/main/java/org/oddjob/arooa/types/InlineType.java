@@ -36,7 +36,7 @@ public class InlineType implements ArooaContextAware, ValueFactory<ArooaConfigur
     @Override
     public ArooaConfiguration toValue() {
         ArooaContext childContext =
-                new ChildCatcher(this.arooaContext, 0).getChild();
+                new ChildCatcher<>(this.arooaContext, 0).getChild();
 
         if (childContext == null) {
             return null;

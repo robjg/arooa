@@ -1,15 +1,10 @@
 package org.oddjob.arooa.xml;
 
 import junit.framework.TestCase;
-
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
-import org.oddjob.arooa.parsing.AbstractConfigurationNode;
-import org.oddjob.arooa.parsing.ArooaContext;
-import org.oddjob.arooa.parsing.ArooaElement;
-import org.oddjob.arooa.parsing.ArooaHandler;
-import org.oddjob.arooa.parsing.MockArooaContext;
+import org.oddjob.arooa.parsing.*;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
@@ -17,8 +12,11 @@ import org.oddjob.arooa.runtime.RuntimeConfiguration;
 public class XMLConfigurationX2Test extends TestCase {
 
 	class ElementCaptureContext extends MockArooaContext {
+
+		final ArooaContext parent;
+
 		ArooaElement element;
-		
+
 		final RuntimeConfiguration runtime = new MockRuntimeConfiguration() {
 			@Override
 			public void init() throws ArooaException {
@@ -32,19 +30,23 @@ public class XMLConfigurationX2Test extends TestCase {
 			public ArooaContext getContext() {
 				return ElementCaptureContext.this;
 			}
-			public ConfigurationHandle parse(ArooaContext parentContext)
+			public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parentContext)
 					throws ArooaParseException {
 				throw new RuntimeException("Unexpected.");
 			}
 			
 		};
-		
+
+		ElementCaptureContext(ArooaContext parent) {
+			this.parent = parent;
+		}
+
 		@Override
 		public ArooaHandler getArooaHandler() {
 			return new ArooaHandler() {
 				public ArooaContext onStartElement(ArooaElement element,
 						ArooaContext parentContext) throws ArooaException {
-					ElementCaptureContext nextContext = new ElementCaptureContext();
+					ElementCaptureContext nextContext = new ElementCaptureContext(ElementCaptureContext.this);
 					nextContext.element = element;
 					
 					return nextContext;
@@ -53,10 +55,15 @@ public class XMLConfigurationX2Test extends TestCase {
 		}
 
 		@Override
+		public ArooaContext getParent() {
+			return parent;
+		}
+
+		@Override
 		public RuntimeConfiguration getRuntime() {
 			return runtime;
 		}
-		
+
 		@Override
 		public ConfigurationNode getConfigurationNode() {
 			return configurationNode;
@@ -69,7 +76,7 @@ public class XMLConfigurationX2Test extends TestCase {
 		
 		XMLConfiguration test = new XMLConfiguration("TEST", xml);
 		
-		ElementCaptureContext context = new ElementCaptureContext();
+		ElementCaptureContext context = new ElementCaptureContext(null);
 		
 		ConfigurationHandle handle = test.parse(context);
 		
@@ -80,6 +87,8 @@ public class XMLConfigurationX2Test extends TestCase {
 	
 	class TextCaptureContext extends MockArooaContext {
 
+		final ArooaContext parent;
+
 		StringBuilder result = new StringBuilder();
 		
 		final RuntimeConfiguration runtime = new MockRuntimeConfiguration() {
@@ -89,29 +98,42 @@ public class XMLConfigurationX2Test extends TestCase {
 		};
 
 		final ConfigurationNode configurationNode = new AbstractConfigurationNode() {
+			@Override
 			public void addText(String text) {
 				result.append(text);
 			}
+			@Override
 			public ArooaContext getContext() {
 				return TextCaptureContext.this;
 			}
-			public ConfigurationHandle parse(ArooaContext parentContext)
+			@Override
+			public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parentContext)
 					throws ArooaParseException {
 				throw new RuntimeException("Unexpected.");
 			}
 			
 		};
-		
+
+		TextCaptureContext(ArooaContext parent) {
+			this.parent = parent;
+		}
+
 		@Override
 		public ArooaHandler getArooaHandler() {
 			return new ArooaHandler() {
+				@Override
 				public ArooaContext onStartElement(ArooaElement element,
 						ArooaContext parentContext) throws ArooaException {
-					TextCaptureContext nextContext = new TextCaptureContext();
+					TextCaptureContext nextContext = new TextCaptureContext(TextCaptureContext.this);
 					
 					return nextContext;
 				}
 			};
+		}
+
+		@Override
+		public ArooaContext getParent() {
+			return parent;
 		}
 
 		@Override
@@ -141,9 +163,9 @@ public class XMLConfigurationX2Test extends TestCase {
 		
 		XMLConfiguration test = new XMLConfiguration("TEST", xml);
 		
-		TextCaptureContext context = new TextCaptureContext();
+		TextCaptureContext context = new TextCaptureContext(null);
 		
-		ConfigurationHandle handle = test.parse(context);
+		ConfigurationHandle<ArooaContext> handle = test.parse(context);
 		
 		TextCaptureContext rootContext = (TextCaptureContext) handle.getDocumentContext();
 

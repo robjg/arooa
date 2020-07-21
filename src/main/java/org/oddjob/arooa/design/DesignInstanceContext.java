@@ -31,17 +31,21 @@ public class DesignInstanceContext implements ArooaContext {
 
 	private final TextHandler textHandler = new TextHandler();
 
-	private final ConfigurationNode configurationNode = new DesignConfigurationNode() {
+	private final ConfigurationNode<ArooaContext> configurationNode
+			= new DesignConfigurationNode() {
 
+		@Override
 		public ArooaContext getContext() {
 			return DesignInstanceContext.this;
 		}
-		
+
+		@Override
 		public void addText(String text) {
 			textHandler.addText(text);
 		}
-		
-		public ConfigurationHandle parse(ArooaContext parentContext)
+
+		@Override
+		public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parentContext)
 				throws ArooaParseException {
 			return new DesignConfiguration(instance).parse(parentContext);
 		}
@@ -172,7 +176,7 @@ public class DesignInstanceContext implements ArooaContext {
 		return parent.getSession();
 	}
 	
-	public ConfigurationNode getConfigurationNode() {
+	public ConfigurationNode<ArooaContext> getConfigurationNode() {
 		return configurationNode;
 	}
 	

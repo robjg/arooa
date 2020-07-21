@@ -1,14 +1,7 @@
 package org.oddjob.arooa.parsing;
 
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.junit.Assert;
-
+import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ConfigurationHandle;
@@ -16,6 +9,11 @@ import org.oddjob.arooa.deploy.annotations.ArooaComponent;
 import org.oddjob.arooa.registry.ComponentPool;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -27,7 +25,7 @@ public class CutAndPasteSupport2Test extends Assert {
 
 	public static class Component {
 		
-		List<Component> children = new ArrayList<Component>();
+		List<Component> children = new ArrayList<>();
 		
 		@ArooaComponent
 		public void setChild(Component component) {
@@ -68,7 +66,7 @@ public class CutAndPasteSupport2Test extends Assert {
 
 		StandardArooaParser parser = new StandardArooaParser(root);
 		
-		ConfigurationHandle handle = parser.parse(new XMLConfiguration("XML", xml));
+		ConfigurationHandle<ArooaContext> handle = parser.parse(new XMLConfiguration("XML", xml));
 		
 		ArooaSession session = parser.getSession();
 		
@@ -100,7 +98,7 @@ public class CutAndPasteSupport2Test extends Assert {
 		
 		// Paste
 		
-		ConfigurationHandle pasteHandle = 
+		ConfigurationHandle<ArooaContext> pasteHandle =
 			CutAndPasteSupport.paste(parent, 0,
 				new XMLConfiguration("Paste", middleBit));
 		
@@ -154,7 +152,7 @@ public class CutAndPasteSupport2Test extends Assert {
 
 		StandardArooaParser parser = new StandardArooaParser(root);
 		
-		ConfigurationHandle handle = parser.parse(new XMLConfiguration("XML", xml));
+		ConfigurationHandle<ArooaContext> handle = parser.parse(new XMLConfiguration("XML", xml));
 		
 		ArooaSession session = parser.getSession();
 		
@@ -217,7 +215,7 @@ public class CutAndPasteSupport2Test extends Assert {
 
 		StandardArooaParser parser = new StandardArooaParser(root);
 		
-		ConfigurationHandle handle = parser.parse(new XMLConfiguration("XML", xml));
+		ConfigurationHandle<ArooaContext> handle = parser.parse(new XMLConfiguration("XML", xml));
 		
 		ArooaSession session = parser.getSession();
 		
@@ -270,7 +268,7 @@ public class CutAndPasteSupport2Test extends Assert {
 
 		StandardArooaParser parser = new StandardArooaParser(root);
 		
-		ConfigurationHandle handle = parser.parse(new XMLConfiguration("XML", xml));
+		ConfigurationHandle<ArooaContext> handle = parser.parse(new XMLConfiguration("XML", xml));
 		
 		ArooaSession session = parser.getSession();
 		
@@ -328,7 +326,7 @@ public class CutAndPasteSupport2Test extends Assert {
 
 		StandardArooaParser parser = new StandardArooaParser(root);
 		
-		ConfigurationHandle handle = parser.parse(new XMLConfiguration("XML", xml));
+		ConfigurationHandle<ArooaContext> handle = parser.parse(new XMLConfiguration("XML", xml));
 		
 		ArooaSession session = parser.getSession();
 		
@@ -363,9 +361,9 @@ public class CutAndPasteSupport2Test extends Assert {
 		assertNull(root.children.get(3));
 	}
 	
-	class ComponentGrabber {
+	static class ComponentGrabber {
 	
-		Set<Object> ids = new HashSet<Object>();
+		Set<Object> ids = new HashSet<>();
 		
 		ComponentGrabber(ArooaSession session) {
 			ComponentPool components = session.getComponentPool();

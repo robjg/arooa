@@ -1,12 +1,12 @@
 package org.oddjob.arooa.parsing;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.registry.ChangeHow;
 import org.oddjob.arooa.xml.XMLConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A {@link DragPoint} for an {@link ArooaContext}.
@@ -36,23 +36,28 @@ public class DragContext implements DragPoint {
 		this.cnp = new CutAndPasteSupport(context);
 	}
 
+	@Override
 	public DragTransaction beginChange(ChangeHow how) {
 		return createTransaction(how);
 	}
-	
-	public ConfigurationHandle parse(ArooaContext parentContext)
+
+	@Override
+	public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parentContext)
 			throws ArooaParseException {
 		return context.getConfigurationNode().parse(parentContext);
 	}
-	
+
+	@Override
 	public boolean supportsPaste() {
 		return cnp.supportsPaste();
 	}
-	
+
+	@Override
 	public boolean supportsCut() {
 		return context.getParent().getParent() != null;
 	}
-	
+
+	@Override
 	public String copy() {
 		return CutAndPasteSupport.copy(context);
 	}
@@ -72,6 +77,7 @@ public class DragContext implements DragPoint {
 					new XMLConfiguration("Replacement XML", config));
 	}
 
+	@Override
 	public void cut() {
 		synchronized(DragContext.class) {
 			if (transaction == null) {
@@ -80,7 +86,8 @@ public class DragContext implements DragPoint {
 			transaction.setCut(this);
 		}
 	}
-		
+
+	@Override
 	public void paste(int index, String config) {
 		if (!cnp.supportsPaste()) {
 			throw new IllegalStateException("Node does not support paste.");

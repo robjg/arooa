@@ -1,26 +1,8 @@
 package org.oddjob.arooa.standard;
 
-import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.Assert;
-
-import org.oddjob.arooa.ArooaAnnotations;
-import org.oddjob.arooa.ArooaBeanDescriptor;
-import org.oddjob.arooa.ArooaConfiguration;
-import org.oddjob.arooa.ArooaParseException;
-import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ArooaValue;
-import org.oddjob.arooa.ClassResolver;
-import org.oddjob.arooa.ConfigurationHandle;
-import org.oddjob.arooa.ConfiguredHow;
-import org.oddjob.arooa.ElementMappings;
-import org.oddjob.arooa.MockArooaBeanDescriptor;
-import org.oddjob.arooa.MockArooaDescriptor;
-import org.oddjob.arooa.MockElementMappings;
-import org.oddjob.arooa.ParsingInterceptor;
+import org.junit.Test;
+import org.oddjob.arooa.*;
 import org.oddjob.arooa.convert.ConversionProvider;
 import org.oddjob.arooa.convert.ConversionRegistry;
 import org.oddjob.arooa.convert.Convertlet;
@@ -30,14 +12,15 @@ import org.oddjob.arooa.deploy.NoAnnotations;
 import org.oddjob.arooa.life.ClassLoaderClassResolver;
 import org.oddjob.arooa.life.InstantiationContext;
 import org.oddjob.arooa.life.SimpleArooaClass;
-import org.oddjob.arooa.parsing.ArooaContext;
-import org.oddjob.arooa.parsing.ArooaElement;
-import org.oddjob.arooa.parsing.MutableAttributes;
+import org.oddjob.arooa.parsing.*;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.registry.BeanRegistry;
 import org.oddjob.arooa.types.ValueType;
 import org.oddjob.arooa.xml.XMLConfiguration;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 
@@ -49,17 +32,18 @@ public class StandardArooaParserTest extends Assert {
 
 
     private class MockConfig implements ArooaConfiguration {
-        public ConfigurationHandle parse(ArooaContext parentContext) throws ArooaParseException {
+        public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parentContext) throws ArooaParseException {
 
             MutableAttributes atts = new MutableAttributes();
             atts.set("x", "L");
             ArooaElement element = new ArooaElement("a", atts);
 
-            ArooaContext context = parentContext.getArooaHandler(
-            ).onStartElement(element, parentContext);
+            ParseHandle<P> handle = parentContext.getElementHandler()
+                    .onStartElement(element, parentContext);
 
+            ArooaContext context = (ArooaContext) handle.getContext();
 
-            context.getRuntime().init();
+            handle.init();
 
             assertEquals("RootRuntime.", new SimpleArooaClass(O.class),
                     context.getRuntime().getClassIdentifier());

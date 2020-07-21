@@ -1,29 +1,25 @@
 package org.oddjob.arooa.types;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
-
 import org.junit.Test;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaType;
-import org.oddjob.arooa.design.DesignFactory;
-import org.oddjob.arooa.design.DesignInstance;
-import org.oddjob.arooa.design.DesignParser;
-import org.oddjob.arooa.design.DesignProperty;
-import org.oddjob.arooa.design.DesignValueBase;
-import org.oddjob.arooa.design.SimpleDesignProperty;
+import org.oddjob.arooa.design.*;
 import org.oddjob.arooa.design.etc.UnknownInstance;
 import org.oddjob.arooa.design.screem.Form;
 import org.oddjob.arooa.design.screem.StandardForm;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
+import org.oddjob.arooa.parsing.NamespaceMappings;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.standard.StandardFragmentParser;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 public class BeanTypeTest {
 	
@@ -48,7 +44,7 @@ public class BeanTypeTest {
 			
 		design.setXml(xml);
 		
-		XMLArooaParser xmlParser = new XMLArooaParser();
+		XMLArooaParser xmlParser = new XMLArooaParser(NamespaceMappings.empty());
 		
 		xmlParser.parse(design.getArooaContext().getConfigurationNode());
 		

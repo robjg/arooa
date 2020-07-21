@@ -1,16 +1,15 @@
 package org.oddjob.arooa.standard;
 
-import org.junit.Test;
-
 import org.junit.Assert;
-
+import org.junit.Test;
 import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ConfigurationHandle;
-import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.parsing.MutableAttributes;
+import org.oddjob.arooa.parsing.ParseContext;
+import org.oddjob.arooa.parsing.ParseHandle;
 
 /**
  * Test the {@link StandardArooaParser} end to end using
@@ -32,38 +31,42 @@ public class StandardArooaParserSkelTest extends Assert {
 		//   </apple>
 		// </test>
 		
-		public ConfigurationHandle parse(final ArooaContext context) throws ArooaParseException {
+		public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parentContext) throws ArooaParseException {
 
 			MutableAttributes rootAttrs = new MutableAttributes();
 			rootAttrs.set("id", "fruit");
 			
 			ArooaElement element = new ArooaElement(
 					"test", rootAttrs);
-			
-			ArooaContext rootContext = context.getArooaHandler(
-					).onStartElement(element, context);
 
-			
+			ParseHandle<P> rootHandle = parentContext.getElementHandler()
+					.onStartElement(element, parentContext);
+
+			P rootContext = rootHandle.getContext();
+
 			ArooaElement element2 = new ArooaElement(
 					"apple");
-			
-			ArooaContext appleContext = rootContext.getArooaHandler(
+
+			ParseHandle<P> appleHandle = rootContext.getElementHandler(
 					).onStartElement(element2, rootContext);
-	
+
+			P appleContext = appleHandle.getContext();
+
 			MutableAttributes attrs = new MutableAttributes();
 			attrs.set("colour", "red");
 			
 			ArooaElement element3 = new ArooaElement(
 					"is", attrs);
-	
-			ArooaContext  isContext = appleContext.getArooaHandler(
-				).onStartElement(element3, appleContext);
-					
-			isContext.getRuntime().init();
-			
-			appleContext.getRuntime().init();
 
-			rootContext.getRuntime().init();
+			ParseHandle<P> isHandle =
+			 appleContext.getElementHandler(
+				).onStartElement(element3, appleContext);
+
+			isHandle.init();
+			
+			appleHandle.init();
+
+			rootHandle.init();
 			
 			return null;
 		}
