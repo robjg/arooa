@@ -1,26 +1,15 @@
 package org.oddjob.arooa.design.designer;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-
-import javax.swing.DropMode;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTree;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
-
+import org.oddjob.arooa.design.view.TreeChangeFollower;
 import org.oddjob.arooa.design.view.TreePopup;
 import org.oddjob.arooa.parsing.DragContext;
 import org.oddjob.arooa.parsing.DragPoint;
+
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
+import java.awt.*;
 
 /**
  * The tree view.
@@ -35,13 +24,14 @@ public class DesignerPanel extends JPanel {
 
 	private final JScrollPane treeScroll;
 
+	private final TreeChangeFollower treeChangeFollower;
+
 	/**
 	 * Constructor.
 	 * 
 	 * @param model The model.
 	 * @param menuBar The menu provider.
 	 */
-	
 	public DesignerPanel(final DesignerModel model, MenuProvider menuBar) {
 		
 		// create tree.
@@ -64,7 +54,30 @@ public class DesignerPanel extends JPanel {
 		// drag and drop
 		tree.setDragEnabled(true);
 		tree.setDropMode(DropMode.ON_OR_INSERT);
-		
+
+		treeChangeFollower = new TreeChangeFollower(tree);
+
+		tree.addAncestorListener(new AncestorListener() {
+
+			@Override
+			public void ancestorRemoved(AncestorEvent event) {
+				tree.removeAncestorListener(this);
+			}
+
+			@Override
+			public void ancestorMoved(AncestorEvent event) {
+			}
+
+			@Override
+			public void ancestorAdded(AncestorEvent event) {
+
+				// This must happen after the bindTo method has been called.
+				tree.setSelectionPath(new TreePath(tree.getModel().getRoot()));
+
+				tree.requestFocusInWindow();
+			}
+		});
+
 		ArooaTransferHandler transferHandler = new ArooaTransferHandler();
 		transferHandler.addTransferEventListener(new TransferEventListener() {			
 			public void transferException(TransferEvent event, String message, Exception exception) {
@@ -151,5 +164,14 @@ public class DesignerPanel extends JPanel {
 		add(split);
 		
 	}
-		
+
+	/**
+	 * Clear up the component.
+	 *
+	 * For symmetry with Oddjob Explorer but actually not used because designer
+	 * doesn't support changing views.
+	 */
+	public void destroy() {
+		treeChangeFollower.close();
+	}
 }

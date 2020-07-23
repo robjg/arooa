@@ -72,6 +72,6 @@ public interface ConfigurationNode<P extends ParseContext<P>> extends ArooaConfi
 	 * 
 	 * @return The index, or -1 if the node is not a child.
 	 */
-	int indexOf(ConfigurationNode<P> child);
+	int indexOf(ConfigurationNode<?> child);
 		
 }

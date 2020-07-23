@@ -258,16 +258,17 @@ public class DesignerModelImpl extends Observable implements DesignerModel {
 				currentComponent.element(),
 				parentContext);
 
- 		unknown.setXml(xml);
-
  		parentContext.getConfigurationNode().setInsertPosition(index);
 
  		parentContext.getConfigurationNode().insertChild(
  					unknown.getArooaContext().getConfigurationNode());
 
+		unknown.getArooaContext().getRuntime().init();
+
+		// Init resets xml so this must be done here.
+		unknown.setXml(xml);
+
 		if (parentNode != null) {
-	 		parentContext.getRuntime().setIndexedProperty(
- 					null, index, unknown);
 
 			setCurrentSelection(parentNode.getChildAt(index));
 		}

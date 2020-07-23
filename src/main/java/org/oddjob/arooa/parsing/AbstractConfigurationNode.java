@@ -15,21 +15,21 @@ import java.util.List;
  *
  * @author rob
  */
-abstract public class AbstractConfigurationNode implements ConfigurationNode<ArooaContext> {
+abstract public class AbstractConfigurationNode<P extends ParseContext<P>> implements ConfigurationNode<P> {
 
-    private final List<ConfigurationNodeListener<ArooaContext>> listeners =
+    private final List<ConfigurationNodeListener<P>> listeners =
             new ArrayList<>();
 
-    private final LinkedList<ConfigurationNode<ArooaContext>> children =
+    private final LinkedList<ConfigurationNode<P>> children =
             new LinkedList<>();
 
     private int insertPosition = -1;
 
     @Override
-    public void addNodeListener(ConfigurationNodeListener<ArooaContext> listener) {
+    public void addNodeListener(ConfigurationNodeListener<P> listener) {
         synchronized (listeners) {
             int index = 0;
-            for (ConfigurationNode<ArooaContext> node : children) {
+            for (ConfigurationNode<P> node : children) {
                 listener.childInserted(
                         new ConfigurationNodeEvent<>(this, index++, node));
             }
@@ -43,14 +43,14 @@ abstract public class AbstractConfigurationNode implements ConfigurationNode<Aro
     }
 
     @Override
-    public void removeNodeListener(ConfigurationNodeListener<ArooaContext> listener) {
+    public void removeNodeListener(ConfigurationNodeListener<P> listener) {
         synchronized (listeners) {
             listeners.remove(listener);
         }
     }
 
     @Override
-    synchronized public int insertChild(ConfigurationNode<ArooaContext> child) {
+    synchronized public int insertChild(ConfigurationNode<P> child) {
         if (child == null) {
             throw new NullPointerException("Can not insert null ConfigurationNode");
         }
@@ -69,10 +69,10 @@ abstract public class AbstractConfigurationNode implements ConfigurationNode<Aro
                 insertedAt = insertPosition;
             }
 
-            ConfigurationNodeEvent<ArooaContext> event = new ConfigurationNodeEvent<>(
+            ConfigurationNodeEvent<P> event = new ConfigurationNodeEvent<>(
                     this, insertedAt, child);
 
-            for (ConfigurationNodeListener<ArooaContext> listener : listeners) {
+            for (ConfigurationNodeListener<P> listener : listeners) {
                 listener.insertRequest(event);
             }
 
@@ -82,7 +82,7 @@ abstract public class AbstractConfigurationNode implements ConfigurationNode<Aro
                 children.add(insertPosition, child);
             }
 
-            for (ConfigurationNodeListener<ArooaContext> listener : listeners) {
+            for (ConfigurationNodeListener<P> listener : listeners) {
                 listener.childInserted(event);
             }
             return insertedAt;
@@ -92,30 +92,30 @@ abstract public class AbstractConfigurationNode implements ConfigurationNode<Aro
     @Override
     public void removeChild(int index) {
         synchronized (listeners) {
-            ConfigurationNode<ArooaContext> oldChild = children.get(index);
+            ConfigurationNode<P> oldChild = children.get(index);
 
-            ConfigurationNodeEvent<ArooaContext> nodeEvent
+            ConfigurationNodeEvent<P> nodeEvent
                     = new ConfigurationNodeEvent<>(this, index, oldChild);
 
-            for (ConfigurationNodeListener<ArooaContext> listener : listeners) {
+            for (ConfigurationNodeListener<P> listener : listeners) {
                 listener.removalRequest(nodeEvent);
             }
 
             children.remove(index);
 
-            for (ConfigurationNodeListener<ArooaContext> listener : listeners) {
+            for (ConfigurationNodeListener<P> listener : listeners) {
                 listener.childRemoved(nodeEvent);
             }
         }
     }
 
     @Override
-    public int indexOf(ConfigurationNode<ArooaContext> child) {
+    public int indexOf(ConfigurationNode<?> child) {
         return children.indexOf(child);
     }
 
     @SuppressWarnings("unchecked")
-    public ConfigurationNode<ArooaContext>[] children() {
+    public ConfigurationNode<P>[] children() {
         return children.toArray(new ConfigurationNode[0]);
     }
 
@@ -124,18 +124,18 @@ abstract public class AbstractConfigurationNode implements ConfigurationNode<Aro
      * This ConfigurationHandle survives the replacement of this
      * ConfigurationNode which is what happens in order to save changes.
      */
-    static protected class ChainingConfigurationHandle<P extends ParseContext<P>>
-            implements ConfigurationHandle<P> {
+    static protected class ChainingConfigurationHandle<P extends ParseContext<P>, Q extends ParseContext<Q>>
+            implements ConfigurationHandle<Q> {
 
         /**
          * The context for this configuration node or it's replacements.
          */
-        private ArooaContext existingContext;
+        private P existingContext;
 
         /**
          * The parent context of this parse.
          */
-        private final P parseParentContext;
+        private final Q parseParentContext;
 
         private final int index;
 
@@ -149,8 +149,8 @@ abstract public class AbstractConfigurationNode implements ConfigurationNode<Aro
          * @param index The index of the newly created node with respect to its parent.
          */
         public ChainingConfigurationHandle(
-                ArooaContext existingContext,
-                P parseParentContext,
+                P existingContext,
+                Q parseParentContext,
                 int index) {
 
             if (index < 0) {
@@ -164,12 +164,12 @@ abstract public class AbstractConfigurationNode implements ConfigurationNode<Aro
 
         public void save() throws ArooaParseException {
 
-            ConfigurationNode<P> replacementConfiguration =
+            ConfigurationNode<Q> replacementConfiguration =
                     new ChildCatcher<>(parseParentContext, index)
                             .getChild()
                             .getConfigurationNode();
 
-            CutAndPasteSupport.ReplaceResult<ArooaContext> replaceResult =
+            CutAndPasteSupport.ReplaceResult<P> replaceResult =
                     CutAndPasteSupport.replace(
                             existingContext.getParent(),
                             existingContext,
@@ -182,8 +182,8 @@ abstract public class AbstractConfigurationNode implements ConfigurationNode<Aro
             }
         }
 
-        public P getDocumentContext() {
-            ChildCatcher<P> childCatcher = new ChildCatcher<>(parseParentContext, index);
+        public Q getDocumentContext() {
+            ChildCatcher<Q> childCatcher = new ChildCatcher<>(parseParentContext, index);
 
             return childCatcher.getChild();
         }

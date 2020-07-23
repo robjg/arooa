@@ -1,6 +1,7 @@
 package org.oddjob.arooa.parsing;
 
 import org.oddjob.arooa.ArooaSession;
+import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
 /**
@@ -16,7 +17,12 @@ public class SessionOverrideContext extends OverrideContext<ArooaContext> implem
 		super(context);
 		this.sessionOverride = sessionOverride;
 	}
-	
+
+	@Override
+	public ArooaType getArooaType() {
+		return getExistingContext().getArooaType();
+	}
+
 	@Override
 	public ArooaSession getSession() {
 		return sessionOverride;

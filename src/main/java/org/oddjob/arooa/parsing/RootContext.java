@@ -29,7 +29,7 @@ public class RootContext implements ArooaContext {
      * Configuration node is needed to track children.
      */
     private final ConfigurationNode<ArooaContext> configurationNode =
-            new AbstractConfigurationNode() {
+            new AbstractConfigurationNode<ArooaContext>() {
 
                 @Override
                 public ArooaContext getContext() {
@@ -67,7 +67,7 @@ public class RootContext implements ArooaContext {
         this.type = type;
         this.rootHandler = rootHandler;
         this.session = session;
-        this.prefixMappings = new SessionPrefixMappings(
+        this.prefixMappings = new FallbackPrefixMappings(
                 Optional.ofNullable(session)
                         .map(ArooaSession::getArooaDescriptor)
                         .orElse(null));
@@ -108,7 +108,7 @@ public class RootContext implements ArooaContext {
         return session;
     }
 
-    public ConfigurationNode getConfigurationNode() {
+    public ConfigurationNode<ArooaContext> getConfigurationNode() {
         return configurationNode;
     }
 

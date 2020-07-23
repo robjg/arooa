@@ -6,6 +6,7 @@ import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.deploy.annotations.ArooaComponent;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.CutAndPasteSupport;
+import org.oddjob.arooa.parsing.SimpleParseContext;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
@@ -20,7 +21,7 @@ public class StandardConfigurationNodeX2Test {
 
     public static class Component {
 
-        List<Component> children = new ArrayList<Component>();
+        List<Component> children = new ArrayList<>();
 
         String colour;
 
@@ -68,10 +69,10 @@ public class StandardConfigurationNodeX2Test {
 
         XMLArooaParser xmlParser = new XMLArooaParser(parser.getSession().getArooaDescriptor());
 
-        ConfigurationHandle<ArooaContext> handle = xmlParser.parse(
+        ConfigurationHandle<SimpleParseContext> handle = xmlParser.parse(
                 childContext.getConfigurationNode());
 
-        ArooaContext xmlDoc = handle.getDocumentContext();
+        SimpleParseContext xmlDoc = handle.getDocumentContext();
 
         CutAndPasteSupport.replace(xmlDoc.getParent(), xmlDoc,
                                    new XMLConfiguration("Replace",
@@ -116,10 +117,10 @@ public class StandardConfigurationNodeX2Test {
 
         XMLArooaParser xmlParser = new XMLArooaParser(parser.getSession().getArooaDescriptor());
 
-        ConfigurationHandle<ArooaContext> handle = xmlParser.parse(
+        ConfigurationHandle<SimpleParseContext> handle = xmlParser.parse(
                 childContext.getConfigurationNode());
 
-        ArooaContext xmlDoc = handle.getDocumentContext();
+        SimpleParseContext xmlDoc = handle.getDocumentContext();
 
         CutAndPasteSupport.replace(xmlDoc.getParent(), xmlDoc,
                                    new XMLConfiguration("Replace", "<rubbish/>"));
@@ -199,7 +200,7 @@ public class StandardConfigurationNodeX2Test {
                 "    </child>" + EOL +
                 "</component>" + EOL;
 
-        CutAndPasteSupport.ReplaceResult replaceResult =
+        CutAndPasteSupport.ReplaceResult<ArooaContext> replaceResult =
                 CutAndPasteSupport.replace(
                         rootContext.getParent(),
                         rootContext,

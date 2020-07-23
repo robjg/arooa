@@ -7,6 +7,7 @@ import org.oddjob.arooa.deploy.BeanDefinition;
 import org.oddjob.arooa.deploy.ListDescriptor;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.CutAndPasteSupport;
+import org.oddjob.arooa.parsing.SimpleParseContext;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 import org.oddjob.arooa.runtime.ConfigurationNodeEvent;
 import org.oddjob.arooa.runtime.ConfigurationNodeListener;
@@ -101,23 +102,23 @@ public class InlineTypeTest {
 
     AtomicBoolean changed = new AtomicBoolean();
 
-    private class ChangeListener implements ConfigurationNodeListener {
+    private class ChangeListener implements ConfigurationNodeListener<ArooaContext> {
 
-        public void childInserted(ConfigurationNodeEvent nodeEvent) {
-            ConfigurationNode node = nodeEvent.getChild();
+        public void childInserted(ConfigurationNodeEvent<ArooaContext> nodeEvent) {
+            ConfigurationNode<ArooaContext> node = nodeEvent.getChild();
             node.addNodeListener(new ChangeListener());
             changed.set(true);
         }
 
-        public void childRemoved(ConfigurationNodeEvent nodeEvent) {
+        public void childRemoved(ConfigurationNodeEvent<ArooaContext> nodeEvent) {
             changed.set(true);
         }
 
-        public void insertRequest(ConfigurationNodeEvent nodeEvent)
+        public void insertRequest(ConfigurationNodeEvent<ArooaContext> nodeEvent)
                 throws ModificationRefusedException {
         }
 
-        public void removalRequest(ConfigurationNodeEvent nodeEvent)
+        public void removalRequest(ConfigurationNodeEvent<ArooaContext> nodeEvent)
                 throws ModificationRefusedException {
         }
     }
@@ -143,7 +144,7 @@ public class InlineTypeTest {
 
         XMLArooaParser xmlParser = new XMLArooaParser(parser.getSession().getArooaDescriptor());
 
-        ConfigurationHandle<ArooaContext> xmlHandle = xmlParser.parse(bean.getConfig());
+        ConfigurationHandle<SimpleParseContext> xmlHandle = xmlParser.parse(bean.getConfig());
 
 
         assertThat(xmlParser.getXml(), isSimilarTo(INNER_CONFIG));

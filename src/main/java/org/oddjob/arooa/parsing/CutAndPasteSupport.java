@@ -171,23 +171,15 @@ public class CutAndPasteSupport {
 	 * 
 	 * @return The index the node was cut from.
 	 */
-	public static int cut(ArooaContext parentContext,
-			ArooaContext childContext) 
+	public static int cut(ParseContext<?> parentContext,
+			ParseContext<?> childContext)
 	throws ArooaConfigurationException {
-		
+
 		int index = parentContext.getConfigurationNode().indexOf(
 				childContext.getConfigurationNode());
-		
-		if (index < 0) {
-			throw new IllegalStateException(
-					"Attempting to cut a configuration node that is not a child of it's parent.");
-		}
-		
-		childContext.getRuntime().destroy();
-		
-		parentContext.getConfigurationNode().removeChild(
-				index);
-		
+
+		childContext.destroy();
+
 		return index;
 	}
 	

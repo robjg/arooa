@@ -11,21 +11,22 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
- * Provide Prefix Mappings from a Session Descriptor.
- * These are a bit of a bodge because unknown prefixes need be remembered for the
+ * Provide Prefix Mappings from a {@link NamespaceMappings} such as an {@link ArooaDescriptor}, but
+ * also fallback to Mappings remembered from Parsing.
+ * This is a bit of a bodge because unknown prefixes need be remembered for the
  * {@link org.oddjob.arooa.design.etc.UnknownInstance} to work. {@code UnknownInstance} needs to change
  * to cope with invalid XML.
  */
-public class SessionPrefixMappings implements PrefixMappings {
+public class FallbackPrefixMappings implements PrefixMappings {
 
-    private static final Logger logger = LoggerFactory.getLogger(SessionPrefixMappings.class);
+    private static final Logger logger = LoggerFactory.getLogger(FallbackPrefixMappings.class);
 
-    private final ArooaDescriptor descriptor;
+    private final NamespaceMappings namespaceMappings;
 
     private final PrefixMappings fallbackMappings = new SimplePrefixMappings();
 
-    public SessionPrefixMappings(ArooaDescriptor descriptor) {
-        this.descriptor = descriptor;
+    public FallbackPrefixMappings(NamespaceMappings namespaceMappings) {
+        this.namespaceMappings = namespaceMappings;
     }
 
     @Override
@@ -37,7 +38,7 @@ public class SessionPrefixMappings implements PrefixMappings {
 
     @Override
     public void put(String prefix, URI uri) throws DuplicateMappingsException {
-        URI already = Optional.ofNullable(descriptor)
+        URI already = Optional.ofNullable(namespaceMappings)
                 .map(d -> d.getUriFor(prefix))
                 .orElse(null);
         if (already == null) {
@@ -51,8 +52,8 @@ public class SessionPrefixMappings implements PrefixMappings {
     @Override
     public String[] getPrefixes() {
         return Stream.<Supplier<String[]>>of(
-                () -> Optional.ofNullable(descriptor)
-                        .map(ArooaDescriptor::getPrefixes)
+                () -> Optional.ofNullable(namespaceMappings)
+                        .map(NamespaceMappings::getPrefixes)
                         .orElse(new String[0]),
                 fallbackMappings::getPrefixes)
                 .flatMap(supplier -> Arrays.stream(supplier.get()))
@@ -61,14 +62,14 @@ public class SessionPrefixMappings implements PrefixMappings {
 
     @Override
     public URI getUriFor(String prefix) {
-        return Optional.ofNullable(descriptor)
+        return Optional.ofNullable(namespaceMappings)
                 .map(d -> d.getUriFor(prefix))
                 .orElseGet(() -> fallbackMappings.getUriFor(prefix));
     }
 
     @Override
     public String getPrefixFor(URI uri) {
-        return Optional.ofNullable(descriptor)
+        return Optional.ofNullable(namespaceMappings)
                 .map(d -> d.getPrefixFor(uri))
                 .orElseGet(() -> fallbackMappings.getPrefixFor(uri));
     }

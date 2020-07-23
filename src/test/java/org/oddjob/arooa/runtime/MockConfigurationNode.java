@@ -8,7 +8,7 @@ import org.oddjob.arooa.parsing.ParseContext;
 public class MockConfigurationNode implements ConfigurationNode<ArooaContext> {
 
 	@Override
-	public void addNodeListener(ConfigurationNodeListener listener) {
+	public void addNodeListener(ConfigurationNodeListener<ArooaContext> listener) {
 		throw new RuntimeException("Unexpected from class: " + 
 				this.getClass().getName());
 	}
@@ -32,13 +32,13 @@ public class MockConfigurationNode implements ConfigurationNode<ArooaContext> {
 	}
 
 	@Override
-	public int insertChild(ConfigurationNode child) {
+	public int insertChild(ConfigurationNode<ArooaContext> child) {
 		throw new RuntimeException("Unexpected from class: " + 
 				this.getClass().getName());
 	}
 
 	@Override
-	public void removeNodeListener(ConfigurationNodeListener listener) {
+	public void removeNodeListener(ConfigurationNodeListener<ArooaContext> listener) {
 		throw new RuntimeException("Unexpected from class: " + 
 				this.getClass().getName());
 	}
@@ -51,7 +51,7 @@ public class MockConfigurationNode implements ConfigurationNode<ArooaContext> {
 	}
 
 	@Override
-	public int indexOf(ConfigurationNode child) {
+	public int indexOf(ConfigurationNode<?> child) {
 		throw new RuntimeException("Unexpected from class: " + 
 				this.getClass().getName());
 	}

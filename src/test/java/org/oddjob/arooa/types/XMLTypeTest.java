@@ -299,7 +299,7 @@ public class XMLTypeTest {
 
         XMLArooaParser xmlParser = new XMLArooaParser(NamespaceMappings.empty());
 
-        ConfigurationHandle<ArooaContext> xmlHandle = xmlParser.parse(bean.ourConfig);
+        ConfigurationHandle<SimpleParseContext> xmlHandle = xmlParser.parse(bean.ourConfig);
 
         String expected =
                 "<snack>" + EOL +

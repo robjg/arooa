@@ -94,7 +94,7 @@ public class DesignConfiguration implements ArooaConfiguration {
                         (DesignTextProperty) child;
 
                 if (textProperty.text() != null) {
-                    nextContext.getConfigurationNode().addText(
+                    handle.addText(
                             textProperty.text());
                 }
             } else if (child instanceof DesignElementProperty) {
@@ -107,12 +107,6 @@ public class DesignConfiguration implements ArooaConfiguration {
         try {
             handle.init();
         } catch (RuntimeException e) {
-            try {
-                nextContext.destroy();
-            } catch (RuntimeException e2) {
-                throw new RuntimeException(
-                        "Failed rolling back design change.", e);
-            }
             throw new ArooaParseException("Failed parsing design.",
                     new Location(design.toString(), 0, 0), e);
         }

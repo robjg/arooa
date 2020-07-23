@@ -10,12 +10,12 @@ import org.oddjob.arooa.runtime.*;
 
 public class AbstractConfigurationNodeTest extends Assert {
 
-    class ExpectedException extends RuntimeException {
+    static class ExpectedException extends RuntimeException {
         private static final long serialVersionUID = 2009012800L;
 
     }
 
-    class ChildConfiguration extends MockConfigurationNode {
+    static class ChildConfiguration extends MockConfigurationNode {
         ArooaContext newChild = new MockArooaContext() {
             @Override
             public ArooaContext getParent() {
@@ -29,6 +29,7 @@ public class AbstractConfigurationNodeTest extends Assert {
 
             return new MockConfigurationHandle<P>() {
                 @Override
+                @SuppressWarnings("unchecked")
                 public P getDocumentContext() {
                     return (P) newChild;
                 }
@@ -36,13 +37,13 @@ public class AbstractConfigurationNodeTest extends Assert {
         }
     }
 
-    class ParseParentContext extends MockArooaContext {
+    static class ParseParentContext extends MockArooaContext {
 
         ChildConfiguration childConfig = new ChildConfiguration();
 
         ArooaContext child = new MockArooaContext() {
             @Override
-            public ConfigurationNode getConfigurationNode() {
+            public ConfigurationNode<ArooaContext> getConfigurationNode() {
                 return childConfig;
             }
         };
@@ -54,8 +55,8 @@ public class AbstractConfigurationNodeTest extends Assert {
         public ConfigurationNode<ArooaContext> getConfigurationNode() {
             return new MockConfigurationNode() {
                 @Override
-                public void addNodeListener(ConfigurationNodeListener listener) {
-                    listener.childInserted(new ConfigurationNodeEvent(
+                public void addNodeListener(ConfigurationNodeListener<ArooaContext> listener) {
+                    listener.childInserted(new ConfigurationNodeEvent<>(
                             this, 2, new MockConfigurationNode() {
                         @Override
                         public ArooaContext getContext() {
@@ -64,12 +65,12 @@ public class AbstractConfigurationNodeTest extends Assert {
                     }));
                 }
 
-                public void removeNodeListener(ConfigurationNodeListener listener) {
+                public void removeNodeListener(ConfigurationNodeListener<ArooaContext> listener) {
                     listenerRemoved = true;
                 }
 
                 @Override
-                public int indexOf(ConfigurationNode child) {
+                public int indexOf(ConfigurationNode<?> child) {
                     return 2;
                 }
             };
@@ -84,7 +85,7 @@ public class AbstractConfigurationNodeTest extends Assert {
         int index = parseParent.getConfigurationNode().indexOf(
                 parseParent.child.getConfigurationNode());
 
-        ChainingConfigurationHandle<ArooaContext> test = new ChainingConfigurationHandle<>(
+        ChainingConfigurationHandle<ArooaContext, ArooaContext> test = new ChainingConfigurationHandle<>(
                 new MockArooaContext(), parseParent, index);
 
         ArooaContext documentContext = test.getDocumentContext();
@@ -93,12 +94,12 @@ public class AbstractConfigurationNodeTest extends Assert {
         assertTrue(parseParent.listenerRemoved);
     }
 
-    class ExistingParent extends MockArooaContext {
+    static class ExistingParent extends MockArooaContext {
 
         int index;
 
         @Override
-        public ConfigurationNode getConfigurationNode() {
+        public ConfigurationNode<ArooaContext> getConfigurationNode() {
             return new MockConfigurationNode() {
                 @Override
                 public void setInsertPosition(int insertAt) {
@@ -106,12 +107,12 @@ public class AbstractConfigurationNodeTest extends Assert {
                 }
 
                 @Override
-                public int insertChild(ConfigurationNode child) {
+                public int insertChild(ConfigurationNode<ArooaContext> child) {
                     return -1; // shouldn't be used.
                 }
 
                 @Override
-                public int indexOf(ConfigurationNode child) {
+                public int indexOf(ConfigurationNode<?> child) {
                     assertTrue(child instanceof ExistingConfigNode);
                     return 2;
                 }
@@ -140,17 +141,17 @@ public class AbstractConfigurationNodeTest extends Assert {
 		}
     }
 
-    class ExistingConfigNode extends MockConfigurationNode {
+    static class ExistingConfigNode extends MockConfigurationNode {
 
         @Override
         public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parentContext)
                 throws ArooaParseException {
             // roll back handle - won't be used.
-            return new MockConfigurationHandle();
+            return new MockConfigurationHandle<>();
         }
     }
 
-    class ExistingContext extends MockArooaContext {
+    static class ExistingContext extends MockArooaContext {
         boolean runtimeDestroyed;
 
         ExistingParent parent = new ExistingParent();
@@ -161,7 +162,7 @@ public class AbstractConfigurationNodeTest extends Assert {
         }
 
         @Override
-        public ConfigurationNode getConfigurationNode() {
+        public ConfigurationNode<ArooaContext> getConfigurationNode() {
             return new ExistingConfigNode();
         }
 
@@ -187,7 +188,8 @@ public class AbstractConfigurationNodeTest extends Assert {
         int index = parseParent.getConfigurationNode().indexOf(
                 parseParent.child.getConfigurationNode());
 
-        ChainingConfigurationHandle<ArooaContext> test = new ChainingConfigurationHandle<>(
+        ChainingConfigurationHandle<ArooaContext, ArooaContext> test
+                = new ChainingConfigurationHandle<>(
                 existing,
                 parseParent,
                 index);

@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 /**
  * An {@link ConfigurationNode} for standard parsing.
  */
-abstract class StandardConfigurationNode extends AbstractConfigurationNode {
+abstract class StandardConfigurationNode extends AbstractConfigurationNode<ArooaContext> {
 
 	private final Supplier<ArooaElement> element;
 
@@ -61,7 +61,7 @@ abstract class StandardConfigurationNode extends AbstractConfigurationNode {
     				new Location("Unknown", 0, 0), e);
     	}
 
-		return new ChainingConfigurationHandle(getContext(), 
+		return new ChainingConfigurationHandle<>(getContext(),
 				parentContext, index);	
 	}
 

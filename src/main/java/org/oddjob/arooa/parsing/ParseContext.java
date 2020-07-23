@@ -1,6 +1,5 @@
 package org.oddjob.arooa.parsing;
 
-import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 
 /**
@@ -12,14 +11,6 @@ import org.oddjob.arooa.runtime.ConfigurationNode;
  * param <P> The type of the context.
  */
 public interface ParseContext<P extends ParseContext<P>> {
-
-    /**
-     * Get the type of bean or property this is a context for (a component
-     * or a value)
-     *
-     * @return The type. Never null.
-     */
-    ArooaType getArooaType();
 
     /**
      * Get the parent {@link ArooaContext}

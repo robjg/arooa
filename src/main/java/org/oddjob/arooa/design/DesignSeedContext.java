@@ -4,8 +4,8 @@ import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaHandler;
+import org.oddjob.arooa.parsing.FallbackPrefixMappings;
 import org.oddjob.arooa.parsing.PrefixMappings;
-import org.oddjob.arooa.parsing.SessionPrefixMappings;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
@@ -27,7 +27,7 @@ public class DesignSeedContext implements ArooaContext {
 	public DesignSeedContext(ArooaType type, ArooaSession session) {
 		this.type = type;
 		this.session = session;
-		this.prefixMappings = new SessionPrefixMappings(
+		this.prefixMappings = new FallbackPrefixMappings(
 				session.getArooaDescriptor());
 	}
 

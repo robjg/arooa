@@ -1,6 +1,5 @@
 package org.oddjob.arooa.parsing;
 
-import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 
 /**
@@ -22,11 +21,6 @@ public class OverrideContext<P extends ParseContext<P>> implements ParseContext<
 		return existingContext;
 	}
 
-	@Override
-	public ArooaType getArooaType() {
-		return existingContext.getArooaType();
-	}
-	
 	public P getParent() {
 		return existingContext.getParent();
 	}
@@ -50,6 +44,4 @@ public class OverrideContext<P extends ParseContext<P>> implements ParseContext<
 	public void destroy() {
 		existingContext.destroy();
 	}
-
-
 }

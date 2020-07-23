@@ -2,8 +2,8 @@ package org.oddjob.arooa.xml;
 
 import org.junit.Test;
 import org.oddjob.arooa.ConfigurationHandle;
-import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.NamespaceMappings;
+import org.oddjob.arooa.parsing.ParseContext;
 import org.oddjob.arooa.parsing.SimplePrefixMappings;
 
 import java.net.URI;
@@ -24,7 +24,7 @@ public class XMLArooaParserTest {
                 "</comp>";
 
         XMLArooaParser parser = new XMLArooaParser(NamespaceMappings.empty());
-        ConfigurationHandle<ArooaContext> handle = parser.parse(new XMLConfiguration("Test", xml));
+        ConfigurationHandle<?> handle = parser.parse(new XMLConfiguration("Test", xml));
 
         String expected = "<?xml version='1.0' encoding='UTF-8' standalone='no'?>" + EOL +
                 "<comp>" + EOL +
@@ -38,7 +38,7 @@ public class XMLArooaParserTest {
 
         assertThat(parser.getXml(), isIdenticalTo(expected));
 
-        ArooaContext docContext = handle.getDocumentContext();
+        ParseContext<?> docContext = handle.getDocumentContext();
 
         parser.parse(docContext.getConfigurationNode());
 
@@ -59,7 +59,7 @@ public class XMLArooaParserTest {
                 "</comp>";
 
         XMLArooaParser parser1 = new XMLArooaParser();
-        ConfigurationHandle<ArooaContext> handle = parser1.parse(new XMLConfiguration("Test", xml));
+        ConfigurationHandle<?> handle = parser1.parse(new XMLConfiguration("Test", xml));
 
         String expected = "<?xml version='1.0' encoding='UTF-8' standalone='no'?>" + EOL +
                 "<comp xmlns=\"http://www.rgordon.co.uk/arooa\"" + EOL +
@@ -74,7 +74,7 @@ public class XMLArooaParserTest {
 
         assertThat(parser1.getXml(), isIdenticalTo(expected));
 
-        ArooaContext docContext = handle.getDocumentContext();
+        ParseContext<?> docContext = handle.getDocumentContext();
 
 		XMLArooaParser parser2 = new XMLArooaParser(docContext.getPrefixMappings());
 
