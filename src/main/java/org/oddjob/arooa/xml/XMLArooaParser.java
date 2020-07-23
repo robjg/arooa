@@ -1,15 +1,7 @@
 package org.oddjob.arooa.xml;
 
 import org.oddjob.arooa.*;
-import org.oddjob.arooa.convert.ConversionProvider;
-import org.oddjob.arooa.life.ComponentPersister;
-import org.oddjob.arooa.life.ComponentProxyResolver;
 import org.oddjob.arooa.parsing.*;
-import org.oddjob.arooa.reflect.ArooaClass;
-import org.oddjob.arooa.reflect.PropertyAccessor;
-import org.oddjob.arooa.registry.BeanRegistry;
-import org.oddjob.arooa.registry.ComponentPool;
-import org.oddjob.arooa.runtime.PropertyManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -40,7 +32,7 @@ import java.util.function.Supplier;
  *
  * @author rob
  */
-public class XMLArooaParser implements ArooaParser<ArooaContext> {
+public class XMLArooaParser implements ArooaParser<SimpleParseContext> {
 
     private final NamespaceMappings namespaceMappings;
 
@@ -57,25 +49,9 @@ public class XMLArooaParser implements ArooaParser<ArooaContext> {
     }
 
     @Override
-    public ConfigurationHandle parse(ArooaConfiguration configuration) throws ArooaParseException {
+    public ConfigurationHandle<SimpleParseContext> parse(ArooaConfiguration configuration) throws ArooaParseException {
 
         Objects.requireNonNull(configuration);
-
-
-
-//        RootContext context = Optional.ofNullable(namespaceMappings)
-//                .map(
-//                        mappings -> new RootContext(
-//                                null,
-//                                new XMLParserSession(namespaceMappings),
-//                                handler))
-//                .orElseGet(
-//                        () -> new RootContext(
-//                                null,
-//                                new SimplePrefixMappings(),
-//                                handler
-//                        ));
-
 
         PrefixMappings prefixMappings = new FallbackPrefixMappings(namespaceMappings);
 
@@ -202,137 +178,5 @@ class XmlCallbacks {
         } catch (TransformerException e) {
             throw new RuntimeException(e);
         }
-    }
-
-}
-
-
-class XMLParserSession implements ArooaSession {
-
-    private final NamespaceMappings namespaceMappings;
-
-    XMLParserSession(NamespaceMappings namespaceMappings) {
-        this.namespaceMappings = namespaceMappings;
-    }
-
-    @Override
-    public ArooaDescriptor getArooaDescriptor() {
-        return new ArooaDescriptor() {
-            @Override
-            public ConversionProvider getConvertletProvider() {
-                throw new UnsupportedOperationException("Not required for XMLParser.");
-            }
-
-            @Override
-            public ElementMappings getElementMappings() {
-                throw new UnsupportedOperationException("Not required for XMLParser.");
-            }
-
-            @Override
-            public String getPrefixFor(URI namespace) {
-                return namespaceMappings.getPrefixFor(namespace);
-            }
-
-            @Override
-            public ClassResolver getClassResolver() {
-                throw new UnsupportedOperationException("Not required for XMLParser.");
-            }
-
-            @Override
-            public ArooaBeanDescriptor getBeanDescriptor(ArooaClass forClass, PropertyAccessor accessor) {
-                throw new UnsupportedOperationException("Not required for XMLParser.");
-            }
-
-            @Override
-            public String[] getPrefixes() {
-                return namespaceMappings.getPrefixes();
-            }
-
-            @Override
-            public URI getUriFor(String prefix) {
-                return namespaceMappings.getUriFor(prefix);
-            }
-        };
-    }
-
-    @Override
-    public ComponentPersister getComponentPersister() {
-        throw new UnsupportedOperationException("Not required for XMLParser.");
-    }
-
-    @Override
-    public ComponentPool getComponentPool() {
-        return new ComponentPool() {
-
-            @Override
-            public void configure(Object component) {
-                throw new UnsupportedOperationException("Not required for XMLParser.");
-            }
-
-            @Override
-            public ArooaContext contextFor(Object component) {
-                throw new UnsupportedOperationException("Not required for XMLParser.");
-            }
-
-            @Override
-            public String getIdFor(Object either) {
-                throw new UnsupportedOperationException("Not required for XMLParser.");
-            }
-
-            @Override
-            public Iterable<ComponentTrinity> allTrinities() {
-                throw new UnsupportedOperationException("Not required for XMLParser.");
-            }
-
-            @Override
-            public ComponentTrinity trinityForId(String id) {
-                throw new UnsupportedOperationException("Not required for XMLParser.");
-            }
-
-            @Override
-            public ComponentTrinity trinityFor(Object either) {
-                throw new UnsupportedOperationException("Not required for XMLParser.");
-            }
-
-            @Override
-            public ComponentTrinity trinityForContext(ArooaContext context) {
-                throw new UnsupportedOperationException("Not required for XMLParser.");
-            }
-
-            @Override
-            public String registerComponent(ComponentTrinity trinity, String id) {
-                throw new UnsupportedOperationException("Not required for XMLParser.");
-            }
-
-            @Override
-            public boolean remove(Object component) {
-                throw new UnsupportedOperationException("Not required for XMLParser.");
-            }
-
-            @Override
-            public void save(Object component) {
-                throw new UnsupportedOperationException("Not required for XMLParser.");
-            }
-        };
-    }
-
-    @Override
-    public BeanRegistry getBeanRegistry() {
-        throw new UnsupportedOperationException("Not required for XMLParser.");
-    }
-
-    @Override
-    public PropertyManager getPropertyManager() {
-        throw new UnsupportedOperationException("Not required for XMLParser.");
-    }
-
-    @Override
-    public ComponentProxyResolver getComponentProxyResolver() {
-        throw new UnsupportedOperationException("Not required for XMLParser.");
-    }
-
-    @Override
-    public ArooaTools getTools() {
-        throw new UnsupportedOperationException("Not required for XMLParser.");
     }
 }

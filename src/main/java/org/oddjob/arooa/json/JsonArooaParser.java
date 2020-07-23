@@ -6,6 +6,7 @@ import org.oddjob.arooa.ArooaParser;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.parsing.Location;
 import org.oddjob.arooa.parsing.NamespaceMappings;
+import org.oddjob.arooa.parsing.SimpleParseContext;
 
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
@@ -19,7 +20,7 @@ import java.util.function.Consumer;
 /**
  * Parse an {@link ArooaConfiguration} into a JSON string.
  */
-public class JsonArooaParser implements ArooaParser {
+public class JsonArooaParser implements ArooaParser<SimpleParseContext> {
 
     private final NamespaceMappings namespaceMappings;
 
@@ -41,11 +42,11 @@ public class JsonArooaParser implements ArooaParser {
     }
 
     @Override
-    public ConfigurationHandle parse(ArooaConfiguration configuration) throws ArooaParseException {
+    public ConfigurationHandle<SimpleParseContext> parse(ArooaConfiguration configuration) throws ArooaParseException {
 
         ConfigurationTreeArooaParser treeParser = new ConfigurationTreeArooaParser(namespaceMappings);
 
-        ConfigurationHandle handle = treeParser.parse(configuration);
+        ConfigurationHandle<SimpleParseContext> handle = treeParser.parse(configuration);
 
         parseStart(treeParser.getConfigurationTree());
 

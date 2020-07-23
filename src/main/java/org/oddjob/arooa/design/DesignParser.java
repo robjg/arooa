@@ -26,7 +26,7 @@ import java.util.List;
  * 
  * @author rob
  */
-public class DesignParser implements ArooaParser, DesignNotifier {
+public class DesignParser implements ArooaParser<ArooaContext>, DesignNotifier {
 	
 	/** Listeners to notify when the root design instance changes. */
 	private final List<DesignListener> listeners =

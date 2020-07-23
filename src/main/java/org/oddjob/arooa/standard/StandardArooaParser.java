@@ -19,7 +19,7 @@ import org.oddjob.arooa.registry.ComponentPool;
  * @author rob
  *
  */
-public class StandardArooaParser implements ArooaParser {
+public class StandardArooaParser implements ArooaParser<ArooaContext> {
 
 	/** The provided root object. */
 	private final Object root;
@@ -74,10 +74,10 @@ public class StandardArooaParser implements ArooaParser {
 	 * element of the configuration will be check against this. Otherwise
 	 * the document element can be anything.
 	 * 
-	 * @param exepectedDocumentElement
+	 * @param expectedDocumentElement
 	 */
-	public void setExpectedDocumentElement(ArooaElement exepectedDocumentElement) {
-		this.expectedDocumentElement = exepectedDocumentElement;
+	public void setExpectedDocumentElement(ArooaElement expectedDocumentElement) {
+		this.expectedDocumentElement = expectedDocumentElement;
 	}
 	
 	/**
@@ -96,22 +96,17 @@ public class StandardArooaParser implements ArooaParser {
 	public ConfigurationHandle<ArooaContext> parse(ArooaConfiguration configuration)
 	throws ArooaParseException {
 
-		ElementAction<InstanceRuntime> elementAction = 
-			new ElementAction<InstanceRuntime>() {
-			public InstanceRuntime onElement(ArooaElement element, ArooaContext parentContext) {
-				return new RootRuntime(
+		ElementAction<InstanceRuntime> elementAction =
+				(element, parentContext) -> new RootRuntime(
 						new RootConfigurationCreator(root, true).onElement(element, parentContext),
 						parentContext);
-			}
-		};
 		
 		RootHandler rootHandler  = new RootHandler(expectedDocumentElement,
 					elementAction);
 
-		ConfigurationHandle handle = configuration.parse(
+		return configuration.parse(
 				new RootContext( 
 						ArooaType.COMPONENT, session, rootHandler));
-		return handle;
 	}
 	
 	/**

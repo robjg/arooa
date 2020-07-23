@@ -73,7 +73,8 @@ public class DesignToLayoutConfig {
     ConfigurationTree parse(StandardForm standardForm, Map<String, String[]> options) {
 
         ConfigurationTreeBuilder.WithQualifiedTag treeBuilder = ConfigurationTreeBuilder
-                .withTag(namespaceMappings);
+                .ofNamespaceMappings(namespaceMappings)
+                .withTags();
 
         treeBuilder.setTag(DESIGN_FORM);
         treeBuilder.addAttribute(TITLE, standardForm.getTitle());
@@ -91,7 +92,8 @@ public class DesignToLayoutConfig {
     ConfigurationTree parse(FormItem item, Map<String, String[]> options) {
 
         ConfigurationTreeBuilder.WithQualifiedTag treeBuilder = ConfigurationTreeBuilder
-                .withTag(namespaceMappings);
+                .ofNamespaceMappings(namespaceMappings)
+                .withTags();
 
         if (item instanceof TextField) {
             TextField textField = (TextField) item;

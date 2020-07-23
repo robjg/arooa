@@ -6,6 +6,7 @@ import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.parsing.NamespaceMappings;
+import org.oddjob.arooa.parsing.SimpleParseContext;
 import org.oddjob.arooa.parsing.SimplePrefixMappings;
 import org.oddjob.arooa.xml.XMLArooaParser;
 
@@ -27,7 +28,8 @@ public class ConfigurationTreeBuilderTest {
         XMLArooaParser parser = new XMLArooaParser(namespaceMappings);
 
         ConfigurationTree tree = ConfigurationTreeBuilder
-                .withTag(namespaceMappings)
+                .ofNamespaceMappings(namespaceMappings)
+                .withTags()
                 .setTag("a")
                 .addAttribute("colour", "green")
                 .build();
@@ -35,7 +37,7 @@ public class ConfigurationTreeBuilderTest {
         AtomicReference<ArooaConfiguration> saved = new AtomicReference<>();
         ArooaConfiguration configuration = tree.toConfiguration(saved::set);
 
-        ConfigurationHandle handle = parser.parse(configuration);
+        ConfigurationHandle<SimpleParseContext> handle = parser.parse(configuration);
 
         String expected = "<a colour='green'/>";
 
@@ -58,7 +60,8 @@ public class ConfigurationTreeBuilderTest {
         XMLArooaParser parser = new XMLArooaParser(namespaceMappings);
 
         ConfigurationTree tree = ConfigurationTreeBuilder
-                .withTag(namespaceMappings)
+                .ofNamespaceMappings(namespaceMappings)
+                .withTags()
                 .setTag("a")
                 .setText("Apple")
                 .build();
@@ -66,7 +69,7 @@ public class ConfigurationTreeBuilderTest {
         AtomicReference<ArooaConfiguration> saved = new AtomicReference<>();
         ArooaConfiguration configuration = tree.toConfiguration(saved::set);
 
-        ConfigurationHandle handle = parser.parse(configuration);
+        ConfigurationHandle<SimpleParseContext> handle = parser.parse(configuration);
 
         String expected = "<a>Apple</a>";
 
@@ -89,21 +92,23 @@ public class ConfigurationTreeBuilderTest {
         XMLArooaParser parser = new XMLArooaParser(namespaceMappings);
 
         ConfigurationTreeBuilder.WithQualifiedTag treeBuilder =
-                ConfigurationTreeBuilder.withTag(namespaceMappings);
+                ConfigurationTreeBuilder.ofNamespaceMappings(namespaceMappings)
+                        .withTags();
+
         ConfigurationTree tree =
                 treeBuilder.setTag("a")
-                .addChild("b", treeBuilder.newInstance()
-                        .setTag("c")
-                        .build())
-                .addChild("b", treeBuilder.newInstance()
-                        .setTag("c")
-                        .build())
-                .build();
+                        .addChild("b", treeBuilder.newInstance()
+                                .setTag("c")
+                                .build())
+                        .addChild("b", treeBuilder.newInstance()
+                                .setTag("c")
+                                .build())
+                        .build();
 
         AtomicReference<ArooaConfiguration> saved = new AtomicReference<>();
         ArooaConfiguration configuration = tree.toConfiguration(saved::set);
 
-        ConfigurationHandle handle = parser.parse(configuration);
+        ConfigurationHandle<SimpleParseContext> handle = parser.parse(configuration);
 
         String expected = "<a><b><c/><c/></b></a>";
 
@@ -127,7 +132,9 @@ public class ConfigurationTreeBuilderTest {
         namespaceMappings.put("some", uri);
 
         ConfigurationTreeBuilder.WithQualifiedTag treeBuilder =
-                ConfigurationTreeBuilder.withTag(namespaceMappings);
+                ConfigurationTreeBuilder
+                        .ofNamespaceMappings(namespaceMappings)
+                        .withTags();
 
         treeBuilder.setTag("some:a");
 
@@ -145,7 +152,8 @@ public class ConfigurationTreeBuilderTest {
         namespaceMappings.put("some", uri);
 
         ConfigurationTreeBuilder.WithElement treeBuilder =
-                ConfigurationTreeBuilder.withElement(namespaceMappings);
+                ConfigurationTreeBuilder.ofNamespaceMappings(namespaceMappings)
+                .withElements();
 
         treeBuilder.setElement(new ArooaElement(uri, "a"));
 

@@ -30,8 +30,8 @@ abstract public class ConfigurationTreeBuilder<T extends ConfigurationTreeBuilde
         this.namespaceMappings = namespaceMappings;
     }
 
-    public static WithQualifiedTag withTag(NamespaceMappings namespaceMappings) {
-        return new WithQualifiedTag(namespaceMappings);
+    public static OfNamespaceMappings ofNamespaceMappings(NamespaceMappings namespaceMappings) {
+        return new OfNamespaceMappings(namespaceMappings);
     }
 
     public static WithElement withElement(NamespaceMappings namespaceMappings) {
@@ -73,6 +73,23 @@ abstract public class ConfigurationTreeBuilder<T extends ConfigurationTreeBuilde
     @SuppressWarnings("unchecked")
     T castThis() {
         return (T) this;
+    }
+
+    public static class OfNamespaceMappings {
+
+        private final NamespaceMappings namespaceMappings;
+
+        OfNamespaceMappings(NamespaceMappings namespaceMappings) {
+            this.namespaceMappings = namespaceMappings;
+        }
+
+        public WithQualifiedTag withTags() {
+            return new WithQualifiedTag(namespaceMappings);
+        }
+
+        public WithElement withElements() {
+            return new WithElement(namespaceMappings);
+        }
     }
 
     public static class WithElement extends ConfigurationTreeBuilder<WithElement> {

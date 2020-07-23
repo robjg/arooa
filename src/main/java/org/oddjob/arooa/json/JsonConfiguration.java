@@ -101,7 +101,8 @@ public class JsonConfiguration implements ArooaConfiguration {
     ConfigurationTree recurse(JsonParser jsonParser, NamespaceMappings prefixMapping) throws ArooaParseException {
 
         ConfigurationTreeBuilder.WithQualifiedTag treeBuilder = ConfigurationTreeBuilder
-                .withTag(prefixMapping);
+                .ofNamespaceMappings(prefixMapping)
+                .withTags();
 
         String key = null;
 
