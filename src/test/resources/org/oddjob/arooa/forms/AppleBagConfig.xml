@@ -1,0 +1,5 @@
+<fruit:apple-bag xmlns:fruit="http://fruit.org">
+    <apples>
+        <bean class="org.oddjob.arooa.forms.Apple" colour="red"/>
+    </apples>
+</fruit:apple-bag>

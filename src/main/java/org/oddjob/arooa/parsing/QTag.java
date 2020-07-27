@@ -18,8 +18,12 @@ public class QTag implements Comparable<QTag> {
 	public QTag(String tag) {
 		this(null, new ArooaElement(tag));
 	}
-	
+
 	public QTag(ArooaElement element, ParseContext<?> arooaContext) {
+		this(element, arooaContext.getPrefixMappings());
+	}
+
+	public QTag(ArooaElement element, UriMapping uriMapping) {
 		
 		URI uri = element.getUri();
 		
@@ -27,9 +31,7 @@ public class QTag implements Comparable<QTag> {
 			this.prefix = "";
 		}
 		else {
-			PrefixMappings prefixMappings = arooaContext.getPrefixMappings();
-
-			String prefix = prefixMappings.getPrefixFor(uri);
+			String prefix = uriMapping.getPrefixFor(uri);
 			
 			if (prefix == null) {
 				throw new IllegalStateException("No prefix for " + uri);

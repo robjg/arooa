@@ -8,57 +8,70 @@ import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 
+import java.util.Optional;
+
 /**
  * Helper class that creates a design.
- * 
- * @author rob
  *
+ * @author rob
  */
 public class DescriptorDesignFactory implements DesignFactory {
-	
-	public DesignInstance createDesign(ArooaElement element,
-			ArooaContext parentContext) 
-	throws ArooaPropertyException {
-		
-		ArooaType type = parentContext.getArooaType();
-		
-		ElementMappings mappings = 
-			parentContext.getSession().getArooaDescriptor(
-					).getElementMappings();
-								
-		if (mappings == null) {
-			throw new NullPointerException(
-					"No Element Mappings for type " + type);
-		}
 
-		DesignInstance design = null;
+    private final InstantiationContext instantiationContext;
 
-		InstantiationContext instantiationContext = 
-			new InstantiationContext(parentContext);
-		
-		DesignFactory designFactory = mappings.designFor(element, 
-				instantiationContext);
-		
-		if (designFactory != null) {
-			design = designFactory.createDesign(element, parentContext);
-		}
-		
-		if (design != null) {
-			return design;
-		}
-		
-		ArooaClass arooaClass = mappings.mappingFor(element, 
-				instantiationContext);
-		
-		if (arooaClass == null) {
-			throw new NullPointerException(
-					"No Class Mapping for Element " + element + 
-					" of type " + type + ".");
-		}
-		
-		DesignFactory factory = new GenericDesignFactory(
-				arooaClass);
-		
-		return factory.createDesign(element, parentContext);
-	}
+    public DescriptorDesignFactory() {
+        this(null);
+    }
+
+    public DescriptorDesignFactory(InstantiationContext instantiationContext) {
+        this.instantiationContext = instantiationContext;
+    }
+
+
+    public DesignInstance createDesign(ArooaElement element,
+                                       ArooaContext parentContext)
+            throws ArooaPropertyException {
+
+        ArooaType type = parentContext.getArooaType();
+
+        ElementMappings mappings =
+                parentContext.getSession().getArooaDescriptor(
+                ).getElementMappings();
+
+        if (mappings == null) {
+            throw new NullPointerException(
+                    "No Element Mappings for type " + type);
+        }
+
+        DesignInstance design = null;
+
+        InstantiationContext instantiationContext =
+                Optional.ofNullable(this.instantiationContext)
+                        .orElseGet(() -> new InstantiationContext(parentContext));
+
+        DesignFactory designFactory = mappings.designFor(element,
+                instantiationContext);
+
+        if (designFactory != null) {
+            design = designFactory.createDesign(element, parentContext);
+        }
+
+        if (design != null) {
+            return design;
+        }
+
+        ArooaClass arooaClass = mappings.mappingFor(element,
+                instantiationContext);
+
+        if (arooaClass == null) {
+            throw new NullPointerException(
+                    "No Class Mapping for Element " + element +
+                            " of type " + type + ".");
+        }
+
+        DesignFactory factory = new GenericDesignFactory(
+                arooaClass);
+
+        return factory.createDesign(element, parentContext);
+    }
 }

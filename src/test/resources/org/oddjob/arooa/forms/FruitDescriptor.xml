@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<arooa:descriptor xmlns:arooa="http://rgordon.co.uk/oddjob/arooa"
+    prefix="fruit" namespace="http://fruit.org">
+    <components>
+        <arooa:bean-def className="org.oddjob.arooa.forms.AppleBag" element="apple-bag"/>
+    </components>
+    <values>
+        <arooa:bean-def className="org.oddjob.arooa.forms.Apple" element="apple"/>
+    </values>
+</arooa:descriptor>

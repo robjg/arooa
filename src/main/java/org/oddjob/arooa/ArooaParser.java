@@ -13,6 +13,8 @@ import org.oddjob.arooa.parsing.ParseContext;
  * an {@link ArooaParseException} if parsing fails.
  * <p>
  *
+ * @param <P> The Type of Parse Context The Parser Uses.
+ *
  * @author rob
  */
 public interface ArooaParser<P extends ParseContext<P>> {
