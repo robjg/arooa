@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<forms:bean-form element="bean" forClass="org.oddjob.arooa.forms.Apple" title="bean" xmlns:forms="arooa:forms">
+    <formItems>
+        <forms:text property="colour" title="colour"/>
+        <forms:text property="taste" title="taste"/>
+    </formItems>
+</forms:bean-form>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<forms:form element="is" title="is" xmlns:forms="arooa:forms">
+    <formItems>
+        <forms:group bordered="true" title="Properties">
+            <formItems>
+                <forms:text property="colour" title="colour"/>
+                <forms:text property="taste" title="taste"/>
+            </formItems>
+        </forms:group>
+    </formItems>
+</forms:form>

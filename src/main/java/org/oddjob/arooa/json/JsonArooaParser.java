@@ -4,18 +4,11 @@ import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaParser;
 import org.oddjob.arooa.ConfigurationHandle;
-import org.oddjob.arooa.parsing.Location;
 import org.oddjob.arooa.parsing.NamespaceMappings;
 import org.oddjob.arooa.parsing.SimpleParseContext;
 
-import javax.json.Json;
 import javax.json.stream.JsonGenerator;
-import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * Parse an {@link ArooaConfiguration} into a JSON string.
@@ -26,19 +19,9 @@ public class JsonArooaParser implements ArooaParser<SimpleParseContext> {
 
     private final JsonGenerator jsonGenerator;
 
-    private final Closeable done;
-
-    public JsonArooaParser(NamespaceMappings namespaceMappings, OutputStream out) {
+    public JsonArooaParser(NamespaceMappings namespaceMappings, JsonGenerator jsonGenerator) {
         this.namespaceMappings = namespaceMappings;
-        this.jsonGenerator = Json.createGenerator(out);
-        done = out;
-    }
-
-    public JsonArooaParser(NamespaceMappings namespaceMappings, Consumer<String> stringConsumer) {
-        this.namespaceMappings = namespaceMappings;
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        this.jsonGenerator = Json.createGenerator(out);
-        done = () -> stringConsumer.accept(new String(out.toByteArray()));
+        this.jsonGenerator = jsonGenerator;
     }
 
     @Override
@@ -51,13 +34,6 @@ public class JsonArooaParser implements ArooaParser<SimpleParseContext> {
         parseStart(treeParser.getConfigurationTree());
 
         jsonGenerator.close();
-
-        try {
-            done.close();
-        } catch (IOException e) {
-            throw new ArooaParseException("Failed to close",
-                    new Location(configuration.toString(), 0,0));
-        }
 
         return handle;
     }
@@ -72,26 +48,25 @@ public class JsonArooaParser implements ArooaParser<SimpleParseContext> {
 
     void parse(ConfigurationTree tree) {
 
-        jsonGenerator.write(JsonConfiguration.ELEMENT_FIELD, tree.getElement().getTag());
+        jsonGenerator.write(JsonConfiguration.ELEMENT_FIELD,
+                namespaceMappings.getQName(tree.getElement()).toString());
         tree.getText().ifPresent(text -> jsonGenerator.write(JsonConfiguration.TEXT_FIELD, text));
 
         for (String name : tree.getElement().getAttributes().getAttributeNames()) {
             jsonGenerator.write(name, tree.getElement().getAttributes().get(name));
         }
 
-        for (String name: tree.getChildNames()) {
+        for (String name : tree.getChildNames()) {
 
             List<ConfigurationTree> children = tree.getChildConfigurations(name);
             if (children.size() == 1) {
                 jsonGenerator.writeStartObject(name);
                 parse(children.get(0));
-            }
-            else {
+            } else {
                 jsonGenerator.writeStartArray(name);
                 children.forEach(this::parseStart);
             }
             jsonGenerator.writeEnd();
         }
     }
-
 }

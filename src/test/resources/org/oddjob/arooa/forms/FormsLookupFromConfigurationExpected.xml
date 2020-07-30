@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<forms:form element="thing" title="Our Thing" xmlns:forms="arooa:forms">
+    <formItems>
+        <forms:text property="name" title="Name" value="Lots of Design"/>
+        <forms:group bordered="true" title="Some A and B">
+            <formItems>
+                <forms:text property="a" title="Some A" value="Ark"/>
+                <forms:text property="b" title="Some B" value="Ball"/>
+            </formItems>
+        </forms:group>
+        <forms:radio title="Some C or D and E">
+            <formItems>
+                <forms:text property="c" title="Some C"/>
+                <forms:group>
+                    <formItems>
+                        <forms:text property="d" title="Some D" value="Dog"/>
+                        <forms:text property="e" title="Some E" value="Egg"/>
+                    </formItems>
+                </forms:group>
+            </formItems>
+        </forms:radio>
+        <forms:tabs title="Selection Types">
+            <formItems>
+                <forms:single options="bean,class,convert,identify,import,inline,is,list,map,value,xml,arooa:annotation,arooa:bean-def,arooa:configuration,arooa:descriptor,arooa:descriptors,arooa:magic-beans,arooa:property,design:form,design:group,design:indexed,design:mapped,design:radio,design:single,design:tabs,design:text,design:textarea" property="single" propertyClass="java.lang.Object" title="Single">
+                    <value>
+                        <forms:inline-text element="value" value="One Thing"/>
+                    </value>
+                </forms:single>
+                <forms:indexed options="bean,class,convert,identify,import,inline,is,list,map,value,xml,arooa:annotation,arooa:bean-def,arooa:configuration,arooa:descriptor,arooa:descriptors,arooa:magic-beans,arooa:property,design:form,design:group,design:indexed,design:mapped,design:radio,design:single,design:tabs,design:text,design:textarea" property="indexed" propertyClass="java.lang.Object" title="Indexed">
+                    <value>
+                        <forms:inline-text element="value" value="First"/>
+                        <forms:inline-text element="value" value="Second"/>
+                    </value>
+                </forms:indexed>
+                <forms:mapped options="bean,class,convert,identify,import,inline,is,list,map,value,xml,arooa:annotation,arooa:bean-def,arooa:configuration,arooa:descriptor,arooa:descriptors,arooa:magic-beans,arooa:property,design:form,design:group,design:indexed,design:mapped,design:radio,design:single,design:tabs,design:text,design:textarea" property="mapped" propertyClass="java.lang.Object" title="Mapped">
+                    <value>
+                        <forms:inline-text element="value" value="Rose"/>
+                        <forms:inline-text element="value" value="Sky"/>
+                    </value>
+                </forms:mapped>
+                <forms:group title="Other">
+                    <formItems>
+                        <forms:text property="x" title="Some X"/>
+                        <forms:text property="y" title="Some Y"/>
+                    </formItems>
+                </forms:group>
+            </formItems>
+        </forms:tabs>
+    </formItems>
+</forms:form>

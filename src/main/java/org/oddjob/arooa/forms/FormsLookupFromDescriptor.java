@@ -1,13 +1,7 @@
 package org.oddjob.arooa.forms;
 
-import org.oddjob.arooa.ArooaConfiguration;
-import org.oddjob.arooa.ArooaDescriptor;
-import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ArooaType;
-import org.oddjob.arooa.design.DescriptorDesignFactory;
-import org.oddjob.arooa.design.DesignInstance;
-import org.oddjob.arooa.design.DesignSeedContext;
-import org.oddjob.arooa.design.DynamicDesignInstance;
+import org.oddjob.arooa.*;
+import org.oddjob.arooa.design.*;
 import org.oddjob.arooa.life.InstantiationContext;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaElement;
@@ -16,19 +10,31 @@ import org.oddjob.arooa.standard.StandardArooaSession;
 
 public class FormsLookupFromDescriptor implements FormsLookup {
 
-    private final ArooaSession session;
+    private final ArooaDescriptor descriptor;
 
     public FormsLookupFromDescriptor(ArooaDescriptor descriptor) {
-        this.session = new StandardArooaSession(descriptor);
+        this.descriptor = descriptor;
     }
 
     @Override
-    public ArooaConfiguration formFor(Object component) {
-        return null;
+    public ArooaConfiguration formFor(ArooaConfiguration configuration) throws ArooaParseException {
+
+        ArooaSession session = new StandardArooaSession(descriptor);
+
+        DesignParser parser = new DesignParser(session);
+        parser.setArooaType(ArooaType.COMPONENT);
+
+        parser.parse(configuration);
+
+        DesignInstance designInstance = parser.getDesign();
+
+        return new DesignToFormConfig().configurationFor(designInstance);
     }
 
     @Override
     public ArooaConfiguration blankForm(ArooaType arooaType, String elementQualifiedName, String propertyClass) {
+
+        ArooaSession session = new StandardArooaSession(descriptor);
 
         Class<?> cl = session.getArooaDescriptor()
                 .getClassResolver()

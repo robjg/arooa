@@ -1,6 +1,7 @@
 package org.oddjob.arooa.forms;
 
 import org.oddjob.arooa.ArooaConfiguration;
+import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.parsing.NamespaceMappings;
 
@@ -37,7 +38,7 @@ public interface FormsLookup {
         };
     }
 
-    ArooaConfiguration formFor(Object component);
+    ArooaConfiguration formFor(ArooaConfiguration configuration) throws ArooaParseException;
 
     ArooaConfiguration blankForm(ArooaType arooaType, String elementTag, String propertyClass);
 

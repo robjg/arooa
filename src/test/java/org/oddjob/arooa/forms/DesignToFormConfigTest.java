@@ -9,17 +9,23 @@ import org.oddjob.arooa.design.DesignInstance;
 import org.oddjob.arooa.design.DesignParser;
 import org.oddjob.arooa.design.layout.DesignerForEverythingMain;
 import org.oddjob.arooa.standard.StandardArooaSession;
+import org.oddjob.arooa.utils.FileUtils;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
+import org.xmlunit.matchers.CompareMatcher;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Objects;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class DesignToFormConfigTest {
 
     @Test
-    public void test() throws ArooaParseException {
+    public void test() throws ArooaParseException, IOException, URISyntaxException {
 
 
         URL descriptorUrl = Objects.requireNonNull(
@@ -49,13 +55,15 @@ public class DesignToFormConfigTest {
         XMLArooaParser xmlParser = new XMLArooaParser(FormsLookup.formsNamespaces());
         xmlParser.parse(result);
 
-        System.out.println(xmlParser.getXml());
+        String expected = FileUtils.readToString(
+                getClass().getResource("FormsLookupFromConfigurationExpected.xml"));
 
+        assertThat(xmlParser.getXml(), CompareMatcher.isSimilarTo(expected));
     }
 
 
     @Test
-    public void testBean() throws ArooaParseException {
+    public void testBean() throws ArooaParseException, IOException, URISyntaxException {
 
 
         URL descriptorUrl = Objects.requireNonNull(
@@ -88,6 +96,8 @@ public class DesignToFormConfigTest {
 
         System.out.println(xmlParser.getXml());
 
+        String expected = FileUtils.readToString(
+                getClass().getResource("DesignToFormBeanExpected.xml"));
     }
 
 

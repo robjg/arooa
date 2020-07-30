@@ -1,0 +1,132 @@
+{
+  "@element": "forms:form",
+  "element": "thing",
+  "title": "Our Thing",
+  "formItems": [
+    {
+      "@element": "forms:text",
+      "property": "name",
+      "title": "Name",
+      "value": "Lots of Design"
+    },
+    {
+      "@element": "forms:group",
+      "bordered": "true",
+      "title": "Some A and B",
+      "formItems": [
+        {
+          "@element": "forms:text",
+          "property": "a",
+          "title": "Some A",
+          "value": "Ark"
+        },
+        {
+          "@element": "forms:text",
+          "property": "b",
+          "title": "Some B",
+          "value": "Ball"
+        }
+      ]
+    },
+    {
+      "@element": "forms:radio",
+      "title": "Some C or D and E",
+      "formItems": [
+        {
+          "@element": "forms:text",
+          "property": "c",
+          "title": "Some C"
+        },
+        {
+          "@element": "forms:group",
+          "formItems": [
+            {
+              "@element": "forms:text",
+              "property": "d",
+              "title": "Some D",
+              "value": "Dog"
+            },
+            {
+              "@element": "forms:text",
+              "property": "e",
+              "title": "Some E",
+              "value": "Egg"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@element": "forms:tabs",
+      "title": "Selection Types",
+      "formItems": [
+        {
+          "@element": "forms:single",
+          "options": "bean,class,convert,identify,import,inline,is,list,map,value,xml,arooa:annotation,arooa:bean-def,arooa:configuration,arooa:descriptor,arooa:descriptors,arooa:magic-beans,arooa:property,design:form,design:group,design:indexed,design:mapped,design:radio,design:single,design:tabs,design:text,design:textarea",
+          "property": "single",
+          "propertyClass": "java.lang.Object",
+          "title": "Single",
+          "value": {
+            "@element": "forms:inline-text",
+            "element": "value",
+            "value": "One Thing"
+          }
+        },
+        {
+          "@element": "forms:indexed",
+          "options": "bean,class,convert,identify,import,inline,is,list,map,value,xml,arooa:annotation,arooa:bean-def,arooa:configuration,arooa:descriptor,arooa:descriptors,arooa:magic-beans,arooa:property,design:form,design:group,design:indexed,design:mapped,design:radio,design:single,design:tabs,design:text,design:textarea",
+          "property": "indexed",
+          "propertyClass": "java.lang.Object",
+          "title": "Indexed",
+          "value": [
+            {
+              "@element": "forms:inline-text",
+              "element": "value",
+              "value": "First"
+            },
+            {
+              "@element": "forms:inline-text",
+              "element": "value",
+              "value": "Second"
+            }
+          ]
+        },
+        {
+          "@element": "forms:mapped",
+          "options": "bean,class,convert,identify,import,inline,is,list,map,value,xml,arooa:annotation,arooa:bean-def,arooa:configuration,arooa:descriptor,arooa:descriptors,arooa:magic-beans,arooa:property,design:form,design:group,design:indexed,design:mapped,design:radio,design:single,design:tabs,design:text,design:textarea",
+          "property": "mapped",
+          "propertyClass": "java.lang.Object",
+          "title": "Mapped",
+          "value": [
+            {
+              "@element": "forms:inline-text",
+              "element": "value",
+              "value": "Rose"
+            },
+            {
+              "@element": "forms:inline-text",
+              "element": "value",
+              "value": "Sky"
+            }
+          ]
+        },
+        {
+          "@element": "forms:group",
+          "title": "Other",
+          "formItems": [
+            {
+              "@element": "forms:text",
+              "property": "x",
+              "title": "Some X"
+            },
+            {
+              "@element": "forms:text",
+              "property": "y",
+              "title": "Some Y"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

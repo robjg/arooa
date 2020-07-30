@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<forms:form element="fruit:apple-bag" title="fruit:apple-bag" xmlns:forms="arooa:forms">
+    <formItems>
+        <forms:group bordered="true" title="Properties">
+            <formItems>
+                <forms:text-area title="description"/>
+                <forms:indexed component="true" options="bean,is,fruit:apple-bag" property="moreBags" propertyClass="org.oddjob.arooa.forms.AppleBag" title="moreBags"/>
+                <forms:indexed options="bean,convert,identify,import,is,value,fruit:apple" property="apples" propertyClass="org.oddjob.arooa.forms.Apple" title="apples">
+                    <value>
+                        <forms:bean-form element="bean" forClass="org.oddjob.arooa.forms.Apple" title="bean">
+                            <formItems>
+                                <forms:text property="colour" title="colour" value="red"/>
+                                <forms:text property="taste" title="taste"/>
+                            </formItems>
+                        </forms:bean-form>
+                    </value>
+                </forms:indexed>
+            </formItems>
+        </forms:group>
+    </formItems>
+</forms:form>

@@ -47,7 +47,9 @@ public class JsonConfigurationTest {
 
         AtomicReference<String> result = new AtomicReference<>();
 
-        JsonArooaParser jsonParser = new JsonArooaParser(new SimplePrefixMappings(), result::set);
+        JsonArooaParser jsonParser = new JsonArooaParserBuilder()
+                .withStringConsumer(result::set)
+                .build();
 
         jsonParser.parse(handle.getDocumentContext().getConfigurationNode());
 
@@ -87,7 +89,10 @@ public class JsonConfigurationTest {
 
         AtomicReference<String> result = new AtomicReference<>();
 
-        JsonArooaParser jsonParser = new JsonArooaParser(new SimplePrefixMappings(), result::set);
+        JsonArooaParser jsonParser = new JsonArooaParserBuilder()
+                .withNamespaceMappings(new SimplePrefixMappings())
+                .withStringConsumer(result::set)
+                .build();
 
         jsonParser.parse(handle.getDocumentContext().getConfigurationNode());
 
