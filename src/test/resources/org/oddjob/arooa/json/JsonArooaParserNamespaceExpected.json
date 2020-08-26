@@ -5,6 +5,12 @@
   "formItems": [
     {
       "@element": "forms:text",
+      "property": "id",
+      "title": "Id",
+      "value": "things"
+    },
+    {
+      "@element": "forms:text",
       "property": "name",
       "title": "Name",
       "value": "Lots of Design"

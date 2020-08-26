@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <forms:form element="thing" title="Our Thing" xmlns:forms="arooa:forms">
     <formItems>
+        <forms:text property="id" title="Id" value="things"/>
         <forms:text property="name" title="Name" value="Lots of Design"/>
         <forms:group bordered="true" title="Some A and B">
             <formItems>

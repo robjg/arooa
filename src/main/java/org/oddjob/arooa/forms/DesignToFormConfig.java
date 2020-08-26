@@ -30,6 +30,8 @@ public class DesignToFormConfig {
     public static final String FORMS_INDEXED = "forms:indexed";
     public static final String FORMS_MAPPED = "forms:mapped";
 
+    public static final String ID_PROP = "id";
+    public static final String ID_TITLE = "Id";
     public static final String TITLE = "title";
     public static final String ELEMENT = "element";
     public static final String COMPONENT = "component";
@@ -91,6 +93,17 @@ public class DesignToFormConfig {
                             ConfigurationTreeBuilder.WithQualifiedTag treeBuilder) {
 
         treeBuilder.addAttribute(TITLE, standardForm.getTitle());
+
+        if (standardForm.getDesign() instanceof DesignComponent) {
+            ConfigurationTreeBuilder.WithQualifiedTag childBuilder = treeBuilder.newInstance();
+
+            childBuilder.setTag(FORMS_TEXT);
+            childBuilder.addAttribute(PROPERTY, ID_PROP);
+            childBuilder.addAttribute(TITLE, ID_TITLE);
+            childBuilder.addAttribute(VALUE, ((DesignComponent) standardForm.getDesign()).getId());
+
+            treeBuilder.addChild(FORM_ITEMS, childBuilder.build());
+        }
 
         int numFormItems = standardForm.size();
 
