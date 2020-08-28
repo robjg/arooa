@@ -20,8 +20,8 @@ public class StandardForm implements Form {
 	
 	private final DesignInstance design;
 	
-	private List<FormItem> groups = 
-		new ArrayList<FormItem>();
+	private final List<FormItem> groups =
+			new ArrayList<>();
 	
 	public StandardForm(DesignInstance design) {
 		this(null, design);
@@ -57,7 +57,7 @@ public class StandardForm implements Form {
 	}
 		
 	public FormItem getFormItem(int index) {
-		return (FormItem) groups.get(index);
+		return groups.get(index);
 	}
 	
 	/**
@@ -67,8 +67,8 @@ public class StandardForm implements Form {
 	 * @return true if the model has some data, false if it doesn't.
 	 */
 	public boolean isPopulated() {
-		for (FormItem designDefintion: groups) {
-			if (designDefintion.isPopulated()) {
+		for (FormItem designDefinition: groups) {
+			if (designDefinition.isPopulated()) {
 				return true;
 			}
 		}	

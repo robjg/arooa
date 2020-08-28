@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <forms:form element="fruit:apple-bag" title="fruit:apple-bag" xmlns:forms="arooa:forms">
     <formItems>
+        <forms:text property="id" title="Id" xmlns:forms="arooa:forms"/>
         <forms:group bordered="true" title="Properties">
             <formItems>
                 <forms:text-area title="description"/>

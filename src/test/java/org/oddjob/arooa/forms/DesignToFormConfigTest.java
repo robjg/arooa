@@ -1,5 +1,7 @@
 package org.oddjob.arooa.forms;
 
+import org.hamcrest.Matchers;
+import org.json.JSONException;
 import org.junit.Test;
 import org.oddjob.arooa.*;
 import org.oddjob.arooa.deploy.ArooaDescriptorDescriptor;
@@ -7,15 +9,25 @@ import org.oddjob.arooa.deploy.ListDescriptor;
 import org.oddjob.arooa.deploy.URLDescriptorFactory;
 import org.oddjob.arooa.design.DesignInstance;
 import org.oddjob.arooa.design.DesignParser;
+import org.oddjob.arooa.design.DesignSeedContext;
+import org.oddjob.arooa.design.GenericDesignFactory;
 import org.oddjob.arooa.design.layout.DesignerForEverythingMain;
+import org.oddjob.arooa.design.screem.NullForm;
+import org.oddjob.arooa.json.JsonArooaParser;
+import org.oddjob.arooa.json.JsonArooaParserBuilder;
+import org.oddjob.arooa.life.SimpleArooaClass;
+import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.utils.FileUtils;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.xmlunit.matchers.CompareMatcher;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Objects;
@@ -98,7 +110,47 @@ public class DesignToFormConfigTest {
 
         String expected = FileUtils.readToString(
                 getClass().getResource("DesignToFormBeanExpected.xml"));
+
+        assertThat(xmlParser.getXml(), CompareMatcher.isSimilarTo(expected));
+
     }
 
+    public class ThingWithNoProps {
+    }
 
+    @Test
+    public void testForNullForm() throws ArooaParseException, JSONException {
+
+        GenericDesignFactory factory = new GenericDesignFactory(
+                new SimpleArooaClass(ThingWithNoProps.class));
+
+        DesignInstance design = factory.createDesign(
+                new ArooaElement("foo"),
+                new DesignSeedContext(ArooaType.COMPONENT, new StandardArooaSession()));
+
+        assertThat(design.detail() instanceof NullForm, Matchers.is(true));
+
+        DesignToFormConfig test = new DesignToFormConfig();
+
+        ArooaConfiguration config = test.configurationFor(design);
+
+        StringWriter stringWriter = new StringWriter();
+
+        JsonArooaParser parser = new JsonArooaParserBuilder()
+                .withNamespaceMappings(FormsLookup.formsNamespaces())
+                .withPrettyPrinting()
+                .withWriter(stringWriter)
+                .build();
+
+        parser.parse(config);
+
+        String expected = "{ \"@element\": \"" + DesignToFormConfig.FORMS_FORM + "\"," +
+                "\"element\": \"foo\"" +
+                "}";
+
+        JSONAssert.assertEquals(
+                stringWriter.toString(),
+                expected,
+                JSONCompareMode.LENIENT);
+    }
 }

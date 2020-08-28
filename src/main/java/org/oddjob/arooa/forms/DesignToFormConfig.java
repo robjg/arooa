@@ -75,6 +75,9 @@ public class DesignToFormConfig {
         } else if (form instanceof BeanForm) {
             treeBuilder.setTag(FORMS_BEAN_FORM);
             return parse((BeanForm) form, treeBuilder);
+        } else if (form instanceof NullForm) {
+            treeBuilder.setTag(FORMS_FORM);
+            return treeBuilder.build();
         } else {
             throw new UnsupportedOperationException("Can't parse " +
                     form.getClass().getName() + " from " + instance.getClass().getName());
@@ -89,20 +92,25 @@ public class DesignToFormConfig {
         return treeBuilder.build();
     }
 
+    private void addAttribute(ConfigurationTreeBuilder.WithQualifiedTag treeBuilder, String id) {
+
+        ConfigurationTreeBuilder.WithQualifiedTag childBuilder = treeBuilder.newInstance();
+
+        childBuilder.setTag(FORMS_TEXT);
+        childBuilder.addAttribute(PROPERTY, ID_PROP);
+        childBuilder.addAttribute(TITLE, ID_TITLE);
+        childBuilder.addAttribute(VALUE, id);
+
+        treeBuilder.addChild(FORM_ITEMS, childBuilder.build());
+    }
+
     ConfigurationTree parse(StandardForm standardForm,
                             ConfigurationTreeBuilder.WithQualifiedTag treeBuilder) {
 
         treeBuilder.addAttribute(TITLE, standardForm.getTitle());
 
         if (standardForm.getDesign() instanceof DesignComponent) {
-            ConfigurationTreeBuilder.WithQualifiedTag childBuilder = treeBuilder.newInstance();
-
-            childBuilder.setTag(FORMS_TEXT);
-            childBuilder.addAttribute(PROPERTY, ID_PROP);
-            childBuilder.addAttribute(TITLE, ID_TITLE);
-            childBuilder.addAttribute(VALUE, ((DesignComponent) standardForm.getDesign()).getId());
-
-            treeBuilder.addChild(FORM_ITEMS, childBuilder.build());
+            addAttribute(treeBuilder, ((DesignComponent) standardForm.getDesign()).getId());
         }
 
         int numFormItems = standardForm.size();
@@ -123,6 +131,10 @@ public class DesignToFormConfig {
                 cn -> treeBuilder.addAttribute(FOR_CLASS, cn));
 
         treeBuilder.addAttribute(TITLE, beanForm.getTitle());
+
+        if (beanForm.getDesign() instanceof DesignComponent) {
+            addAttribute(treeBuilder, ((DesignComponent) beanForm.getDesign()).getId());
+        }
 
         Form subForm = beanForm.getSubForm();
 
