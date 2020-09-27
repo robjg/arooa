@@ -54,7 +54,7 @@ public class LtMainForm implements DesignFactory {
             };
         }
         else {
-            return new DesignValueBase(element, parentContext) {
+            instance = new DesignValueBase(element, parentContext) {
 
                 @Override
                 public DesignProperty[] children() {
