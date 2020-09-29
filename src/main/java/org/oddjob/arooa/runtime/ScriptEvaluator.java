@@ -3,10 +3,12 @@ package org.oddjob.arooa.runtime;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
-import org.oddjob.arooa.registry.BeanRegistry;
 
-import javax.script.*;
-import java.util.*;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import java.util.Optional;
 
 /**
  * Evaluate an expression as a script using the Java Scripting API (defined by JSR 223).
@@ -45,88 +47,15 @@ public class ScriptEvaluator implements Evaluator {
 
         Object result;
         try {
+            ScriptContext scriptContext = engine.getContext();
+            scriptContext.setBindings(new SessionBindings(session.getBeanRegistry()),
+                    ScriptContext.GLOBAL_SCOPE);
             result = engine.eval(propertyExpression,
-                    new SessionBindings(session.getBeanRegistry()));
+                    scriptContext);
         } catch (ScriptException e) {
             throw new ArooaConversionException(e);
         }
         return session.getTools().getArooaConverter().convert(result, type);
     }
 
-    static class SessionBindings implements Bindings {
-
-        private final Map<String, Object> local = new HashMap<>();
-
-        private final BeanRegistry beanRegistry;
-
-        SessionBindings(BeanRegistry beanRegistry) {
-            this.beanRegistry = beanRegistry;
-        }
-
-        @Override
-        public Object put(String name, Object value) {
-            return local.put(name, value);
-        }
-
-        @Override
-        public void putAll(Map<? extends String, ?> toMerge) {
-            local.putAll(toMerge);
-        }
-
-        @Override
-        public boolean containsKey(Object key) {
-            return local.containsKey(key ) ||
-                    beanRegistry.lookup(key.toString()) != null;
-        }
-
-        @Override
-        public Object get(Object key) {
-            if (local.containsKey(key)) {
-                return local.get(key);
-            }
-            else {
-                return beanRegistry.lookup(key.toString());
-            }
-        }
-
-        @Override
-        public Object remove(Object key) {
-            throw new UnsupportedOperationException("Read Only");
-        }
-
-        @Override
-        public int size() {
-            return 0;
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return false;
-        }
-
-        @Override
-        public boolean containsValue(Object value) {
-            return local.containsValue(value);
-        }
-
-        @Override
-        public void clear() {
-            local.clear();
-        }
-
-        @Override
-        public Set<String> keySet() {
-            return local.keySet();
-        }
-
-        @Override
-        public Collection<Object> values() {
-            return local.values();
-        }
-
-        @Override
-        public Set<Entry<String, Object>> entrySet() {
-            return local.entrySet();
-        }
-    }
 }
