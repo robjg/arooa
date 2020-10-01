@@ -1,8 +1,8 @@
 package org.oddjob.arooa;
 
-import java.lang.reflect.Method;
-
 import org.oddjob.arooa.deploy.ArooaAnnotation;
+
+import java.lang.reflect.Method;
 
 /**
  * Capture annotation information about a bean.
@@ -20,14 +20,14 @@ public interface ArooaAnnotations {
 	 * @return the method for the annotation name, or null if there
 	 * isn't one.
 	 */
-	public Method methodFor(String annotationName);
+	Method methodFor(String annotationName);
 
 	/**
 	 * Provide all properties that are annotated.
 	 * 
 	 * @return Array of properties or an empty array. Never null.
 	 */
-	public String[] annotatedProperties();
+	String[] annotatedProperties();
 	
 	/**
 	 * Get the Annotation for a property by annotation name.
@@ -37,7 +37,7 @@ public interface ArooaAnnotations {
 	 * 
 	 * @return The annotation, or null if one doesn't exist.
 	 */
-	public ArooaAnnotation annotationForProperty(String propertyName, 
+	ArooaAnnotation annotationForProperty(String propertyName,
 			String annotationName);
 	
 	/**
@@ -47,6 +47,6 @@ public interface ArooaAnnotations {
 	 * 
 	 * @return An array of annotations, may be empty, never null.
 	 */
-	public ArooaAnnotation[] annotationsForProperty(String propertyName);
+	ArooaAnnotation[] annotationsForProperty(String propertyName);
 
 }
