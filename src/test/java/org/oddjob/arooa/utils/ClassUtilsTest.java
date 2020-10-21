@@ -15,17 +15,28 @@ public class ClassUtilsTest extends Assert {
                 ClassUtils.classFor(
                         "java.lang.String", getClass().getClassLoader()));
 
+        assertEquals(String[].class,
+                ClassUtils.classFor(
+                        "[Ljava.lang.String;", getClass().getClassLoader()));
+
+        assertEquals(String[][].class,
+                ClassUtils.classFor(
+                        "[[Ljava.lang.String;", getClass().getClassLoader()));
+
         assertEquals(int.class,
                 ClassUtils.classFor(
-                        int.class.getName(), getClass().getClassLoader()));
+                        "int", getClass().getClassLoader()));
 
         assertEquals(int[].class,
                 ClassUtils.classFor(
-                        int[].class.getName(), getClass().getClassLoader()));
+                        "[I", getClass().getClassLoader()));
 
         assertEquals(int[][].class,
                 ClassUtils.classFor(
-                        int[][].class.getName(), getClass().getClassLoader()));
+                        "[[I", getClass().getClassLoader()));
+
+
+
     }
 
     // To visually check the error message.
