@@ -31,7 +31,7 @@
 			conf="test->default"/>
 		<dependency org="org.hamcrest" name="hamcrest" rev="${hamcrest.version}"
 			conf="test->default" />
-		<dependency org="org.mockito" name="mockito-all" rev="${mockito.version}"
+		<dependency org="org.mockito" name="mockito-core" rev="${mockito.version}"
 			conf="test->default" />
 		<dependency org="org.xmlunit" name="xmlunit-core" rev="${xmlunit.version}" 
 			conf="test->default"/>
