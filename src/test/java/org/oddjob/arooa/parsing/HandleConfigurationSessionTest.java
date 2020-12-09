@@ -98,7 +98,7 @@ public class HandleConfigurationSessionTest {
 				parser.getSession().getBeanRegistry().lookup("fruit"));
 		
 		DragTransaction trn = dragPoint.beginChange(ChangeHow.FRESH);
-		dragPoint.cut();
+		dragPoint.delete();
 		trn.commit();
 		
 		assertTrue(test.isModified());

@@ -1,22 +1,19 @@
 package org.oddjob.arooa.design.designer;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-
-import javax.swing.AbstractAction;
-import javax.swing.JTree;
-import javax.swing.KeyStroke;
-import javax.swing.TransferHandler.TransferSupport;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
-
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.parsing.ConfigurationOwner;
 import org.oddjob.arooa.parsing.ConfigurationSession;
 import org.oddjob.arooa.parsing.DragPoint;
 import org.oddjob.arooa.parsing.DragTransaction;
 import org.oddjob.arooa.registry.ChangeHow;
+
+import javax.swing.*;
+import javax.swing.TransferHandler.TransferSupport;
+import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 /**
  * A base for Swing JTree sub classes that are able to provide a 
@@ -73,7 +70,7 @@ implements ArooaContainer {
 					return;
 				}
 				DragTransaction trn = dragPoint.beginChange(ChangeHow.FRESH);
-				dragPoint.cut();
+				dragPoint.delete();
 				try {
 					trn.commit();
 				} catch (ArooaParseException e1) {

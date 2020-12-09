@@ -78,7 +78,14 @@ public class DragContext implements DragPoint {
 	}
 
 	@Override
-	public void cut() {
+	public String cut() {
+		String copy = CutAndPasteSupport.copy(context);
+		delete();
+		return copy;
+	}
+
+	@Override
+	public void delete() {
 		synchronized(DragContext.class) {
 			if (transaction == null) {
 				throw new IllegalStateException("No transaction");
@@ -113,7 +120,7 @@ public class DragContext implements DragPoint {
 					if (transaction == null) {
 						return null;
 					}
-					if (!transaction.isTransactionThread()) {
+					if (transaction.isNotTransactionThread()) {
 						throw new IllegalStateException(
 								"Transaction is on a different thread.",
 								transaction.getTransactionCreation());
@@ -121,7 +128,7 @@ public class DragContext implements DragPoint {
 					return transaction;
 				case EITHER:
 					if (transaction != null) {
-						if (!transaction.isTransactionThread()) {
+						if (transaction.isNotTransactionThread()) {
 							throw new IllegalStateException(
 									"Transaction is on a different thread.",
 									transaction.getTransactionCreation());
@@ -178,8 +185,8 @@ public class DragContext implements DragPoint {
 			return transactionCreation;
 		}
 		
-		boolean isTransactionThread() {
-			return Thread.currentThread().equals(transactionThread);
+		boolean isNotTransactionThread() {
+			return Thread.currentThread() != transactionThread;
 		}
 		
 		public void commit() throws ArooaParseException {

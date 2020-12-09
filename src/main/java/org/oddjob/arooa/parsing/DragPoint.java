@@ -36,7 +36,15 @@ public interface DragPoint extends ArooaConfiguration {
 	 * @return true/false.
 	 */
 	boolean supportsPaste();
-	
+
+	/**
+	 * Copy this {@code DragPoint}s configuration and remove it.
+	 * <p>
+	 *     This is used by the Web Front end. The Swing UI uses {@link #delete()}.
+	 * </p>
+	 */
+	String cut();
+
 	/**
 	 * Provide a copy of the configuration at from this DragPoint
 	 * as XML.
@@ -50,9 +58,14 @@ public interface DragPoint extends ArooaConfiguration {
 	 * remove any components in the configuration from the 
 	 * {@link ComponentPool}
 	 * <p>
-	 * This operation must be done within the context of a transaction.
+	 *     This is used by the swing GUI {@link org.oddjob.arooa.design.designer.ArooaTransferHandler}
+	 *     to perform the CUT operation.
+	 * </p>
+	 * <p>
+	 *     This operation must be done within the context of a transaction.
+	 * </p>
 	 */
-	void cut();
+	void delete();
 		
 	/**
 	 * Parse an XML Text configuration and add the resultant component

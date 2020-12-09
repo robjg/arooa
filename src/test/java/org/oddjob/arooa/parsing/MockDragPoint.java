@@ -12,17 +12,22 @@ public class MockDragPoint implements DragPoint {
 	}
 
 	@Override
+	public String cut() {
+		throw new RuntimeException("Unexpected from " + getClass());
+	}
+
+	@Override
 	public String copy() {
 		throw new RuntimeException("Unexpected from " + getClass());
 	}
 
 	@Override
-	public void cut() {
+	public void delete() {
 		throw new RuntimeException("Unexpected from " + getClass());
 	}
 
 	@Override
-	public void paste(int index, String config) throws ArooaParseException {
+	public void paste(int index, String config) {
 		throw new RuntimeException("Unexpected from " + getClass());
 	}
 

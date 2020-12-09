@@ -71,7 +71,12 @@ public class DragConfiguration implements DragPoint {
 	}
 
 	@Override
-	public void cut() {
+	public String cut() {
+		throw new UnsupportedOperationException("Check supportsCut first!");
+	}
+
+	@Override
+	public void delete() {
 		throw new UnsupportedOperationException("Check supportsCut first!");
 	}
 

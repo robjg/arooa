@@ -1,19 +1,16 @@
 package org.oddjob.arooa.design.designer;
 
+import org.oddjob.arooa.parsing.DragPoint;
+import org.oddjob.arooa.parsing.DragTransaction;
+import org.oddjob.arooa.registry.ChangeHow;
+
+import javax.swing.*;
+import javax.swing.tree.TreePath;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JComponent;
-import javax.swing.JTree;
-import javax.swing.TransferHandler;
-import javax.swing.tree.TreePath;
-
-import org.oddjob.arooa.parsing.DragPoint;
-import org.oddjob.arooa.parsing.DragTransaction;
-import org.oddjob.arooa.registry.ChangeHow;
 
 /**
  * A TransferHandler for an {@link ArooaTree}.
@@ -92,7 +89,7 @@ public class ArooaTransferHandler extends TransferHandler {
 
 		if (action == MOVE) {
 
-				dragPoint.cut();
+				dragPoint.delete();
 		}
 		
 		try {

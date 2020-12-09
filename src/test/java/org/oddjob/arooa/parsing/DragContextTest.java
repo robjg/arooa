@@ -187,7 +187,7 @@ public class DragContextTest extends Assert {
 		DragTransaction trn = testA.beginChange(ChangeHow.FRESH);
 
 		String config = testA.copy();
-		testA.cut();
+		testA.delete();
 		
 		DragTransaction trn2 = testB.beginChange(ChangeHow.AGAIN);
 		
@@ -240,7 +240,7 @@ public class DragContextTest extends Assert {
 		DragTransaction trn = testA.beginChange(ChangeHow.FRESH);
 
 		String config = testA.copy();
-		testA.cut();
+		testA.delete();
 						
 		DragTransaction trn2 = testB.beginChange(ChangeHow.EITHER);
 		
@@ -290,7 +290,7 @@ public class DragContextTest extends Assert {
 		DragTransaction trn = testA.beginChange(ChangeHow.FRESH);
 
 		String config = testA.copy();
-		testA.cut();
+		testA.delete();
 						
 		DragTransaction trn2 = testB.beginChange(ChangeHow.EITHER);
 		
@@ -336,7 +336,7 @@ public class DragContextTest extends Assert {
 				
 		DragTransaction trn2 = test.beginChange(ChangeHow.EITHER);
 		
-		test.cut();
+		test.delete();
 		
 		trn = test.beginChange(ChangeHow.MAYBE);
 		
