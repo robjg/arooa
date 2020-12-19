@@ -81,5 +81,14 @@ public interface DragPoint extends ArooaConfiguration {
 	 */
 	void paste(int index, String config)
 	throws ArooaParseException;
-	
+
+	/**
+	 * List the possible children a Drag Point can have for Add Job
+	 * functionality. {@link #supportsPaste()} must be true for this
+	 * to work.
+	 *
+	 * @return All that child tags that could be added with a paste
+	 * operation.
+	 */
+	QTag[] possibleChildren();
 }

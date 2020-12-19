@@ -85,4 +85,8 @@ public class DragConfiguration implements DragPoint {
 		throw new UnsupportedOperationException("Check supportsPaste first!");
 	}
 
+	@Override
+	public QTag[] possibleChildren() {
+		throw new UnsupportedOperationException("Check supportsPaste first!");
+	}
 }

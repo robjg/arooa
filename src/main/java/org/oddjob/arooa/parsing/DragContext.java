@@ -1,12 +1,15 @@
 package org.oddjob.arooa.parsing;
 
-import org.oddjob.arooa.ArooaConfiguration;
-import org.oddjob.arooa.ArooaParseException;
-import org.oddjob.arooa.ConfigurationHandle;
+import org.oddjob.arooa.*;
+import org.oddjob.arooa.life.InstantiationContext;
+import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.registry.ChangeHow;
 import org.oddjob.arooa.xml.XMLConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * A {@link DragPoint} for an {@link ArooaContext}.
@@ -107,7 +110,27 @@ public class DragContext implements DragPoint {
 			transaction.setPaste(this, index, config);
 		}
 	}
-	
+
+	@Override
+	public QTag[] possibleChildren() {
+		ArooaDescriptor descriptor = context.getSession().getArooaDescriptor();
+
+		InstantiationContext context = new InstantiationContext(
+				ArooaType.COMPONENT, new SimpleArooaClass(Object.class));
+
+		ArooaElement[] elements = descriptor.getElementMappings().elementsFor(
+				context);
+
+		SortedSet<QTag> sortedTags = new TreeSet<>();
+
+		for (ArooaElement element : elements) {
+			String prefix = descriptor.getPrefixFor(element.getUri());
+			sortedTags.add(new QTag(prefix, element));
+		}
+
+		return sortedTags.toArray(new QTag[0]);
+	}
+
 	private DragTransaction createTransaction(ChangeHow how) {
 		
 		synchronized (DragContext.class) {

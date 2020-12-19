@@ -47,5 +47,8 @@ public class MockDragPoint implements DragPoint {
 		throw new RuntimeException("Unexpected from " + getClass());
 	}
 
-	
+	@Override
+	public QTag[] possibleChildren() {
+		throw new RuntimeException("Unexpected from " + getClass());
+	}
 }
