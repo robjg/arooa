@@ -1,6 +1,7 @@
 package org.oddjob.arooa.parsing;
 
 import org.oddjob.arooa.*;
+import org.oddjob.arooa.json.JsonConfiguration;
 import org.oddjob.arooa.life.InstantiationContext;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.registry.ChangeHow;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.regex.Pattern;
 
 /**
  * A {@link DragPoint} for an {@link ArooaContext}.
@@ -22,9 +24,12 @@ import java.util.TreeSet;
  */
 public class DragContext implements DragPoint {
 	private static final Logger logger = LoggerFactory.getLogger(DragContext.class);
-	
+
+	private static final Pattern XML_START_MATCH = Pattern.compile("^\\s*<");
+	private static final Pattern JSON_START_MATCH = Pattern.compile("^\\s*\\{");
+
 	private static SimpleTransaction transaction;
-	    
+
 	private final ArooaContext context;
 	
 	private final CutAndPasteSupport cnp;
@@ -70,14 +75,10 @@ public class DragContext implements DragPoint {
 				context.getParent(), context);
 	}
 		
-	private void reallyPaste(int index, String config) 
+	private void reallyPaste(int index, ArooaConfiguration pasteConfig)
 	throws ArooaParseException {
-		if (!cnp.supportsPaste()) {
-			throw new IllegalStateException("Node does not support paste.");
-		}
-		
-		cnp.paste(index, 
-					new XMLConfiguration("Replacement XML", config));
+
+		cnp.paste(index, pasteConfig);
 	}
 
 	@Override
@@ -102,12 +103,26 @@ public class DragContext implements DragPoint {
 		if (!cnp.supportsPaste()) {
 			throw new IllegalStateException("Node does not support paste.");
 		}
-		
+
+		ArooaConfiguration pasteConfig;
+		if (XML_START_MATCH.matcher(config).find()) {
+			pasteConfig = new XMLConfiguration("Replacement XML", config);
+		}
+		else if (JSON_START_MATCH.matcher(config).find()) {
+			pasteConfig = new JsonConfiguration(config)
+					.withNamespaceMappings(context.getSession().getArooaDescriptor());
+		}
+		else {
+			throw new IllegalArgumentException(
+					"Expected config to start with '<' (XML) or '{' (JSON) but was [" +
+							config + "]");
+		}
+
 		synchronized(DragContext.class) {
 			if (transaction == null) {
 				throw new IllegalStateException("No transaction");
 			}
-			transaction.setPaste(this, index, config);
+			transaction.setPaste(this, index, pasteConfig);
 		}
 	}
 
@@ -186,7 +201,7 @@ public class DragContext implements DragPoint {
 		
 		private int pasteIndex;
 
-		private String pasteConfig;
+		private ArooaConfiguration pasteConfig;
 		
 		private DragContext pastePoint;
 		
@@ -280,7 +295,7 @@ public class DragContext implements DragPoint {
 			cutIndex = 0;
 		}
 		
-		void setPaste(DragContext point, int index, String config) {
+		void setPaste(DragContext point, int index, ArooaConfiguration config) {
 			
 			synchronized (transactionLock) {
 				if (pastePoint != null) {
