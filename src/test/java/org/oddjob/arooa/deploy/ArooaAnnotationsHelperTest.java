@@ -1,11 +1,7 @@
 package org.oddjob.arooa.deploy;
 
-import org.junit.Test;
-
-import java.lang.reflect.Method;
-
 import org.junit.Assert;
-
+import org.junit.Test;
 import org.oddjob.arooa.deploy.annotations.ArooaAttribute;
 import org.oddjob.arooa.deploy.annotations.ArooaComponent;
 import org.oddjob.arooa.deploy.annotations.ArooaHidden;
@@ -13,6 +9,8 @@ import org.oddjob.arooa.life.Configured;
 import org.oddjob.arooa.life.Destroy;
 import org.oddjob.arooa.life.Initialised;
 import org.oddjob.arooa.life.SimpleArooaClass;
+
+import java.lang.reflect.Method;
 
 public class ArooaAnnotationsHelperTest extends Assert {
 
@@ -95,8 +93,6 @@ public class ArooaAnnotationsHelperTest extends Assert {
 				new SimpleArooaClass(MyBean.class));
 
 		String[] properties = test.annotatedProperties();
-		
-		assertEquals(3, properties.length);
 		
 		ArooaAnnotation[] annotations = test.annotationsForProperty("colour");
 		

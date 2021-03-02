@@ -14,8 +14,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 public class ConfigurationTreeBuilderTest {
@@ -73,7 +73,7 @@ public class ConfigurationTreeBuilderTest {
 
         String expected = "<a>Apple</a>";
 
-        assertThat(parser.getXml(), isSimilarTo(expected));
+        assertThat(parser.getXml(), isSimilarTo(expected).ignoreWhitespace());
 
         handle.save();
 
@@ -81,7 +81,7 @@ public class ConfigurationTreeBuilderTest {
 
         parser2.parse(saved.get());
 
-        assertThat(parser2.getXml(), isSimilarTo(expected));
+        assertThat(parser2.getXml(), isSimilarTo(expected).ignoreWhitespace());
     }
 
     @Test

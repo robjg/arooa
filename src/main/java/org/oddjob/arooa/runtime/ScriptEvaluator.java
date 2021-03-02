@@ -21,6 +21,13 @@ import java.util.Optional;
  */
 public class ScriptEvaluator implements Evaluator {
 
+    /**
+     * Required for Java 11. Todo: Need to include our own scripting engine and not rely on JDK.
+     */
+    static {
+        System.setProperty("nashorn.args", "--no-deprecation-warning");
+    }
+
     public static final String SCRIPT_LANGUAGE = "org.oddjob.script.language";
 
     private final ScriptEngine engine;

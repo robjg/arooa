@@ -8,7 +8,7 @@ import org.oddjob.arooa.runtime.ConfigurationNode;
 
 import java.util.Objects;
 
-public class XMLConfigurationNode extends AbstractConfigurationNode {
+public class XMLConfigurationNode extends AbstractConfigurationNode<ArooaContext> {
 
 	/** The element */
 	private final ArooaElement element;
@@ -58,20 +58,15 @@ public class XMLConfigurationNode extends AbstractConfigurationNode {
 			handle.addText(textHandler.getText());
 		}
 		
-		for (ConfigurationNode child: children()) {
+		for (ConfigurationNode<ArooaContext> child: children()) {
 			child.parse(newContext);			
 		}
 		
 		int index;
-		
-		try {
-			index = handle.init();;
-		}
-		catch (RuntimeException e) {
-			throw e;
-		}
-		
-		return new ChainingConfigurationHandle(
+
+		index = handle.init();
+
+		return new ChainingConfigurationHandle<>(
 				getContext(), parseParentContext, index);
 	}
 	

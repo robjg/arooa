@@ -7,7 +7,7 @@ import org.oddjob.arooa.registry.SimpleBeanRegistry;
 import javax.script.*;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class SessionBindingsTest {
 
@@ -26,10 +26,13 @@ public class SessionBindingsTest {
         bindings.put("b", 2);
         bindings.put("c", 3);
 
-        Object result = engine.eval("a = b + c", context);
+        Number result = (Number) engine.eval("a = b + c", context);
 
-        assertThat(result, is(5.0));
-        assertThat(bindings.get("a"), is(5.0));
+        assertThat(result.intValue(), is(5));
+
+        Number a = (Number) bindings.get("a");
+
+        assertThat(a.intValue(), is(5));
     }
 
     @Test
@@ -48,13 +51,14 @@ public class SessionBindingsTest {
         ScriptContext context = engine.getContext();
         context.setBindings(bindings, ScriptContext.GLOBAL_SCOPE);
 
-        Object result = engine.eval("a = b + c", context);
+        Number result = (Number) engine.eval("a = b + c", context);
+
+        assertThat(result, is(5));
 
         Bindings engineBindings = context.getBindings(ScriptContext.ENGINE_SCOPE);
 
-        assertThat(result, is(5.0));
-        assertThat(engineBindings.get("a"), is(5.0));
+        Number a = (Number) engineBindings.get("a");
 
+        assertThat(a.intValue(), is(5));
     }
-
 }

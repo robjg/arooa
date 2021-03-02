@@ -12,19 +12,19 @@ import org.oddjob.arooa.runtime.*;
 import org.oddjob.arooa.standard.StandardArooaParser;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 public class XmlInterceptorTest {
 
-    private class TestContext extends MockArooaContext {
+    private static class TestContext extends MockArooaContext {
         String name;
         String result;
 
         RuntimeListener listener;
 
-        ConfigurationNode configurationNode = new AbstractConfigurationNode() {
+        ConfigurationNode<ArooaContext> configurationNode
+                = new AbstractConfigurationNode<ArooaContext>() {
             @Override
             public ArooaContext getContext() {
                 return TestContext.this;
@@ -71,7 +71,7 @@ public class XmlInterceptorTest {
         }
 
         @Override
-        public ConfigurationNode getConfigurationNode() {
+        public ConfigurationNode<ArooaContext> getConfigurationNode() {
             return configurationNode;
         }
     }
@@ -106,14 +106,14 @@ public class XmlInterceptorTest {
 
         testContext.getRuntime().init();
 
-        assertEquals("result", testContext.name);
+        assertThat(testContext.name, is("result"));
 
         String ls = System.getProperty("line.separator");
 
         String expected = "<a>" + ls +
                 "    <b x=\"y\"/><![CDATA[Hello World]]></a>" + ls;
 
-        assertThat(testContext.result, isSimilarTo(expected));
+        assertThat(testContext.result, isSimilarTo(expected).ignoreWhitespace());
     }
 
 
@@ -129,7 +129,7 @@ public class XmlInterceptorTest {
         }
     }
 
-    private class OurDescriptor extends MockArooaDescriptor {
+    private static class OurDescriptor extends MockArooaDescriptor {
         @Override
         public ConversionProvider getConvertletProvider() {
             return null;
@@ -146,8 +146,7 @@ public class XmlInterceptorTest {
             if (forClass == null) {
                 return null;
             }
-            assertEquals(new SimpleArooaClass(AComp.class),
-                    forClass);
+            assertThat(forClass, is(new SimpleArooaClass(AComp.class)));
             return new MockArooaBeanDescriptor() {
                 @Override
                 public ParsingInterceptor getParsingInterceptor() {
@@ -200,7 +199,7 @@ public class XmlInterceptorTest {
 
         ArooaContext context = new XMLInterceptor("xml").intercept(testContext);
 
-        ConfigurationHandle handle = xml.parse(context);
+        ConfigurationHandle<ArooaContext> handle = xml.parse(context);
 
         assertThat(handle.getDocumentContext().getParent(), sameInstance(context));
 
@@ -210,7 +209,7 @@ public class XmlInterceptorTest {
 
         assertThat(testContext.result, isSimilarTo("<foo stuff='a'/>"));
 
-        CutAndPasteSupport.ReplaceResult replaceResult =
+        CutAndPasteSupport.ReplaceResult<ArooaContext> replaceResult =
                 CutAndPasteSupport.replace(context,
                 new ChildCatcher<>(context, 0).getChild(),
                 new XMLConfiguration("REPLACEMENT", "<foo stuff='b'/>"));

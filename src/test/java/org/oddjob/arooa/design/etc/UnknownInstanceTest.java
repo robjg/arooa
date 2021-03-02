@@ -1,5 +1,7 @@
 package org.oddjob.arooa.design.etc;
 
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.oddjob.arooa.*;
@@ -14,8 +16,9 @@ import org.oddjob.arooa.xml.XMLConfiguration;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.fail;
 import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 public class UnknownInstanceTest {
@@ -72,13 +75,13 @@ public class UnknownInstanceTest {
 
         configuration.parse(test.getArooaContext());
 
-        assertThat(test.getXml(), is( "") );
+        assertThat(test.getXml(), CoreMatchers.is(""));
 
         test.getArooaContext().getRuntime().init();
 
         String expected = "<apple>\n" + xml + "</apple>\n";
 
-        assertThat(test.getXml(), isSimilarTo( expected ).ignoreWhitespace() );
+        assertThat(test.getXml(), isSimilarTo(expected).ignoreWhitespace());
 
         // And now test replace too
 
@@ -96,13 +99,12 @@ public class UnknownInstanceTest {
 
         String expected2 = "<apple>\n" + replacement + "</apple>\n";
 
-        assertThat(test.getXml(), isSimilarTo( expected2 ).ignoreWhitespace() );
+        assertThat(test.getXml(), isSimilarTo(expected2).ignoreWhitespace());
     }
 
     /**
      * Test parsing the Component that has had xml set manually (i.e. from
      * a GUI.
-     *
      */
     @Test
     public void testParse() throws Exception {
@@ -124,9 +126,7 @@ public class UnknownInstanceTest {
 
         parser.parse(test.getArooaContext().getConfigurationNode());
 
-        String expected = xml;
-
-        assertThat(parser.getXml(), isSimilarTo(expected).ignoreWhitespace());
+        assertThat(parser.getXml(), isSimilarTo(xml).ignoreWhitespace());
     }
 
     /**
@@ -167,7 +167,7 @@ public class UnknownInstanceTest {
 
         parser.parse(test.getArooaContext().getConfigurationNode());
 
-        assertThat(parser.getXml(), isSimilarTo(xml));
+        assertThat(parser.getXml(), isSimilarTo(xml).ignoreWhitespace());
     }
 
     /**
@@ -203,7 +203,7 @@ public class UnknownInstanceTest {
     }
 
 
-    class OurContext extends MockArooaContext {
+    static class OurContext extends MockArooaContext {
 
         @Override
         public PrefixMappings getPrefixMappings() {
@@ -211,10 +211,10 @@ public class UnknownInstanceTest {
         }
 
         @Override
-        public ConfigurationNode getConfigurationNode() {
+        public ConfigurationNode<ArooaContext> getConfigurationNode() {
             return new MockConfigurationNode() {
                 @Override
-                public int insertChild(ConfigurationNode child) {
+                public int insertChild(ConfigurationNode<ArooaContext> child) {
                     return -1;
                 }
             };
@@ -228,7 +228,7 @@ public class UnknownInstanceTest {
 
     }
 
-    class OurInstance extends MockDesignInstance {
+    static class OurInstance extends MockDesignInstance {
 
         @Override
         public ArooaContext getArooaContext() {
@@ -236,12 +236,12 @@ public class UnknownInstanceTest {
         }
     }
 
-    class OurListener implements DesignListener {
+    static class OurListener implements DesignListener {
         DesignInstance result;
 
         public void childAdded(DesignStructureEvent event) {
-            assertNull(result);
-            assertEquals(0, event.getIndex());
+            assertThat(result, Matchers.nullValue());
+            assertThat(event.getIndex(), CoreMatchers.is(0));
             result = event.getChild();
 
         }
@@ -269,16 +269,16 @@ public class UnknownInstanceTest {
                 new ArooaElement("Whatever"),
                 prop.getArooaContext());
 
-        ConfigurationNode testConfigurationNode = test.getArooaContext().getConfigurationNode();
+        ConfigurationNode<ArooaContext> testConfigurationNode = test.getArooaContext().getConfigurationNode();
 
         prop.getArooaContext().getConfigurationNode().insertChild(
                 testConfigurationNode);
 
         test.getArooaContext().getRuntime().init();
 
-        assertNotNull(listener.result);
+        assertThat(listener.result, notNullValue());
 
-        assertEquals(UnknownInstance.class, listener.result.getClass());
+        assertThat(listener.result.getClass(), Matchers.is(UnknownInstance.class));
     }
 
     UnknownInstance test;
@@ -314,12 +314,12 @@ public class UnknownInstanceTest {
 
         config.parse(rootContext);
 
-        assertThat(test.getXml(), isSimilarTo(xml));
+        assertThat(test.getXml(), isSimilarTo(xml).ignoreWhitespace());
 
         XMLArooaParser parser = new XMLArooaParser(session.getArooaDescriptor());
 
         parser.parse(test.getArooaContext().getConfigurationNode());
 
-        assertThat(parser.getXml(), isSimilarTo(xml));
+        assertThat(parser.getXml(), isSimilarTo(xml).ignoreWhitespace());
     }
 }

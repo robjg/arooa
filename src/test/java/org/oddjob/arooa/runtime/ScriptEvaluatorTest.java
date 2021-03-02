@@ -14,12 +14,13 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class ScriptEvaluatorTest {
+
 
     @Test
     public void simpleEvaluateAddingTwoVariables() throws ArooaConversionException {
@@ -41,7 +42,7 @@ public class ScriptEvaluatorTest {
 
         ArooaSession session = createSession();
 
-        List<Integer> list = Arrays.asList(1,2,3,4,5);
+        List<Integer> list = Arrays.asList(1, 2, 3, 4, 5);
         session.getBeanRegistry().register("list", list);
 
         ScriptEvaluator test = new ScriptEvaluator();
@@ -134,8 +135,7 @@ public class ScriptEvaluatorTest {
         try {
             test.evaluate("idontexist", session, Integer.class);
             fail("Should fail");
-        }
-        catch (ArooaConversionException e) {
+        } catch (ArooaConversionException e) {
             assertThat(e.getMessage(), e.getMessage().contains("idontexist"), is(true));
         }
     }

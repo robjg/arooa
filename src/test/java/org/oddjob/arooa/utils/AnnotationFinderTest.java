@@ -1,5 +1,6 @@
 package org.oddjob.arooa.utils;
 
+import org.hamcrest.collection.ArrayMatching;
 import org.junit.Test;
 import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaSession;
@@ -8,7 +9,7 @@ import org.oddjob.arooa.life.Initialised;
 import org.oddjob.arooa.standard.StandardArooaSession;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class AnnotationFinderTest {
 
@@ -33,7 +34,7 @@ public class AnnotationFinderTest {
                 .findFor(Foo.class);
 
         assertThat(annotations.annotatedProperties(),
-                is(new String[] { "stuff" }));
+                ArrayMatching.hasItemInArray( "stuff" ));
 
         assertThat(annotations.methodFor(Initialised.class.getName()).getName(),
                 is("wow" ));
