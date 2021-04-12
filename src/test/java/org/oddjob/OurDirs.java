@@ -107,7 +107,7 @@ public class OurDirs {
         return INSTANCE.buildDirPath;
     }
 
-    public static Path workDirPath() throws IOException {
+    public static Path workDirPath() {
 
         return INSTANCE.workDirPath;
     }
