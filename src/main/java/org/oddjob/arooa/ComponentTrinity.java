@@ -41,6 +41,26 @@ public class ComponentTrinity {
     }
 
     /**
+     * For fluent building.
+     *
+     * @param component The component.
+     * @return Onward Builder.
+     */
+    public static WithComponent withComponent(Object component) {
+        return new WithComponent(component);
+    }
+
+    /**
+     * For fluent building.
+     *
+     * @param componentAndProxy The object that is the component and proxy.
+     * @return Onward Builder.
+     */
+    public static WithComponentAndProxy withComponentAndProxy(Object componentAndProxy) {
+        return new WithComponentAndProxy(componentAndProxy, componentAndProxy);
+    }
+
+    /**
      * Getter for component.
      *
      * @return The component. Never null.
@@ -71,4 +91,40 @@ public class ComponentTrinity {
     public String toString() {
         return getClass().getSimpleName() + ", component=" + theComponent;
     }
+
+    /**
+     * For fluent building.
+     */
+    public static class WithComponent {
+
+        private final Object component;
+
+        public WithComponent(Object component) {
+            this.component = component;
+        }
+
+        public WithComponentAndProxy andProxy(Object proxy) {
+            return new WithComponentAndProxy(this.component, proxy);
+        }
+    }
+
+    /**
+     * For fluent building.
+     */
+    public static class WithComponentAndProxy {
+
+        private final Object component;
+
+        private final Object proxy;
+
+        public WithComponentAndProxy(Object component, Object proxy) {
+            this.component = component;
+            this.proxy = proxy;
+        }
+
+        public ComponentTrinity andArooaContext(ArooaContext arooaContext) {
+            return new ComponentTrinity(this.component, this.proxy, arooaContext);
+        }
+    }
+
 }
