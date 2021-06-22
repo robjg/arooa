@@ -1,8 +1,6 @@
 package org.oddjob.arooa.runtime;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import org.oddjob.arooa.ArooaConfigurationException;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.deploy.BeanDescriptorHelper;
@@ -13,6 +11,9 @@ import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.registry.ServiceFinder;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Automatically sets services on bean instances. A single instance of 
  * this class will be used to set properties on a single bean instance.
@@ -21,7 +22,7 @@ import org.oddjob.arooa.registry.ServiceFinder;
  */
 public class AutoSetter {
 
-	private final Set<String> propertiesSetAlready = new HashSet<String>();
+	private final Set<String> propertiesSetAlready = new HashSet<>();
 	
 	private boolean itsUsDoingTheSetting;
 	
@@ -84,12 +85,20 @@ public class AutoSetter {
 			ServiceFinder finder = 
 					context.getSession().getTools().getServiceHelper(
 							).serviceFinderFor(context);
-			
-			Object value = finder.find(
-					overview.getPropertyType(property), 
-					helper.getFlavour(property));
-			
-			
+
+			Class<?> propertyType = overview.getPropertyType(property);
+			String qualifier = helper.getFlavour(property);
+
+			Object value;
+			try {
+				value = finder.find(propertyType, qualifier);
+			}
+			catch (Exception e) {
+				throw new ArooaConfigurationException("Unexpected Exception finding service for property " +
+						property + " of type " + propertyType.getName() + " qualifier " + qualifier +
+						" in class " + classIdentifier.forClass().getName(), e);
+			}
+
 			try {
 				itsUsDoingTheSetting = true;
 				runtime.setProperty(property, value);
