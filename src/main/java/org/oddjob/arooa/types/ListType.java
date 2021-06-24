@@ -1,26 +1,19 @@
 package org.oddjob.arooa.types;
 
-import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
 import org.oddjob.arooa.ArooaValue;
-import org.oddjob.arooa.convert.ArooaConversionException;
-import org.oddjob.arooa.convert.ArooaConverter;
-import org.oddjob.arooa.convert.ConversionFailedException;
-import org.oddjob.arooa.convert.ConversionLookup;
-import org.oddjob.arooa.convert.ConversionProvider;
-import org.oddjob.arooa.convert.ConversionRegistry;
-import org.oddjob.arooa.convert.ConversionStep;
-import org.oddjob.arooa.convert.Joker;
-import org.oddjob.arooa.convert.NoConversionAvailableException;
+import org.oddjob.arooa.convert.*;
 import org.oddjob.arooa.deploy.annotations.ArooaHidden;
 import org.oddjob.arooa.life.Configured;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.utils.ListSetterHelper;
+
+import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @oddjob.description A list provides a way of setting properties that are
@@ -94,12 +87,12 @@ public class ListType implements ArooaValue, Serializable {
      * @oddjob.description Any values.
      * @oddjob.required No.
      */
-	private final List<ArooaValue> values = 
-		new ArrayList<ArooaValue>();
+	private final List<ArooaValue> values =
+			new ArrayList<>();
 	        
 	/** Values added after configuration. */
-	private final List<ArooaValue> extras = 
-		new ArrayList<ArooaValue>();
+	private final List<ArooaValue> extras =
+			new ArrayList<>();
 	
     /**
      * @oddjob.property
@@ -178,6 +171,21 @@ public class ListType implements ArooaValue, Serializable {
 							}
 						};
 			    	}
+					if (to.isAssignableFrom(Consumer.class)) {
+						return new ConversionStep<ListType, T>() {
+							public Class<ListType> getFromClass() {
+								return ListType.class;
+							}
+							public Class<T> getToClass() {
+								return to;
+							}
+							@SuppressWarnings("unchecked")
+							public T convert(ListType from, ArooaConverter converter) {
+								Consumer<?> consumer = element -> from.setAdd(new ArooaObject(element));
+								return (T) consumer;
+							}
+						};
+					}
 			    	return null;
 				}
 					
@@ -224,7 +232,7 @@ public class ListType implements ArooaValue, Serializable {
 	 */
 	public void setValues(int index, ArooaValue element) {	
 		synchronized (values) {
-			new ListSetterHelper<ArooaValue>(values).set(index, element);
+			new ListSetterHelper<>(values).set(index, element);
 		}
 	}
 
@@ -237,7 +245,7 @@ public class ListType implements ArooaValue, Serializable {
     /**
      * Convert/merge the elements.
      * 
-     * @param acKit The ArooaConversionKit used to convert the
+     * @param converter The converter used to convert the
      * 			internal types.
      * @param required The required array class 
      * @return
@@ -248,7 +256,7 @@ public class ListType implements ArooaValue, Serializable {
 	<T> List<T> convertContents(ArooaConverter converter, Class<T> required) 
     throws ArooaConversionException {
 		
-    	List<T> results= new ArrayList<T>();
+    	List<T> results= new ArrayList<>();
     	
 		if (this.elementType != null) {
 			
@@ -264,7 +272,7 @@ public class ListType implements ArooaValue, Serializable {
 			required = (Class<T>) elementType;
 		}
 		
-		List<ArooaValue> valuesAndExtras = new ArrayList<ArooaValue>();
+		List<ArooaValue> valuesAndExtras = new ArrayList<>();
 		synchronized (values) {
 			valuesAndExtras.addAll(values);
 			valuesAndExtras.addAll(extras);
@@ -316,7 +324,7 @@ public class ListType implements ArooaValue, Serializable {
 			Object from = converter.convert(maybeList, Object.class);
 			
 			if (from == null) {
-				return Arrays.asList((T) null);
+				return Collections.singletonList(null);
 			}
 
 			if (from.getClass().isArray()) {
@@ -324,9 +332,9 @@ public class ListType implements ArooaValue, Serializable {
 				from = new IterableArray(from);
 			}
 
-			if (Iterable.class.isInstance(from)) {
+			if (from instanceof Iterable) {
 
-				List<T> results= new ArrayList<T>();
+				List<T> results= new ArrayList<>();
 
 				for (Object element : ((Iterable<?>) from)) {
 
@@ -338,7 +346,7 @@ public class ListType implements ArooaValue, Serializable {
 				return results;
 			}
 
-			return Arrays.asList((T) from);		
+			return Collections.singletonList((T) from);
 		}	
 	}
 	
@@ -409,8 +417,8 @@ public class ListType implements ArooaValue, Serializable {
 				
 				public Object next() {
 					return Array.get(array, i++);
-				};
-				
+				}
+
 				public void remove() {
 					throw new UnsupportedOperationException();
 				}
