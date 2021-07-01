@@ -34,7 +34,7 @@ public interface Services {
 	 * 
 	 * @return A service name, or null if none can be provided.
 	 */
-	public String serviceNameFor(Class<?> theClass, String flavour);
+	String serviceNameFor(Class<?> theClass, String flavour);
 	
 	/**
 	 * Provide the service for the given name.
@@ -46,7 +46,7 @@ public interface Services {
 	 * @throws IllegalArgumentException If no service for the
 	 * name can be provided.
 	 */
-	public Object getService(String serviceName)
+	Object getService(String serviceName)
 	throws IllegalArgumentException;
 	
 }

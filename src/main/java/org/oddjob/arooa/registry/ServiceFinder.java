@@ -16,6 +16,6 @@ public interface ServiceFinder {
 	 * 
 	 * @return
 	 */
-	public <T> T find(Class<T> cl, String qualifier);
+	<T> T find(Class<T> cl, String qualifier);
 
 }

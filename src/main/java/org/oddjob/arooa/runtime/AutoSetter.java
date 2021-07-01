@@ -1,6 +1,5 @@
 package org.oddjob.arooa.runtime;
 
-import org.oddjob.arooa.ArooaConfigurationException;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.deploy.BeanDescriptorHelper;
@@ -10,6 +9,8 @@ import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.registry.ServiceFinder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,6 +22,8 @@ import java.util.Set;
  * @author rob
  */
 public class AutoSetter {
+
+	private static final Logger logger = LoggerFactory.getLogger(AutoSetter.class);
 
 	private final Set<String> propertiesSetAlready = new HashSet<>();
 	
@@ -94,18 +97,25 @@ public class AutoSetter {
 				value = finder.find(propertyType, qualifier);
 			}
 			catch (Exception e) {
-				throw new ArooaConfigurationException("Unexpected Exception finding service for property " +
-						property + " of type " + propertyType.getName() + " qualifier " + qualifier +
+				throw new ArooaPropertyException(property, "Unexpected Exception finding service of type " +
+						propertyType.getName() + " qualifier " + qualifier +
 						" in class " + classIdentifier.forClass().getName(), e);
 			}
 
-			try {
-				itsUsDoingTheSetting = true;
-				runtime.setProperty(property, value);
+			if (value == null) {
+				logger.debug("No service for property {} of type {} qualifier {} in class {}",
+						property, propertyType.getName(), qualifier, classIdentifier.forClass().getName());
 			}
-			finally {
-				itsUsDoingTheSetting = false;
+			else {
+				try {
+					itsUsDoingTheSetting = true;
+					runtime.setProperty(property, value);
+				}
+				finally {
+					itsUsDoingTheSetting = false;
+				}
 			}
+
 		}
 	}
 }
