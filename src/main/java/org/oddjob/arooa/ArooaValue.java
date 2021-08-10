@@ -5,13 +5,12 @@ package org.oddjob.arooa;
 
 
 /**
- * A PropertyProxy wraps an underlying type so that:
+ * A configuration value that provides some other value at runtime via a conversion.
  * <ol>
- *   <li>The wrapped type can be configured from xml
- *   parse events.</li>
- *   <li>The type can manifest itself in deifferent
- *   ways. For innstance text could be either a 
- *   <code>java.lang.String</code> or a <code>java.io.InputStream</code>. 
+ *   <li>The provide value can be configured from xml more easily.</li>
+ *   <li>The {@code ArooaValue} can manifest itself in different
+ *   ways. For instance text could be either an {@code java.lang.String} or an
+ *   {@code java.io.InputStream}.</li>
  * </ol>
  * <p>
  * TODO: Should this interface also provide a list of supported types?

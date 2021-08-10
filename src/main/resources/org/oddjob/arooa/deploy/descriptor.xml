@@ -16,5 +16,7 @@
 			className="org.oddjob.arooa.types.XMLConfigurationType"/>
 		<is element="magic-beans"
 			className="org.oddjob.arooa.beanutils.MagicBeanDescriptorFactory"/>
+		<is element="conversion"
+			className="org.oddjob.arooa.deploy.ConversionDescriptorBean"/>
 	</values>
 </bean>

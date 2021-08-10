@@ -1,0 +1,7 @@
+<arooa:descriptor xmlns:arooa="http://rgordon.co.uk/oddjob/arooa"
+    namespace="http://rgordon.co.uk/test">
+    <conversions>
+        <arooa:conversion
+            className="org.oddjob.arooa.convert.gremlin.GremlinConversions"/>
+    </conversions>
+</arooa:descriptor>

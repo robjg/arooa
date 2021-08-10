@@ -3,16 +3,7 @@ package org.oddjob.arooa.convert;
 import org.oddjob.arooa.convert.convertlets.*;
 import org.oddjob.arooa.convert.jokers.ArrayConversions;
 import org.oddjob.arooa.convert.jokers.EnumConversions;
-import org.oddjob.arooa.types.ArooaObject;
-import org.oddjob.arooa.types.ClassType;
-import org.oddjob.arooa.types.ConvertType;
-import org.oddjob.arooa.types.IdentifiableValueType;
-import org.oddjob.arooa.types.ImportType;
-import org.oddjob.arooa.types.ListType;
-import org.oddjob.arooa.types.MapType;
-import org.oddjob.arooa.types.ValueFactory;
-import org.oddjob.arooa.types.ValueType;
-import org.oddjob.arooa.types.XMLType;
+import org.oddjob.arooa.types.*;
 
 /**
  * A {@link ConversionProvider} for the default conversions.
@@ -99,6 +90,7 @@ public class DefaultConversionProvider implements ConversionProvider {
 		new ArooaValueConvertlets().registerWith(registry);
 		new ArooaObject.Conversions().registerWith(registry);
 		new ValueFactory.Conversions().registerWith(registry);
-		new IdentifiableValueType.Conversions().registerWith(registry);		
+		new IdentifiableValueType.Conversions().registerWith(registry);
+		new ConversionConvertlets().registerWith(registry);
 	}
 }

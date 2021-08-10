@@ -1,16 +1,15 @@
 package org.oddjob.arooa.convert.convertlets;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.text.ParseException;
-
 import org.oddjob.arooa.convert.ConversionProvider;
 import org.oddjob.arooa.convert.ConversionRegistry;
-import org.oddjob.arooa.convert.Convertlet;
 import org.oddjob.arooa.convert.ConvertletException;
 import org.oddjob.arooa.convert.FinalConvertlet;
 import org.oddjob.arooa.utils.ArooaTokenizer;
 import org.oddjob.arooa.utils.QuoteTokenizerFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.text.ParseException;
 
 public class StringConvertlets implements ConversionProvider {
 
@@ -18,30 +17,21 @@ public class StringConvertlets implements ConversionProvider {
 			"\\s*,\\s*", '\"', '\\').newTokenizer();
 	
 	public void registerWith(ConversionRegistry registry) {
+
+		// TODO: We must get rid of this!
+		registry.register(Object.class, String.class,
+				(FinalConvertlet<Object, String>) Object::toString);
 		
-		registry.register(Object.class, String.class, 
-				new FinalConvertlet<Object, String>() {
-			public String convert(Object from) throws ConvertletException {
-				return from.toString();
-			};
-		});
+		registry.register(String.class, InputStream.class,
+				from -> new ByteArrayInputStream(from.getBytes()));
 		
-		registry.register(String.class, InputStream.class, 
-				new Convertlet<String, InputStream>() {
-			public InputStream convert(String from) {
-				return new ByteArrayInputStream(((String) from).getBytes());
-			};
-		});
-		
-		registry.register(String.class, String[].class, 
-				new FinalConvertlet<String, String[]>() {
-			public String[] convert(String from) throws ConvertletException {
-				try {
-					return tokenizer.parse(from);
-				} catch (ParseException e) {
-					throw new ConvertletException(e);
-				}
-			};
-		});
+		registry.register(String.class, String[].class,
+				(FinalConvertlet<String, String[]>) from -> {
+					try {
+						return tokenizer.parse(from);
+					} catch (ParseException e) {
+						throw new ConvertletException(e);
+					}
+				});
 	}
 }

@@ -27,7 +27,7 @@ public interface Joker<F> {
 	 * 
 	 * @return The ConversionStep or null.
 	 */
-	public <T> ConversionStep<F, T> lastStep(
+	<T> ConversionStep<F, T> lastStep(
 			Class<? extends F> from, Class<T> to, 
 			ConversionLookup conversions);
 }

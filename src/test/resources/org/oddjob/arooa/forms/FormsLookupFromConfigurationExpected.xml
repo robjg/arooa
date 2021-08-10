@@ -22,18 +22,18 @@
         </forms:radio>
         <forms:tabs title="Selection Types">
             <formItems>
-                <forms:single options="bean,class,convert,identify,import,inline,is,list,map,value,xml,arooa:annotation,arooa:bean-def,arooa:configuration,arooa:descriptor,arooa:descriptors,arooa:magic-beans,arooa:property,design:form,design:group,design:indexed,design:mapped,design:radio,design:single,design:tabs,design:text,design:textarea" property="single" propertyClass="java.lang.Object" title="Single">
+                <forms:single options="bean,class,convert,identify,import,inline,is,list,map,value,xml,arooa:annotation,arooa:bean-def,arooa:configuration,arooa:conversion,arooa:descriptor,arooa:descriptors,arooa:magic-beans,arooa:property,design:form,design:group,design:indexed,design:mapped,design:radio,design:single,design:tabs,design:text,design:textarea" property="single" propertyClass="java.lang.Object" title="Single">
                     <value>
                         <forms:inline-text element="value" value="One Thing"/>
                     </value>
                 </forms:single>
-                <forms:indexed options="bean,class,convert,identify,import,inline,is,list,map,value,xml,arooa:annotation,arooa:bean-def,arooa:configuration,arooa:descriptor,arooa:descriptors,arooa:magic-beans,arooa:property,design:form,design:group,design:indexed,design:mapped,design:radio,design:single,design:tabs,design:text,design:textarea" property="indexed" propertyClass="java.lang.Object" title="Indexed">
+                <forms:indexed options="bean,class,convert,identify,import,inline,is,list,map,value,xml,arooa:annotation,arooa:bean-def,arooa:configuration,arooa:conversion,arooa:descriptor,arooa:descriptors,arooa:magic-beans,arooa:property,design:form,design:group,design:indexed,design:mapped,design:radio,design:single,design:tabs,design:text,design:textarea" property="indexed" propertyClass="java.lang.Object" title="Indexed">
                     <value>
                         <forms:inline-text element="value" value="First"/>
                         <forms:inline-text element="value" value="Second"/>
                     </value>
                 </forms:indexed>
-                <forms:mapped options="bean,class,convert,identify,import,inline,is,list,map,value,xml,arooa:annotation,arooa:bean-def,arooa:configuration,arooa:descriptor,arooa:descriptors,arooa:magic-beans,arooa:property,design:form,design:group,design:indexed,design:mapped,design:radio,design:single,design:tabs,design:text,design:textarea" property="mapped" propertyClass="java.lang.Object" title="Mapped">
+                <forms:mapped options="bean,class,convert,identify,import,inline,is,list,map,value,xml,arooa:annotation,arooa:bean-def,arooa:configuration,arooa:conversion,arooa:descriptor,arooa:descriptors,arooa:magic-beans,arooa:property,design:form,design:group,design:indexed,design:mapped,design:radio,design:single,design:tabs,design:text,design:textarea" property="mapped" propertyClass="java.lang.Object" title="Mapped">
                     <value>
                         <forms:inline-text element="value" value="Rose"/>
                         <forms:inline-text element="value" value="Sky"/>

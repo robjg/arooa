@@ -7,6 +7,7 @@ import org.oddjob.arooa.*;
 import org.oddjob.arooa.beandocs.MappingsBeanDoc;
 import org.oddjob.arooa.beandocs.MappingsContents;
 import org.oddjob.arooa.convert.ConversionProvider;
+import org.oddjob.arooa.convert.ConversionProviderFactory;
 import org.oddjob.arooa.deploy.annotations.ArooaAttribute;
 import org.oddjob.arooa.design.DesignFactory;
 import org.oddjob.arooa.life.ClassLoaderClassResolver;
@@ -60,7 +61,7 @@ public class ArooaDescriptorBean
      * the {@link ConversionProvider} interface.
      * @oddjob.required No.
      */
-    private List<String> convertlets =
+    private final List<ConversionProviderFactory> convertlets =
             new ArrayList<>();
 
     /**
@@ -68,7 +69,7 @@ public class ArooaDescriptorBean
      * @oddjob.description A list of {@link BeanDefinition}s for components.
      * @oddjob.required No.
      */
-    private List<BeanDefinition> components =
+    private final List<BeanDefinition> components =
             new ArrayList<>();
 
     /**
@@ -76,7 +77,7 @@ public class ArooaDescriptorBean
      * @oddjob.description A list of {@link BeanDefinition}s for values.
      * @oddjob.required No.
      */
-    private List<BeanDefinition> values =
+    private final List<BeanDefinition> values =
             new ArrayList<>();
 
     /**
@@ -86,7 +87,7 @@ public class ArooaDescriptorBean
      * @param convertletProvider
      */
     public void setConversions(int index,
-                               String convertletProvider) {
+                               ConversionProviderFactory convertletProvider) {
         convertlets.add(index, convertletProvider);
     }
 
@@ -189,7 +190,7 @@ public class ArooaDescriptorBean
                 try {
                     designFactory = (DesignFactory) ClassUtils.classFor(
                             beanDefinition.getDesignFactory(),
-                            classLoader).newInstance();
+                            classLoader).getDeclaredConstructor().newInstance();
                 } catch (Exception e) {
                     throw new ArooaException("Failed loading design class for element " +
                             element + " class [" + beanDefinition.getClassName() +
@@ -280,13 +281,10 @@ public class ArooaDescriptorBean
             @Override
             public ConversionProvider getConvertletProvider() {
                 return registry -> {
-                    for (String className : convertlets) {
-                        if (className == null) {
-                            continue;
-                        }
-                        ConversionProvider convertletProvider = (ConversionProvider)
-                                ClassUtils.instantiate(className, classLoader);
-                        convertletProvider.registerWith(registry);
+                    for (ConversionProviderFactory providerFactory  : convertlets) {
+                        ConversionProvider conversionProvider =
+                                providerFactory.createConversionProvider(classLoader);
+                        conversionProvider.registerWith(registry);
                     }
                 };
             }

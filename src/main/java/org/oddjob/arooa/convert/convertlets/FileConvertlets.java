@@ -3,99 +3,72 @@
  */
 package org.oddjob.arooa.convert.convertlets;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import org.oddjob.arooa.convert.Convertlet;
-import org.oddjob.arooa.convert.ConvertletException;
 import org.oddjob.arooa.convert.ConversionProvider;
 import org.oddjob.arooa.convert.ConversionRegistry;
+import org.oddjob.arooa.convert.ConvertletException;
 import org.oddjob.arooa.convert.FinalConvertlet;
+
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class FileConvertlets implements ConversionProvider {
 
 	public void registerWith(ConversionRegistry registry) {
 		
-		registry.register(String.class, File.class, 
-				new Convertlet<String, File>() {
-			public File convert(String from) {
-				return new File(from);
-			};
-		});
+		registry.register(String.class, File.class,
+				File::new);
+
+		registry.register(File.class, String.class,
+				(FinalConvertlet<File, String>) File::toString);
+
+		registry.register(File.class, InputStream.class,
+				from -> {
+					try {
+						return new BufferedInputStream(
+								new FileInputStream(from)) {
+							@Override
+							public String toString() {
+								return "BufferedFileInput from " + from.getAbsolutePath();
+							}
+						};
+					} catch (FileNotFoundException e) {
+						throw new ConvertletException(e);
+					}
+				});
 		
-		registry.register(File.class, InputStream.class, 
-				new Convertlet<File, InputStream>() {
-			public InputStream convert(final File from) throws ConvertletException {
-				try {
-					return new BufferedInputStream(
-							new FileInputStream(from)) {						
-						@Override
-						public String toString() {
-							return "BufferedFileInput from " + from.getAbsolutePath();
-						}
-					};
-				} catch (FileNotFoundException e) {
-					throw new ConvertletException(e);
-				}
-			};
-		});
+		registry.register(File.class, OutputStream.class,
+				from -> {
+					try {
+						return new BufferedOutputStream(
+								new FileOutputStream(from)) {
+							@Override
+							public String toString() {
+								return "BufferedFileOutput to " + from.getAbsolutePath();
+							}
+						};
+					} catch (FileNotFoundException e) {
+						throw new ConvertletException(e);
+					}
+				});
 		
-		registry.register(File.class, OutputStream.class, 
-				new Convertlet<File, OutputStream>() {
-			public OutputStream convert(final File from) throws ConvertletException {
-				try {
-					return new BufferedOutputStream(
-							new FileOutputStream(from)) {
-						@Override
-						public String toString() {
-							return "BufferedFileOutput to " + from.getAbsolutePath();
-						}
-					};
-				} catch (FileNotFoundException e) {
-					throw new ConvertletException(e);
-				}
-			}
-		});
+		registry.register(File.class, URL.class,
+				from -> {
+					try {
+						return from.toURI().toURL();
+					} catch (MalformedURLException e) {
+						throw new ConvertletException(e);
+					}
+				});
 		
-		registry.register(File.class, URL.class, 
-				new Convertlet<File, URL>() {
-			public URL convert(File from) throws ConvertletException {
-				try {
-					return from.toURI().toURL();
-				} catch (MalformedURLException e) {
-					throw new ConvertletException(e);
-				}
-			}
-		});
+		registry.register(File.class, File[].class,
+				(FinalConvertlet<File, File[]>) from -> new File[] { from });
 		
-		registry.register(File.class, File[].class, 
-				new FinalConvertlet<File, File[]>() {
-			public File[] convert(File from) {
-				return new File[] { from };
-			};
-		});
+		registry.register(String.class, File[].class,
+				(FinalConvertlet<String, File[]>) this::pathToFiles);
 		
-		registry.register(String.class, File[].class, 
-				new FinalConvertlet<String, File[]>() {
-			public File[] convert(String from) {
-				return pathToFiles(from);
-			};
-		});
-		
-		registry.register(File[].class, String.class, 
-				new FinalConvertlet<File[], String>() {
-			public String convert(File[] from) {
-				return filesToPath(from);
-			};
-		});
+		registry.register(File[].class, String.class,
+				(FinalConvertlet<File[], String>) this::filesToPath);
 	}
 
 	public String filesToPath(File... from) {

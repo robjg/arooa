@@ -68,7 +68,7 @@
       "formItems": [
         {
           "@element": "forms:single",
-          "options": "bean,class,convert,identify,import,inline,is,list,map,value,xml,arooa:annotation,arooa:bean-def,arooa:configuration,arooa:descriptor,arooa:descriptors,arooa:magic-beans,arooa:property,design:form,design:group,design:indexed,design:mapped,design:radio,design:single,design:tabs,design:text,design:textarea",
+          "options": "bean,class,convert,identify,import,inline,is,list,map,value,xml,arooa:annotation,arooa:bean-def,arooa:configuration,arooa:conversion,arooa:descriptor,arooa:descriptors,arooa:magic-beans,arooa:property,design:form,design:group,design:indexed,design:mapped,design:radio,design:single,design:tabs,design:text,design:textarea",
           "property": "single",
           "propertyClass": "java.lang.Object",
           "title": "Single",
@@ -80,7 +80,7 @@
         },
         {
           "@element": "forms:indexed",
-          "options": "bean,class,convert,identify,import,inline,is,list,map,value,xml,arooa:annotation,arooa:bean-def,arooa:configuration,arooa:descriptor,arooa:descriptors,arooa:magic-beans,arooa:property,design:form,design:group,design:indexed,design:mapped,design:radio,design:single,design:tabs,design:text,design:textarea",
+          "options": "bean,class,convert,identify,import,inline,is,list,map,value,xml,arooa:annotation,arooa:bean-def,arooa:configuration,arooa:conversion,arooa:descriptor,arooa:descriptors,arooa:magic-beans,arooa:property,design:form,design:group,design:indexed,design:mapped,design:radio,design:single,design:tabs,design:text,design:textarea",
           "property": "indexed",
           "propertyClass": "java.lang.Object",
           "title": "Indexed",
@@ -99,7 +99,7 @@
         },
         {
           "@element": "forms:mapped",
-          "options": "bean,class,convert,identify,import,inline,is,list,map,value,xml,arooa:annotation,arooa:bean-def,arooa:configuration,arooa:descriptor,arooa:descriptors,arooa:magic-beans,arooa:property,design:form,design:group,design:indexed,design:mapped,design:radio,design:single,design:tabs,design:text,design:textarea",
+          "options": "bean,class,convert,identify,import,inline,is,list,map,value,xml,arooa:annotation,arooa:bean-def,arooa:configuration,arooa:conversion,arooa:descriptor,arooa:descriptors,arooa:magic-beans,arooa:property,design:form,design:group,design:indexed,design:mapped,design:radio,design:single,design:tabs,design:text,design:textarea",
           "property": "mapped",
           "propertyClass": "java.lang.Object",
           "title": "Mapped",
