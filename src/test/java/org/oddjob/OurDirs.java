@@ -116,6 +116,14 @@ public class OurDirs {
         return INSTANCE.buildType;
     }
 
+    public static Path workPathDir(Class<?> aClass) throws IOException {
+        return mkDirs(workDirPath().resolve(aClass.getSimpleName()), true);
+    }
+
+    public static Path workPathDir(Class<?> aClass, boolean recreate) throws IOException {
+        return mkDirs(workDirPath().resolve(aClass.getSimpleName()), recreate);
+    }
+
     public static Path workPathDir(String dirName, boolean recreate) throws IOException {
         return mkDirs(workDirPath().resolve(dirName), recreate);
     }
