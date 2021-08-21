@@ -1,5 +1,6 @@
 package org.oddjob.arooa.utils;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -13,7 +14,11 @@ import java.util.List;
 public class ListSetterHelper<E> {
 
 	private final List<E> elements;
-	
+
+	public ListSetterHelper() {
+		this(new LinkedList<>());
+	}
+
 	public ListSetterHelper(List<E> list) {
 		this.elements = list;
 	}
@@ -34,5 +39,9 @@ public class ListSetterHelper<E> {
 			throw new IllegalArgumentException("Index " +
 					index + " would leave gaps which isn't allowed.");
 		}		
+	}
+
+	List<E> getList() {
+		return this.elements;
 	}
 }
