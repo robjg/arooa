@@ -41,7 +41,7 @@ public class ListSetterHelper<E> {
 		}		
 	}
 
-	List<E> getList() {
+	public List<E> getList() {
 		return this.elements;
 	}
 }
