@@ -40,6 +40,7 @@
 		<echo message="--------------------------------------------------------------"/>
 		<echo message="Building with ${ant.version}"/>
 		<echo message="using build file ${ant.file}"/>
+		<echo message="java.home is ${java.home}"/>
 		<echo message="--------------------------------------------------------------"/>
 
 		<property name="debug"          value="on"/>
@@ -298,7 +299,7 @@
 	<!-- =================================================================== -->
 	<target name="install" depends="jar, jar-tests">
 		
-		<ivy:publish resolver="local" pubrevision="${build.version}" overwrite="true">
+		<ivy:publish resolver="local" pubrevision="${build.version}" overwrite="true" update="true">
 		   <artifacts pattern="${build.dir}/[artifact]-[revision].[ext]" />
 		</ivy:publish>
 		
