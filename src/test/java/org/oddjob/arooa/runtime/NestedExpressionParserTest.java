@@ -16,17 +16,23 @@ public class NestedExpressionParserTest extends Assert {
 
         StandardArooaSession session = new StandardArooaSession();
 
-        public <T> void assertExpandsTo(String expression,
-                                        T expected, Class<T> type)
-                throws ArooaConversionException {
+        public Object expand(String expression) throws ArooaConversionException {
+            return expand(expression, Object.class);
+        }
+        public <T> T expand(String expression, Class<T> type) throws ArooaConversionException {
 
             NestedExpressionParser test = new NestedExpressionParser();
 
             ParsedExpression parsed = test.parse(expression);
 
-            T result = parsed.evaluate(session, type);
+            return parsed.evaluate(session, type);
+        }
 
-            assertEquals(expression, expected, result);
+        public <T> void assertExpandsTo(String expression,
+                                        T expected, Class<T> type)
+                throws ArooaConversionException {
+
+            assertEquals(expression, expected, expand(expression, type));
         }
 
         public void assertExpandsTo(String expression, Object expected)
@@ -78,6 +84,20 @@ public class NestedExpressionParserTest extends Assert {
         } catch (ArooaException e) {
             // expected
         }
+    }
+
+    /**
+     * Brackets must now be counted to support functions in expression.
+     *
+     * @throws ArooaConversionException
+     */
+    @Test
+    public void testBracketsRetainedInParsing() throws ArooaConversionException {
+
+        TextExpressionChecker checker = new TextExpressionChecker();
+        checker.session.getBeanRegistry().register("{}", "brackets");
+
+        checker.assertExpandsTo("${{}}", "brackets");
     }
 
     /**
@@ -250,7 +270,7 @@ public class NestedExpressionParserTest extends Assert {
 
         try {
             checker.assertExpandsTo("#{foo}", "");
-            fail("Should be syntax error.");
+            fail("Should be an error as foo is undefined.");
         } catch (ArooaConversionException e) {
             assertThat(e.getMessage(), e.getMessage().contains("foo"), is(true));
         }

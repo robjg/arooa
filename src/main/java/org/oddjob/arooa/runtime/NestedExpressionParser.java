@@ -1,13 +1,13 @@
 package org.oddjob.arooa.runtime;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.convert.ArooaConverter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Parses expressions that may contain references of the form 
@@ -43,16 +43,30 @@ public class NestedExpressionParser implements ExpressionParser {
 											AtomicInteger position,
 											boolean runtime) {
 	
-		CompositeParsedExpression expression = 
+		CompositeParsedExpression expression =
 				new CompositeParsedExpression();
 		
 		int start = position.get();
-		
+		int bracketCount = 0;
+
 		while (position.get() < value.length()) {
 			
 			// Current character
 			char current = value.charAt(position.get());
-			
+
+			// a bracket without anything in front then inc bracket count.
+			if (current == '{') {
+				++bracketCount;
+				position.incrementAndGet();
+				continue;
+			}
+			// closing bracket the close brackets
+			if (current == '}' && bracketCount > 0) {
+				--bracketCount;
+				position.incrementAndGet();
+				continue;
+			}
+
 			// Check if the end of a ${} expression.
 			if (runtime && current == '}') {
 				expression.addConstant(new ConstantExpression(
@@ -100,7 +114,7 @@ public class NestedExpressionParser implements ExpressionParser {
 					// $$ becomes $ so split out what we have into
 					// constant$
 						expression.addConstant(new ConstantExpression(
-								value.substring(start, 
+								value.substring(start,
 										position.incrementAndGet())));
 
 					// and move over the second $
@@ -132,7 +146,7 @@ public class NestedExpressionParser implements ExpressionParser {
 	 * An expression that is just text.
 	 * 
 	 */
-	class ConstantExpression implements ParsedExpression {
+	static class ConstantExpression implements ParsedExpression {
 	
 		private final String value;
 		
@@ -161,7 +175,7 @@ public class NestedExpressionParser implements ExpressionParser {
 	 * identifier which it then evaluates.
 	 * 
 	 */
-	class RuntimeExpression implements ParsedExpression {
+	static class RuntimeExpression implements ParsedExpression {
 		
 		private final ParsedExpression expression;
 
@@ -191,7 +205,7 @@ public class NestedExpressionParser implements ExpressionParser {
 	/**
 	 *
 	 */
-	class ScriptExpression implements ParsedExpression {
+	static class ScriptExpression implements ParsedExpression {
 
 		private final ParsedExpression expression;
 
@@ -224,7 +238,7 @@ public class NestedExpressionParser implements ExpressionParser {
 	 * @author rob
 	 *
 	 */
-	class CompositeParsedExpression implements ParsedExpression {
+	static class CompositeParsedExpression implements ParsedExpression {
 		
 		private final List<ParsedExpression> expressions =
 				new ArrayList<>();
