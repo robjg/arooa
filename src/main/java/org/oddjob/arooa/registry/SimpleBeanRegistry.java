@@ -41,7 +41,7 @@ public class SimpleBeanRegistry implements BeanRegistry {
 	private final Map<Object, String> components =
 			new LinkedHashMap<>();
 	
-	private final PropertyAccessor propertyAcessor;
+	private final PropertyAccessor propertyAccessor;
 	
 	private final ArooaConverter converter;
 	
@@ -56,10 +56,10 @@ public class SimpleBeanRegistry implements BeanRegistry {
 	public SimpleBeanRegistry(PropertyAccessor propertyAccessor,
 			ArooaConverter converter) {
 		if (propertyAccessor == null) {
-			this.propertyAcessor = new BeanUtilsPropertyAccessor();
+			this.propertyAccessor = new BeanUtilsPropertyAccessor();
 		}
 		else {
-			this.propertyAcessor = propertyAccessor;
+			this.propertyAccessor = propertyAccessor;
 		}
 		if (converter == null) {
 			this.converter = new DefaultConverter();
@@ -144,7 +144,7 @@ public class SimpleBeanRegistry implements BeanRegistry {
 		}
 		else {
 			if (breakdown.isProperty()) {
-				return propertyAcessor.getProperty(bean, breakdown.getProperty()); 
+				return propertyAccessor.getProperty(bean, breakdown.getProperty());
 			}
 			else {
 				return bean;
@@ -178,7 +178,7 @@ public class SimpleBeanRegistry implements BeanRegistry {
 		else {
 			Object value;
 			if (breakdown.isProperty()) {
-				value = propertyAcessor.getProperty(bean, breakdown.getProperty()); 
+				value = propertyAccessor.getProperty(bean, breakdown.getProperty());
 			}
 			else {
 				value = bean;
@@ -197,7 +197,12 @@ public class SimpleBeanRegistry implements BeanRegistry {
 	public synchronized String getIdFor(Object component) {
 	    return components.get(component);
 	}
-	
+
+	@Override
+	public synchronized Collection<String> getAllIds() {
+		return new HashSet<>(ids.keySet());
+	}
+
 	/**
 	 * Remove a component from the registry if it exists.
 	 * 

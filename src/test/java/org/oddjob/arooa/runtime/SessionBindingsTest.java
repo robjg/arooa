@@ -1,5 +1,6 @@
 package org.oddjob.arooa.runtime;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.oddjob.arooa.registry.BeanRegistry;
 import org.oddjob.arooa.registry.SimpleBeanRegistry;
@@ -11,12 +12,19 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class SessionBindingsTest {
 
+    @BeforeClass
+    public static void classSetUp() throws ClassNotFoundException {
+        // Accessing a static constant is not enough to load the ScriptEvaluator class
+        // and turn off Nashorn deprecation warnings.
+        Class.forName(ScriptEvaluator.class.getName());
+    }
+
     @Test
-    public void testNashornAssumptions() throws ScriptException {
+    public void testEngineAssumptions() throws ScriptException {
 
-        ScriptEngineManager manager = new ScriptEngineManager();
-
-        ScriptEngine engine = manager.getEngineByName("JavaScript");
+        ScriptEngine engine = ScriptEvaluator
+                .getDefaultEngine(getClass().getClassLoader())
+                .orElseThrow();
 
         Bindings bindings = engine.createBindings();
 
@@ -38,9 +46,8 @@ public class SessionBindingsTest {
     @Test
     public void testRegistryValuesAreUsed() throws ScriptException {
 
-        ScriptEngineManager manager = new ScriptEngineManager();
-
-        ScriptEngine engine = manager.getEngineByName("JavaScript");
+        ScriptEngine engine = ScriptEvaluator.getDefaultEngine(getClass().getClassLoader())
+                .orElseThrow();
 
         BeanRegistry registry = new SimpleBeanRegistry();
         registry.register("b", 2);
@@ -53,7 +60,7 @@ public class SessionBindingsTest {
 
         Number result = (Number) engine.eval("a = b + c", context);
 
-        assertThat(result, is(5));
+        assertThat(result.intValue(), is(5));
 
         Bindings engineBindings = context.getBindings(ScriptContext.ENGINE_SCOPE);
 

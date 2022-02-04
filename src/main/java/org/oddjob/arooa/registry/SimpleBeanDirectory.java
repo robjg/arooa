@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 
 /**
  * Provide a BeanDirectory from some mapping functions.
+ * TODO: This is only used by ForEach in Oddjob. It should probably move there.
  *
  * @author Rob Gordon.
  */
@@ -94,7 +95,7 @@ public class SimpleBeanDirectory implements BeanDirectory {
 
 		return converter.convert(lookup(path), required);
 	}
-	
+
 	/**
 	 * Find the id for the given component.
 	 * 

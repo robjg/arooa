@@ -30,7 +30,7 @@ public class ScriptEvaluatorTest {
         session.getBeanRegistry().register("a", 1);
         session.getBeanRegistry().register("b", 2);
 
-        ScriptEvaluator test = new ScriptEvaluator();
+        ScriptEvaluator test = ScriptEvaluator.getDefault();
 
         Integer result = test.evaluate("a+b", session, Integer.class);
 
@@ -45,7 +45,7 @@ public class ScriptEvaluatorTest {
         List<Integer> list = Arrays.asList(1, 2, 3, 4, 5);
         session.getBeanRegistry().register("list", list);
 
-        ScriptEvaluator test = new ScriptEvaluator();
+        ScriptEvaluator test = ScriptEvaluator.getDefault();
 
         @SuppressWarnings("unchecked")
         Collection<Integer> result = test.evaluate(
@@ -79,7 +79,7 @@ public class ScriptEvaluatorTest {
 
         session.getBeanRegistry().register("bean", bean);
 
-        ScriptEvaluator test = new ScriptEvaluator();
+        ScriptEvaluator test = ScriptEvaluator.getDefault();
 
         String result = test.evaluate(
                 "bean.foo",
@@ -94,7 +94,7 @@ public class ScriptEvaluatorTest {
 
         ArooaSession session = createSession();
 
-        ScriptEvaluator test = new ScriptEvaluator();
+        ScriptEvaluator test = ScriptEvaluator.getDefault();
 
         Integer result = test.evaluate("i=3", session, Integer.class);
 
@@ -108,7 +108,7 @@ public class ScriptEvaluatorTest {
 
         ArooaSession session = createSession();
 
-        ScriptEvaluator test = new ScriptEvaluator();
+        ScriptEvaluator test = ScriptEvaluator.getDefault();
 
         Integer result = test.evaluate("print('foo')", session, Integer.class);
 
@@ -119,7 +119,7 @@ public class ScriptEvaluatorTest {
     public void testEvaluateNullIsNull() throws ArooaConversionException {
         ArooaSession session = createSession();
 
-        ScriptEvaluator test = new ScriptEvaluator();
+        ScriptEvaluator test = ScriptEvaluator.getDefault();
 
         Integer result = test.evaluate(null, session, Integer.class);
 
@@ -130,7 +130,7 @@ public class ScriptEvaluatorTest {
     public void testEvaluateMissingVariableThrowException() {
         ArooaSession session = createSession();
 
-        ScriptEvaluator test = new ScriptEvaluator();
+        ScriptEvaluator test = ScriptEvaluator.getDefault();
 
         try {
             test.evaluate("idontexist", session, Integer.class);

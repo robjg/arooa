@@ -4,15 +4,16 @@ import org.oddjob.arooa.ArooaTools;
 import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
 import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.convert.DefaultConverter;
-import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.reflect.PropertyAccessor;
-import org.oddjob.arooa.registry.ComponentsServiceFinder;
-import org.oddjob.arooa.registry.CompositeServiceFinder;
-import org.oddjob.arooa.registry.ContextHierarchyServiceFinder;
-import org.oddjob.arooa.registry.DirectoryServiceFinder;
-import org.oddjob.arooa.registry.ServiceFinder;
-import org.oddjob.arooa.registry.ServiceHelper;
+import org.oddjob.arooa.registry.*;
 import org.oddjob.arooa.runtime.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.ServiceLoader;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * The standard implementation of {@link ArooaTools}.
@@ -21,6 +22,8 @@ import org.oddjob.arooa.runtime.*;
  *
  */
 public class StandardTools implements ArooaTools {
+
+	private static final Logger logger = LoggerFactory.getLogger(StandardTools.class);
 
 	/** For type conversion. */
 	private final ArooaConverter arooaConverter;
@@ -34,7 +37,7 @@ public class StandardTools implements ArooaTools {
 	/** The evaluator to use for property resolution. */
 	private final Evaluator evaluator;
 
-	private final Evaluator scriptEvaluator;
+	private volatile Evaluator scriptEvaluator;
 
 	/**
 	 * Default constructor.
@@ -44,7 +47,6 @@ public class StandardTools implements ArooaTools {
 		this.propertyAccessor = new BeanUtilsPropertyAccessor();
 		this.expressionParser = new NestedExpressionParser();
 		this.evaluator = new PropertyFirstEvaluator();
-		this.scriptEvaluator = new ScriptEvaluator();
 	}
 	
 	/*
@@ -85,23 +87,41 @@ public class StandardTools implements ArooaTools {
 	 */
 	@Override
 	public Evaluator getScriptEvaluator() {
+		if (scriptEvaluator == null) {
+			synchronized (this) {
+				if (scriptEvaluator == null) {
+					ServiceLoader<ScriptEvaluatorProvider> loader = ServiceLoader.load(ScriptEvaluatorProvider.class);
+					List<ScriptEvaluatorProvider> providers = StreamSupport.stream(loader.spliterator(), false)
+							.collect(Collectors.toList());
+					ScriptEvaluatorProvider provider;
+					if (providers.isEmpty()) {
+						provider = ScriptEvaluator.asScriptEvaluatorProvider();
+					}
+					else {
+						provider = providers.get(0);
+						if (logger.isDebugEnabled()) {
+							if (providers.size() == 1) {
+								logger.debug("Using Script Evaluator Provider [{}].", provider);
+							} else {
+								logger.debug("Using Script Evaluator Provider [{}] from [{}]", provider, providers);
+							}
+						}
+					}
+					scriptEvaluator = provider.provideScriptEvaluator(Thread.currentThread().getContextClassLoader());
+				}
+			}
+		}
 		return scriptEvaluator;
 	}
 
 	@Override
 	public ServiceHelper getServiceHelper() {
-		return new ServiceHelper() {
-			
-			@Override
-			public ServiceFinder serviceFinderFor(ArooaContext context) {
-				return new CompositeServiceFinder(
-						new ContextHierarchyServiceFinder(context),
-						new DirectoryServiceFinder(
-								context.getSession().getBeanRegistry()),
-						new ComponentsServiceFinder(
-								context.getSession().getComponentPool())
-					);
-			}
-		};
+		return context -> new CompositeServiceFinder(
+				new ContextHierarchyServiceFinder(context),
+				new DirectoryServiceFinder(
+						context.getSession().getBeanRegistry()),
+				new ComponentsServiceFinder(
+						context.getSession().getComponentPool())
+			);
 	}
 }

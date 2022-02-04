@@ -26,7 +26,8 @@ public interface Evaluator {
 	 * @throws ArooaPropertyException
 	 * @throws ArooaConversionException
 	 */
-	public <T> T evaluate(String propertyExpression, 
-			ArooaSession session, Class<T> type) 
+	<T> T evaluate(String propertyExpression,
+				   ArooaSession session,
+				   Class<T> type)
 	throws ArooaPropertyException, ArooaConversionException;
 }

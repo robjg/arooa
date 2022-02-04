@@ -1,6 +1,5 @@
 package org.oddjob.arooa.runtime;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.convert.ArooaConversionException;
@@ -8,11 +7,12 @@ import org.oddjob.arooa.reflect.ArooaNoPropertyException;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.types.ValueFactory;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
-public class NestedExpressionParserTest extends Assert {
+public class NestedExpressionParserTest {
 
-    class TextExpressionChecker {
+    static class TextExpressionChecker {
 
         StandardArooaSession session = new StandardArooaSession();
 
@@ -32,7 +32,7 @@ public class NestedExpressionParserTest extends Assert {
                                         T expected, Class<T> type)
                 throws ArooaConversionException {
 
-            assertEquals(expression, expected, expand(expression, type));
+            assertThat(expression, expand(expression, type), is(expected));
         }
 
         public void assertExpandsTo(String expression, Object expected)
@@ -80,7 +80,7 @@ public class NestedExpressionParserTest extends Assert {
 
         try {
             checker.assertExpandsTo("apple${", "apple${");
-            fail("Should be syntax error.");
+            assertThat("Should be syntax error.", false);
         } catch (ArooaException e) {
             // expected
         }
@@ -190,8 +190,9 @@ public class NestedExpressionParserTest extends Assert {
 
         try {
             checker.assertExpandsTo("${foo.Ba}", null);
-            fail("Ba doesn't exist");
+            assertThat("Ba doesn't exist", false);
         } catch (ArooaNoPropertyException expected) {
+            // expected
         }
 
         checker.assertExpandsTo("${foo.ba2.ba}", "Ba");
@@ -208,22 +209,22 @@ public class NestedExpressionParserTest extends Assert {
         ParsedExpression expression;
 
         expression = test.parse("abc");
-        assertTrue(expression.isConstant());
+        assertThat(expression.isConstant(), is(true));
 
         expression = test.parse("$abc");
-        assertTrue(expression.isConstant());
+        assertThat(expression.isConstant(), is(true));
 
         expression = test.parse("$$abc");
-        assertTrue(expression.isConstant());
+        assertThat(expression.isConstant(), is(true));
 
         expression = test.parse("$${abc}");
-        assertTrue(expression.isConstant());
+        assertThat(expression.isConstant(), is(true));
 
         expression = test.parse("${abc}");
-        assertFalse(expression.isConstant());
+        assertThat(expression.isConstant(), is(false));
 
         expression = test.parse("abc${abc}abc");
-        assertFalse(expression.isConstant());
+        assertThat(expression.isConstant(), is(false));
     }
 
     public static class MyArooaValue implements ValueFactory<String> {
@@ -270,7 +271,7 @@ public class NestedExpressionParserTest extends Assert {
 
         try {
             checker.assertExpandsTo("#{foo}", "");
-            fail("Should be an error as foo is undefined.");
+            assertThat("Should be an error as foo is undefined.", false);
         } catch (ArooaConversionException e) {
             assertThat(e.getMessage(), e.getMessage().contains("foo"), is(true));
         }

@@ -15,15 +15,5 @@ public interface BeanDirectoryOwner {
 	 * 
 	 * @return The <code>BeanDirectory</code> or null.
 	 */
-	public BeanDirectory provideBeanDirectory();
-	
-	
-	/**
-	 * Get the {@link PropertyLookup}. This method may return null if
-	 * one isn't available. 
-	 * 
-	 * @return The <code>PropertyLookup</code> or null.
-	 */
-	// TODO: Support this?
-//	public PropertyLookup getPropertyLookup();
+	BeanDirectory provideBeanDirectory();
 }

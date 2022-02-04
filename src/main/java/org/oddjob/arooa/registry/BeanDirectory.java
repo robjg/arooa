@@ -6,6 +6,7 @@ package org.oddjob.arooa.registry;
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 
+import java.util.Collection;
 
 
 /**
@@ -66,7 +67,20 @@ public interface BeanDirectory {
 	 * @return The id or null if none can be found.
 	 */
 	String getIdFor(Object bean);
-	
+
+	/**
+	 * Provide all the Ids in the directory. This was added to support Scripting with Graalvm. It isn't
+	 * implemented everywhere yet, so may throw an {@link UnsupportedOperationException} for a bit.
+	 *
+	 * @since 1.6
+	 *
+	 * @return A Collection of Ids. Never null.
+	 */
+	default Collection<String> getAllIds() {
+		throw new UnsupportedOperationException(
+				"Unsupported in " + getClass().getName() + ". If you really need it here then please let us know why.");
+	}
+
 	/**
 	 * Get all objects in the directory of the required type.
 	 * <p>
