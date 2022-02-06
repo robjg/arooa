@@ -181,8 +181,7 @@ public class ListType implements ArooaValue, Serializable {
 							}
 							@SuppressWarnings("unchecked")
 							public T convert(ListType from, ArooaConverter converter) {
-								Consumer<?> consumer = element -> from.setAdd(new ArooaObject(element));
-								return (T) consumer;
+								return (T) new ListConsumer(from, converter);
 							}
 						};
 					}
@@ -192,7 +191,41 @@ public class ListType implements ArooaValue, Serializable {
 			});
 		}
 	}
-		
+
+	public static class ListConsumer implements Consumer<Object> {
+
+		private final ListType listType;
+
+		private final ArooaConverter arooaConverter;
+
+		private ListConsumer(ListType listType, ArooaConverter arooaConverter) {
+			this.listType = listType;
+			this.arooaConverter = arooaConverter;
+		}
+
+		@Override
+		public void accept(Object element) {
+			listType.setAdd(new ArooaObject(element));
+		}
+
+		public List<Object> getValues() throws ArooaConversionException {
+			return listType.convertContents(arooaConverter, Object.class);
+		}
+
+		public Object getValue(int index) throws NoConversionAvailableException, ConversionFailedException {
+			ArooaValue arooaValue = index < listType.values.size() ?
+					listType.values.get(index) : listType.extras.get(index - listType.values.size());
+
+			return arooaConverter.convert(arooaValue, Object.class);
+		}
+
+		@Override
+		public String toString() {
+			return "ListConsumer of " + listType;
+		}
+	}
+
+
 	/**
 	 * Converts to a list of a given generic type.
 	 * 

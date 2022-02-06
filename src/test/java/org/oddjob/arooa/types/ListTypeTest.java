@@ -3,9 +3,7 @@
  */
 package org.oddjob.arooa.types;
 
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,9 +11,11 @@ import org.junit.rules.TestName;
 import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaSession;
+import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
 import org.oddjob.arooa.convert.*;
 import org.oddjob.arooa.convert.convertlets.CollectionConvertlets;
 import org.oddjob.arooa.deploy.ConfigurationDescriptorFactory;
+import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 import org.slf4j.Logger;
@@ -27,10 +27,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+
 /**
  * Tests for ListType.
  */
-public class ListTypeTest extends Assert {
+public class ListTypeTest {
 
     private static final Logger logger = LoggerFactory.getLogger(ListTypeTest.class);
 
@@ -58,22 +61,22 @@ public class ListTypeTest extends Assert {
         // Check conversion to Object is a List.
         Object o = converter.convert(test, Object.class);
 
-        assertTrue(List.class.isAssignableFrom(o.getClass()));
+        assertThat(o, Matchers.instanceOf(List.class));
 
         // Check Conversion to Iterable.
         @SuppressWarnings("rawtypes")
         ConversionPath<ListType, Iterable> conversion =
                 converter.findConversion(ListType.class, Iterable.class);
-        assertEquals("ListType-Iterable", conversion.toString());
+        assertThat(conversion.toString(), is("ListType-Iterable"));
 
         Iterable<?> iterable = converter.convert(test, Iterable.class);
         Iterator<?> it = iterable.iterator();
-        MatcherAssert.assertThat(it.hasNext(), Matchers.is(false));
+        assertThat(it.hasNext(), is(false));
 
         // Is lack of conversion to String a problem?
         ConversionPath<ListType, String> conversionToString =
                 converter.findConversion(ListType.class, String.class);
-        MatcherAssert.assertThat(conversionToString, Matchers.nullValue());
+        assertThat(conversionToString, Matchers.nullValue());
     }
 
     @Test
@@ -84,7 +87,7 @@ public class ListTypeTest extends Assert {
         test.convertContents(new ArooaConverter() {
             @SuppressWarnings("unchecked")
             public <F, T> T convert(F from, Class<T> required) {
-                assertEquals(String[].class, required);
+                assertThat(required, Matchers.instanceOf(String[].class));
                 return (T) new String[]{(String) from};
             }
 
@@ -115,9 +118,7 @@ public class ListTypeTest extends Assert {
         List<Object> result = converter.convert(
                 test, List.class);
 
-        assertEquals(1, result.size());
-
-        assertEquals("test", result.get(0));
+        assertThat(result, contains("test"));
     }
 
     /**
@@ -139,9 +140,7 @@ public class ListTypeTest extends Assert {
 
         Object[] result = converter.convert(test, Object[].class);
 
-        assertEquals(1, result.length);
-
-        assertEquals("test", result[0]);
+        assertThat(result, is( new Object[] {"test"}));
     }
 
     /**
@@ -163,9 +162,7 @@ public class ListTypeTest extends Assert {
         String[] result = converter.convert(
                 test, String[].class);
 
-        assertEquals(1, result.length);
-
-        assertEquals("test", result[0]);
+        assertThat(result, is( new String[] {"test"}));
     }
 
     /**
@@ -189,10 +186,7 @@ public class ListTypeTest extends Assert {
         int[] result = new DefaultConverter().convert(
                 test, int[].class);
 
-        assertEquals(2, result.length);
-
-        assertEquals(1, result[0]);
-        assertEquals(2, result[1]);
+        assertThat(result, is( new int[] { 1, 2}));
     }
 
     @Test
@@ -207,39 +201,28 @@ public class ListTypeTest extends Assert {
 
         results = test.convert(new String[]{"apples", "oranges"});
 
-        assertEquals(2, results.size());
-        assertEquals("apples", results.get(0));
-        assertEquals("oranges", results.get(1));
-
+        assertThat(results, contains("apples", "oranges"));
 
         results = test.convert(Arrays.asList("apples", "oranges"));
 
-        assertEquals(2, results.size());
-        assertEquals("apples", results.get(0));
-        assertEquals("oranges", results.get(1));
+        assertThat(results, contains("apples", "oranges"));
 
         results = test.convert("apples");
 
-        assertEquals(1, results.size());
-        assertEquals("apples", results.get(0));
+        assertThat(results, contains("apples"));
 
         results = test.convert(null);
 
-        assertEquals(1, results.size());
-        MatcherAssert.assertThat(results.get(0), Matchers.nullValue());
+        assertThat(results, contains(Matchers.nullValue()));
 
-        results = test.convert(new int[]{3, 5});
+        results = test.convert(new int[] {3, 5});
 
-        assertEquals(2, results.size());
-        assertEquals(3, results.get(0));
-        assertEquals(5, results.get(1));
+        assertThat(results, contains(3 , 5));
 
         results = test.convert(Arrays.asList(
                 new ArooaObject("apples"), new ArooaObject("oranges")));
 
-        assertEquals(2, results.size());
-        assertEquals("apples", results.get(0));
-        assertEquals("oranges", results.get(1));
+        assertThat(results, contains("apples", "oranges"));
     }
 
     @Test
@@ -254,39 +237,28 @@ public class ListTypeTest extends Assert {
 
         results = test.convert(new String[]{"apples", "oranges"});
 
-        assertEquals(2, results.size());
-        assertEquals("apples", results.get(0));
-        assertEquals("oranges", results.get(1));
-
+        assertThat(results, contains("apples", "oranges"));
 
         results = test.convert(Arrays.asList("apples", "oranges"));
 
-        assertEquals(2, results.size());
-        assertEquals("apples", results.get(0));
-        assertEquals("oranges", results.get(1));
+        assertThat(results, contains("apples", "oranges"));
 
         results = test.convert("apples");
 
-        assertEquals(1, results.size());
-        assertEquals("apples", results.get(0));
+        assertThat(results, contains("apples"));
 
         results = test.convert(null);
 
-        assertEquals(1, results.size());
-        MatcherAssert.assertThat(results.get(0), Matchers.nullValue());
+        assertThat(results, contains(Matchers.nullValue()));
 
         results = test.convert(new int[]{3, 5});
 
-        assertEquals(2, results.size());
-        assertEquals("3", results.get(0));
-        assertEquals("5", results.get(1));
+        assertThat(results, contains("3", "5"));
 
         results = test.convert(Arrays.asList(
                 new ArooaObject("apples"), new ArooaObject("oranges")));
 
-        assertEquals(2, results.size());
-        assertEquals("apples", results.get(0));
-        assertEquals("oranges", results.get(1));
+        assertThat(results, contains("apples", "oranges"));
     }
 
     @Test
@@ -305,23 +277,8 @@ public class ListTypeTest extends Assert {
         List<String[]> list = converter.convert(
                 test, List.class);
 
-        String[] e1 = list.get(0);
-
-        assertEquals("a", e1[0]);
-        assertEquals("b", e1[1]);
-        assertEquals("c", e1[2]);
-
-        assertEquals(3, e1.length);
-
-        String[] e2 = list.get(1);
-
-        assertEquals("d", e2[0]);
-        assertEquals("e", e2[1]);
-        assertEquals("f", e2[2]);
-
-        assertEquals(3, e2.length);
-
-        assertEquals(2, list.size());
+        assertThat(list, contains(
+                new String[] {"a", "b", "c"}, new String[] {"d", "e", "f"}));
     }
 
     @Test
@@ -351,22 +308,14 @@ public class ListTypeTest extends Assert {
         List<?> listResult = converter.convert(
                 test, List.class);
 
-        assertEquals(4, listResult.size());
-
-        assertEquals("a", listResult.get(0));
-        assertEquals("b", listResult.get(1));
-        assertEquals("c", listResult.get(2));
-        assertEquals("d", listResult.get(3));
+        assertThat(listResult, contains(
+                "a", "b", "c", "d" ));
 
         String[] arrayResult = converter.convert(
                 test, String[].class);
 
-        assertEquals(4, arrayResult.length);
-
-        assertEquals("a", arrayResult[0]);
-        assertEquals("b", arrayResult[1]);
-        assertEquals("c", arrayResult[2]);
-        assertEquals("d", arrayResult[3]);
+        assertThat(arrayResult, is(
+                new String[] { "a", "b", "c", "d" }));
     }
 
     @Test
@@ -391,20 +340,14 @@ public class ListTypeTest extends Assert {
         List<?> listResult = converter.convert(
                 test, List.class);
 
-        assertEquals(3, listResult.size());
-
-        assertEquals("a", listResult.get(0));
-        assertEquals("b", listResult.get(1));
-        assertEquals("c", listResult.get(2));
+        assertThat(listResult, contains(
+                "a", "b", "c" ));
 
         Object[] arrayResult = converter.convert(
                 test, Object[].class);
 
-        assertEquals(3, arrayResult.length);
-
-        assertEquals("a", arrayResult[0]);
-        assertEquals("b", arrayResult[1]);
-        assertEquals("c", arrayResult[2]);
+        assertThat(arrayResult, is(
+                new String[] { "a", "b", "c" }));
     }
 
     @Test
@@ -425,11 +368,14 @@ public class ListTypeTest extends Assert {
 
         DefaultConverter converter = new DefaultConverter();
 
-        Object[] result = converter.convert(test, Object[].class);
+        List<?> listResult = converter.convert(test, List.class);
 
-        assertEquals(1, result.length);
+        assertThat(listResult, contains(Matchers.nullValue()));
 
-        assertNull(result[0]);
+        Object[] arrayResult = converter.convert(test, Object[].class);
+
+        assertThat(arrayResult, is(
+                new Object[] { null }));
     }
 
     @Test
@@ -452,11 +398,10 @@ public class ListTypeTest extends Assert {
 
         Object[] result = converter.convert(test, Object[].class);
 
-        assertEquals(2, result.length);
-
-        assertEquals(String[].class, result[0].getClass());
-
-        assertEquals("a", ((String[]) result[0])[0]);
+        assertThat(result, is(
+                new Object[] {
+                        new String[] { "a", "b" },
+                        new String[] { "c", "d" } } ));
     }
 
     @Test
@@ -482,23 +427,17 @@ public class ListTypeTest extends Assert {
         List<?> listResult = converter.convert(
                 test, List.class);
 
-        assertEquals(2, listResult.size());
-
-        assertEquals(3, listResult.get(0));
-        assertEquals(7, listResult.get(1));
+        assertThat(listResult, contains(3, 7));
 
         Number[] arrayResult = converter.convert(
                 test, Number[].class);
 
-        assertEquals(2, arrayResult.length);
-
-        assertEquals(3, arrayResult[0]);
-        assertEquals(7, arrayResult[1]);
+        assertThat(arrayResult, is(new Number[] {3, 7}));
 
         try {
             converter.convert(
                     test, String[].class);
-            fail("This isn't possilbe.");
+            assertThat("This isn't possilbe.", false);
         } catch (ArooaConversionException e) {
             // expected
         }
@@ -530,6 +469,16 @@ public class ListTypeTest extends Assert {
     }
 
     public static class A {
+
+        @Override
+        public int hashCode() {
+            return 1;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj != null && obj.getClass() == A.class;
+        }
     }
 
 
@@ -581,16 +530,13 @@ public class ListTypeTest extends Assert {
         ArooaSession session = parser.getSession();
         session.getComponentPool().configure(root);
 
-        assertNotNull(root.results);
-
         DefaultConversionRegistry registry = new DefaultConversionRegistry();
         new CollectionConvertlets().registerWith(registry);
 
         Object[] o = new DefaultConverter(registry).convert(
                 root.results, Object[].class);
 
-        assertEquals("The object.", A.class, o[0].getClass());
-        assertEquals("The string.", "apple", o[1]);
+        assertThat(o, is(new Object[] { new A(), "apple" }));
     }
 
     @Test
@@ -619,10 +565,7 @@ public class ListTypeTest extends Assert {
 
         session.getComponentPool().configure(root);
 
-        assertNotNull(root.results);
-        assertEquals("Num results", 2, root.results.length);
-        assertEquals("Orange.", "orange", root.results[0]);
-        assertEquals("The string.", "apple", root.results[1]);
+        assertThat(root.results, is(new Object[] { "orange", "apple" }));
     }
 
     @Test
@@ -651,10 +594,7 @@ public class ListTypeTest extends Assert {
 
         session.getComponentPool().configure(root);
 
-        assertNotNull(root.results);
-        assertEquals("Num results", 2, root.results.length);
-        assertEquals("Orange.", 1, root.results[0]);
-        assertEquals("The string.", 2, root.results[1]);
+        assertThat(root.results, is(new int[] { 1, 2 }));
     }
 
     /**
@@ -687,24 +627,21 @@ public class ListTypeTest extends Assert {
 
         parser.parse(config);
 
-        assertNull(root.results);
+        assertThat(root.results, Matchers.nullValue());
 
         ArooaSession session = parser.getSession();
         session.getComponentPool().configure(root);
 
-        assertNotNull(root.results);
+        assertThat(root.results, Matchers.notNullValue());
 
         List<Object> results = root.results;
 
-        assertEquals(2, results.size());
-
-        MatcherAssert.assertThat(results.get(0), Matchers.nullValue());
-        assertEquals("apple", results.get(1));
+        assertThat(results, contains(Matchers.nullValue(), is("apple")));
 
         session.getComponentPool().contextFor(
                 root).getRuntime().destroy();
 
-        assertNull(root.results);
+        assertThat(root.results, Matchers.nullValue());
     }
 
     @Test
@@ -719,26 +656,22 @@ public class ListTypeTest extends Assert {
         List<?> listResult = converter.convert(
                 test, List.class);
 
-        assertEquals(2, listResult.size());
-
-        assertEquals("Apple", listResult.get(0));
-        assertEquals("Pear", listResult.get(1));
+        assertThat(listResult, contains("Apple", "Pear"));
 
         test.configured();
 
         listResult = converter.convert(
                 test, List.class);
 
-        assertEquals(0, listResult.size());
+        assertThat(listResult, empty());
 
         test.setAdd(new ArooaObject("Orange"));
 
         listResult = converter.convert(
                 test, List.class);
 
-        assertEquals(1, listResult.size());
+        assertThat(listResult, contains("Orange"));
 
-        assertEquals("Orange", listResult.get(0));
     }
 
     @SuppressWarnings("unchecked")
@@ -759,22 +692,39 @@ public class ListTypeTest extends Assert {
         List<String> listResult = converter.convert(
                 test, List.class);
 
-        MatcherAssert.assertThat(listResult, Matchers.contains("Apple", "Pear"));
+        assertThat(listResult, contains("Apple", "Pear"));
+
+        PropertyAccessor propertyAccessor = new BeanUtilsPropertyAccessor();
+
+        // Check consumer values and value properties.
+
+        List<?> consumerList = converter.convert(
+                propertyAccessor.getProperty(consumer, "values"), List.class);
+
+        assertThat(consumerList, contains("Apple", "Pear"));
+
+        assertThat(propertyAccessor.getProperty(consumer, "values.[0]"), is("Apple"));
+        assertThat(propertyAccessor.getProperty(consumer, "values.[1]"), is("Pear"));
+        assertThat(propertyAccessor.getProperty(consumer, "value[0]"), is("Apple"));
+        assertThat(propertyAccessor.getProperty(consumer, "value[1]"), is("Pear"));
 
         test.configured();
 
         listResult = converter.convert(
                 test, List.class);
 
-        assertEquals(0, listResult.size());
+        assertThat(listResult, empty());
 
         consumer.accept("Orange");
 
         listResult = converter.convert(
                 test, List.class);
 
-        assertEquals(1, listResult.size());
+        assertThat(listResult, contains("Orange"));
 
-        MatcherAssert.assertThat(listResult, Matchers.contains("Orange"));
+        consumerList = converter.convert(
+                propertyAccessor.getProperty(consumer, "values"), List.class);
+
+        assertThat(consumerList, contains("Orange"));
     }
 }
