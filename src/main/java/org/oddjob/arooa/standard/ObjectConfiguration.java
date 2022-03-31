@@ -38,11 +38,10 @@ class ObjectConfiguration extends InstanceConfiguration {
 
 		public void destroy(ParentPropertySetter parentPropertySetter) 
 		throws ArooaPropertyException {
-			if (configured) {
-				parentPropertySetter.parentSetProperty(
-						null);
-			}
-		}		
+			// Do nothing. we used to set properties to null for values
+			// but that cause problems with Jetty Beans create from Oddjob,
+			// so now we do nothing.
+		}
 	};
 	
     /**

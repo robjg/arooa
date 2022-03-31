@@ -38,7 +38,7 @@ public class MockArooaContext implements ArooaContext {
 	}
 
 	@Override
-	public ConfigurationNode getConfigurationNode() {
+	public ConfigurationNode<ArooaContext> getConfigurationNode() {
 		throw new RuntimeException("Unexpected from class " +
 				getClass().getName());
 	}

@@ -1,18 +1,10 @@
 package org.oddjob.arooa.types;
+
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import org.junit.Assert;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaSession;
@@ -23,11 +15,21 @@ import org.oddjob.arooa.convert.NoConversionAvailableException;
 import org.oddjob.arooa.deploy.ConfigurationDescriptorFactory;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 /**
  * Tests for ListType.
  */
-public class MapTypeTest extends Assert {
+public class MapTypeTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(MapTypeTest.class);
 	
@@ -46,31 +48,30 @@ public class MapTypeTest extends Assert {
    @Test
 	public void testMapAssumptions() {
 		
-		Map<String, String> test = new LinkedHashMap<String, String>();
+		Map<String, String> test = new LinkedHashMap<>();
 		test.put("A", "Apple");
 		test.put("B", "Ball");
 		test.put("C", "Cat");
 		
-		Iterator<Map.Entry<String, String>> it = 
-				new ArrayList<Map.Entry<String, String>>(test.entrySet()
-						).iterator();
+		Iterator<Map.Entry<String, String>> it =
+				new ArrayList<>(test.entrySet()).iterator();
 		
 		Map.Entry<String, String> entry = it.next();		
-		assertEquals("Apple", entry.getValue());
+		assertThat(entry.getValue(), is("Apple"));
 		
 		test.put("B", "Bag");
 		
 		entry = it.next();		
-		assertEquals("Bag", entry.getValue());
+		assertThat(entry.getValue(), is("Bag"));
 		
 		test.remove("C");
 		
 		test.put("D", "Dog");
 		
-		entry = it.next();		
-		assertEquals("Cat", entry.getValue());
+		entry = it.next();
+	   assertThat(entry.getValue(), is("Cat"));
 		
-		assertEquals(false, it.hasNext());
+		assertThat(it.hasNext(), is(false));
 	}
 	
    @Test
@@ -84,12 +85,12 @@ public class MapTypeTest extends Assert {
 		// Check Object conversion is a map.
 		Object o = converter.convert(test, Object.class);
 		
-		assertTrue(Map.class.isAssignableFrom(o.getClass()));
+		assertThat(Map.class.isAssignableFrom(o.getClass()), is(true));
 		
 		// Check iterable conversion.
 		Iterable<?> iterable = converter.convert(test, Iterable.class);
 		Iterator<?> iterator = iterable.iterator();
-		assertEquals(false, iterator.hasNext());
+		assertThat(iterator.hasNext(), is(false));
 	}
 	
    @Test
@@ -103,8 +104,8 @@ public class MapTypeTest extends Assert {
 		Map<String, Integer> result = 
 				test.convertContents(converter, Integer.class);
 		
-		assertEquals(new Integer(1), result.get("one"));
-		assertEquals(new Integer(2), result.get("two"));
+		assertThat(result.get("one"), is(1));
+		assertThat(result.get("two"), is(2));
 	}
 	
 	/**
@@ -129,9 +130,9 @@ public class MapTypeTest extends Assert {
 		Map<String, Object> result = converter.convert(
 				test, Map.class);
 		
-		assertEquals(1, result.size());
+		assertThat(result.size(), is(1));
 		
-		assertEquals("test", result.get("x"));
+		assertThat(result, Matchers.hasEntry("x", "test"));
 	}
 	
 	
@@ -194,10 +195,10 @@ public class MapTypeTest extends Assert {
 		ArooaSession session = parser.getSession();
 		session.getComponentPool().configure(root);
 		
-	    assertNotNull(root.results);
+	    assertThat(root.results, notNullValue());
 	    	    
-	    assertEquals("The object.", A.class, root.results.get("one").getClass());
-	    assertEquals("The string.", "apple", root.results.get("two"));
+	    assertThat("The object.", root.results.get("one").getClass(), is( A.class));
+	    assertThat("The string.",  root.results, hasEntry("two", "apple"));
 	}
 
    @Test
@@ -226,10 +227,10 @@ public class MapTypeTest extends Assert {
 		
 		session.getComponentPool().configure(root);
 		
-	    assertNotNull(root.results);
-	    assertEquals("Num results", 2, root.results.size());
-	    assertEquals("Orange.", "orange", root.results.get("one"));
-	    assertEquals("The string.", "apple", root.results.get("two"));	    
+	    assertThat(root.results, notNullValue());
+	    assertThat("Num results", root.results.size(), is(2));
+	    assertThat("Orange.", root.results, hasEntry("one", "orange"));
+	    assertThat("The string.", root.results, hasEntry("two", "apple"));
 	}
 	
 	/**
@@ -239,19 +240,19 @@ public class MapTypeTest extends Assert {
 	 */
    @Test
 	public void testNullsAndReconfiguring() throws Exception {
-		String EOL = System.getProperty("line.separator");
+		String EOL = System.lineSeparator();
 		
 		String xml= 
 			"<root>" + EOL +
 			" <results>" + EOL +
 			"  <map>" + EOL +
 			"   <values>" + EOL +
-			"    <value key='one'/>\n" + EOL +
-			"    <value key='two' value='apple'/>\n" +
+			"    <value key='one'/>" + EOL +
+			"    <value key='two' value='apple'/>" +
 			"   </values>" + EOL +
-			"  </map>\n" + EOL +
-			"</results>\n" + EOL +
-			"</root>\n" + EOL; 
+			"  </map>" + EOL +
+			"</results>" + EOL +
+			"</root>" + EOL;
 		
 		Root1 root = new Root1();
 		
@@ -262,24 +263,25 @@ public class MapTypeTest extends Assert {
 	    
 		parser.parse(config);
 		
-	    assertNull(root.results);
+	    assertThat(root.results, nullValue());
 	    
 		ArooaSession session = parser.getSession();
 		session.getComponentPool().configure(root);
 		
-	    assertNotNull(root.results);
+	    assertThat(root.results, notNullValue());
 	    	    
 	    Map<String, Object> results =  root.results;
 
-	    assertEquals(1, results.size());
+	    assertThat(results.size(), is(1));
 	    
-	    assertEquals(null, results.get("one"));
-	    assertEquals("apple", results.get("two"));
+	    assertThat(results.get("one"), nullValue());
+	    assertThat(results, hasEntry("two", "apple"));
 	    
 		session.getComponentPool().contextFor(
 				root).getRuntime().destroy();
-		
-	    assertNull(root.results);
+
+		// Destroy no long set null
+	    assertThat(root.results, is(results));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -295,25 +297,25 @@ public class MapTypeTest extends Assert {
 		Map<String, ?> mapResult = converter.convert(
 				test, Map.class);
 
-		assertEquals(2, mapResult.size());
+		assertThat(mapResult.size(), is(2));
 		
-		assertEquals("Apple", mapResult.get("one"));
-		assertEquals("Pear", mapResult.get("two"));		
+		assertThat(mapResult, hasEntry("one", "Apple"));
+		assertThat(mapResult, hasEntry("two", "Pear"));
 		
 		test.configured();
 		
 		mapResult = converter.convert(
 				test, Map.class);
 
-		assertEquals(0, mapResult.size());
+		assertThat(mapResult.isEmpty(), is(true));
 		
 		test.setAdd("three", new ArooaObject("Orange"));
 		
 		mapResult = converter.convert(
 				test, Map.class);
 
-		assertEquals(1, mapResult.size());
+		assertThat(mapResult.size(), is(1));
 		
-		assertEquals("Orange", mapResult.get("three"));
+		assertThat(mapResult, hasEntry("three", "Orange"));
 	}
 }

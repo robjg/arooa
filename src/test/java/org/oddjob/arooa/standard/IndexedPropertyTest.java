@@ -1,5 +1,6 @@
 package org.oddjob.arooa.standard;
 
+import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
@@ -16,7 +17,7 @@ public class IndexedPropertyTest extends Assert {
 
     public static class SimpleAndIndexed {
 
-        List<String> things = new ArrayList<String>();
+        List<String> things = new ArrayList<>();
 
         @ArooaAttribute
         public void setThings(String[] things) {
@@ -70,8 +71,8 @@ public class IndexedPropertyTest extends Assert {
             parser.parse(new XMLConfiguration("TEST", xml));
             fail("Should fail.");
         } catch (ArooaParseException e) {
-            assertThat(e.getMessage().endsWith("Property things is not configured as an element."),
-                    is( true ));
+            MatcherAssert.assertThat(e.getMessage().endsWith("Property things is not configured as an element."),
+                    is(true));
         }
 
     }
@@ -125,7 +126,7 @@ public class IndexedPropertyTest extends Assert {
     }
 
     @Test
-    public void testConfigureConigureDestroy() throws ArooaParseException {
+    public void testConfigureConfigureDestroy() throws ArooaParseException {
 
         String xml =
                 "<x>" +
@@ -152,6 +153,7 @@ public class IndexedPropertyTest extends Assert {
 
         parser.getSession().getComponentPool().contextFor(x).getRuntime().destroy();
 
-        assertEquals(0, x.things.size());
+        // destroy no longer removes index value properties
+        assertEquals(1, x.things.size());
     }
 }

@@ -11,8 +11,6 @@ import org.oddjob.arooa.life.ArooaLifeAware;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-import java.net.URISyntaxException;
-
 public class DestructionTest extends Assert {
 
 	public static class Stuff implements ArooaLifeAware {
@@ -97,7 +95,7 @@ public class DestructionTest extends Assert {
 		"</stuff>" + EOL;
 	
    @Test
-	public void testParseAndDestroy() throws URISyntaxException, ArooaParseException {
+	public void testParseAndDestroy() throws ArooaParseException {
 
 		StandardFragmentParser descriptorParser = new StandardFragmentParser(
 						new ArooaDescriptorDescriptor());
@@ -133,7 +131,8 @@ public class DestructionTest extends Assert {
 		handle.getDocumentContext().getRuntime().destroy();
 		
 		assertNull(root.moreStuff);
-		assertNull(root.other);
+		// destroy no longer sets value properties to null
+		assertNotNull(root.other);
 		
 		assertTrue(root.destroyed);
 		assertTrue(stuff.destroyed);
@@ -143,7 +142,7 @@ public class DestructionTest extends Assert {
 	}
 	
    @Test
-	public void testParseAndDestroyNoConfigure() throws URISyntaxException, ArooaParseException {
+	public void testParseAndDestroyNoConfigure() throws ArooaParseException {
 
 		StandardFragmentParser descriptorParser = new StandardFragmentParser(
 						new ArooaDescriptorDescriptor());

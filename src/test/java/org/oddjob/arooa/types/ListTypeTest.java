@@ -76,7 +76,7 @@ public class ListTypeTest {
         // Is lack of conversion to String a problem?
         ConversionPath<ListType, String> conversionToString =
                 converter.findConversion(ListType.class, String.class);
-        assertThat(conversionToString, Matchers.nullValue());
+        assertThat(conversionToString, nullValue());
     }
 
     @Test
@@ -213,7 +213,7 @@ public class ListTypeTest {
 
         results = test.convert(null);
 
-        assertThat(results, contains(Matchers.nullValue()));
+        assertThat(results, contains(nullValue()));
 
         results = test.convert(new int[] {3, 5});
 
@@ -249,7 +249,7 @@ public class ListTypeTest {
 
         results = test.convert(null);
 
-        assertThat(results, contains(Matchers.nullValue()));
+        assertThat(results, contains(nullValue()));
 
         results = test.convert(new int[]{3, 5});
 
@@ -370,7 +370,7 @@ public class ListTypeTest {
 
         List<?> listResult = converter.convert(test, List.class);
 
-        assertThat(listResult, contains(Matchers.nullValue()));
+        assertThat(listResult, contains(nullValue()));
 
         Object[] arrayResult = converter.convert(test, Object[].class);
 
@@ -627,7 +627,7 @@ public class ListTypeTest {
 
         parser.parse(config);
 
-        assertThat(root.results, Matchers.nullValue());
+        assertThat(root.results, nullValue());
 
         ArooaSession session = parser.getSession();
         session.getComponentPool().configure(root);
@@ -636,12 +636,13 @@ public class ListTypeTest {
 
         List<Object> results = root.results;
 
-        assertThat(results, contains(Matchers.nullValue(), is("apple")));
+        assertThat(results, contains(nullValue(), is("apple")));
 
         session.getComponentPool().contextFor(
                 root).getRuntime().destroy();
 
-        assertThat(root.results, Matchers.nullValue());
+        // destroy no longer sets null values.
+        assertThat(results, contains(nullValue(), is("apple")));
     }
 
     @Test

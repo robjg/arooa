@@ -19,14 +19,14 @@ import java.util.List;
 
 public class ArooaLifecycleTest extends Assert {
 
-	private static List<String> events = new ArrayList<String>();
+	private static final List<String> events = new ArrayList<>();
 
    @Before
    public void setUp() throws Exception {
 		events.clear();
 	}
 	
-	public static class EventCapture 
+	public static class EventCapture
 	implements ArooaSessionAware, ArooaContextAware {
 		
 		@Override
@@ -100,7 +100,7 @@ public class ArooaLifecycleTest extends Assert {
 		
 		EventCapture capture = new EventCapture();
 		
-		ArooaParser parser = new StandardArooaParser(capture);
+		ArooaParser<ArooaContext> parser = new StandardArooaParser(capture);
 
 		ConfigurationHandle<ArooaContext> handle = parser.parse(new XMLConfiguration("XML",
 				xml	));
@@ -142,7 +142,7 @@ public class ArooaLifecycleTest extends Assert {
 	}
 	
    @Test
-	public void testAllLifecycleOnObject() throws ArooaParseException, ArooaPropertyException, ArooaConversionException {
+	public void testAllLifecycleOnObject() throws ArooaParseException, ArooaPropertyException {
 		
 		String xml = 
 			"<test>" +
@@ -154,7 +154,7 @@ public class ArooaLifecycleTest extends Assert {
 		
 		ThingWithObject root = new ThingWithObject();
 		
-		ArooaParser parser = new StandardArooaParser(root);
+		ArooaParser<ArooaContext> parser = new StandardArooaParser(root);
 
 		ConfigurationHandle<ArooaContext> handle = parser.parse(new XMLConfiguration("XML",
 				xml	));
@@ -179,10 +179,11 @@ public class ArooaLifecycleTest extends Assert {
 		assertEquals("afterConfigure", events.get(7));
 		assertEquals("ParentProperty set: OurBean", events.get(8));
 		assertEquals("beforeDestroy", events.get(9));
-		assertEquals("ParentProperty set: null", events.get(10));
-		assertEquals("afterDestroy", events.get(11));
+		// destroy no longer sets value properties to null.
+//		assertEquals("ParentProperty set: null", events.get(10));
+		assertEquals("afterDestroy", events.get(10));
 		
-		assertEquals(12, events.size());		
+		assertEquals(11, events.size());
 		
 	}
 	
@@ -212,7 +213,7 @@ public class ArooaLifecycleTest extends Assert {
 		
 		ThingWithComponent root = new ThingWithComponent();
 		
-		ArooaParser parser = new StandardArooaParser(root);
+		ArooaParser<ArooaContext> parser = new StandardArooaParser(root);
 
 		ConfigurationHandle<ArooaContext> handle = parser.parse(new XMLConfiguration("XML",
 				xml	));
@@ -242,12 +243,11 @@ public class ArooaLifecycleTest extends Assert {
 		assertEquals("ParentProperty set: null", events.get(10));
 		assertEquals("afterDestroy", events.get(11));
 		
-		assertEquals(12, events.size());		
-		
+		assertEquals(12, events.size());
 	}
 	
    @Test
-	public void testManyLevelsDown() throws ArooaParseException, ArooaPropertyException, ArooaConversionException {
+	public void testManyLevelsDown() throws ArooaParseException, ArooaPropertyException {
 		
 		String xml = 
 			"<test>" +
@@ -267,7 +267,7 @@ public class ArooaLifecycleTest extends Assert {
 		
 		ThingWithComponent root = new ThingWithComponent();
 		
-		ArooaParser parser = new StandardArooaParser(root);
+		ArooaParser<ArooaContext> parser = new StandardArooaParser(root);
 
 		ConfigurationHandle<ArooaContext> handle = parser.parse(new XMLConfiguration("XML",
 				xml	));
@@ -293,12 +293,13 @@ public class ArooaLifecycleTest extends Assert {
 		assertEquals("afterConfigure", events.get(9));
 		assertEquals("ParentProperty set: OurBean", events.get(10));
 		assertEquals("beforeDestroy", events.get(11));
-		assertEquals("ParentProperty set: null", events.get(12));
-		assertEquals("afterDestroy", events.get(13));
+	   // destroy no longer sets value properties to null.
+//		assertEquals("ParentProperty set: null", events.get(12));
+		assertEquals("afterDestroy", events.get(12));
+		assertEquals("ParentProperty set: null", events.get(13));
 		assertEquals("ParentProperty set: null", events.get(14));
-		assertEquals("ParentProperty set: null", events.get(15));
 		
-		assertEquals(16, events.size());		
+		assertEquals(15, events.size());
 		
 	}
 }
