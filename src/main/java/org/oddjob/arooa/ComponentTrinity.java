@@ -106,6 +106,10 @@ public class ComponentTrinity {
         public WithComponentAndProxy andProxy(Object proxy) {
             return new WithComponentAndProxy(this.component, proxy);
         }
+
+        public WithComponentAndProxy noProxy() {
+            return new WithComponentAndProxy(this.component, this.component);
+        }
     }
 
     /**
