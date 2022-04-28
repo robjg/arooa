@@ -187,8 +187,12 @@ public class ListType implements ArooaValue, Serializable {
 					}
 			    	return null;
 				}
-					
+
+
 			});
+
+			registry.register(ListConsumer.class, ListType.class,
+					from -> from.listType);
 		}
 	}
 
