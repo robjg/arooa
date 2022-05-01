@@ -20,7 +20,7 @@ public interface ComponentProxyResolver  {
 	 * 
 	 * @return The proxy, or the original object.
 	 */
-	public Object resolve(Object object, ArooaSession session);
+	Object resolve(Object object, ArooaSession session);
 	
 	/**
 	 * Restore what is possibly a proxy to provide the original component.
@@ -30,5 +30,5 @@ public interface ComponentProxyResolver  {
 	 * 
 	 * @return The component being proxied.
 	 */
-	public Object restore(Object proxy, ArooaSession session);
+	Object restore(Object proxy, ArooaSession session);
 }
