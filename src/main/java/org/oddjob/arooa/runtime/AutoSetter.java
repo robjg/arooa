@@ -62,15 +62,14 @@ public class AutoSetter {
 		String[] properties = overview.getProperties();
 		
 		for (String property: properties) {
+			if (!overview.hasWriteableProperty(property)) {
+				continue;
+			}
 			if (propertiesSetAlready.contains(property)) {
 				continue;
 			}
 			if (!helper.isAuto(property)) {
 				continue;
-			}
-			if (!overview.hasWriteableProperty(property)) {
-				throw new ArooaException("Auto property isn't writable: " + 
-						property + " of " + classIdentifier);
 			}
 			if (helper.isComponent(property)) {
 				throw new ArooaException("Property can't be Auto and a Component: " + 

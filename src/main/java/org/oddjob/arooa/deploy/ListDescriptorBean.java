@@ -1,12 +1,12 @@
 package org.oddjob.arooa.deploy;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.types.IsType;
 import org.oddjob.arooa.utils.ListSetterHelper;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @oddjob.description An Arooa Descriptor Factory that is a container
@@ -20,7 +20,7 @@ import org.oddjob.arooa.utils.ListSetterHelper;
  * 
  * Oddjob's descriptor!. Note that it started life before the descriptor 
  * elements were created, and so {@link IsType} is used instead of 
- * {@link BeanDefinition} elements.
+ * {@link BeanDefinitionBean} elements.
  * 
  * {@oddjob.xml.resource META-INF/arooa.xml}
  * 

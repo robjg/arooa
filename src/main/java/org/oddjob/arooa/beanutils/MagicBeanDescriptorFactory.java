@@ -5,7 +5,6 @@ import org.oddjob.arooa.beandocs.MappingsBeanDoc;
 import org.oddjob.arooa.beandocs.MappingsContents;
 import org.oddjob.arooa.convert.ConversionProvider;
 import org.oddjob.arooa.deploy.ArooaDescriptorFactory;
-import org.oddjob.arooa.deploy.BeanDescriptorProvider;
 import org.oddjob.arooa.deploy.MappingsSwitch;
 import org.oddjob.arooa.deploy.annotations.ArooaAttribute;
 import org.oddjob.arooa.design.DesignFactory;
@@ -16,6 +15,7 @@ import org.oddjob.arooa.life.InstantiationContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+import org.oddjob.arooa.utils.Pair;
 
 import java.net.URI;
 import java.util.*;
@@ -62,8 +62,8 @@ public class MagicBeanDescriptorFactory implements ArooaDescriptorFactory {
 	 * @oddjob.required. No, but pointless without any definitions.
 	 * 
 	 */
-	private List<MagicBeanDefinition> definitions = 
-			new ArrayList<MagicBeanDefinition>();
+	private final List<MagicBeanDefinition> definitions =
+			new ArrayList<>();
 	
 	/**
 	 * @oddjob.property
@@ -85,23 +85,22 @@ public class MagicBeanDescriptorFactory implements ArooaDescriptorFactory {
 
 		Mappings mappings = new Mappings();
 		
-		Map<ArooaClass, BeanDescriptorProvider> descriptorProviders
-			 = new HashMap<ArooaClass, BeanDescriptorProvider>();
+		Map<ArooaClass, ArooaBeanDescriptor> beanDescriptors
+			 = new HashMap<>();
 		
 		for (MagicBeanDefinition beanDef : definitions) {
 			
-			ArooaClass arooaClass = beanDef.createMagic(classLoader);
-			
-			BeanDescriptorProvider beanDescriptorProvider = 
-					beanDef.createMagicBeanDescriptorProvider();
-	
-			descriptorProviders.put(arooaClass, beanDescriptorProvider);
+			Pair<ArooaClass, ArooaBeanDescriptor> magicPair = beanDef.createMagic(classLoader);
+
+			ArooaClass arooaClass = magicPair.getLeft();
+
+			beanDescriptors.put(arooaClass, magicPair.getRight());
 			
 			mappings.put(new ArooaElement(namespace, 
 					beanDef.getElement()), arooaClass);
 		}
 		
-		return new Descriptor(mappings, descriptorProviders, classLoader);
+		return new Descriptor(mappings, beanDescriptors, classLoader);
 	}
 	
 	
@@ -109,16 +108,16 @@ public class MagicBeanDescriptorFactory implements ArooaDescriptorFactory {
 
 		private final Mappings mappings;
 		
-		private final Map<ArooaClass, BeanDescriptorProvider> 
-			descriptorProviders;
+		private final Map<ArooaClass, ArooaBeanDescriptor>
+				beanDescriptors;
 		
 		private final ClassLoader classLoader;
 		
 		public Descriptor(Mappings mappings, 
-				Map<ArooaClass, BeanDescriptorProvider> descriptorProviders,
+				Map<ArooaClass, ArooaBeanDescriptor> beanDescriptors,
 				ClassLoader classLoader) {
 			this.mappings = mappings;
-			this.descriptorProviders = descriptorProviders;
+			this.beanDescriptors = beanDescriptors;
 			this.classLoader = classLoader;
 		}
 		
@@ -126,16 +125,7 @@ public class MagicBeanDescriptorFactory implements ArooaDescriptorFactory {
 		public ArooaBeanDescriptor getBeanDescriptor(
 				ArooaClass classIdentifier, PropertyAccessor accessor) {
 
-			BeanDescriptorProvider descriptor = 
-				descriptorProviders.get(classIdentifier);
-			
-			if (descriptor == null) {
-				return null;
-			}
-			else {
-				return descriptor.getBeanDescriptor(
-					classIdentifier, accessor);
-			}
+			return beanDescriptors.get(classIdentifier);
 		}
 		
 		@Override
@@ -216,10 +206,10 @@ public class MagicBeanDescriptorFactory implements ArooaDescriptorFactory {
 		this.prefix = prefix;
 	}
 
-	class Mappings implements ElementMappings {
+	static class Mappings implements ElementMappings {
 
-		private Map<ArooaElement, ArooaClass> mappings = 
-			new LinkedHashMap<ArooaElement, ArooaClass>();
+		private final Map<ArooaElement, ArooaClass> mappings =
+				new LinkedHashMap<>();
 		
 		@Override
 		public DesignFactory designFor(ArooaElement element,

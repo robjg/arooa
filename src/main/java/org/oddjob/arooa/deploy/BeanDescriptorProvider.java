@@ -13,7 +13,8 @@ import org.oddjob.arooa.reflect.PropertyAccessor;
 public interface BeanDescriptorProvider {
 
 	/**
-	 * 
+	 * Provide the descriptor.
+	 *
 	 * @param forClass The class.
 	 * @param accessor Used to access the bean properties for default
 	 * types.

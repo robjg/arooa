@@ -1,8 +1,8 @@
 package org.oddjob.arooa.deploy;
 
-import java.lang.reflect.Method;
-
 import org.oddjob.arooa.ArooaAnnotations;
+
+import java.lang.reflect.Method;
 
 
 /**
@@ -17,23 +17,14 @@ public class NoAnnotations implements ArooaAnnotations {
 	public Method methodFor(String annotationName) {
 		return null;
 	}
-	
+
 	@Override
-	public String[] annotatedProperties() {
-		return new String[0];
-	}
-	
-	@Override
-	public ArooaAnnotation[] annotationsForProperty(String propertyName) {
-		return new ArooaAnnotation[0];
-	}
-	
-	@Override
-	public ArooaAnnotation annotationForProperty(String propertyName,
-			String annotationName) {
+	public String propertyFor(String annotationName) {
 		return null;
 	}
-	
-	
-	
+
+	@Override
+	public ArooaAnnotation annotationForProperty(String propertyName, String annotationName) {
+		return null;
+	}
 }

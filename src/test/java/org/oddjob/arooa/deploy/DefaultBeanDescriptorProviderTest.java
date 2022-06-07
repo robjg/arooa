@@ -1,64 +1,99 @@
 package org.oddjob.arooa.deploy;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
-
-import java.util.Date;
-
-import org.junit.Assert;
-
+import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ConfiguredHow;
 import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
 import org.oddjob.arooa.life.SimpleArooaClass;
 
-public class DefaultBeanDescriptorProviderTest extends Assert {
+import java.util.Date;
 
-	enum Type {
-		COX,
-		GRANNY_SMITH,
-		PINK_LADY;
-	}
-	
-	public static class Apple {
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
-		public void setColour(String colour) {
-		}
-		
-		public void setQuantity(int quantity) {
-		}
-		
-		public void setType(Type type) {
-		}
-		
-		public void setPicked(Date date) {
-		}
-	}
-	
-	
-   @Test
-	public void testIsAttribute() {
-		
-		DefaultBeanDescriptorProvider test = 
-			new DefaultBeanDescriptorProvider();
-		
-			
-		ArooaBeanDescriptor beanDescriptor = test.getBeanDescriptor(
-				new SimpleArooaClass(Apple.class),
-				new BeanUtilsPropertyAccessor());
+public class DefaultBeanDescriptorProviderTest {
 
-		BeanDescriptorHelper sort = new BeanDescriptorHelper(beanDescriptor);
-		
-		assertEquals(ConfiguredHow.ATTRIBUTE, 
-				sort.getConfiguredHow("colour"));
-		
-		assertEquals(ConfiguredHow.ATTRIBUTE, 
-				sort.getConfiguredHow("quantity"));
-		
-		assertEquals(ConfiguredHow.ATTRIBUTE, 
-				sort.getConfiguredHow("type"));
+    enum Type {
+        COX,
+        GRANNY_SMITH,
+        PINK_LADY
+    }
 
-		assertEquals(ConfiguredHow.ELEMENT, 
-				sort.getConfiguredHow("date"));
-	}
-			
+    public static class Apple {
+
+        public void setColour(String colour) {
+        }
+
+        public void setQuantity(int quantity) {
+        }
+
+        public void setType(Type type) {
+        }
+
+        public void setPicked(Date date) {
+        }
+    }
+
+
+    @Test
+    public void testIsAttribute() {
+
+        DefaultBeanDescriptorProvider test =
+                new DefaultBeanDescriptorProvider();
+
+        BeanDescriptorBuilder builder = new BeanDescriptorBuilder(new SimpleArooaClass(Apple.class));
+
+        test.findConfiguredHow(new BeanUtilsPropertyAccessor(), builder);
+
+        ArooaBeanDescriptor beanDescriptor = builder.build();
+
+        assertThat(beanDescriptor.getConfiguredHow("colour"),
+                is(ConfiguredHow.ATTRIBUTE));
+
+        assertThat(beanDescriptor.getConfiguredHow("quantity"),
+                is(ConfiguredHow.ATTRIBUTE));
+
+        assertThat(beanDescriptor.getConfiguredHow("type"),
+                is(ConfiguredHow.ATTRIBUTE));
+
+        // Note that the defaults come from the BeanDescriptorHelper.
+
+        assertThat(beanDescriptor.getConfiguredHow("date"),
+                Matchers.nullValue());
+
+        BeanDescriptorHelper sort = new BeanDescriptorHelper(beanDescriptor);
+
+        assertThat(sort.getConfiguredHow("colour"),
+                is(ConfiguredHow.ATTRIBUTE));
+
+        assertThat(sort.getConfiguredHow("quantity"),
+                is(ConfiguredHow.ATTRIBUTE));
+
+        assertThat(sort.getConfiguredHow("type"),
+                is(ConfiguredHow.ATTRIBUTE));
+
+        assertThat(sort.getConfiguredHow("date"),
+                is(ConfiguredHow.ELEMENT));
+    }
+
+    @Test
+    public void validateAssumptionThatDefaultAnnotationsAreNotNull() {
+
+        DefaultBeanDescriptorProvider test =
+                new DefaultBeanDescriptorProvider();
+
+        BeanDescriptorBuilder builder = new BeanDescriptorBuilder(new SimpleArooaClass(Apple.class));
+
+        test.findConfiguredHow(new BeanUtilsPropertyAccessor(), builder);
+
+        ArooaBeanDescriptor beanDescriptor = builder.build();
+
+        ArooaAnnotations arooaAnnotations = beanDescriptor.getAnnotations();
+
+        assertThat(arooaAnnotations, notNullValue());
+    }
+
 }

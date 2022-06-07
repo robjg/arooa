@@ -1,9 +1,7 @@
 package org.oddjob.arooa.deploy;
 
-import org.junit.Test;
-
 import org.junit.Assert;
-
+import org.junit.Test;
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
@@ -22,7 +20,7 @@ public class BeanDefinitionsTest extends Assert {
    @Test
 	public void testIsBeanDefinition() {
 		
-		BeanDefinition beanDef = new BeanDefinition();
+		BeanDefinitionBean beanDef = new BeanDefinitionBean();
 		beanDef.setClassName(Apple.class.getName());
 		beanDef.setElement("apple");
 	
@@ -39,9 +37,9 @@ public class BeanDefinitionsTest extends Assert {
 		assertNotNull(beanDescriptor);
 		
 		beanDef.setProperties(
-				0, new PropertyDefinition(
+				0, new PropertyDefinitionBean(
 						"description", 
-						PropertyDefinition.PropertyType.TEXT));
+						PropertyDefinitionBean.PropertyType.TEXT));
 		
 		descriptor = factory.createDescriptor(
 				getClass().getClassLoader());

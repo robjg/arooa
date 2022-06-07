@@ -66,18 +66,18 @@ public class ArooaDescriptorBean
 
     /**
      * @oddjob.property
-     * @oddjob.description A list of {@link BeanDefinition}s for components.
+     * @oddjob.description A list of {@link BeanDefinitionBean}s for components.
      * @oddjob.required No.
      */
-    private final List<BeanDefinition> components =
+    private final List<BeanDefinitionBean> components =
             new ArrayList<>();
 
     /**
      * @oddjob.property
-     * @oddjob.description A list of {@link BeanDefinition}s for values.
+     * @oddjob.description A list of {@link BeanDefinitionBean}s for values.
      * @oddjob.required No.
      */
-    private final List<BeanDefinition> values =
+    private final List<BeanDefinitionBean> values =
             new ArrayList<>();
 
     /**
@@ -97,7 +97,7 @@ public class ArooaDescriptorBean
      * @param index     The index of the component definition.
      * @param component The component definition.
      */
-    public void setComponents(int index, BeanDefinition component) {
+    public void setComponents(int index, BeanDefinitionBean component) {
         new ListSetterHelper<>(this.components).set(index, component);
     }
 
@@ -107,7 +107,7 @@ public class ArooaDescriptorBean
      * @param index The index of the value definition.
      * @param value The value definition.
      */
-    public void setValues(int index, BeanDefinition value) {
+    public void setValues(int index, BeanDefinitionBean value) {
         new ListSetterHelper<>(this.values).set(index, value);
     }
 
@@ -151,12 +151,12 @@ public class ArooaDescriptorBean
 
     private void populateMappings(Mappings mappings,
                                   BeanDefinitions definitions,
-                                  Map<ArooaClass, BeanDefinition> definitionsMap,
+                                  Map<ArooaClass, BeanDefinitionBean> definitionsMap,
                                   ClassLoader classLoader) {
 
         URI namespace = definitions.getNamespace();
 
-        for (BeanDefinition beanDefinition : definitions.getDefinitions()) {
+        for (BeanDefinitionBean beanDefinition : definitions.getDefinitions()) {
 
             if (beanDefinition.getElement() == null) {
                 throw new ArooaException("No Element in Class Mappings.");
@@ -213,7 +213,7 @@ public class ArooaDescriptorBean
      */
     public ArooaDescriptor createDescriptor(final ClassLoader classLoader) {
 
-        final Map<ArooaClass, BeanDefinition> beanDefinitions =
+        final Map<ArooaClass, BeanDefinitionBean> beanDefinitions =
                 new HashMap<>();
 
         final Map<ArooaClass, ArooaBeanDescriptor> beanDescriptors =
@@ -255,23 +255,16 @@ public class ArooaDescriptorBean
                     return beanDescriptor;
                 }
 
-                BeanDefinition beanDefinition =
+                BeanDefinitionBean beanDefinition =
                         beanDefinitions.get(forClass);
 
                 if (beanDefinition == null) {
                     return null;
                 }
 
-                beanDescriptor = new SupportedBeanDescriptorProvider(
-                ).getBeanDescriptor(
-                        forClass, accessor);
-
-                if (beanDescriptor instanceof PropertyDefinitionsHelper) {
-
-                    ((PropertyDefinitionsHelper)
-                            beanDescriptor).mergeFromBeanDefinition(
-                            beanDefinition);
-                }
+                beanDescriptor = SupportedBeanDescriptorProvider
+                        .withBeanDefinition(beanDefinition).getBeanDescriptor(
+                                forClass, accessor);
 
                 beanDescriptors.put(forClass, beanDescriptor);
 
@@ -281,7 +274,7 @@ public class ArooaDescriptorBean
             @Override
             public ConversionProvider getConvertletProvider() {
                 return registry -> {
-                    for (ConversionProviderFactory providerFactory  : convertlets) {
+                    for (ConversionProviderFactory providerFactory : convertlets) {
                         ConversionProvider conversionProvider =
                                 providerFactory.createConversionProvider(classLoader);
                         conversionProvider.registerWith(registry);

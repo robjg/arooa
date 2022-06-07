@@ -1,29 +1,20 @@
 package org.oddjob.arooa.life;
-import org.junit.Before;
-
-import org.junit.Test;
-
-import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
 
 import org.junit.Assert;
-
+import org.junit.Before;
+import org.junit.Test;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.ArooaValue;
 import org.oddjob.arooa.ElementMappings;
-import org.oddjob.arooa.convert.ArooaConverter;
-import org.oddjob.arooa.convert.ConversionProvider;
-import org.oddjob.arooa.convert.ConversionRegistry;
-import org.oddjob.arooa.convert.Convertlet;
-import org.oddjob.arooa.convert.ConvertletException;
-import org.oddjob.arooa.convert.DefaultConversionProvider;
-import org.oddjob.arooa.convert.DefaultConversionRegistry;
-import org.oddjob.arooa.convert.DefaultConverter;
+import org.oddjob.arooa.convert.*;
 import org.oddjob.arooa.deploy.ArooaDescriptorBean;
-import org.oddjob.arooa.deploy.BeanDefinition;
+import org.oddjob.arooa.deploy.BeanDefinitionBean;
 import org.oddjob.arooa.parsing.ArooaElement;
+
+import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
 
 public class DescriptorInstantiatorSupportTest extends Assert {
 
@@ -45,7 +36,7 @@ public class DescriptorInstantiatorSupportTest extends Assert {
    public void setUp() throws Exception {
 		ArooaDescriptorBean df = new ArooaDescriptorBean();
 				
-		BeanDefinition def = new BeanDefinition();
+		BeanDefinitionBean def = new BeanDefinitionBean();
 		
 		def.setClassName(Apple.class.getName());
 		def.setElement("apple");

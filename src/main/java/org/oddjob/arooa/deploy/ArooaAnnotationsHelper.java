@@ -1,35 +1,37 @@
 package org.oddjob.arooa.deploy;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaError;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.utils.ClassUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
- * A simple implementation {@link ArooaAnnotations}.
- * 
+ * Helps build an {@link org.oddjob.arooa.ArooaBeanDescriptor} from annotations
+ * and provides it with the {@link ArooaAnnotations} view of annotations.
+ *
+ * @see AnnotatedBeanDescriptorContributor
+ *
  * @author rob
  *
  */
-public class ArooaAnnotationsHelper implements ArooaAnnotations {
+public class ArooaAnnotationsHelper {
+
+	private static final Logger logger = LoggerFactory.getLogger(ArooaAnnotationsHelper.class);
 
 	private final Class<?> theClass;
 
-	private final Map<String, List<Method>> methodsFor = 
-			new HashMap<String, List<Method>>();
+	private final Map<String, List<Method>> methodsFor =
+			new HashMap<>();
 
-	private final Map<String, Map<String, ArooaAnnotation>> propertyAnnotations = 
-			new HashMap<String, Map<String, ArooaAnnotation>>();
+	private final Map<String, Map<String, ArooaAnnotation>> propertyAnnotations =
+			new HashMap<>();
 	
 	/**
 	 * Constructor.
@@ -77,7 +79,7 @@ public class ArooaAnnotationsHelper implements ArooaAnnotations {
 		
 		List<Method> methods = methodsFor.get(annotationName);
 		if (methods == null) {
-			methods = new ArrayList<Method>();
+			methods = new ArrayList<>();
 			this.methodsFor.put(annotationName, methods);
 		}
 		methods.add(method);
@@ -110,15 +112,9 @@ public class ArooaAnnotationsHelper implements ArooaAnnotations {
 		
 		String annotationName = 
 				annotation.getName();
-				
-		Map<String, ArooaAnnotation> set = propertyAnnotations.get(property);
-		
-		if (set == null) {
-			set = new HashMap<String, ArooaAnnotation>(); 
-			propertyAnnotations.put(property, set);
-		}
-		
-		set.put(annotationName, annotation);
+
+		propertyAnnotations.computeIfAbsent(property, k -> new HashMap<>())
+				.put(annotationName, annotation);
 	}
 	
 	/**
@@ -126,7 +122,7 @@ public class ArooaAnnotationsHelper implements ArooaAnnotations {
 	 * 
 	 * @param definition
 	 */
-	public void addPropertyDefinition(PropertyDefinition definition) {
+	public void addPropertyDefinition(PropertyDefinitionBean definition) {
 		
 		String annotation = definition.getAnnotation();
 		
@@ -141,11 +137,11 @@ public class ArooaAnnotationsHelper implements ArooaAnnotations {
 	/**
 	 * Add an annotation definition.
 	 * 
-	 * @param defintion
+	 * @param definition The annotation definition.
 	 */
-	public void addAnnotationDefintion(AnnotationDefinition defintion) {
+	public void addAnnotationDefinition(AnnotationDefinitionBean definition) {
 		try {
-			String parameterTypeList = defintion.getParameterTypes();
+			String parameterTypeList = definition.getParameterTypes();
 			Class<?>[] parameterTypes;
 			if (parameterTypeList == null) {
 				parameterTypes = new Class<?>[0];
@@ -157,40 +153,21 @@ public class ArooaAnnotationsHelper implements ArooaAnnotations {
 							theClass.getClassLoader());
 			}
 
-			Method method = theClass.getMethod(defintion.getMethod(),
+			Method method = theClass.getMethod(definition.getMethod(),
 					parameterTypes);
 
-			addMethod(new SyntheticArooaAnnotation(defintion.getName()), 
+			addMethod(new SyntheticArooaAnnotation(definition.getName()),
 					method);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	@Override
-	public Method methodFor(String annotationName) {
-
-		List<Method> methods = methodsFor.get(annotationName);
-		if (methods == null) {
-			return null;
-		}
-		
-		if (methods.size() > 1) {
-			throw new IllegalStateException("More than one method for " +
-						annotationName);
-		}
-		else {
-			return methods.get(0);
-		}
-	}
-	
-	@Override
 	public String[] annotatedProperties() {
 		Set<String> keys = propertyAnnotations.keySet(); 
-		return keys.toArray(new String[keys.size()]);
+		return keys.toArray(new String[0]);
 	}
 	
-	@Override
 	public ArooaAnnotation[] annotationsForProperty(String propertyName) {
 		Map<String, ArooaAnnotation> annotations = propertyAnnotations.get(propertyName);
 		if (annotations == null) {
@@ -199,10 +176,9 @@ public class ArooaAnnotationsHelper implements ArooaAnnotations {
 		
 		Collection<ArooaAnnotation> values = annotations.values();
 		
-		return values.toArray(new ArooaAnnotation[values.size()]);
+		return values.toArray(new ArooaAnnotation[0]);
 	}
 	
-	@Override
 	public ArooaAnnotation annotationForProperty(String propertyName,
 			String annotationName) {
 		Map<String, ArooaAnnotation> annotations = propertyAnnotations.get(propertyName);
@@ -211,11 +187,99 @@ public class ArooaAnnotationsHelper implements ArooaAnnotations {
 		}
 		return annotations.get(annotationName);
 	}
-	
+
+	public ArooaAnnotations toArooaAnnotations() {
+		return new ImmutableImpl(this);
+	}
+
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + 
 				": num method annotations=" + methodsFor.size() + 
 				", num property annotations=" + propertyAnnotations.size();
-	}	
+	}
+
+	static class ImmutableImpl implements ArooaAnnotations {
+
+		private final Class<?> theClass;
+
+		private final Map<String, List<Method>> methodsFor =
+				new HashMap<>();
+
+		private final Map<String, List<String>> propertiesFor =
+				new HashMap<>();
+
+		private final Map<String, Map<String, ArooaAnnotation>> propertyAnnotations =
+				new HashMap<>();
+
+		ImmutableImpl(ArooaAnnotationsHelper helper) {
+
+			theClass = helper.theClass;
+
+			for (Map.Entry<String, List<Method>> entry : helper.methodsFor.entrySet()) {
+				methodsFor.put(entry.getKey(), new ArrayList<>(entry.getValue()));
+			}
+
+			for (Map.Entry<String, Map<String, ArooaAnnotation>> entry :
+					helper.propertyAnnotations.entrySet() ) {
+				propertyAnnotations.put(entry.getKey(), new HashMap<>(entry.getValue()));
+				for (String annotationName : entry.getValue().keySet() ) {
+					propertiesFor.computeIfAbsent(annotationName, k -> new ArrayList<>())
+							.add(entry.getKey());
+				}
+			}
+		}
+
+		@Override
+		public Method methodFor(String annotationName) {
+
+			List<Method> methods = methodsFor.get(annotationName);
+			if (methods == null) {
+				return null;
+			}
+
+			if (methods.size() > 1) {
+				throw new IllegalStateException("More than one method for " +
+						annotationName + ": " + methods);
+			}
+			else {
+				return methods.get(0);
+			}
+		}
+
+		@Override
+		public String propertyFor(String annotationName) {
+			List<String> properties = propertiesFor.get(annotationName);
+			if (properties == null) {
+				return null;
+			}
+
+			if (properties.size() > 1) {
+				throw new IllegalStateException("More than one property for " +
+						annotationName + ": " + properties);
+			}
+			else {
+				return properties.get(0);
+			}
+		}
+
+		@Override
+		public ArooaAnnotation annotationForProperty(String propertyName,
+													 String annotationName) {
+			Map<String, ArooaAnnotation> annotations = propertyAnnotations.get(propertyName);
+			if (annotations == null) {
+				return null;
+			}
+			return annotations.get(annotationName);
+		}
+
+		@Override
+		public String toString() {
+			return ArooaAnnotations.class.getSimpleName() + " for " + theClass +
+					": num method annotations=" + methodsFor.size() +
+					", num property annotations=" + propertiesFor.size();
+		}
+
+	}
+
 }

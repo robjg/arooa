@@ -25,20 +25,20 @@ public class BeanDefinitions {
 	private final String prefix;
 	
 	/** 
-     * A list of {@link BeanDefinition}s.
+     * A list of {@link BeanDefinitionBean}s.
 	 */
-	private final List<BeanDefinition> definitions;
+	private final List<BeanDefinitionBean> definitions;
 	
 	public BeanDefinitions(URI namespace, String prefix, 
-			List<BeanDefinition> defitions) {
+			List<BeanDefinitionBean> defitions) {
 		this.namespace = namespace;
 		this.prefix = prefix;
 		this.definitions = defitions;
 	}
 	
 	
-	public BeanDefinition[] getDefinitions() {
-		return definitions.toArray(new BeanDefinition[0]);
+	public BeanDefinitionBean[] getDefinitions() {
+		return definitions.toArray(new BeanDefinitionBean[0]);
 	}
 
 	public URI getNamespace() {

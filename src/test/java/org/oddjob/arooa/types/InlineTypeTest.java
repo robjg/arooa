@@ -3,7 +3,7 @@ package org.oddjob.arooa.types;
 import org.junit.Test;
 import org.oddjob.arooa.*;
 import org.oddjob.arooa.deploy.ArooaDescriptorBean;
-import org.oddjob.arooa.deploy.BeanDefinition;
+import org.oddjob.arooa.deploy.BeanDefinitionBean;
 import org.oddjob.arooa.deploy.ListDescriptor;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.CutAndPasteSupport;
@@ -86,7 +86,7 @@ public class InlineTypeTest {
 
     static ArooaDescriptor arooaDescriptor() {
 
-        BeanDefinition beanDef = new BeanDefinition();
+        BeanDefinitionBean beanDef = new BeanDefinitionBean();
         beanDef.setElement("stuff");
         beanDef.setClassName(StuffBean.class.getName());
         beanDef.setDesignFactory(InlineTypeDesignFactoryTest.StuffDesignFactory.class.getName());

@@ -4,8 +4,8 @@ import org.junit.Test;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.deploy.ArooaDescriptorBean;
-import org.oddjob.arooa.deploy.BeanDefinition;
-import org.oddjob.arooa.deploy.PropertyDefinition;
+import org.oddjob.arooa.deploy.BeanDefinitionBean;
+import org.oddjob.arooa.deploy.PropertyDefinitionBean;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLArooaParser;
@@ -36,13 +36,13 @@ public class ElementConfigurationTest {
     @Test
 	public void testParseAndSave() throws Exception {
 		
-		BeanDefinition beanDef = new BeanDefinition();
+		BeanDefinitionBean beanDef = new BeanDefinitionBean();
 		beanDef.setClassName(Stuff.class.getName());
 		beanDef.setElement("stuff");
 		beanDef.setProperties(0, 
-				new PropertyDefinition(
+				new PropertyDefinitionBean(
 						"moreStuff",
-						PropertyDefinition.PropertyType.COMPONENT));
+						PropertyDefinitionBean.PropertyType.COMPONENT));
 		
 		
 		ArooaDescriptorBean ourDescriptor = new ArooaDescriptorBean();

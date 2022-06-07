@@ -1,12 +1,12 @@
 package org.oddjob.arooa.deploy;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Provide a default descriptor with configured how based on the types of 
@@ -16,10 +16,10 @@ import org.oddjob.arooa.reflect.PropertyAccessor;
  * @author rob
  *
  */
-public class DefaultBeanDescriptorProvider implements BeanDescriptorProvider {
+public class DefaultBeanDescriptorProvider {
 
 	private static final Set<Class<?>> ATTRIBUTE_TYPES =
-		new HashSet<Class<?>>();
+			new HashSet<>();
 	
 	static {
 		ATTRIBUTE_TYPES.add(String.class);
@@ -33,58 +33,50 @@ public class DefaultBeanDescriptorProvider implements BeanDescriptorProvider {
 		ATTRIBUTE_TYPES.add(Character.class);
 		ATTRIBUTE_TYPES.add(Number.class);
 	}
-	
-	public PropertyDefinitionsHelper getBeanDescriptor(
-			ArooaClass arooaClass, PropertyAccessor accessor) 
+
+	public void findConfiguredHow(PropertyAccessor accessor,
+								  ConfiguredHowAccumulator accumulator)
 	throws ArooaPropertyException {
-		
+
+		ArooaClass arooaClass = accumulator.getClassIdentifier();
+
 		BeanOverview beanOverview = arooaClass.getBeanOverview(accessor);
 		
 		String[] properties = beanOverview.getProperties();
 
-		PropertyDefinitionsHelper defs = 
-				new PropertyDefinitionsHelper(arooaClass);
-		
-		for (int i = 0; i < properties.length; ++i) {
-			
-			String property = properties[i];
-		
+		for (String property : properties) {
+
 			if (!beanOverview.hasWriteableProperty(property)) {
 				continue;
 			}
-			
-			PropertyDefinition def;
-			
-			if (beanOverview.isIndexed(property) || 
+
+			PropertyDefinitionBean def;
+
+			if (beanOverview.isIndexed(property) ||
 					beanOverview.isMapped(property)) {
-				def = new PropertyDefinition(property, 
-						PropertyDefinition.PropertyType.ELEMENT);
-			}
-			else {
+				accumulator.addElementProperty(property);
+			} else {
 				Class<?> propertyType = beanOverview.getPropertyType(property);
-	
+
 				// this happens with Proxies. It's a bug Oddjob isn't
 				// affected by it, so fix later.
 				if (propertyType == null) {
-					throw new NullPointerException("No property type for [" + 
+					throw new NullPointerException("No property type for [" +
 							property + "] of " + arooaClass);
 				}
-				
-				if (propertyType.isPrimitive() || 
-						propertyType.isEnum() ||
-						ATTRIBUTE_TYPES.contains(propertyType)) {					
-					def = new PropertyDefinition(property, 
-							PropertyDefinition.PropertyType.ATTRIBUTE);
-				}
-				else {
-					def = new PropertyDefinition(property, 
-							PropertyDefinition.PropertyType.ELEMENT);
-				}
-			}			
 
-			defs.addPropertyDefinition(def);
+				if (isAttribute(propertyType)) {
+					accumulator.addAttributeProperty(property);
+				} else {
+					accumulator.addElementProperty(property);
+				}
+			}
 		}
-		
-		return defs;
+	}
+
+	public static boolean isAttribute(Class<?> propertyType) {
+		return propertyType.isPrimitive() ||
+				propertyType.isEnum() ||
+				ATTRIBUTE_TYPES.contains(propertyType);
 	}
 }

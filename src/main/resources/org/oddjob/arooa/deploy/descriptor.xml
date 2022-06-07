@@ -7,11 +7,11 @@
 		<is element="descriptor" 
 			className="org.oddjob.arooa.deploy.ArooaDescriptorBean"/>
 		<is element="bean-def" 
-			className="org.oddjob.arooa.deploy.BeanDefinition"/>
+			className="org.oddjob.arooa.deploy.BeanDefinitionBean"/>
         <is element="annotation" 
-            className="org.oddjob.arooa.deploy.AnnotationDefinition"/>
+            className="org.oddjob.arooa.deploy.AnnotationDefinitionBean"/>
 		<is element="property"
-			className="org.oddjob.arooa.deploy.PropertyDefinition"/>
+			className="org.oddjob.arooa.deploy.PropertyDefinitionBean"/>
 		<is element="configuration"
 			className="org.oddjob.arooa.types.XMLConfigurationType"/>
 		<is element="magic-beans"

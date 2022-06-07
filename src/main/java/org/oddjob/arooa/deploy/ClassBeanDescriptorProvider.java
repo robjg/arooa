@@ -1,11 +1,13 @@
 package org.oddjob.arooa.deploy;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Constructor;
 
 /**
  * A {@link BeanDescriptorProvider} that looks for a class of
@@ -20,15 +22,15 @@ public class ClassBeanDescriptorProvider implements BeanDescriptorProvider {
 			ClassBeanDescriptorProvider.class);
 	
 	public final static String NAME_EXTENSION="Arooa";
-	
+
 	public ArooaBeanDescriptor getBeanDescriptor(
 			ArooaClass classIdentifier, PropertyAccessor accessor) {
-		
+
 		Class<?> forClass = classIdentifier.forClass();
 
 		String className = forClass.getName() + NAME_EXTENSION;
 		
-		Class<?> cl = null;
+		Class<?> cl;
 		try {
 			cl = Class.forName(className, true, forClass.getClassLoader());
 		}
@@ -48,20 +50,17 @@ public class ClassBeanDescriptorProvider implements BeanDescriptorProvider {
 				);
 		}
 
-		Object beanDescriptor = null;
-		
+		Object beanDescriptor;
 		try {
-			beanDescriptor = cl.newInstance();
+			Constructor<?> constructor = cl.getConstructor();
+			beanDescriptor = constructor.newInstance();
 		} catch (Exception e) {
 			throw new ArooaException(e);
 		}
 				
 		logger.debug("Found ArooaBeanDescriptor by class [" +  
 				className + "]");
-		
-		return new LinkedBeanDescriptor(
-				(ArooaBeanDescriptor) beanDescriptor,
-				new DefaultBeanDescriptorProvider(
-				).getBeanDescriptor(classIdentifier, accessor));
+
+		return (ArooaBeanDescriptor) beanDescriptor;
 	}
 }

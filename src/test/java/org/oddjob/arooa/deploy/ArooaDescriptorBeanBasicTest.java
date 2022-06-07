@@ -1,9 +1,7 @@
 package org.oddjob.arooa.deploy;
 
-import org.junit.Test;
-
 import org.junit.Assert;
-
+import org.junit.Test;
 import org.oddjob.arooa.ArooaDescriptor;
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.ElementMappings;
@@ -21,7 +19,7 @@ public class ArooaDescriptorBeanBasicTest extends Assert {
 
 		ArooaDescriptorBean test = new ArooaDescriptorBean();
 		
-		BeanDefinition definition = new BeanDefinition();
+		BeanDefinitionBean definition = new BeanDefinitionBean();
 		definition.setClassName(Apple.class.getName());
 		definition.setElement("apple");
 

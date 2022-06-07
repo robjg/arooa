@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * Annotate that a property is a Component property. 
  * 
- * @see ArooaBeanDescriptor#getComponentProperty();
+ * @see org.oddjob.arooa.ArooaBeanDescriptor#getComponentProperty();
  * 
  * @author rob
  *

@@ -31,7 +31,7 @@ public class StandardArooaDescriptor implements ArooaDescriptor {
 	private final Map<ArooaClass, ArooaBeanDescriptor>
 		beanDescriptors = new HashMap<>();
 
-	private MappingsSwitch mappings = 
+	private final MappingsSwitch mappings =
 		new MappingsSwitch(new BaseElementMappings(), 
 				new LinkedClassMapping(
 						new DefaultValuesMappings(),
@@ -71,8 +71,8 @@ public class StandardArooaDescriptor implements ArooaDescriptor {
 			return beanDescriptor;
 		}		
 			
-		beanDescriptor = new SupportedBeanDescriptorProvider(
-				).getBeanDescriptor(arooaClass, accessor);
+		beanDescriptor = SupportedBeanDescriptorProvider.withNoBeanDefinition()
+				.getBeanDescriptor(arooaClass, accessor);
 		
 		beanDescriptors.put(arooaClass, beanDescriptor);		
 		

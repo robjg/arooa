@@ -1,11 +1,7 @@
 package org.oddjob.arooa.deploy;
 
-import org.junit.Test;
-
-import java.net.URI;
-
 import org.junit.Assert;
-
+import org.junit.Test;
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.ElementMappings;
 import org.oddjob.arooa.convert.DefaultConverter;
@@ -14,6 +10,8 @@ import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.types.XMLConfigurationType;
+
+import java.net.URI;
 
 public class ArooaDescriptorDescriptorTest extends Assert {
 
@@ -48,7 +46,7 @@ public class ArooaDescriptorDescriptorTest extends Assert {
 						"bean-def"),
 				new InstantiationContext(ArooaType.VALUE, null));
 		
-		assertEquals(BeanDefinition.class, 
+		assertEquals(BeanDefinitionBean.class,
 				classIdentifier.forClass());
 		
 		classIdentifier = mappings.mappingFor(				
@@ -56,7 +54,7 @@ public class ArooaDescriptorDescriptorTest extends Assert {
 						"property"),
 				new InstantiationContext(ArooaType.VALUE, null));
 		
-		assertEquals(PropertyDefinition.class, 
+		assertEquals(PropertyDefinitionBean.class,
 				classIdentifier.forClass());
 		
 		classIdentifier = mappings.mappingFor(				

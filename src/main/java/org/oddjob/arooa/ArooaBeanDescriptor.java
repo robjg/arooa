@@ -17,7 +17,7 @@ public interface ArooaBeanDescriptor {
 	 * 
 	 * @return
 	 */
-	public ParsingInterceptor getParsingInterceptor();
+	ParsingInterceptor getParsingInterceptor();
 	
 	/**
 	 * The name of the property which can be set using the text
@@ -32,14 +32,14 @@ public interface ArooaBeanDescriptor {
 	 * text of the element. Will be null if the class doesn't
 	 * support setting element text.
 	 */
-	public String getTextProperty();
+	String getTextProperty();
 	
 	/**
 	 * The name of the component property.
 	 * 
 	 * @return
 	 */
-	public String getComponentProperty();
+	String getComponentProperty();
 
 	/**
 	 * How is a property configured.
@@ -48,7 +48,7 @@ public interface ArooaBeanDescriptor {
 	 * 
 	 * @return How the property is configured. Never null.
 	 */
-	public ConfiguredHow getConfiguredHow(String property);
+	ConfiguredHow getConfiguredHow(String property);
 	
 	/**
 	 * Get the property flavour. This is for services.
@@ -57,7 +57,7 @@ public interface ArooaBeanDescriptor {
 	 * 
 	 * @return The flavour. May be null.
 	 */
-	public String getFlavour(String property);
+	String getFlavour(String property);
 	
 	/**
 	 * Indicates that the property should be set automatically
@@ -68,7 +68,7 @@ public interface ArooaBeanDescriptor {
 	 * @return true if the property can be set automatically,
 	 * false otherwise.
 	 */
-	public boolean isAuto(String property);
+	boolean isAuto(String property);
 		
 	/**
 	 * Provide annotation information about methods. Used to allow
@@ -77,5 +77,5 @@ public interface ArooaBeanDescriptor {
 	 * 
 	 * @return The annotations.
 	 */
-	public ArooaAnnotations getAnnotations();
+	ArooaAnnotations getAnnotations();
 }

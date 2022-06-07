@@ -4,7 +4,7 @@
         <arooa:bean-def element="my-bean"
             className="org.oddjob.arooa.deploy.ArooaDescriptorAnnotationsTest$MyBean">
             <properties>
-                <arooa:property name="colour" annotation="org.oddjob.arooa.deploy.annotations.Component"/>
+                <arooa:property name="colour" annotation="org.oddjob.arooa.deploy.annotations.ArooaComponent"/>
                 <arooa:property name="colour" annotation="org.oddjob.arooa.deploy.test.Special"/>
             </properties>
         </arooa:bean-def>

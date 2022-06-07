@@ -22,12 +22,14 @@ public interface ArooaAnnotations {
 	 */
 	Method methodFor(String annotationName);
 
+	String propertyFor(String annotationName);
+
 	/**
 	 * Provide all properties that are annotated.
 	 * 
 	 * @return Array of properties or an empty array. Never null.
 	 */
-	String[] annotatedProperties();
+//	String[] annotatedProperties();
 	
 	/**
 	 * Get the Annotation for a property by annotation name.
@@ -38,7 +40,7 @@ public interface ArooaAnnotations {
 	 * @return The annotation, or null if one doesn't exist.
 	 */
 	ArooaAnnotation annotationForProperty(String propertyName,
-			String annotationName);
+										  String annotationName);
 	
 	/**
 	 * Get all the annotations for a property.
@@ -47,6 +49,6 @@ public interface ArooaAnnotations {
 	 * 
 	 * @return An array of annotations, may be empty, never null.
 	 */
-	ArooaAnnotation[] annotationsForProperty(String propertyName);
+//	ArooaAnnotation[] annotationsForProperty(String propertyName);
 
 }

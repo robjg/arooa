@@ -1,0 +1,19 @@
+<arooa:descriptor xmlns:arooa="http://rgordon.co.uk/oddjob/arooa"
+                  prefix="didocmpr" namespace="oddjob:didocmpr">
+    <values>
+        <arooa:bean-def element='collection-comparer'
+                        className='org.oddjob.arooa.deploy.AnnotatedBeanDescriptorTest$ConfiguredInDescriptor'>
+            <annotations>
+                <arooa:annotation name="org.oddjob.arooa.deploy.annotations.ArooaAttribute"
+                                  method="setKeys"
+                                  parameterTypes="[Ljava.lang.String;"/>
+                <arooa:annotation name="org.oddjob.arooa.deploy.annotations.ArooaElement"
+                                  method="setFoo"
+                                  parameterTypes="java.lang.String"/>
+                <arooa:annotation name="org.oddjob.arooa.deploy.annotations.ArooaComponent"
+                                  method="setMyComp"
+                                  parameterTypes="java.lang.Object"/>
+            </annotations>
+        </arooa:bean-def>
+    </values>
+</arooa:descriptor>

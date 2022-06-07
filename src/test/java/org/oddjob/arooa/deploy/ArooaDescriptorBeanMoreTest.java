@@ -1,21 +1,11 @@
 package org.oddjob.arooa.deploy;
 
-import org.junit.Test;
-
 import org.junit.Assert;
-
-import org.oddjob.arooa.ArooaBeanDescriptor;
-import org.oddjob.arooa.ArooaConfigurationException;
-import org.oddjob.arooa.ArooaDescriptor;
-import org.oddjob.arooa.ConfiguredHow;
-import org.oddjob.arooa.ParsingInterceptor;
+import org.junit.Test;
+import org.oddjob.arooa.*;
 import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
-import org.oddjob.arooa.deploy.PropertyDefinition.PropertyType;
-import org.oddjob.arooa.deploy.annotations.ArooaComponent;
-import org.oddjob.arooa.deploy.annotations.ArooaElement;
-import org.oddjob.arooa.deploy.annotations.ArooaHidden;
-import org.oddjob.arooa.deploy.annotations.ArooaInterceptor;
-import org.oddjob.arooa.deploy.annotations.ArooaText;
+import org.oddjob.arooa.deploy.PropertyDefinitionBean.PropertyType;
+import org.oddjob.arooa.deploy.annotations.*;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.xml.XMLConfiguration;
@@ -58,11 +48,11 @@ public class ArooaDescriptorBeanMoreTest extends Assert {
 		
 		ArooaDescriptorBean test = new ArooaDescriptorBean();
 
-		BeanDefinition def = new BeanDefinition();
+		BeanDefinitionBean def = new BeanDefinitionBean();
 		def.setClassName(OurBean.class.getName());
 		def.setElement("snack");
 		
-		PropertyDefinition prop = new PropertyDefinition(
+		PropertyDefinitionBean prop = new PropertyDefinitionBean(
 				"stuff", PropertyType.COMPONENT);
 		
 		def.setProperties(0, prop);
@@ -119,7 +109,7 @@ public class ArooaDescriptorBeanMoreTest extends Assert {
 	
 	/** Check both get applied but XML Descriptor wins. */
    @Test
-	public void testBeanDescriptorWithAnnotaitons() {
+	public void testBeanDescriptorWithAnnotations() {
 		
 		String xml =
 				"<arooa:descriptor xmlns:arooa='http://rgordon.co.uk/oddjob/arooa'>" +

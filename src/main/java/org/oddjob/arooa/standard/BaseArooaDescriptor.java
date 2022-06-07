@@ -18,75 +18,78 @@ import java.util.Map;
 
 /**
  * Default behaviour for Arooa configuration without default mappings.
- * 
- * @author rob
  *
+ * @author rob
  */
 public class BaseArooaDescriptor implements ArooaDescriptor {
 
-	/** Cache bean descriptors. */
-	private final Map<ArooaClass, ArooaBeanDescriptor>
-		beanDescriptors = new HashMap<ArooaClass, ArooaBeanDescriptor>();
+    /**
+     * Cache bean descriptors.
+     */
+    private final Map<ArooaClass, ArooaBeanDescriptor>
+            beanDescriptors = new HashMap<>();
 
-	/** The class resolver. */
-	private final ClassResolver classResolver;
-	
-	public BaseArooaDescriptor() {
-		this(BaseArooaDescriptor.class.getClassLoader());
-	}
-	
-	public BaseArooaDescriptor(
-			ClassLoader classLoader) {
-		classResolver = new ClassLoaderClassResolver(classLoader);
-	}
-	
-	@Override
-	public ConversionProvider getConvertletProvider() {
-		return new DefaultConversionProvider();
-	}
-	
-	@Override
-	public ElementMappings getElementMappings() {		
-		return new ClassMappingsList();
-	}
+    /**
+     * The class resolver.
+     */
+    private final ClassResolver classResolver;
 
-	@Override
-	public ArooaBeanDescriptor getBeanDescriptor(
-			ArooaClass arooaClass,
-			PropertyAccessor accessor) {
+    public BaseArooaDescriptor() {
+        this(BaseArooaDescriptor.class.getClassLoader());
+    }
 
-		ArooaBeanDescriptor beanDescriptor = beanDescriptors.get(
-				arooaClass); 
-		
-		if (beanDescriptor != null) {
-			return beanDescriptor;
-		}		
-		
-		beanDescriptor = new SupportedBeanDescriptorProvider(
-				).getBeanDescriptor(arooaClass, accessor);
-		
-		beanDescriptors.put(arooaClass, beanDescriptor);		
-		
-		return beanDescriptor;
-	}
-	
-	@Override
-	public String getPrefixFor(URI namespace) {
-		return null;
-	}
+    public BaseArooaDescriptor(
+            ClassLoader classLoader) {
+        classResolver = new ClassLoaderClassResolver(classLoader);
+    }
 
-	@Override
-	public String[] getPrefixes() {
-		return new String[0];
-	}
+    @Override
+    public ConversionProvider getConvertletProvider() {
+        return new DefaultConversionProvider();
+    }
 
-	@Override
-	public URI getUriFor(String prefix) {
-		return null;
-	}
+    @Override
+    public ElementMappings getElementMappings() {
+        return new ClassMappingsList();
+    }
 
-	@Override
-	public ClassResolver getClassResolver() {
-		return classResolver;
-	}
+    @Override
+    public ArooaBeanDescriptor getBeanDescriptor(
+            ArooaClass arooaClass,
+            PropertyAccessor accessor) {
+
+        ArooaBeanDescriptor beanDescriptor = beanDescriptors.get(
+                arooaClass);
+
+        if (beanDescriptor != null) {
+            return beanDescriptor;
+        }
+
+        beanDescriptor = SupportedBeanDescriptorProvider.withNoBeanDefinition()
+                .getBeanDescriptor(arooaClass, accessor);
+
+        beanDescriptors.put(arooaClass, beanDescriptor);
+
+        return beanDescriptor;
+    }
+
+    @Override
+    public String getPrefixFor(URI namespace) {
+        return null;
+    }
+
+    @Override
+    public String[] getPrefixes() {
+        return new String[0];
+    }
+
+    @Override
+    public URI getUriFor(String prefix) {
+        return null;
+    }
+
+    @Override
+    public ClassResolver getClassResolver() {
+        return classResolver;
+    }
 }
