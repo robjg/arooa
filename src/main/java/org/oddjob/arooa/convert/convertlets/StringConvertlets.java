@@ -9,6 +9,7 @@ import org.oddjob.arooa.utils.QuoteTokenizerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 
 public class StringConvertlets implements ConversionProvider {
@@ -33,5 +34,9 @@ public class StringConvertlets implements ConversionProvider {
 						throw new ConvertletException(e);
 					}
 				});
+
+		registry.register(String.class, byte[].class, s -> s.getBytes(StandardCharsets.UTF_8));
+
+		registry.register(String.class, char[].class, String::toCharArray);
 	}
 }

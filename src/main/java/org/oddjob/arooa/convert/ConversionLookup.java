@@ -19,6 +19,6 @@ public interface ConversionLookup {
 	 * 
 	 * @return The ConversionPath or null if one can't be found.
 	 */
-	public <F, T> ConversionPath<F, T> findConversion(Class<F> from, Class<T> to);
+	<F, T> ConversionPath<F, T> findConversion(Class<F> from, Class<T> to);
 
 }

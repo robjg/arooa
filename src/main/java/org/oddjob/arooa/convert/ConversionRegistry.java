@@ -16,7 +16,7 @@ public interface ConversionRegistry {
 	 * @param to The convert to class.
 	 * @param convertlet The Convertlet.
 	 */
-	public <F, T> void register(Class<F> from, Class<T> to, 
+	<F, T> void register(Class<F> from, Class<T> to,
 			Convertlet<F, T> convertlet);
 	
 	
@@ -30,5 +30,5 @@ public interface ConversionRegistry {
 	 * @param from The from type.
 	 * @param joker The joker.
 	 */
-	public <F> void registerJoker(Class<F> from, Joker<F> joker);
+	<F> void registerJoker(Class<F> from, Joker<F> joker);
 }

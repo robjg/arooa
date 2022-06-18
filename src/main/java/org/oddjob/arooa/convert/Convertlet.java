@@ -8,7 +8,7 @@ package org.oddjob.arooa.convert;
  * certain type to an object of a different type.
  * <p>
  * <code>Convertlet</code>s are provided by {@link ConversionProvider} in an 
- * {@link ArooaDescriptor}.
+ * {@link org.oddjob.arooa.ArooaDescriptor}.
  * <p>
  * <code>Convertlet</code>s are used in sequences. A conversion from Float to Integer 
  * uses to <code>Convertlet</code>s. Float to Number and Number to Integer. If

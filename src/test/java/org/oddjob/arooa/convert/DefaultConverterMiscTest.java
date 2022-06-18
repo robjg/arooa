@@ -92,7 +92,7 @@ public class DefaultConverterMiscTest extends Assert {
         // This needs to be thought about!!!
 
         MatcherAssert.assertThat(path.toString(),
-                is("String-File-Path-Iterable-Stream-List"));
+                is("String-char[]-Object-List"));
     }
 
 }

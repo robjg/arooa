@@ -1,7 +1,5 @@
 package org.oddjob.arooa.standard;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.Test;
 import org.oddjob.arooa.*;
 import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
@@ -11,23 +9,23 @@ import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.MockArooaContext;
 import org.oddjob.arooa.parsing.MutableAttributes;
-import org.oddjob.arooa.reflect.*;
+import org.oddjob.arooa.reflect.ArooaClass;
+import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.registry.BeanRegistry;
 import org.oddjob.arooa.registry.ComponentPool;
 import org.oddjob.arooa.registry.MockBeanRegistry;
 import org.oddjob.arooa.registry.MockComponentPool;
 import org.oddjob.arooa.runtime.*;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.mockito.Matchers.any;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ComponentConfigurationTest extends Assert {
+public class ComponentConfigurationTest {
 
-    private class ATools extends MockArooaTools {
+    private static class ATools extends MockArooaTools {
 
         @Override
         public ArooaConverter getArooaConverter() {
@@ -51,7 +49,7 @@ public class ComponentConfigurationTest extends Assert {
 
     }
 
-    private class ASession extends MockArooaSession {
+    private static class ASession extends MockArooaSession {
         ATools tools = new ATools();
 
         ComponentTrinity trinity;
@@ -66,7 +64,7 @@ public class ComponentConfigurationTest extends Assert {
             return new MockComponentPool() {
                 @Override
                 public String registerComponent(ComponentTrinity trinity, String id) {
-                    assertEquals("anid", id);
+                    assertThat(id, is("anid"));
                     assertThat(trinity, notNullValue());
 
                     if (ASession.this.trinity != null) {
@@ -93,8 +91,8 @@ public class ComponentConfigurationTest extends Assert {
                 @SuppressWarnings("unchecked")
                 @Override
                 public <T> T lookup(String path, Class<T> required) {
-                    assertEquals("Value to replace.", "To be replaced", path);
-                    assertEquals(String.class, required);
+                    assertThat("Value to replace.", path, is("To be replaced"));
+                    assertThat(required, is(String.class));
                     return (T) "red";
                 }
             };
@@ -116,10 +114,11 @@ public class ComponentConfigurationTest extends Assert {
         }
     }
 
-    private class AContext extends MockArooaContext {
+    private static class AContext extends MockArooaContext {
         final ASession session = new ASession();
 
-        final ConfigurationNode configurationNode =
+        @SuppressWarnings("unchecked")
+        final ConfigurationNode<ArooaContext> configurationNode =
                 mock(ConfigurationNode.class);
 
         RuntimeListener runtimeListener;
@@ -154,19 +153,19 @@ public class ComponentConfigurationTest extends Assert {
                 @Override
                 public void removeRuntimeListener(RuntimeListener listener) {
                     assertThat(listener, notNullValue());
-                    assertThat(runtimeListener, is( listener ));
+                    assertThat(runtimeListener, is(listener));
                     runtimeListener = null;
                 }
             };
         }
 
         @Override
-        public ConfigurationNode getConfigurationNode() {
+        public ConfigurationNode<ArooaContext> getConfigurationNode() {
             return configurationNode;
         }
     }
 
-    private class ProxyObject {
+    private static class ProxyObject {
 
     }
 
@@ -183,7 +182,7 @@ public class ComponentConfigurationTest extends Assert {
         }
     }
 
-    private class AnInstanceRuntime extends MockInstanceRuntime {
+    private static class AnInstanceRuntime extends MockInstanceRuntime {
 
         Object value;
 
@@ -227,33 +226,32 @@ public class ComponentConfigurationTest extends Assert {
 
         ArooaContext ourContext = mock(ArooaContext.class);
         when(ourContext.getSession())
-               .thenReturn(parentContext.getSession());
+                .thenReturn(parentContext.getSession());
         when(ourContext.getRuntime())
                 .thenReturn(instanceRuntime);
 
         // Check component registered after context set.
         assertThat("Component Should not be registered",
-                   parentContext.session.trinity,
-                   nullValue());
+                parentContext.session.trinity,
+                nullValue());
 
         instanceRuntime.setContext(ourContext);
 
         // Check component registered after context set.
-        assertEquals("Registered", object,
-                     parentContext.session.trinity.getTheComponent());
-        assertEquals("Registered", proxy,
-                     parentContext.session.trinity.getTheProxy());
+        assertThat("Registered",
+                parentContext.session.trinity.getTheComponent(), is(object));
+        assertThat("Registered",
+                parentContext.session.trinity.getTheProxy(), is(proxy));
 
-        assertNull("Property not set", instanceRuntime.value);
+        assertThat("Property not set", instanceRuntime.value, nullValue());
 
         test.init(instanceRuntime, ourContext);
 
-        assertNotNull("Property not set", instanceRuntime.value);
+        assertThat("Property not set", instanceRuntime.value, notNullValue());
 
-        assertEquals("Parent property set", proxy, instanceRuntime.value);
+        assertThat("Parent property set", instanceRuntime.value, is(proxy));
 
-        assertNull("Property not set",
-                   object.colour);
+        assertThat("Property not set", object.colour, nullValue());
 
         RuntimeConfiguration parentRuntime = mock(RuntimeConfiguration.class);
 
@@ -293,16 +291,16 @@ public class ComponentConfigurationTest extends Assert {
 
         instanceRuntime.setContext(ourContext);
 
-        assertNull("Property not set", instanceRuntime.value);
+        assertThat("Property not set", instanceRuntime.value, nullValue());
 
         test.init(instanceRuntime, ourContext);
 
-        assertNotNull("Property not set", instanceRuntime.value);
+        assertThat("Property not set", instanceRuntime.value, notNullValue());
 
         assertThat(object.getColour(), is("red"));
     }
 
-    private class AnInstanceRuntime2 extends MockInstanceRuntime {
+    private static class AnInstanceRuntime2 extends MockInstanceRuntime {
 
         public AnInstanceRuntime2(InstanceConfiguration instance,
                                   ArooaContext parentContext) {
@@ -331,14 +329,14 @@ public class ComponentConfigurationTest extends Assert {
                 new ProxyObject(),
                 attrs);
 
-        assertNull("Property not set", theObject.colour);
+        assertThat("Property not set", theObject.colour, nullValue());
 
         ArooaContext ourContext = mock(ArooaContext.class);
 
         test.listenerConfigure(
                 new AnInstanceRuntime2(test, parentContext), ourContext);
 
-        assertNull("Property not set", theObject.colour);
+        assertThat("Property not set", theObject.colour, nullValue());
     }
 
     @Test
@@ -357,7 +355,7 @@ public class ComponentConfigurationTest extends Assert {
                 new ProxyObject(),
                 attrs);
 
-        assertNull("Property not set", theObject.getColour());
+        assertThat("Property not set", theObject.getColour(), nullValue());
 
         AnInstanceRuntime instanceRuntime =
                 new AnInstanceRuntime(test, parentContext);
