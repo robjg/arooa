@@ -1,6 +1,7 @@
 package org.oddjob.arooa.types;
 
 import org.oddjob.arooa.ArooaConfiguration;
+import org.oddjob.arooa.deploy.annotations.ArooaHidden;
 import org.oddjob.arooa.deploy.annotations.ArooaInterceptor;
 import org.oddjob.arooa.design.DesignFactory;
 import org.oddjob.arooa.life.ArooaContextAware;
@@ -11,21 +12,25 @@ import org.oddjob.arooa.parsing.ChildCatcher;
 import java.util.Objects;
 
 /**
- * A type that provides configuration. It is very like {@link XMLType} but provides a form for the
+ * @oddjob.description A type that provides configuration. It is very like {@link XMLType} but provides a form for the
  * configuration during design rather than a Text Area for raw XML.
+ *
  * <p/>
- * To support the correct root element in the form, {@link DesignFactory}s must provide a
- * {@link ConfigurationDefinition} registered in the session's {@link org.oddjob.arooa.registry.BeanRegistry}
- * with the name given by {@link InlineType#INLINE_CONFIGURATION_DEFINITION}.
  */
 @ArooaInterceptor("org.oddjob.arooa.xml.XMLInterceptor")
 public class InlineType implements ArooaContextAware, ValueFactory<ArooaConfiguration> {
 
     public static final ArooaElement ELEMENT = new ArooaElement("inline");
 
+    /**
+     * To support the correct root element in the form, {@link DesignFactory}s must provide a
+     * {@link ConfigurationDefinition} registered in the session's {@link org.oddjob.arooa.registry.BeanRegistry}
+     * with the name given by {@link InlineType#INLINE_CONFIGURATION_DEFINITION}.
+     */
     public static final String INLINE_CONFIGURATION_DEFINITION =
             "InlineConfigurationDefinition";
 
+    @ArooaHidden
     private ArooaContext arooaContext;
 
     @Override
