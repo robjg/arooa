@@ -37,5 +37,12 @@ public class ConfigOwnerEvent extends EventObject {
 	public Change getChange() {
 		return change;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "ConfigOwnerEvent{" +
+				"source=[" + source +
+				"], change=" + change +
+				'}';
+	}
 }

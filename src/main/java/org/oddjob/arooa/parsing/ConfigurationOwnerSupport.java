@@ -1,8 +1,8 @@
 package org.oddjob.arooa.parsing;
 
-import java.util.List;
-
 import org.oddjob.arooa.utils.ListenerSupportBase;
+
+import java.util.List;
 
 /**
  * Helper class for {@link ConfigurationOwner}s. Tracks and notifies 
@@ -15,7 +15,7 @@ public class ConfigurationOwnerSupport extends ListenerSupportBase<OwnerStateLis
 
 	private final ConfigurationOwner source;
 	
-	private ConfigurationSession session;
+	private volatile ConfigurationSession session;
 	
 	public ConfigurationOwnerSupport(ConfigurationOwner owner) {
 		this.source = owner;
