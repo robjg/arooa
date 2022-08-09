@@ -1,7 +1,9 @@
 package org.oddjob.arooa.utils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A Helper Class for tracking Listeners. Allows commands to
@@ -15,8 +17,8 @@ import java.util.List;
  */
 public class ListenerSupportBase<T> {
 
-    private final List<T> listeners =
-            new ArrayList<>();
+    private final Set<T> listeners =
+            new HashSet<>();
 
     private Runnable onFirst;
 
@@ -40,8 +42,9 @@ public class ListenerSupportBase<T> {
 
     protected void removeListener(T listener) {
         synchronized (listeners) {
-            listeners.remove(listener);
-            if (listeners.isEmpty() && onEmpty != null) {
+            if (listeners.remove(listener) &&
+                    listeners.isEmpty() &&
+                    onEmpty != null) {
                 onEmpty.run();
             }
         }
