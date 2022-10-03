@@ -4,6 +4,9 @@ import org.oddjob.arooa.ArooaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -228,5 +231,45 @@ public class ClassUtils {
 			}
 		}
 		return simpleName;
+	}
+
+	/**
+	 * Return the Raw type of a Type which is either already a raw type or a Parameterised type such as
+	 * List&lt;String&gt; which would be List.
+	 *
+	 * @param type The type which may be generic or not.
+	 * @return The Raw type.
+	 *
+	 * @throws IllegalArgumentException if the type is not a Class or Parameterised Type.
+	 */
+	public static Class<?> rawType(Type type) throws IllegalArgumentException {
+		if (type instanceof Class) {
+			return (Class<?>) type;
+		}
+		else if (type instanceof ParameterizedType){
+			return (Class<?>) ((ParameterizedType) type).getRawType();
+		}
+		else {
+			throw new IllegalArgumentException("Can't work out raw type of [" + type + "]");
+		}
+	}
+
+
+	public static Class<?> getComponentTypeOfParameter(Method method, int parameterNumber) {
+
+		Type[] genericParameterTypes = method.getGenericParameterTypes();
+
+		if (genericParameterTypes[parameterNumber] instanceof ParameterizedType) {
+			ParameterizedType parameterizedType = (ParameterizedType) genericParameterTypes[parameterNumber];
+
+			Type[] typeArgs = parameterizedType.getActualTypeArguments();
+			if (typeArgs.length == 0) {
+				return null;
+			}
+			return rawType(typeArgs[0]);
+		}
+		else {
+			return null;
+		}
 	}
 }
