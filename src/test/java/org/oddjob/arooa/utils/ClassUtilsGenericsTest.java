@@ -37,6 +37,7 @@ public class ClassUtilsGenericsTest {
     @SuppressWarnings("rawtypes")
     void setListRaw(List l) {}
 
+    @Test
     public void testComponentType() throws NoSuchMethodException {
 
         assertThat(ClassUtils.getComponentTypeOfParameter(
@@ -44,7 +45,7 @@ public class ClassUtilsGenericsTest {
                 is(String.class));
 
         assertThat(ClassUtils.getComponentTypeOfParameter(
-                        ClassUtilsGenericsTest.class.getDeclaredMethod("setListOfRaw", List.class), 0),
+                        ClassUtilsGenericsTest.class.getDeclaredMethod("setListRaw", List.class), 0),
                 nullValue());
     }
 }

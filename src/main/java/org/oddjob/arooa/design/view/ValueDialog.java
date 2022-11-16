@@ -3,26 +3,14 @@
  */
 package org.oddjob.arooa.design.view;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dialog;
-import java.awt.Frame;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.concurrent.Callable;
-
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
-import javax.swing.WindowConstants;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Create dialogs for forms.
@@ -56,12 +44,7 @@ public class ValueDialog {
 	public ValueDialog(Component form, Callable<Boolean> okAction) {
 		this.form = form;
 		if (okAction == null) {
-			this.okAction = new Callable<Boolean>() {
-				@Override
-				public Boolean call() throws Exception {
-					return true;
-				}
-			};
+			this.okAction = () -> true;
 		}
 		else {
 			this.okAction = okAction;
@@ -112,34 +95,28 @@ public class ValueDialog {
 		JPanel selection = new JPanel();
 		
 		
-		final ActionListener enterAction = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					chosen = okAction.call();
+		final ActionListener enterAction = e -> {
+			try {
+				chosen = okAction.call();
+			}
+			catch (Exception ex) {
+				if (logger.isDebugEnabled()) {
+					logger.debug("OK Action failed.", ex);
 				}
-				catch (Exception ex) {
-					if (logger.isDebugEnabled()) {
-						logger.debug("OK Action failed.", ex);
-					}
-					DialogueHelper.showExceptionMessage(form, ex);
-					chosen = false;					
-				}
-				if (chosen) {
-					dialog.dispose();
-				}
+				DialogueHelper.showExceptionMessage(form, ex);
+				chosen = false;
+			}
+			if (chosen) {
+				dialog.dispose();
 			}
 		};
 		
 		JButton ok = new JButton("OK");
 		ok.addActionListener(enterAction);
 
-		final ActionListener cancelAction = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				chosen = false;
-				dialog.dispose();
-			}
+		final ActionListener cancelAction = e -> {
+			chosen = false;
+			dialog.dispose();
 		};
 		
 		JButton cancel = new JButton("Cancel");
@@ -170,7 +147,7 @@ public class ValueDialog {
 		
 		dialog.pack();
 		if (window != null) {
-			ScreenPresence screen = new ScreenPresence(window);
+			ScreenPresence screen = ScreenPresence.of(window);
 			dialog.setLocation(screen.locationToCenter(dialog.getPreferredSize()));
 		}
 		
