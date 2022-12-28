@@ -92,5 +92,7 @@ public class DefaultConversionProvider implements ConversionProvider {
 		new ValueFactory.Conversions().registerWith(registry);
 		new IdentifiableValueType.Conversions().registerWith(registry);
 		new ConversionConvertlets().registerWith(registry);
+		// Would be nice to do this another way
+		new NashornConvertlets().registerWith(registry);
 	}
 }

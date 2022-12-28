@@ -4,13 +4,13 @@ import org.junit.Test;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaTools;
 import org.oddjob.arooa.convert.ArooaConversionException;
+import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.convert.DefaultConverter;
 import org.oddjob.arooa.registry.BeanRegistry;
 import org.oddjob.arooa.registry.SimpleBeanRegistry;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -140,12 +140,79 @@ public class ScriptEvaluatorTest {
         }
     }
 
+    @Test
+    public void whenFunctionThenWhatHappens() throws ArooaConversionException {
+
+        ArooaSession session = createSession();
+
+        ScriptEvaluator test = ScriptEvaluator.getDefault();
+
+        Function function = test.evaluate("function(x) { return x + 'Foo' }",
+                session, Function.class);
+
+        Object result = function.apply("Some ");
+
+        assertThat(result, is("Some Foo"));
+    }
+
+    @Test
+    public void whenFunctionThenWhatHappens2() throws ArooaConversionException {
+
+        ArooaSession session = createSession();
+
+        ScriptEvaluator test = ScriptEvaluator.getDefault();
+
+        Function function = test.evaluate("function(x) { return x + 2 }",
+                session, Function.class);
+
+        Object result = function.apply(2);
+
+        assertThat(result, is(4.0));
+    }
+
+    @Test
+    public void whenFunctionThenWhatHappens3() throws ArooaConversionException {
+
+        ArooaSession session = createSession();
+
+        ScriptEvaluator test = ScriptEvaluator.getDefault();
+
+        Map<String, String> someMap = new HashMap<>();
+
+        Function function = test.evaluate("function(x) { x.some = 'foo'; return x }",
+                session, Function.class);
+
+        Object result = function.apply(someMap);
+
+        Map<String, String> expected = new HashMap<>();
+        expected.put("some", "foo");
+
+        assertThat(result, is(expected));
+    }
+
+    @Test
+    public void whenFunctionWithNullArg() throws ArooaConversionException {
+
+        ArooaSession session = createSession();
+
+        ScriptEvaluator test = ScriptEvaluator.getDefault();
+
+        Function function = test.evaluate("function(x) { return x ?  'Stuff' : 'Nothing' }",
+                session, Function.class);
+
+        Object result = function.apply(null);
+
+        assertThat(result, is("Nothing"));
+    }
+
     private ArooaSession createSession() {
 
-        BeanRegistry beanRegistry = new SimpleBeanRegistry();
+        ArooaConverter converter = new DefaultConverter();
+
+        BeanRegistry beanRegistry = new SimpleBeanRegistry(null, converter);
 
         ArooaTools tools = mock(ArooaTools.class);
-        when(tools.getArooaConverter()).thenReturn(new DefaultConverter());
+        when(tools.getArooaConverter()).thenReturn(converter);
 
         ArooaSession session = mock(ArooaSession.class);
         when(session.getTools()).thenReturn(tools);
@@ -153,4 +220,5 @@ public class ScriptEvaluatorTest {
 
         return session;
     }
+
 }
