@@ -11,6 +11,7 @@ import org.oddjob.arooa.registry.SimpleBeanRegistry;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -156,7 +157,7 @@ public class ScriptEvaluatorTest {
     }
 
     @Test
-    public void whenFunctionThenWhatHappens2() throws ArooaConversionException {
+    public void whenFunctionThenEvaluatesToFunction() throws ArooaConversionException {
 
         ArooaSession session = createSession();
 
@@ -171,7 +172,7 @@ public class ScriptEvaluatorTest {
     }
 
     @Test
-    public void whenFunctionThenWhatHappens3() throws ArooaConversionException {
+    public void whenFunctionThenCanSetPropertiesOnAMap() throws ArooaConversionException {
 
         ArooaSession session = createSession();
 
@@ -191,7 +192,7 @@ public class ScriptEvaluatorTest {
     }
 
     @Test
-    public void whenFunctionWithNullArg() throws ArooaConversionException {
+    public void whenFunctionWithNullArgThenNullPassedOk() throws ArooaConversionException {
 
         ArooaSession session = createSession();
 
@@ -204,6 +205,26 @@ public class ScriptEvaluatorTest {
 
         assertThat(result, is("Nothing"));
     }
+
+    @Test
+    public void whenPredicateThenTrueAsExpected() throws ArooaConversionException {
+
+        ArooaSession session = createSession();
+
+        ScriptEvaluator test = ScriptEvaluator.getDefault();
+
+        Predicate predicate = test.evaluate("function(x) { return x == 5 }",
+                session, Predicate.class);
+
+        Object result = predicate.test(5);
+
+        assertThat(result, is(true));
+
+        Object result2 = predicate.test(6);
+
+        assertThat(result2, is(false));
+    }
+
 
     private ArooaSession createSession() {
 
