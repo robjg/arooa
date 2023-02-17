@@ -1,7 +1,7 @@
 package org.oddjob.arooa.design;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.ConfigurationHandle;
@@ -13,7 +13,8 @@ import org.oddjob.arooa.runtime.MockRuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 import org.oddjob.arooa.standard.StandardArooaSession;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 public class PropertyContextTest {
@@ -23,12 +24,12 @@ public class PropertyContextTest {
 		public void setProp(Object o) {}
 	}
 	
-	class OurContext extends MockArooaContext {
+	static class OurContext extends MockArooaContext {
 
 		DesignInstance result;
 		
-		ConfigurationNode configurationNode = 
-			new AbstractConfigurationNode() {
+		ConfigurationNode<ArooaContext> configurationNode =
+			new AbstractConfigurationNode<>() {
 
 			public void addText(String text) {
 				throw new RuntimeException("Unexpected.");
@@ -38,8 +39,7 @@ public class PropertyContextTest {
 				throw new RuntimeException("Unexpected.");
 			}
 
-			public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parentContext)
-					throws ArooaParseException {
+			public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parentContext) {
 				throw new RuntimeException("Unexpected.");
 			}
 			
@@ -57,14 +57,14 @@ public class PropertyContextTest {
 				@Override
 				public void setIndexedProperty(String name, int index,
 						Object value) {
-					assertEquals(0, index);
+					assertThat(index, is(0));
 					result = (DesignInstance) value;
 				}
 			};
 		}
 		
 		@Override
-		public ConfigurationNode getConfigurationNode() {
+		public ConfigurationNode<ArooaContext> getConfigurationNode() {
 			return configurationNode;
 		}
 		
@@ -81,7 +81,7 @@ public class PropertyContextTest {
 	}
 
 	
-	class OurDesign extends DesignValueBase {
+	static class OurDesign extends DesignValueBase {
 
 		IndexedDesignProperty prop;
 		
@@ -103,10 +103,10 @@ public class PropertyContextTest {
 	}
 	
    @Test
-	public void testHandler() throws Exception {
+	public void testHandler() {
 		
 		OurDesign design = new OurDesign(
-				new ArooaElement("stuff"), 
+				new ArooaElement("stuff"),
 				new DesignSeedContext(
 						ArooaType.VALUE,
 						new StandardArooaSession()));
@@ -129,7 +129,7 @@ public class PropertyContextTest {
 		
 		childContext.getRuntime().init();
 		
-		assertTrue(captureContext.result instanceof Unknown);
+		assertThat(captureContext.result, Matchers.instanceOf(Unknown.class));
 		
 		Unknown unknown = (Unknown) captureContext.result;
 		

@@ -20,25 +20,25 @@ import org.oddjob.arooa.xml.XMLConfigurationNode;
  */
 public class BespokeBuildTest extends Assert {
 
-    private class BespokeBuildComponent {
+    private static class BespokeBuildComponent {
 
     }
 
-    private class OurContext extends MockArooaContext {
+    private static class OurContext extends MockArooaContext {
 
         final ArooaContext parent;
 
-        final ConfigurationNode runtimeNode;
+        final ConfigurationNode<ArooaContext> runtimeNode;
 
         OurRuntime runtime;
 
-        OurContext(ArooaContext parent, ConfigurationNode runtimeNode) {
+        OurContext(ArooaContext parent, ConfigurationNode<ArooaContext> runtimeNode) {
             this.parent = parent;
             this.runtimeNode = runtimeNode;
         }
 
         @Override
-        public ConfigurationNode getConfigurationNode() {
+        public ConfigurationNode<ArooaContext> getConfigurationNode() {
             return runtimeNode;
         }
 
@@ -53,7 +53,7 @@ public class BespokeBuildTest extends Assert {
         }
     }
 
-    private class OurRuntime extends MockRuntimeConfiguration {
+    private static class OurRuntime extends MockRuntimeConfiguration {
 
         String text = "";
         boolean endElement;
@@ -74,7 +74,7 @@ public class BespokeBuildTest extends Assert {
     }
 
 
-    private class OurBespokeHandler implements ArooaHandler {
+    private static class OurBespokeHandler implements ArooaHandler {
         OurRuntime runtime;
         String startElement;
 
@@ -96,7 +96,7 @@ public class BespokeBuildTest extends Assert {
         }
     }
 
-    private class OurArooaDescriptor extends MockArooaDescriptor {
+    private static class OurArooaDescriptor extends MockArooaDescriptor {
         ArooaHandler handler;
 
         @Override
@@ -117,12 +117,8 @@ public class BespokeBuildTest extends Assert {
             return new MockArooaBeanDescriptor() {
                 @Override
                 public ParsingInterceptor getParsingInterceptor() {
-                    return new ParsingInterceptor() {
-                        public ArooaContext intercept(ArooaContext context) {
-                            return new HandlerOverrideContext(
-                                    context, handler);
-                        }
-                    };
+                    return context -> new HandlerOverrideContext(
+                            context, handler);
                 }
 
                 @Override
