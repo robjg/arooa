@@ -4,6 +4,7 @@
 package org.oddjob.arooa.convert;
 
 
+import java.util.Arrays;
 
 /**
  * The Default {@link ArooaConverter}. This converter uses
@@ -30,7 +31,17 @@ public class DefaultConverter implements ArooaConverter {
 	public DefaultConverter() {
 		this.convertlets = new DefaultConversionLookup();
 	}
-	
+
+	public static ArooaConverter from(ConversionProvider... conversionProviders) {
+		return from(() -> Arrays.stream(conversionProviders).iterator());
+	}
+
+	public static ArooaConverter from(Iterable<ConversionProvider> conversionProviders) {
+		DefaultConversionRegistry registry = new DefaultConversionRegistry();
+		conversionProviders.forEach(provider -> provider.registerWith(registry));
+		return new DefaultConverter(registry);
+	}
+
 	public ConversionLookup getRegistry() {
 		return convertlets;
 	}
@@ -43,8 +54,8 @@ public class DefaultConverter implements ArooaConverter {
 	 *  <li>If from is null, return null.
 	 * 	<li>If from is an {@link org.oddjob.arooa.ArooaValue} and it's not already
 	 * the required ArooaValue then perform a conversion using the best conversion
-	 * found from the provided {@link ArooaConversionKit}. </li>
-	 *  <li>Attempt to find a conversion using the conversion registry.</li>
+	 * found from the provided {@link ConversionRegistry}. </li>
+	 *  <li>Attempt to find a conversion using the {@link ConversionRegistry}.</li>
 	 *  <li>If this fails, and from and required are both arrays. Attempt
 	 *  to convert their contents.
 	 * </ul>

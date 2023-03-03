@@ -14,6 +14,7 @@ import org.oddjob.arooa.types.*;
  *  <li>{@link CharacterConvertlets}</li>
  *  <li>{@link CollectionConvertlets}</li>
  *  <li>{@link DateConvertlets}</li>
+ *  <li>{@link DateTimeConvertlets}</li>
  *  <li>{@link DoubleConvertlets}</li>
  *  <li>{@link FileConvertlets}</li>
  *  <li>{@link FloatConvertlets}</li>
@@ -67,6 +68,7 @@ public class DefaultConversionProvider implements ConversionProvider {
 		new LongConvertlets().registerWith(registry);
 		new ShortConvertlets().registerWith(registry);
 		new DateConvertlets().registerWith(registry);
+		new DateTimeConvertlets().registerWith(registry);
 		new BigDecimalConvertlets().registerWith(registry);
 		new StringConvertlets().registerWith(registry);
 		new FileConvertlets().registerWith(registry);

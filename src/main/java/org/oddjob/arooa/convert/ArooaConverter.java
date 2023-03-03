@@ -26,7 +26,7 @@ public interface ArooaConverter extends ConversionLookup {
 	 * 
 	 * @throws ConversionFailedException If applying the conversion failed.
 	 */
-	public <F, T> T convert(F from, Class<T> required)
+	<F, T> T convert(F from, Class<T> required)
 	throws NoConversionAvailableException, ConversionFailedException;
 	
 }

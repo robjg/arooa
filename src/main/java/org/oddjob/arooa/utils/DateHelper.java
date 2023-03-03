@@ -3,12 +3,12 @@
  */
 package org.oddjob.arooa.utils;
 
+import org.oddjob.arooa.ArooaConstants;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-
-import org.oddjob.arooa.ArooaConstants;
 
 /**
  * Date Helper Utilities 
@@ -227,21 +227,21 @@ public class DateHelper {
 	/**
 	 * Format date time with or without milliseconds.
 	 * 
-	 * @param date
-	 * @return
+	 * @param date The date.
+	 * @return A formatted date.
 	 */
-	public static String formatDateTimeInteligently(Date date) {		
-		return formatDateTimeInteligently(date, null);
+	public static String formatDateTimeIntelligently(Date date) {
+		return formatDateTimeIntelligently(date, null);
 	}
-	
+
 	/**
-	 * Format date time with or without milliseconds.
+	 * Format date time with or without milliseconds depending on if they are present.
 	 * 
-	 * @param date
-	 * @param timeZone
-	 * @return
+	 * @param date The date.
+	 * @param timeZone The timezone.
+	 * @return A formatted date.
 	 */
-	public static String formatDateTimeInteligently(Date date, TimeZone timeZone) {		
+	public static String formatDateTimeIntelligently(Date date, TimeZone timeZone) {
 		if (date == null) {
 			return null;
 		}
