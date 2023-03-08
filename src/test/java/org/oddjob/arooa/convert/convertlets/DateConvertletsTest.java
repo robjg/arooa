@@ -11,7 +11,6 @@ import org.oddjob.arooa.convert.NoConversionAvailableException;
 import org.oddjob.arooa.utils.DateHelper;
 import org.oddjob.arooa.utils.DateTimeHelper;
 
-import java.text.ParseException;
 import java.time.Instant;
 import java.util.Date;
 
@@ -21,11 +20,7 @@ import static org.hamcrest.Matchers.is;
 class DateConvertletsTest {
 
     private static Date parse(String s) {
-        try {
-            return DateHelper.parseDateTime(s);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+        return DateHelper.parseDateTime(s);
     }
 
 

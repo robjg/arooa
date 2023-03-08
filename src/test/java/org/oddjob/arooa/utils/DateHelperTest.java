@@ -85,13 +85,14 @@ public class DateHelperTest extends Assert {
 
         m = DateHelper.parseTime("10:47:56");
         logger.debug("" + new Date(m));
-        assertEquals(10 * HOUR + 47 * MINUTE + 56 * SECOND, m);
+        long expected = 10 * HOUR + 47 * MINUTE + 56 * SECOND;
+        assertEquals(expected, m);
 
         TimeZone.setDefault(TimeZone.getTimeZone("America/New_York"));
 
         m = DateHelper.parseTime("10:47:56");
         logger.debug("" + new Date(m));
-        assertEquals(10 * HOUR + 47 * MINUTE + 56 * SECOND, m);
+        assertEquals(expected, m);
 
         TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"));
 
@@ -129,7 +130,7 @@ public class DateHelperTest extends Assert {
     }
 
     @Test
-    public void testParseDateTime() throws ParseException {
+    public void testParseDateTime() {
 
         Calendar expected = Calendar.getInstance();
         expected.clear();
@@ -140,7 +141,7 @@ public class DateHelperTest extends Assert {
     }
 
     @Test
-    public void testDate() throws ParseException {
+    public void testDate() {
         Date d = DateHelper.parseDate("2005-12-25", TimeZone.getDefault());
 
         String result = DateHelper.formatDate(d);
@@ -148,7 +149,7 @@ public class DateHelperTest extends Assert {
     }
 
     @Test
-    public void testDateWithTimezone() throws ParseException {
+    public void testDateWithTimezone() {
 
         Date there = DateHelper.parseDate("2005-12-25", "GMT+02");
 
@@ -237,13 +238,15 @@ public class DateHelperTest extends Assert {
 
         try {
             DateHelper.parseDate("20120322");
-        } catch (ParseException e) {
+            MatcherAssert.assertThat("Expected to fail", false);
+        } catch (DateTimeParseException e) {
             logger.info(e.getMessage());
             assertTrue(e.getMessage().contains(ArooaConstants.DATE_FORMAT));
         }
 
         try {
             DateHelper.parseTime("12-45");
+            MatcherAssert.assertThat("Expected to fail", false);
         } catch (ParseException e) {
             logger.info(e.getMessage());
             assertTrue(e.getMessage().contains(ArooaConstants.TIME_FORMAT1));
@@ -253,21 +256,19 @@ public class DateHelperTest extends Assert {
 
         try {
             DateHelper.parseDateTime("20120322 12-45");
-        } catch (ParseException e) {
+        } catch (DateTimeParseException e) {
             logger.info(e.getMessage());
-            assertTrue(e.getMessage().contains(ArooaConstants.DATE_FORMAT));
-            assertTrue(e.getMessage().contains(ArooaConstants.TIME_FORMAT1));
-            assertTrue(e.getMessage().contains(ArooaConstants.TIME_FORMAT2));
-            assertTrue(e.getMessage().contains(ArooaConstants.TIME_FORMAT3));
+            assertTrue(e.getMessage().contains("Text '20120322 12-45' could not be parsed at index 0"));
         }
     }
 
     @Test
-    public void whenInstantThenParsesOk() throws ParseException {
+    public void whenInstantThenParsesOk() {
 
         String dateTimeText = "2023-03-01T20:44:22Z";
 
         MatcherAssert.assertThat(DateHelper.parseDateTime(dateTimeText),
                 is(Date.from(Instant.parse(dateTimeText))));
     }
+
 }

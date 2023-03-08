@@ -3,6 +3,7 @@ package org.oddjob.arooa.utils;
 import org.oddjob.arooa.ArooaConstants;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -20,9 +21,9 @@ public class DateTimeHelper {
      * Parse format for {@link org.oddjob.arooa.ArooaConstants} date time formats.
      */
     public static final DateTimeFormatter LEGACY_DATE_TIME_FORMAT = new DateTimeFormatterBuilder()
-            .appendPattern(ArooaConstants.DATE_FORMAT + " " + ArooaConstants.TIME_FORMAT3 + "[:ss[.SSS]]")
+            .appendPattern(ArooaConstants.DATE_FORMAT + " H:mm[:ss]")
+            .appendFraction(ChronoField.NANO_OF_SECOND, 0, 9, true)
             .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
-            .parseDefaulting(ChronoField.MILLI_OF_SECOND, 0)
             .toFormatter();
 
     /**
@@ -48,8 +49,11 @@ public class DateTimeHelper {
         if (text.contains("T")) {
             return Instant.parse(text);
         }
-        else {
+        else if (text.contains(" ")) {
             return LEGACY_DATE_TIME_FORMAT.withZone(zoneId).parse(text, Instant::from);
+        }
+        else {
+            return LocalDate.parse(text).atStartOfDay().atZone(zoneId).toInstant();
         }
     }
 }
