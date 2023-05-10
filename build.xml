@@ -248,26 +248,28 @@
 
 	<target name="all-tests" depends="compile-tests" description="Perform jUnit tests">
 		<mkdir dir="${test.reports}"/>
-		
-		<junit printsummary="yes" haltonfailure="no" 
-				failureproperty="junit.failure" fork="yes" forkmode="once">
+
+		<junitlauncher printsummary="yes" haltonfailure="no"
+					   failureproperty="junit.failure"
+					   excludetags="IntegrationTest">
 			<classpath>
 				<pathelement location="${build.tests}" />
 			</classpath>
 			<classpath refid="test-classpath"/>
-			<batchtest todir="${test.reports}">
+			<testclasses outputdir="${basedir}/${test.reports}">
+				<fork>
+					<sysproperty key="basedir" value="${basedir}"/>
+					<sysproperty key="ant.file" value="${ant.file}"/>
+				</fork>
 				<fileset dir="${build.tests}">
-					<include name="**/test/*TestCase.class"/>
 					<include name="**/*Test.class" />
 					<exclude name="**/AllTest.class" />
 					<exclude name="**/*$$*Test.class" />
 				</fileset>
-			</batchtest>
-			<formatter type="xml"/>
-			<sysproperty key="basedir" value="${basedir}"/>
-			<sysproperty key="oddjob.home" value="${oddjob.home}"/>
-			<sysproperty key="ant.file" value="${ant.file}"/>
-		</junit>
+				<listener type="legacy-brief" sendSysOut="true"/>
+				<listener type="legacy-xml" sendSysErr="true" sendSysOut="true"/>
+			</testclasses>
+		</junitlauncher>
 		
 		<junitreport todir="${test.reports}">
 			<fileset dir="${test.reports}">

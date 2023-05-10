@@ -29,6 +29,12 @@
 			conf="default->default" />
         <dependency org="junit" name="junit" rev="${junit.version}"
 			conf="test->default"/>
+		<dependency org="org.junit.platform" name="junit-platform-launcher" rev="${junit.platform.version}"
+			conf="test->default"/>
+		<dependency org="org.junit.jupiter" name="junit-jupiter" rev="${junit5.version}"
+					conf="test->default"/>
+		<dependency org="org.junit.vintage" name="junit-vintage-engine" rev="${junit5.version}"
+					conf="test->default"/>
 		<dependency org="org.hamcrest" name="hamcrest" rev="${hamcrest.version}"
 			conf="test->default" />
 		<dependency org="org.mockito" name="mockito-core" rev="${mockito.version}"

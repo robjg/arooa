@@ -4,6 +4,7 @@ import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaError;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.utils.ClassUtils;
+import org.oddjob.arooa.utils.EtcUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,24 +89,9 @@ public class ArooaAnnotationsHelper {
 	}
 
 	private void maybeAddProperty(ArooaAnnotation annotation, Method method) {
-		
-		String methodName = method.getName();
-		if (!methodName.startsWith("set") && 
-				!methodName.startsWith("get")) {
-			return;
-		}
-		
-		String property = method.getName().substring(3);
 
-		if (property.length() == 0) {
-			return;
-		}
-		
-		property = property.substring(0, 1).toLowerCase() + 
-				(property.length() == 1 ? "" : 
-					property.substring(1));
-		
-		addProperty(annotation, property);
+		EtcUtils.propertyFromMethodName(method.getName())
+				.ifPresent(property -> addProperty(annotation, property));
 	}
 
 	private void addProperty(ArooaAnnotation annotation, String property) {
