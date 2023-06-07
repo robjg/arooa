@@ -18,7 +18,7 @@ public class DragTransactionManager<T extends DragTransaction> {
 
     private final Supplier<? extends T> transactionSupplier;
 
-    private TransactionImpl transaction;
+    private TransactionWrapper transaction;
 
     public DragTransactionManager(Supplier<? extends T> transactionSupplier) {
         this.transactionSupplier = transactionSupplier;
@@ -30,30 +30,6 @@ public class DragTransactionManager<T extends DragTransaction> {
                 throw new IllegalStateException("There is no Drag Transaction in progress.");
             }
             transactionConsumer.accept(transaction.delegate);
-        }
-    }
-
-    public void maybeWithTransaction(Consumer<? super T> transactionConsumer) {
-        synchronized (this) {
-            if (transaction != null) {
-                transactionConsumer.accept(transaction.delegate);
-            }
-        }
-    }
-
-
-    public void rollbackTransaction() {
-        synchronized (this) {
-            if (transaction == null) {
-                throw new IllegalStateException("Transaction already complete.");
-            }
-            transaction.rollback();
-        }
-    }
-
-    public boolean isTransactionInProgress() {
-        synchronized (this) {
-            return transaction != null;
         }
     }
 
@@ -97,7 +73,7 @@ public class DragTransactionManager<T extends DragTransaction> {
                                 "There is already a transaction in progress.",
                                 transaction.getTransactionCreation());
                     }
-                    transaction = new TransactionImpl(transactionSupplier.get());
+                    transaction = new TransactionWrapper(transactionSupplier.get());
                     return transaction;
                 default:
                     throw new IllegalArgumentException("Unrecognized how.");
@@ -106,7 +82,7 @@ public class DragTransactionManager<T extends DragTransaction> {
     }
 
 
-    class TransactionImpl implements DragTransaction {
+    class TransactionWrapper implements DragTransaction {
 
         private final Exception transactionCreation;
 
@@ -118,7 +94,7 @@ public class DragTransactionManager<T extends DragTransaction> {
 
         private int nestedCount;
 
-        public TransactionImpl(T delegate) {
+        public TransactionWrapper(T delegate) {
             this.transactionCreation = new Exception("Transaction Creation Point.");
             this.transactionThread = Thread.currentThread();
             this.delegate = delegate;
@@ -138,13 +114,11 @@ public class DragTransactionManager<T extends DragTransaction> {
                     throw new IllegalStateException("Transaction already complete.");
                 }
 
-                if (nestedCount > 0) {
-                    --nestedCount;
-                } else if (rollbackOnly) {
+                if (rollbackOnly) {
                     rollback();
                 } else {
-                    transaction = null;
                     delegate.commit();
+                    transaction = null;
                 }
             }
         }
@@ -155,13 +129,8 @@ public class DragTransactionManager<T extends DragTransaction> {
                     throw new IllegalStateException("Transaction already complete.");
                 }
 
-                if (nestedCount > 0) {
-                    --nestedCount;
-                    rollbackOnly = true;
-                } else {
-                    transaction = null;
-                    delegate.rollback();
-                }
+                transaction = null;
+                delegate.rollback();
             }
         }
     }

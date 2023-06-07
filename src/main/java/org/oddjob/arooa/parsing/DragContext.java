@@ -17,304 +17,214 @@ import java.util.regex.Pattern;
  * A {@link DragPoint} for an {@link ArooaContext}.
  * <p>
  * This implementation of a DragPoint will provide drag and drop support
- * for a component from it's context.
- * 
- * @author rob
+ * for a component from its context.
  *
+ * @author rob
  */
 public class DragContext implements DragPoint {
-	private static final Logger logger = LoggerFactory.getLogger(DragContext.class);
+    private static final Logger logger = LoggerFactory.getLogger(DragContext.class);
 
-	private static final Pattern XML_START_MATCH = Pattern.compile("^\\s*<");
-	private static final Pattern JSON_START_MATCH = Pattern.compile("^\\s*\\{");
+    private static final Pattern XML_START_MATCH = Pattern.compile("^\\s*<");
+    private static final Pattern JSON_START_MATCH = Pattern.compile("^\\s*\\{");
 
-	private static SimpleTransaction transaction;
+    /**
+     * Static because it must be shared across many contexts during a drag and drop.
+     */
+    private static final DragTransactionManager<SimpleTransaction> transactionManager =
+            new DragTransactionManager<>(SimpleTransaction::new);
 
-	private final ArooaContext context;
-	
-	private final CutAndPasteSupport cnp;
+    private final ArooaContext context;
 
-	/**
-	 * Only constructor.
-	 * 
-	 * @param context The context of the component. Must not be null.
-	 */
-	public DragContext(ArooaContext context) {
-		this.context = context;
-		this.cnp = new CutAndPasteSupport(context);
-	}
+    private final CutAndPasteSupport cnp;
 
-	@Override
-	public DragTransaction beginChange(ChangeHow how) {
-		return createTransaction(how);
-	}
+    /**
+     * Only constructor.
+     *
+     * @param context The context of the component. Must not be null.
+     */
+    public DragContext(ArooaContext context) {
+        this.context = context;
+        this.cnp = new CutAndPasteSupport(context);
+    }
 
-	@Override
-	public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parentContext)
-			throws ArooaParseException {
-		return context.getConfigurationNode().parse(parentContext);
-	}
+    @Override
+    public DragTransaction beginChange(ChangeHow how) {
+        return transactionManager.createTransaction(how);
+    }
 
-	@Override
-	public boolean supportsPaste() {
-		return cnp.supportsPaste();
-	}
+    @Override
+    public <P extends ParseContext<P>> ConfigurationHandle<P> parse(P parentContext)
+            throws ArooaParseException {
+        return context.getConfigurationNode().parse(parentContext);
+    }
 
-	@Override
-	public boolean supportsCut() {
-		return context.getParent().getParent() != null;
-	}
+    @Override
+    public boolean supportsPaste() {
+        return cnp.supportsPaste();
+    }
 
-	@Override
-	public String copy() {
-		return CutAndPasteSupport.copy(context);
-	}
-	
-	private void reallyCut() {
-		CutAndPasteSupport.cut(
-				context.getParent(), context);
-	}
-		
-	private void reallyPaste(int index, ArooaConfiguration pasteConfig)
-	throws ArooaParseException {
+    @Override
+    public boolean supportsCut() {
+        return context.getParent().getParent() != null;
+    }
 
-		cnp.paste(index, pasteConfig);
-	}
+    @Override
+    public String copy() {
+        return CutAndPasteSupport.copy(context);
+    }
 
-	@Override
-	public String cut() {
-		String copy = CutAndPasteSupport.copy(context);
-		delete();
-		return copy;
-	}
+    private void reallyCut() {
+        CutAndPasteSupport.cut(
+                context.getParent(), context);
+    }
 
-	@Override
-	public void delete() {
-		synchronized(DragContext.class) {
-			if (transaction == null) {
-				throw new IllegalStateException("No transaction");
-			}
-			transaction.setCut(this);
-		}
-	}
+    private void reallyPaste(int index, ArooaConfiguration pasteConfig)
+            throws ArooaParseException {
 
-	@Override
-	public void paste(int index, String config) {
-		if (!cnp.supportsPaste()) {
-			throw new IllegalStateException("Node does not support paste.");
-		}
+        cnp.paste(index, pasteConfig);
+    }
 
-		ArooaConfiguration pasteConfig;
-		if (XML_START_MATCH.matcher(config).find()) {
-			pasteConfig = new XMLConfiguration("Replacement XML", config);
-		}
-		else if (JSON_START_MATCH.matcher(config).find()) {
-			pasteConfig = new JsonConfiguration(config)
-					.withNamespaceMappings(context.getSession().getArooaDescriptor());
-		}
-		else {
-			throw new IllegalArgumentException(
-					"Expected config to start with '<' (XML) or '{' (JSON) but was [" +
-							config + "]");
-		}
+    @Override
+    public String cut() {
+        String copy = CutAndPasteSupport.copy(context);
+        delete();
+        return copy;
+    }
 
-		synchronized(DragContext.class) {
-			if (transaction == null) {
-				throw new IllegalStateException("No transaction");
-			}
-			transaction.setPaste(this, index, pasteConfig);
-		}
-	}
+    @Override
+    public void delete() {
+        transactionManager.withTransaction(transaction -> transaction.setCut(this));
+    }
 
-	@Override
-	public QTag[] possibleChildren() {
-		ArooaDescriptor descriptor = context.getSession().getArooaDescriptor();
+    @Override
+    public void paste(int index, String config) {
+        if (!cnp.supportsPaste()) {
+            throw new IllegalStateException("Node does not support paste.");
+        }
 
-		InstantiationContext context = new InstantiationContext(
-				ArooaType.COMPONENT, new SimpleArooaClass(Object.class));
+        ArooaConfiguration pasteConfig;
+        if (XML_START_MATCH.matcher(config).find()) {
+            pasteConfig = new XMLConfiguration("Replacement XML", config);
+        } else if (JSON_START_MATCH.matcher(config).find()) {
+            pasteConfig = new JsonConfiguration(config)
+                    .withNamespaceMappings(context.getSession().getArooaDescriptor());
+        } else {
+            throw new IllegalArgumentException(
+                    "Expected config to start with '<' (XML) or '{' (JSON) but was [" +
+                            config + "]");
+        }
 
-		ArooaElement[] elements = descriptor.getElementMappings().elementsFor(
-				context);
+        transactionManager.withTransaction(
+                transaction -> transaction.setPaste(this, index, pasteConfig));
+    }
 
-		SortedSet<QTag> sortedTags = new TreeSet<>();
+    @Override
+    public QTag[] possibleChildren() {
+        ArooaDescriptor descriptor = context.getSession().getArooaDescriptor();
 
-		for (ArooaElement element : elements) {
-			String prefix = descriptor.getPrefixFor(element.getUri());
-			sortedTags.add(new QTag(prefix, element));
-		}
+        InstantiationContext context = new InstantiationContext(
+                ArooaType.COMPONENT, new SimpleArooaClass(Object.class));
 
-		return sortedTags.toArray(new QTag[0]);
-	}
+        ArooaElement[] elements = descriptor.getElementMappings().elementsFor(
+                context);
 
-	private DragTransaction createTransaction(ChangeHow how) {
-		
-		synchronized (DragContext.class) {
-			switch (how) {
-				case AGAIN:
-					if (transaction == null) {
-						throw new IllegalStateException("There is no transaction in progress.");
-					}
-				case MAYBE:
-					if (transaction == null) {
-						return null;
-					}
-					if (transaction.isNotTransactionThread()) {
-						throw new IllegalStateException(
-								"Transaction is on a different thread.",
-								transaction.getTransactionCreation());
-					}
-					return transaction;
-				case EITHER:
-					if (transaction != null) {
-						if (transaction.isNotTransactionThread()) {
-							throw new IllegalStateException(
-									"Transaction is on a different thread.",
-									transaction.getTransactionCreation());
-						}
-						return new SimpleTransaction() {
-							public void commit() {
-							}
-							public void rollback() {
-								transaction.rollbackOnly = true;
-							}
-						};
-					}
-				case FRESH:
-					if (transaction != null) {
-						throw new IllegalStateException(
-								"There is already a transaction in progress.",
-								transaction.getTransactionCreation());
-					}
-					transaction = new SimpleTransaction();
-					return transaction;
-				default:
-					throw new IllegalArgumentException("Unrecognized how.");
-			}
-		}
-	}
-			
-	static class SimpleTransaction implements DragTransaction {
-		
-		private final Exception transactionCreation;
-		
-		private DragContext cutPoint;
-		
-		private int pasteIndex;
+        SortedSet<QTag> sortedTags = new TreeSet<>();
 
-		private ArooaConfiguration pasteConfig;
-		
-		private DragContext pastePoint;
-		
-		private final Thread transactionThread;
-		
-		private boolean rollbackOnly;
-		
-	    private final Object transactionLock = new Object();
-	    
-		private int cutIndex;
-		private ArooaConfiguration cutConfiguration = null;
-	    
-		public SimpleTransaction() {
-			transactionCreation = new Exception("Transaction Creation Point.");
-			transactionThread = Thread.currentThread();
-		}
-		
-		Exception getTransactionCreation() {
-			return transactionCreation;
-		}
-		
-		boolean isNotTransactionThread() {
-			return Thread.currentThread() != transactionThread;
-		}
-		
-		public void commit() throws ArooaParseException {
-			synchronized (transactionLock) {
-				if (transaction == null) {
-					throw new IllegalStateException("Transaction already complete.");
-				}
-				
-				if (rollbackOnly) {
-					rollback();
-					return;
-				}
+        for (ArooaElement element : elements) {
+            String prefix = descriptor.getPrefixFor(element.getUri());
+            sortedTags.add(new QTag(prefix, element));
+        }
 
-				
-				if (cutPoint != null) {
-					if (pastePoint != null) {
-						ArooaContext parentContext = 
-							cutPoint.context.getParent();
-						
-						cutIndex = parentContext.getConfigurationNode().indexOf(
-								cutPoint.context.getConfigurationNode());
-						
-						cutConfiguration = cutPoint.context.getConfigurationNode();
-					}
-					
-					cutPoint.reallyCut();
-				}
-				
-				if (pastePoint != null) {
-					pastePoint.reallyPaste(pasteIndex, pasteConfig);
-				}
-				reset();
-			}
-		}
-		
-		public void rollback() {
-			synchronized (transactionLock) {
-				if (transaction == null) {
-					throw new IllegalStateException("Transaction already complete.");
-				}
-				try {
-					if (cutConfiguration != null) {
-						try {
-							CutAndPasteSupport.paste(
-									cutPoint.context.getParent(),
-									cutIndex,
-									cutConfiguration);
-						} 
-						catch (ArooaParseException e) {
-							logger.error("Failed replacing cut configuration.",
-									e);
-						}
-					}
-				}
-				finally {
-					reset();
-				}
-			}
-		}
-		
-		private void reset() {
-			cutPoint = null;
-			pastePoint = null;
-			pasteIndex = 0;
-			pasteConfig = null;
-			transaction = null;
-			cutConfiguration = null;
-			cutIndex = 0;
-		}
-		
-		void setPaste(DragContext point, int index, ArooaConfiguration config) {
-			
-			synchronized (transactionLock) {
-				if (pastePoint != null) {
-					throw new IllegalStateException("Only one paste supported.");
-				}
-				pastePoint  = point;
-				pasteIndex = index;
-				pasteConfig = config;
-			}
-		}
-		
-		public void setCut(DragContext point) {
-			
-			synchronized (transactionLock) {
-				if (cutPoint != null) {
-					throw new IllegalStateException("Only one paste supported.");
-				}
-				cutPoint = point;
-			}
-		}
-	}
+        return sortedTags.toArray(new QTag[0]);
+    }
+
+    static class SimpleTransaction implements DragTransaction {
+
+        private DragContext cutPoint;
+
+        private int pasteIndex;
+
+        private ArooaConfiguration pasteConfig;
+
+        private DragContext pastePoint;
+
+        private boolean rollbackOnly;
+
+        private int cutIndex;
+        private ArooaConfiguration cutConfiguration = null;
+
+
+        public void commit() throws ArooaParseException {
+
+            if (rollbackOnly) {
+                rollback();
+                return;
+            }
+
+
+            if (cutPoint != null) {
+                if (pastePoint != null) {
+                    ArooaContext parentContext =
+                            cutPoint.context.getParent();
+
+                    cutIndex = parentContext.getConfigurationNode().indexOf(
+                            cutPoint.context.getConfigurationNode());
+
+                    cutConfiguration = cutPoint.context.getConfigurationNode();
+                }
+
+                cutPoint.reallyCut();
+            }
+
+            if (pastePoint != null) {
+                pastePoint.reallyPaste(pasteIndex, pasteConfig);
+            }
+            reset();
+        }
+
+        public void rollback() {
+            try {
+                if (cutConfiguration != null) {
+                    try {
+                        CutAndPasteSupport.paste(
+                                cutPoint.context.getParent(),
+                                cutIndex,
+                                cutConfiguration);
+                    } catch (ArooaParseException e) {
+                        logger.error("Failed replacing cut configuration.",
+                                e);
+                    }
+                }
+            } finally {
+                reset();
+            }
+        }
+
+        private void reset() {
+            cutPoint = null;
+            pastePoint = null;
+            pasteIndex = 0;
+            pasteConfig = null;
+            cutConfiguration = null;
+            cutIndex = 0;
+        }
+
+        void setPaste(DragContext point, int index, ArooaConfiguration config) {
+
+            if (pastePoint != null) {
+                throw new IllegalStateException("Only one paste supported.");
+            }
+            pastePoint = point;
+            pasteIndex = index;
+            pasteConfig = config;
+        }
+
+        public void setCut(DragContext point) {
+
+            if (cutPoint != null) {
+                throw new IllegalStateException("Only one paste supported.");
+            }
+            cutPoint = point;
+        }
+    }
 }
