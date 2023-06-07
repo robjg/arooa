@@ -19,5 +19,5 @@ public interface TransferEventListener extends EventListener {
 	 * @param message The reason.
 	 * @param exception The underlying exception.
 	 */
-	public void transferException(TransferEvent event, String message, Exception exception);
+	void transferException(TransferEvent event, String message, Exception exception);
 }

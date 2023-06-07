@@ -22,7 +22,7 @@ public enum ChangeHow {
 	
 	/**
 	 * If a transaction is in progress then add changes to it, if
-	 * one isn't in progress the create a fresh one. 
+	 * one isn't in progress then create a fresh one.
 	 */
 	EITHER,
 	

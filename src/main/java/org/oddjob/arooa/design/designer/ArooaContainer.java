@@ -1,20 +1,23 @@
 package org.oddjob.arooa.design.designer;
 
-import javax.swing.TransferHandler.TransferSupport;
-
 import org.oddjob.arooa.parsing.DragPoint;
 
+import javax.swing.TransferHandler.TransferSupport;
+
+/**
+ * Something that supports Drag and Drop from Swing.
+ */
 public interface ArooaContainer {
 
-	public DragPoint getCurrentDragPoint();
+	DragPoint getCurrentDragPoint();
 
-	public DropPoint dropPointFrom(TransferSupport support);
+	DropPoint dropPointFrom(TransferSupport support);
 	
 	interface DropPoint {
 		
-		public int getIndex();
+		int getIndex();
 		
-		public DragPoint getDragPoint();
+		DragPoint getDragPoint();
 	}
 	
 }

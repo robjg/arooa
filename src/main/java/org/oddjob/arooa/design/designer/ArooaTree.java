@@ -18,7 +18,7 @@ import java.awt.event.KeyEvent;
 /**
  * A base for Swing JTree sub classes that are able to provide a 
  * {@link DragPoint} for the manipulation of an underlying
- * {@link ArooaConfiguration}.
+ * {@link org.oddjob.arooa.ArooaConfiguration}.
  * <p>
  * This version of a JTree also supports a 'delete' action
  * in addition to the standard copy, cut, paste.

@@ -22,7 +22,7 @@ public class ArooaTransferHandler extends TransferHandler {
 	private static final long serialVersionUID = 2009011200L;
 
 	private final List<TransferEventListener> listeners =
-		new ArrayList<TransferEventListener>();
+			new ArrayList<>();
 	
 	@Override
 	public int getSourceActions(JComponent c) {
@@ -127,7 +127,7 @@ public class ArooaTransferHandler extends TransferHandler {
 		}
 		
 		return dragPoint.supportsPaste();
-	};
+	}
 	
 	@Override
 	public boolean importData(TransferSupport support) {
@@ -138,7 +138,7 @@ public class ArooaTransferHandler extends TransferHandler {
 		
 		Transferable transferable = support.getTransferable();
 		
-		String data = null; 
+		String data;
 		try {
 			data = (String) transferable.getTransferData(
 					DataFlavor.stringFlavor);
@@ -184,12 +184,12 @@ public class ArooaTransferHandler extends TransferHandler {
 	}
 	
 	protected void fireFailureEvent(String reason, Exception exception) {
-		List<TransferEventListener> copy = null;
+		List<TransferEventListener> copy;
 		synchronized (listeners) {
 			if (listeners.isEmpty()) {
 				return;
 			}
-			copy = new ArrayList<TransferEventListener>(listeners);
+			copy = new ArrayList<>(listeners);
 		}
 		TransferEvent event = new TransferEvent(this);
 		for (TransferEventListener listener: copy) {
