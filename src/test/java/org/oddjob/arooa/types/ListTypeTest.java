@@ -348,6 +348,7 @@ public class ListTypeTest {
 
         assertThat(arrayResult, is(
                 new String[] { "a", "b", "c" }));
+
     }
 
     @Test
@@ -405,7 +406,7 @@ public class ListTypeTest {
     }
 
     @Test
-    public void testElementTypeSingle() throws NoConversionAvailableException, ConversionFailedException, ClassNotFoundException {
+    public void testElementTypeSingle() throws NoConversionAvailableException, ConversionFailedException {
 
         ValueType element1 = new ValueType();
         element1.setValue(
@@ -727,5 +728,28 @@ public class ListTypeTest {
                 propertyAccessor.getProperty(consumer, "values"), List.class);
 
         assertThat(consumerList, contains("Orange"));
+    }
+
+    @Test
+    public void whenToString() {
+
+        ListType listType = new ListType();
+
+        assertThat(listType.toString(), is("[]"));
+
+        listType.setValues(0, new ArooaObject("a"));
+        listType.setValues(1, new ArooaObject("b"));
+        listType.setValues(2, new ArooaObject("c"));
+
+        assertThat(listType.toString(), is("[a, b, c]"));
+
+        listType.configured();
+
+        listType.setAdd(new ArooaObject("d"));
+        listType.setAdd(new ArooaObject("e"));
+        listType.setAdd(new ArooaObject("f"));
+        listType.setAdd(new ArooaObject("g"));
+
+        assertThat(listType.toString(), is("[a, b, c, d, e, ...(and 2 more)]"));
     }
 }

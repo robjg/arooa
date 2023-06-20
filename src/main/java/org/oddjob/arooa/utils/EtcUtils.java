@@ -1,6 +1,7 @@
 package org.oddjob.arooa.utils;
 
 import java.beans.Introspector;
+import java.util.Iterator;
 import java.util.Optional;
 
 /**
@@ -9,6 +10,10 @@ import java.util.Optional;
  * like methods.
  */
 public class EtcUtils {
+
+    public static final int MAX_ITERABLE_TO_STRING_ITEMS = 5;
+
+    public static final int MAX_ITERABLE_TO_STRING_SIZE = 1024;
 
     /**
      * Extract the property name from the method name, if the method name matches
@@ -44,4 +49,51 @@ public class EtcUtils {
 
         return Optional.of(Introspector.decapitalize(property));
     }
+
+    public static String toString(Iterable<?> iterable, int size) {
+
+        return toString(iterable, size, MAX_ITERABLE_TO_STRING_ITEMS, MAX_ITERABLE_TO_STRING_SIZE);
+    }
+
+    public static String toString(Iterable<?> iterable, int size, int maxItems, int maxChars ) {
+
+        Iterator<?> it = iterable.iterator();
+        if (!it.hasNext()) {
+            return "[]";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+
+        int count = 0;
+        for (; ; ) {
+            Object e = it.next();
+            if (count == maxItems) {
+                return sb.append("...(and " + (size - count) + " more)]").toString();
+            } else {
+                ++count;
+                sb.append(e);
+            }
+
+            if (sb.length() > maxChars) {
+
+                String start =  sb.substring(0, maxChars + 1);
+                int remaining = size - count;
+                if (remaining == 0) {
+                    return start + "...]";
+                }
+                else {
+                    return start + "..., (and " + remaining + " more)]";
+                }
+            }
+
+            if (!it.hasNext()) {
+                return sb.append(']').toString();
+            }
+
+            sb.append(',').append(' ');
+        }
+
+    }
+
 }
