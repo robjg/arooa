@@ -1,7 +1,6 @@
 package org.oddjob.arooa.standard;
 
 import org.oddjob.arooa.*;
-import org.oddjob.arooa.deploy.BeanDescriptorHelper;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.parsing.ArooaHandler;
@@ -36,15 +35,12 @@ class PropertyOfInstanceHandler implements ArooaHandler {
                 session.getArooaDescriptor().getBeanDescriptor(
                         runtimeClass, session.getTools().getPropertyAccessor());
 
-        BeanDescriptorHelper propertyHelper = new BeanDescriptorHelper(
-                beanDescriptor);
-
-        if (!propertyHelper.isElement(propertyName)) {
+        if (beanDescriptor.getConfiguredHow(propertyName) != ConfiguredHow.ELEMENT) {
             throw new ArooaException("Property " + propertyName +
                                              " is not configured as an element.");
         }
 
-        ArooaType type = propertyHelper.getArooaType(propertyName);
+        ArooaType type = beanDescriptor.getArooaType(propertyName);
 
         final ContainerRuntime propertyRuntime = containerRuntimeFactory
                 .runtimeForProperty(

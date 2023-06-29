@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ConfiguredHow;
 import org.oddjob.arooa.reflect.ArooaClass;
+import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.standard.StandardArooaDescriptor;
 import org.oddjob.arooa.utils.Pair;
 
@@ -75,6 +76,13 @@ public class DynaBeanDescriptorTest {
 
         assertThat(result, notNullValue());
 
-        assertThat(result.getConfiguredHow("anything"), nullValue());
+        try {
+            result.getConfiguredHow("anything");
+            assertThat("Should fail", false);
+        }
+        catch(ArooaPropertyException e) {
+            assertThat(e.getMessage(), containsString("anything"));
+
+        }
     }
 }

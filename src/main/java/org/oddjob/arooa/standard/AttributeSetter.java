@@ -3,26 +3,17 @@
  */
 package org.oddjob.arooa.standard;
 
-import java.util.*;
-
-import org.oddjob.arooa.ArooaBeanDescriptor;
-import org.oddjob.arooa.ArooaConfigurationException;
-import org.oddjob.arooa.ArooaException;
-import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ConfiguredHow;
+import org.oddjob.arooa.*;
 import org.oddjob.arooa.convert.ArooaConversionException;
-import org.oddjob.arooa.deploy.BeanDescriptorHelper;
 import org.oddjob.arooa.parsing.ArooaAttributes;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.MutableAttributes;
-import org.oddjob.arooa.reflect.ArooaClass;
-import org.oddjob.arooa.reflect.ArooaPropertyException;
-import org.oddjob.arooa.reflect.BeanOverview;
-import org.oddjob.arooa.reflect.PropertyAccessor;
-import org.oddjob.arooa.reflect.PropertyExceptionBuilder;
+import org.oddjob.arooa.reflect.*;
 import org.oddjob.arooa.runtime.ExpressionParser;
 import org.oddjob.arooa.runtime.ParsedExpression;
 import org.oddjob.arooa.types.BeanType;
+
+import java.util.*;
 
 /**
  * A helper class that collects optional attributes and takes
@@ -118,8 +109,7 @@ class AttributeSetter {
 						.failedWritingPropertyException(propertyName);
 			}
 			
-			ConfiguredHow configuredHow = new BeanDescriptorHelper(
-					beanDescriptor).getConfiguredHow(propertyName);
+			ConfiguredHow configuredHow = beanDescriptor.getConfiguredHow(propertyName);
 			if (ConfiguredHow.ATTRIBUTE != configuredHow) {
 				throw new ArooaConfigurationException(propertyName + 
 						" is not configured as an ATTRIBUTE but as (an) " + 
@@ -131,9 +121,9 @@ class AttributeSetter {
 			final ParsedExpression evaluator = expressionParser.parse(
 					attrs.get(propertyName));
 
-            ParsedExpression useEvalutator;
+            ParsedExpression useEvaluator;
             if (initAttributes.contains(propertyName)) {
-			    useEvalutator = new ParsedExpression() {
+			    useEvaluator = new ParsedExpression() {
                     @Override
                     public <T> T evaluate(ArooaSession session, Class<T> type) throws ArooaConversionException {
                         return evaluator.evaluate(session, type);
@@ -146,14 +136,14 @@ class AttributeSetter {
                 };
             }
             else {
-                useEvalutator = evaluator;
+                useEvaluator = evaluator;
             }
 
 			attributeRuntimes.add(
 					new AttributeRuntime(
 							instance, 
 							propertyName, 
-							useEvalutator,
+							useEvaluator,
 							beanOverview.getPropertyType(propertyName)));
 		}
 		

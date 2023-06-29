@@ -1,19 +1,18 @@
 package org.oddjob.arooa.design;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaType;
-import org.oddjob.arooa.deploy.BeanDescriptorHelper;
 import org.oddjob.arooa.design.PropertyContext.DesignSetter;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
-import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.ArooaClass;
+import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 abstract class DesignPropertyBase implements DesignElementProperty {
 
@@ -74,8 +73,7 @@ abstract class DesignPropertyBase implements DesignElementProperty {
 			session.getArooaDescriptor().getBeanDescriptor(
 				parentClass, propertyAccessor); 
 		
-		ArooaType type = new BeanDescriptorHelper(
-				beanDescriptor).getArooaType(property);
+		ArooaType type = beanDescriptor.getArooaType(property);
 		
 		BeanOverview overview = parentClass.getBeanOverview(
 				propertyAccessor);

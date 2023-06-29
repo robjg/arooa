@@ -1,17 +1,13 @@
 package org.oddjob.arooa.beandocs;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.oddjob.arooa.ArooaBeanDescriptor;
-import org.oddjob.arooa.ArooaDescriptor;
-import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ArooaType;
-import org.oddjob.arooa.ElementMappings;
+import org.oddjob.arooa.*;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An {@link ArooaDocFactory} that creates a set of {@link ArooaDoc} from
@@ -47,13 +43,11 @@ implements ArooaDocFactory {
     	ArooaElement[] elements = content.allElements();
     	
     	WriteableArooaDoc arooaDoc = new WriteableArooaDoc();
-    	    	
-    	for (int i = 0; i < elements.length; ++i) {
-    	
-    		arooaDoc.add(createBeanDoc(elements[i],
-    				content.documentClass(elements[i])
-    				));
-    	}
+
+		for (ArooaElement element : elements) {
+
+			arooaDoc.add(createBeanDoc(element, content.documentClass(element)));
+		}
     	
 		return arooaDoc;
 	}
@@ -97,7 +91,7 @@ implements ArooaDocFactory {
 
 		String[] properties = overview.getProperties();
 		
-		List<WriteablePropertyDoc> propertyDocs = new ArrayList<WriteablePropertyDoc>();
+		List<WriteablePropertyDoc> propertyDocs = new ArrayList<>();
 		
 		for (String property: properties) {
 		
@@ -109,17 +103,19 @@ implements ArooaDocFactory {
 			
 			propertyDoc.setPropertyName(property);
 			
-			propertyDoc.setConfiguredHow(beanDescriptor.getConfiguredHow(
-					property));
-			
 			PropertyDoc.Access access = PropertyDoc.Access.READ_WRITE;
-			if (!overview.hasWriteableProperty(property)) {
+
+			if (overview.hasWriteableProperty(property)) {
+				propertyDoc.setConfiguredHow(beanDescriptor.getConfiguredHow(
+						property));
+				if (!overview.hasReadableProperty(property)) {
+					access = PropertyDoc.Access.WRITE_ONLY;
+				}
+			}
+			else {
 				access = PropertyDoc.Access.READ_ONLY;
 			}
-			else if (!overview.hasReadableProperty(property)) {
-				access = PropertyDoc.Access.WRITE_ONLY;				
-			}
-			
+
 			propertyDoc.setAccess(access);
 			
 			PropertyDoc.Multiplicity multiplicity = 

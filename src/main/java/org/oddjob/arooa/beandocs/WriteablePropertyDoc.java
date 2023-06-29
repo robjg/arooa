@@ -2,6 +2,8 @@ package org.oddjob.arooa.beandocs;
 
 import org.oddjob.arooa.ConfiguredHow;
 
+import java.util.Objects;
+
 public class WriteablePropertyDoc implements PropertyDoc {
 
 	private String propertyName;
@@ -64,7 +66,7 @@ public class WriteablePropertyDoc implements PropertyDoc {
 	}
 
 	public void setConfiguredHow(ConfiguredHow configuredHow) {
-		this.configuredHow = configuredHow;
+		this.configuredHow = Objects.requireNonNull(configuredHow);
 	}
 	
 	@Override

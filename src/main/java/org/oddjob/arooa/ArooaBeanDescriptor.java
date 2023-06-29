@@ -35,11 +35,24 @@ public interface ArooaBeanDescriptor {
 	String getTextProperty();
 	
 	/**
-	 * The name of the component property.
+	 * The name of the component property. A bean can have at most one
+	 * component property.
 	 * 
-	 * @return
+	 * @return The name of the property or null if there isn't one.
 	 */
 	String getComponentProperty();
+
+	/**
+	 * Get the type of the property.
+	 *
+	 * @param property The property.
+	 * @return The type. Never null.
+	 */
+	default ArooaType getArooaType(String property) {
+
+		return property.equals(getComponentProperty()) ?
+			ArooaType.COMPONENT : ArooaType.VALUE;
+	}
 
 	/**
 	 * How is a property configured.

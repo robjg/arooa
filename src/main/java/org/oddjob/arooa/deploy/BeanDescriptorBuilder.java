@@ -5,6 +5,7 @@ import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ConfiguredHow;
 import org.oddjob.arooa.ParsingInterceptor;
 import org.oddjob.arooa.reflect.ArooaClass;
+import org.oddjob.arooa.reflect.ArooaPropertyException;
 
 import java.util.*;
 
@@ -229,7 +230,7 @@ public class BeanDescriptorBuilder
         public ConfiguredHow getConfiguredHow(String property) {
             PropertyDefinition propertyDefinition = properties.get(property);
             if (propertyDefinition == null) {
-                return null;
+                throw new ArooaPropertyException(property, "No writeable property [" + property + "]");
             }
 
             return propertyDefinition.configuredHow;

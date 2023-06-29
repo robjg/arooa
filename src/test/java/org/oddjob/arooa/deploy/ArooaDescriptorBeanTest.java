@@ -2,21 +2,18 @@
  * (c) Rob Gordon 2005
  */
 package org.oddjob.arooa.deploy;
+
 import org.junit.Before;
-
 import org.junit.Test;
-
-import org.oddjob.arooa.ArooaBeanDescriptor;
-import org.oddjob.arooa.ArooaConfiguration;
-import org.oddjob.arooa.ArooaDescriptor;
-import org.oddjob.arooa.ArooaParseException;
-import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ConfiguredHow;
+import org.oddjob.arooa.*;
 import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.standard.StandardArooaDescriptor;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 /**
  * 
@@ -51,7 +48,7 @@ public class ArooaDescriptorBeanTest extends ArooaDescriptorTestBase {
 	
 	
    @Test
-	public void testNamespaceIsAttribute() throws Exception {
+	public void testNamespaceIsAttribute() {
 
 		ArooaDescriptor descriptor = new LinkedDescriptor(
 				new ArooaDescriptorDescriptor(),
@@ -62,10 +59,7 @@ public class ArooaDescriptorBeanTest extends ArooaDescriptorTestBase {
 					new SimpleArooaClass(ArooaDescriptorBean.class), 
 					new BeanUtilsPropertyAccessor());
 		
-		BeanDescriptorHelper sort = new BeanDescriptorHelper(beanDescriptor);
-		
-		assertEquals(ConfiguredHow.ATTRIBUTE, 
-				sort.getConfiguredHow("namespace"));
+		assertThat(beanDescriptor.getConfiguredHow("namespace"), is(ConfiguredHow.ATTRIBUTE));
 	}
 
 }

@@ -5,7 +5,6 @@ import org.oddjob.arooa.ArooaConfigurationException;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.convert.ArooaConversionException;
-import org.oddjob.arooa.deploy.BeanDescriptorHelper;
 import org.oddjob.arooa.parsing.ArooaAttributes;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.TextHandler;
@@ -38,7 +37,7 @@ abstract class InstanceConfiguration {
 
     private final AutoSetter autoSetter;
 
-    /*** Provided by sub classes to control when to set the wrapped object
+    /** Provided by subclasses to control when to set the wrapped object
      * into the parent. For a component it is on init, for a value it is
      * on configure. */
     interface InjectionStrategy {
@@ -73,7 +72,7 @@ abstract class InstanceConfiguration {
     }
 
     /**
-     * Allow sub classes to do something when the context becomes available.
+     * Allow subclasses to do something when the context becomes available.
      * Here to allow the {@link ComponentConfiguration} to register a component.
      *
      * @param context The new context
@@ -153,8 +152,7 @@ abstract class InstanceConfiguration {
                 ).getBeanDescriptor(
                         arooaClass, propertyAccessor);
 
-        String textProperty = new BeanDescriptorHelper(
-                beanDescriptor).getTextProperty();
+        String textProperty = beanDescriptor.getTextProperty();
 
         if (textProperty == null) {
             throw new ArooaException("No text property for " +

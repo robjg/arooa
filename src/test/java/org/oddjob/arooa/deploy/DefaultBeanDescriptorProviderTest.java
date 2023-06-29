@@ -1,12 +1,12 @@
 package org.oddjob.arooa.deploy;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ConfiguredHow;
 import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
 import org.oddjob.arooa.life.SimpleArooaClass;
+import org.oddjob.arooa.reflect.ArooaPropertyException;
 
 import java.util.Date;
 
@@ -59,24 +59,32 @@ public class DefaultBeanDescriptorProviderTest {
         assertThat(beanDescriptor.getConfiguredHow("type"),
                 is(ConfiguredHow.ATTRIBUTE));
 
+        assertThat(beanDescriptor.getConfiguredHow("picked"),
+                is(ConfiguredHow.ELEMENT));
+
+        try {
+            beanDescriptor.getConfiguredHow("foo");
+            assertThat("Should fail", false);
+        }
+        catch (ArooaPropertyException e) {
+            assertThat(e.getMessage(), is("No writeable property [foo]"));
+        }
+
         // Note that the defaults come from the BeanDescriptorHelper.
 
-        assertThat(beanDescriptor.getConfiguredHow("date"),
-                Matchers.nullValue());
-
-        BeanDescriptorHelper sort = new BeanDescriptorHelper(beanDescriptor);
-
-        assertThat(sort.getConfiguredHow("colour"),
-                is(ConfiguredHow.ATTRIBUTE));
-
-        assertThat(sort.getConfiguredHow("quantity"),
-                is(ConfiguredHow.ATTRIBUTE));
-
-        assertThat(sort.getConfiguredHow("type"),
-                is(ConfiguredHow.ATTRIBUTE));
-
-        assertThat(sort.getConfiguredHow("date"),
-                is(ConfiguredHow.ELEMENT));
+//        BeanDescriptorHelper sort = new BeanDescriptorHelper(beanDescriptor);
+//
+//        assertThat(sort.getConfiguredHow("colour"),
+//                is(ConfiguredHow.ATTRIBUTE));
+//
+//        assertThat(sort.getConfiguredHow("quantity"),
+//                is(ConfiguredHow.ATTRIBUTE));
+//
+//        assertThat(sort.getConfiguredHow("type"),
+//                is(ConfiguredHow.ATTRIBUTE));
+//
+//        assertThat(sort.getConfiguredHow("date"),
+//                is(ConfiguredHow.ELEMENT));
     }
 
     @Test

@@ -4,7 +4,6 @@
 package org.oddjob.arooa.design;
 
 import org.oddjob.arooa.*;
-import org.oddjob.arooa.deploy.BeanDescriptorHelper;
 import org.oddjob.arooa.life.InstantiationContext;
 import org.oddjob.arooa.parsing.ArooaAttributes;
 import org.oddjob.arooa.parsing.ArooaContext;
@@ -87,8 +86,7 @@ abstract class DesignInstanceBase implements ParsableDesignInstance {
                 continue;
             }
 
-            if (!new BeanDescriptorHelper(
-                    beanDescriptor).isAttribute(attributeName)) {
+            if (beanDescriptor.getConfiguredHow(attributeName) != ConfiguredHow.ATTRIBUTE) {
 
                 throw new ArooaException(attributeName + " is not an attribute of " +
                         classIdentifier);

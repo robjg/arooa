@@ -1,8 +1,8 @@
 package org.oddjob.arooa.runtime;
 
+import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.deploy.BeanDescriptorHelper;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
@@ -50,11 +50,9 @@ public class AutoSetter {
 		ArooaClass classIdentifier = runtime.getClassIdentifier();
 		
 		PropertyAccessor accessor = session.getTools().getPropertyAccessor();
-		
-		BeanDescriptorHelper helper =
-			new BeanDescriptorHelper(
-					session.getArooaDescriptor().getBeanDescriptor(
-							classIdentifier, accessor));
+
+		ArooaBeanDescriptor beanDescriptor = session.getArooaDescriptor()
+				.getBeanDescriptor(classIdentifier, accessor);
 		
 		BeanOverview overview = runtime.getClassIdentifier(
 				).getBeanOverview(accessor);
@@ -68,10 +66,10 @@ public class AutoSetter {
 			if (propertiesSetAlready.contains(property)) {
 				continue;
 			}
-			if (!helper.isAuto(property)) {
+			if (!beanDescriptor.isAuto(property)) {
 				continue;
 			}
-			if (helper.isComponent(property)) {
+			if (property.equals(beanDescriptor.getComponentProperty())) {
 				throw new ArooaException("Property can't be Auto and a Component: " + 
 						property + " of " + classIdentifier);
 			}
@@ -89,7 +87,7 @@ public class AutoSetter {
 							).serviceFinderFor(context);
 
 			Class<?> propertyType = overview.getPropertyType(property);
-			String qualifier = helper.getFlavour(property);
+			String qualifier = beanDescriptor.getFlavour(property);
 
 			Object value;
 			try {

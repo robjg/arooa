@@ -17,6 +17,7 @@ import org.oddjob.arooa.reflect.PropertyAccessor;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Provides default behaviour for Arooa configuration. This includes
@@ -46,7 +47,8 @@ public class StandardArooaDescriptor implements ArooaDescriptor {
 	
 	public StandardArooaDescriptor(
 			ClassLoader classLoader) {
-		classResolver = new ClassLoaderClassResolver(classLoader);
+		classResolver = new ClassLoaderClassResolver(
+				Objects.requireNonNull(classLoader, "No Classloader"));
 	}
 	
 	@Override
@@ -74,7 +76,7 @@ public class StandardArooaDescriptor implements ArooaDescriptor {
 		beanDescriptor = SupportedBeanDescriptorProvider.withNoBeanDefinition()
 				.getBeanDescriptor(arooaClass, accessor);
 		
-		beanDescriptors.put(arooaClass, beanDescriptor);		
+		beanDescriptors.put(arooaClass, beanDescriptor);
 		
 		return beanDescriptor;
 	}

@@ -1,7 +1,6 @@
 package org.oddjob.arooa.parsing;
 
 import org.oddjob.arooa.*;
-import org.oddjob.arooa.deploy.BeanDescriptorHelper;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.xml.XMLArooaParser;
@@ -44,7 +43,7 @@ public class CutAndPasteSupport {
                 session.getArooaDescriptor().getBeanDescriptor(
                         runtimeClass, accessor);
 
-        propertyName = new BeanDescriptorHelper(beanDescriptor).getComponentProperty();
+        propertyName = beanDescriptor.getComponentProperty();
     }
 
     /**
