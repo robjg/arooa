@@ -1,13 +1,13 @@
 package org.oddjob.arooa.beandocs;
 
-import java.util.Map;
-
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaClass;
 
+import java.util.Map;
+
 /**
  * Helper class to provide {@link MappingsContents} for the common mappings
- * implmenetations.
+ * implementations.
  * 
  * @author rob
  *
@@ -22,7 +22,7 @@ public class MappingsBeanDoc implements MappingsContents {
 	
 	@Override
 	public ArooaElement[] allElements() {
-		return mappings.keySet().toArray(new ArooaElement[mappings.size()]);
+		return mappings.keySet().toArray(new ArooaElement[0]);
 	}
 	
 	@Override

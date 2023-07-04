@@ -1,23 +1,26 @@
 package org.oddjob.arooa.beandocs;
 
+/**
+ * Documentation for a bean.
+ */
 public interface BeanDoc {
 
-	public String getName();
+	String getName();
 	
-	public String getPrefix();
+	String getPrefix();
 	
-	public String getTag();
+	String getTag();
 	
-	public String getClassName();
+	String getClassName();
 	
-	public String getFirstSentence();
+	String getFirstSentence();
 	
-	public String getAllText();
+	String getAllText();
 		
-	public PropertyDoc[] getPropertyDocs();
+	PropertyDoc[] getPropertyDocs();
 	
-	public PropertyDoc propertyDocFor(String property);
+	PropertyDoc propertyDocFor(String property);
 	
-	public ExampleDoc[] getExampleDocs();
+	ExampleDoc[] getExampleDocs();
 	
 }

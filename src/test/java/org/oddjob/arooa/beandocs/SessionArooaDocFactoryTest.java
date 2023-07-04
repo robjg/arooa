@@ -1,21 +1,17 @@
 package org.oddjob.arooa.beandocs;
 
-import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.Map;
-
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
-
+import org.junit.Test;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.ConfiguredHow;
 import org.oddjob.arooa.standard.StandardArooaSession;
-import org.oddjob.arooa.types.BeanType;
-import org.oddjob.arooa.types.ClassType;
-import org.oddjob.arooa.types.IsType;
-import org.oddjob.arooa.types.ListType;
-import org.oddjob.arooa.types.MapType;
+import org.oddjob.arooa.types.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SessionArooaDocFactoryTest extends Assert {
 
@@ -59,8 +55,10 @@ public class SessionArooaDocFactoryTest extends Assert {
 			beanProperties.put(propertyDoc.getPropertyName(), propertyDoc);
 		}
 		
-		assertEquals(0, beanProperties.size());
-		
+		assertEquals(1, beanProperties.size());
+		MatcherAssert.assertThat(beanProperties.get(BeanType.ATTRIBUTE),
+				Matchers.notNullValue());
+
 		// Class
 		
 		WriteableBeanDoc classDoc = results.get(ClassType.class.getName());

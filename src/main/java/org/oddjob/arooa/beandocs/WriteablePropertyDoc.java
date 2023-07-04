@@ -4,6 +4,9 @@ import org.oddjob.arooa.ConfiguredHow;
 
 import java.util.Objects;
 
+/**
+ * Allows documentation for a property to be accumulated via setters.
+ */
 public class WriteablePropertyDoc implements PropertyDoc {
 
 	private String propertyName;

@@ -29,12 +29,16 @@ public class BeanType {
 
 	public static final ArooaElement ELEMENT = new ArooaElement("bean"); 
 	
-	/** 
-	 * @oddjob.property class 
+	public static final String ATTRIBUTE = "class";
+
+	private BeanType() {}
+
+	/**
+	 * @oddjob.property class
 	 * @oddjob.description The class to create. Must have a public zero
-	 * argument constructor. Not that this attribute value must be 
+	 * argument constructor. Note that this attribute value must be
 	 * constant - it can not contain ${} property place holders.
 	 * @oddjob.required No, defaults to java.lang.Object.
 	 */
-	public static final String ATTRIBUTE = "class"; 		
+	public void setClass(Class<?> className) {}
 }

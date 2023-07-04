@@ -13,7 +13,7 @@ public interface ArooaDoc {
 	 * 
 	 * @return The docs. Never null.
 	 */
-	public BeanDoc[] getBeanDocs();
+	BeanDoc[] getBeanDocs();
 
 	/**
 	 * Get an inividual bean doc {@link BeanDoc}s by namespace prefix
@@ -26,5 +26,5 @@ public interface ArooaDoc {
 	 * 
 	 * @return The doc. May bye null..
 	 */
-	public BeanDoc beanDocFor(String prefixed, String tag);
+	BeanDoc beanDocFor(String prefixed, String tag);
 }

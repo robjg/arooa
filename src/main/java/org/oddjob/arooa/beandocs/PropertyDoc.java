@@ -2,35 +2,38 @@ package org.oddjob.arooa.beandocs;
 
 import org.oddjob.arooa.ConfiguredHow;
 
+/**
+ * Provides the documentation for the property of a bean.
+ *
+ * @see BeanDoc
+ */
 public interface PropertyDoc {
 
 	enum Access {
 		READ_ONLY,
 		WRITE_ONLY,
 		READ_WRITE,
-		;
 	}
 		
 	enum Multiplicity {
 		SIMPLE,
 		INDEXED,
 		MAPPED,
-		;
 	}
 	
-	public String getPropertyName();
+	String getPropertyName();
 	
-	public String getFirstSentence();
+	String getFirstSentence();
 	
-	public String getAllText();
+	String getAllText();
 	
-	public ConfiguredHow getConfiguredHow();
+	ConfiguredHow getConfiguredHow();
 	
-	public boolean isAuto();
+	boolean isAuto();
 	
-	public Access getAccess();
+	Access getAccess();
 	
-	public Multiplicity getMultiplicity();
+	Multiplicity getMultiplicity();
 	
-	public String getRequired();
+	String getRequired();
 }
