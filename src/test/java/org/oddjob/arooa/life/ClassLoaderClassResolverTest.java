@@ -30,7 +30,7 @@ public class ClassLoaderClassResolverTest extends Assert {
     }
 
     @Test
-    public void testFindPrimatives() {
+    public void testFindPrimitives() {
 
         ClassLoaderClassResolver test = new ClassLoaderClassResolver(
                 getClass().getClassLoader());

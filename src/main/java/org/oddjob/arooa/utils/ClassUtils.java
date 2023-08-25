@@ -1,275 +1,271 @@
 package org.oddjob.arooa.utils;
 
 import org.oddjob.arooa.ArooaException;
+import org.oddjob.arooa.ClassResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Various utility methods relating to class.
- * 
+ *
  * @author Rob Gordon.
  */
 public class ClassUtils {
-	private static Logger logger = LoggerFactory.getLogger(ClassUtils.class);
-	
-	/**
-	 * Primitive type class names to types.
-	 */
-	private static final Map<String, Class<?>> primitiveNameToTypeMap =
-			new HashMap<>(9);
-	
-	/**
-	 * Primitive type to wrapper class type.
-	 */
-	private static final Map<Class<?>, Class<?>> primitiveTypeToWrapperMap =
-			new HashMap<>(9);
+    private static final Logger logger = LoggerFactory.getLogger(ClassUtils.class);
 
-	/**
-	 * Wrapper class type to primitive type.
-	 */
-	private static final Map<Class<?>, Class<?>> wrapperToPrimitiveTypeMap =
-			new HashMap<>(9);
-	
-	static {
-		Class<?>[] primitives = {
-				void.class,
-				boolean.class, byte.class, char.class, double.class,
-				float.class, int.class, long.class, short.class };
+    /**
+     * Primitive type to wrapper class type.
+     */
+    public static final Map<Class<?>, Class<?>> primitiveTypeToWrapperMap =
+            Map.of(void.class, Void.class,
+                    boolean.class, Boolean.class,
+                    byte.class, Byte.class,
+                    char.class, Character.class,
+                    double.class, Double.class,
+                    float.class, Float.class,
+                    int.class, Integer.class,
+                    long.class, Long.class,
+                    short.class, Short.class);
 
-		Class<?>[] wrappers = {
-				Void.class,
-				Boolean.class, Byte.class, Character.class, Double.class,
-				Float.class, Integer.class, Long.class, Short.class };
-		
-		for (int i = 0; i < primitives.length; ++i) {
-			primitiveNameToTypeMap.put(primitives[i].getName(),
-					primitives[i]);
-		}		
-		
-		for (int i = 0; i < primitives.length; ++i) {
-			primitiveTypeToWrapperMap.put(primitives[i], wrappers[i]);
-		}		
-		
-		for (int i = 0; i < primitives.length; ++i) {
-			wrapperToPrimitiveTypeMap.put(wrappers[i], primitives[i]);
-		}		
-	}
+    /**
+     * Primitive type class names to types.
+     */
+    public static final Map<String, Class<?>> primitiveNameToTypeMap =
+            primitiveTypeToWrapperMap.entrySet()
+                    .stream()
+                    .collect(Collectors.toMap(entry -> entry.getKey().getName(), Map.Entry::getKey));
 
-	/**
-	 * Provide the primitive class for the name. The name being int, short
-	 * etc.
-	 * 
-	 * @param className The class name.
-	 * @return The primitive type. Null if no type exists.
-	 */
-	public static Class<?> primitiveTypeForName(String className) {
-		return primitiveNameToTypeMap.get(className);
-	}
-	
-	/**
-	 * Provide the wrapper class for a primitive type.
-	 * 
-	 * @param primitiveType
-	 * 
-	 * @return The wrapper class or null if the provided class is not
-	 * a primitive type.
-	 */
-	public static Class<?> wrapperClassForPrimitive(Class<?> primitiveType) {
-		return primitiveTypeToWrapperMap.get(primitiveType);
-	}
-	
-	/**
-	 * Provide the primitive type for a wrapper class.
-	 * 
-	 * @param wrapperType
-	 * 
-	 * @return The primitive type or null if the provided class is not 
-	 * a wrapper class.
-	 */
-	public static Class<?> primitiveTypeForWrapper(Class<?> wrapperType) {
-		return wrapperToPrimitiveTypeMap.get(wrapperType);
-	}
-	
-	/**
-	 * Same as {@link Class#forName} except that exception logs the class loader stack before
-	 * crashing.
-	 * 
-	 * @param className
-	 * @param loader
-	 * @return
-	 * @throws ClassNotFoundException
-	 */
-	public static Class<?> classFor(String className, ClassLoader loader) 
-	throws ClassNotFoundException {
-		if (className == null) {
-			throw new NullPointerException("No class name.");
-		}
-		
-		if (primitiveNameToTypeMap.containsKey(className)) {
-			return primitiveNameToTypeMap.get(className);
-		}
+    /**
+     * Wrapper class type to primitive type.
+     */
+    private static final Map<Class<?>, Class<?>> wrapperToPrimitiveTypeMap =
+            primitiveTypeToWrapperMap.entrySet()
+                    .stream()
+                    .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
 
-		try {
-			return Class.forName(className, true, loader);
-		}
-		
-		catch (Error e) {
-			errorMessage(loader, e);
-			throw e;
-		}
-		catch (ClassNotFoundException e) {
-			errorMessage(loader, e);
-			throw e;
-		}
-	}
+    /**
+     * Provide the primitive class for the name. The name being int, short
+     * etc.
+     *
+     * @param className The class name.
+     * @return The primitive type. Null if no type exists.
+     */
+    public static Class<?> primitiveTypeForName(String className) {
+        return primitiveNameToTypeMap.get(className);
+    }
 
-	/**
-	 * String array to class array.
-	 *
-	 * @param classNames The class names.
-	 * @param loader The classloader to use.
-	 *
-	 * @return Class array.
-	 *
-	 * @throws ClassNotFoundException If a class isn't found.
-	 */
-	public static Class<?>[] classesFor(String[] classNames, ClassLoader loader) throws ClassNotFoundException {
+    /**
+     * Provide the wrapper class for a primitive type.
+     *
+     * @param primitiveType
+     * @return The wrapper class or null if the provided class is not
+     * a primitive type.
+     */
+    public static Class<?> wrapperClassForPrimitive(Class<?> primitiveType) {
+        return primitiveTypeToWrapperMap.get(primitiveType);
+    }
 
-		Class<?>[] classes = new Class<?>[classNames.length];
-		for (int i = 0; i < classNames.length; i++) {
-			classes[i] = classFor(classNames[i], loader);
-		}
+    /**
+     * Provide the primitive type for a wrapper class.
+     *
+     * @param wrapperType
+     * @return The primitive type or null if the provided class is not
+     * a wrapper class.
+     */
+    public static Class<?> primitiveTypeForWrapper(Class<?> wrapperType) {
+        return wrapperToPrimitiveTypeMap.get(wrapperType);
+    }
 
-		return classes;
-	}
+    /**
+     * Same as {@link Class#forName} except that exception logs the class loader stack before
+     * crashing.
+     *
+     * @param className The class name.
+     * @param loader    The class loader.
+     * @return The class if it exists;
+     * @throws ClassNotFoundException
+     */
+    public static Class<?> classFor(String className, ClassLoader loader)
+            throws ClassNotFoundException {
+        if (className == null) {
+            throw new NullPointerException("No class name.");
+        }
 
-	/**
-	 * Convenience method to convert and array of classes to an array of strings.
-	 *
-	 * @param classes The class array.
-	 * @return The strings.
-	 */
-	public static String[] classesToStrings(Class<?>[] classes) {
-		String[] strings = new String[classes.length];
-		for (int i = 0; i < strings.length; ++i) {
-			strings[i] = classes[i].getName();
-		}
-		return strings;
-	}
+        if (primitiveNameToTypeMap.containsKey(className)) {
+            return primitiveNameToTypeMap.get(className);
+        }
 
-	/**
-	 * Report an exception and print the class loader stack to the logger.
-	 * 
-	 * @param classLoader The classLoader. May be null.
-	 * @param t The exception. May not be null.
-	 */
-	private static void errorMessage(ClassLoader classLoader, Throwable t) {
-		logger.error("Exception [" + t.toString() + "] on it's way. " + 
-			(classLoader == null ? "The class loader is null, maybe that's why." :
-				"Here's the class loader stack:"));
-    	for (ClassLoader next = classLoader; next != null; next = next.getParent()) {
-    		logger.error("\t" + next);
-    	}
-	}
-	
-	/**
-	 * Instantiates a Class but converts the exception if it fails.
-	 * 
-	 * @param className
-	 * @param loader
-	 * @return
-	 * 
-	 * @throws ArooaException
-	 */
-	public static Object instantiate(String className, ClassLoader loader) 
-	throws ArooaException {
-		try {
-			return classFor(className, loader).newInstance();
-		} catch (Exception e) {
-			throw new ArooaException("Failed creating class [" + className +"]", e);
-		}
-	}
+        try {
+            return Class.forName(className, true, loader);
+        } catch (Error | ClassNotFoundException e) {
+            errorMessage(loader, e);
+            throw e;
+        }
+    }
 
-	/**
-	 * Cast an Object to the type including primitive types. The standard {@link Class#cast(Object)} method
-	 * won't cope with primitive type casting it's wrapper. This simple little bodge gets round that.
-	 *
-	 * @param ignored The class which may be primitive. For type inference only.
-	 * @param object The object wrapper.
-	 *
-	 * @param <T> The type.
-	 *
-	 * @return An object cast to the correct type.
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T> T cast(Class<T> ignored, Object object) {
+    /**
+     * String array to class array.
+     *
+     * @param classNames The class names.
+     * @param loader     The classloader to use.
+     * @return Class array.
+     * @throws ClassNotFoundException If a class isn't found.
+     */
+    public static Class<?>[] classesFor(String[] classNames, ClassLoader loader) throws ClassNotFoundException {
 
-		return (T) object;
-	}
+        Class<?>[] classes = new Class<?>[classNames.length];
+        for (int i = 0; i < classNames.length; i++) {
+            classes[i] = classFor(classNames[i], loader);
+        }
 
-	/**
-	 * Try and work out the simple name from anonymous classes and the like.
-	 * @param cl
-	 * @return
-	 */
-	public static String getSimpleName(Class<?> cl) {
-
-		String simpleName = cl.getSimpleName();
-		if ("".equals(simpleName)) {
-			if (cl.getEnclosingClass() != null) {
-				simpleName = cl.getEnclosingClass().getSimpleName();
-			}
-			else {
-				// Can't work it out just give the full class.
-				simpleName = cl.getName();
-			}
-		}
-		return simpleName;
-	}
-
-	/**
-	 * Return the Raw type of a Type which is either already a raw type or a Parameterised type such as
-	 * List&lt;String&gt; which would be List.
-	 *
-	 * @param type The type which may be generic or not.
-	 * @return The Raw type.
-	 *
-	 * @throws IllegalArgumentException if the type is not a Class or Parameterised Type.
-	 */
-	public static Class<?> rawType(Type type) throws IllegalArgumentException {
-		if (type instanceof Class) {
-			return (Class<?>) type;
-		}
-		else if (type instanceof ParameterizedType){
-			return (Class<?>) ((ParameterizedType) type).getRawType();
-		}
-		else {
-			throw new IllegalArgumentException("Can't work out raw type of [" + type + "]");
-		}
-	}
+        return classes;
+    }
 
 
-	public static Class<?> getComponentTypeOfParameter(Method method, int parameterNumber) {
+    /**
+     * String array to class array with an {@link ClassResolver}.
+     *
+     * @param classNames The class names.
+     * @param loader     The Class Resolver to use.
+     * @return Class array.
+     * @throws ClassNotFoundException If a class isn't found.
+     */
+    public static Class<?>[] classesFor(String[] classNames, ClassResolver loader) throws ClassNotFoundException {
 
-		Type[] genericParameterTypes = method.getGenericParameterTypes();
+        Class<?>[] classes = new Class<?>[classNames.length];
+        for (int i = 0; i < classNames.length; i++) {
+            String className = classNames[i];
+            Class<?> cl = loader.findClass(className);
+            if (cl == null) {
+                throw new ClassNotFoundException(className);
+            }
+            classes[i] = cl;
+        }
 
-		if (genericParameterTypes[parameterNumber] instanceof ParameterizedType) {
-			ParameterizedType parameterizedType = (ParameterizedType) genericParameterTypes[parameterNumber];
+        return classes;
+    }
 
-			Type[] typeArgs = parameterizedType.getActualTypeArguments();
-			if (typeArgs.length == 0) {
-				return null;
-			}
-			return rawType(typeArgs[0]);
-		}
-		else {
-			return null;
-		}
-	}
+    /**
+     * Convenience method to convert and array of classes to an array of strings.
+     *
+     * @param classes The class array.
+     * @return The strings.
+     */
+    public static String[] classesToStrings(Class<?>[] classes) {
+        String[] strings = new String[classes.length];
+        for (int i = 0; i < strings.length; ++i) {
+            strings[i] = classes[i].getName();
+        }
+        return strings;
+    }
+
+    /**
+     * Report an exception and print the class loader stack to the logger.
+     *
+     * @param classLoader The classLoader. May be null.
+     * @param t           The exception. May not be null.
+     */
+    private static void errorMessage(ClassLoader classLoader, Throwable t) {
+        logger.error("Exception [" + t.toString() + "] on it's way. " +
+                (classLoader == null ? "The class loader is null, maybe that's why." :
+                        "Here's the class loader stack:"));
+        for (ClassLoader next = classLoader; next != null; next = next.getParent()) {
+            logger.error("\t" + next);
+        }
+    }
+
+    /**
+     * Instantiates a Class but converts the exception if it fails.
+     *
+     * @param className
+     * @param loader
+     * @return
+     * @throws ArooaException
+     */
+    public static Object instantiate(String className, ClassLoader loader)
+            throws ArooaException {
+        try {
+            Class<?> cl = classFor(className, loader);
+            return cl.getConstructor().newInstance();
+        } catch (Exception e) {
+            throw new ArooaException("Failed creating class [" + className + "]", e);
+        }
+    }
+
+    /**
+     * Cast an Object to the type including primitive types. The standard {@link Class#cast(Object)} method
+     * won't cope with primitive type casting its wrapper. This simple little bodge gets round that.
+     *
+     * @param ignored The class which may be primitive. For type inference only.
+     * @param object  The object wrapper.
+     * @param <T>     The type.
+     * @return An object cast to the correct type.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T cast(Class<T> ignored, Object object) {
+
+        return (T) object;
+    }
+
+    /**
+     * Try and work out the simple name from anonymous classes and the like.
+     *
+     * @param cl
+     * @return
+     */
+    public static String getSimpleName(Class<?> cl) {
+
+        String simpleName = cl.getSimpleName();
+        if ("".equals(simpleName)) {
+            if (cl.getEnclosingClass() != null) {
+                simpleName = cl.getEnclosingClass().getSimpleName();
+            } else {
+                // Can't work it out just give the full class.
+                simpleName = cl.getName();
+            }
+        }
+        return simpleName;
+    }
+
+    /**
+     * Return the raw Type of Type which is either already a raw type or a Parameterised type such as
+     * List&lt;String&gt; which would be List.
+     *
+     * @param type The type which may be generic or not.
+     * @return The Raw type.
+     * @throws IllegalArgumentException if the type is not a Class or Parameterised Type.
+     */
+    public static Class<?> rawType(Type type) throws IllegalArgumentException {
+        if (type instanceof Class) {
+            return (Class<?>) type;
+        } else if (type instanceof ParameterizedType) {
+            return (Class<?>) ((ParameterizedType) type).getRawType();
+        } else {
+            throw new IllegalArgumentException("Can't work out raw type of [" + type + "]");
+        }
+    }
+
+
+    public static Class<?> getComponentTypeOfParameter(Method method, int parameterNumber) {
+
+        Type[] genericParameterTypes = method.getGenericParameterTypes();
+
+        if (genericParameterTypes[parameterNumber] instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) genericParameterTypes[parameterNumber];
+
+            Type[] typeArgs = parameterizedType.getActualTypeArguments();
+            if (typeArgs.length == 0) {
+                return null;
+            }
+            return rawType(typeArgs[0]);
+        } else {
+            return null;
+        }
+    }
 }

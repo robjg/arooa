@@ -1,59 +1,51 @@
 package org.oddjob.arooa.utils;
 
 import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.oddjob.arooa.ClassResolver;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ClassUtilsTest extends Assert {
+class ClassUtilsTest {
 
     @Test
-    public void testClassFor() throws ClassNotFoundException {
+    public void jdkAssumptionThatPrimitivesNotResolved() {
 
-        assertEquals(String.class,
-                ClassUtils.classFor(
-                        "java.lang.String", getClass().getClassLoader()));
+        assertThrows(ClassNotFoundException.class, () -> Class.forName("int"));
+    }
 
-        assertEquals(String[].class,
-                ClassUtils.classFor(
-                        "[Ljava.lang.String;", getClass().getClassLoader()));
+    @Test
+    void testClassFor() throws ClassNotFoundException {
 
-        assertEquals(String[][].class,
-                ClassUtils.classFor(
-                        "[[Ljava.lang.String;", getClass().getClassLoader()));
+        ClassLoader classLoader = getClass().getClassLoader();
 
-        assertEquals(int.class,
-                ClassUtils.classFor(
-                        "int", getClass().getClassLoader()));
+        assertThat(ClassUtils.classFor("java.lang.String", classLoader), is(String.class));
 
-        assertEquals(int[].class,
-                ClassUtils.classFor(
-                        "[I", getClass().getClassLoader()));
+        assertThat(ClassUtils.classFor("[Ljava.lang.String;", classLoader), is(String[].class));
 
-        assertEquals(int[][].class,
-                ClassUtils.classFor(
-                        "[[I", getClass().getClassLoader()));
+        assertThat(ClassUtils.classFor("[[Ljava.lang.String;", classLoader), is(String[][].class));
 
+        assertThat(ClassUtils.classFor("int", classLoader), is(int.class));
 
+        assertThat(ClassUtils.classFor("[I", classLoader), is(int[].class));
 
+        assertThat(ClassUtils.classFor("[[I", classLoader), is(int[][].class));
     }
 
     // To visually check the error message.
     @Test
-    public void testError() {
+    void testError() {
 
-        try {
-            ClassUtils.classFor("A.Flying.Pig", getClass().getClassLoader());
-            fail("Should fail.");
-        } catch (ClassNotFoundException e) {
-            // expected.
-        }
+        ClassNotFoundException exception = assertThrows(ClassNotFoundException.class,
+                () -> ClassUtils.classFor("A.Flying.Pig", getClass().getClassLoader()));
+
+        assertThat(exception.getMessage(), Matchers.containsString("A.Flying.Pig"));
     }
 
-
     @Test
-    public void testClassesFor() throws ClassNotFoundException {
+    void classesForWithClassLoader() throws ClassNotFoundException {
 
     	Class<?>[] results = ClassUtils.classesFor(
     			new String[] { "int", "long", "java.lang.Void", "void"},
@@ -64,10 +56,21 @@ public class ClassUtilsTest extends Assert {
     			int.class, long.class, Void.class, void.class));
 	}
 
-	@Test
-	public void testCast() {
+    @Test
+    void classesForWithClassResolver() throws ClassNotFoundException {
 
-        assertThat(ClassUtils.cast(int.class, new Integer(42)), is(42));
+        Class<?>[] results = ClassUtils.classesFor(
+                new String[] { "int", "long", "java.lang.Void", "void"},
+                ClassResolver.getDefaultClassResolver());
+
+        assertThat(results, Matchers.arrayContaining(
+                int.class, long.class, Void.class, void.class));
+    }
+
+	@Test
+	void testCast() {
+
+        assertThat(ClassUtils.cast(int.class, 42), is(42));
         assertThat(ClassUtils.cast(String.class, "Apple"), is("Apple"));
         assertThat(ClassUtils.cast(void.class, null), Matchers.nullValue());
     }
@@ -75,7 +78,7 @@ public class ClassUtilsTest extends Assert {
 
     // How to get a simple name from different class types.
     @Test
-    public void testSimpleName() {
+    void testSimpleName() {
 
         Object foo = new Object() {};
 
@@ -96,7 +99,7 @@ public class ClassUtilsTest extends Assert {
 enum Shapes {
 
     SQUARE,
-    CIRCLE;
+    CIRCLE
 }
 
 enum Colours {
