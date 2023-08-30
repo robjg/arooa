@@ -1,9 +1,10 @@
 package org.oddjob.arooa.design.screem;
 
+import org.oddjob.arooa.design.view.FileSelectionWidget;
+
 import java.io.File;
 import java.util.Arrays;
-
-import org.oddjob.arooa.design.view.FileSelectionWidget;
+import java.util.Objects;
 
 /**
  * Selection options for {@link FileSelectionWidget}.
@@ -66,5 +67,23 @@ public class FileSelectionOptions {
 
 	public void setFileFilterExtensions(String[] fileFilterExtensions) {
 		this.fileFilterExtensions = fileFilterExtensions;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		FileSelectionOptions that = (FileSelectionOptions) o;
+		return Objects.equals(currentDirectory, that.currentDirectory)
+				&& Objects.equals(fileFilterDescription, that.fileFilterDescription)
+				&& Arrays.equals(fileFilterExtensions, that.fileFilterExtensions)
+				&& selectionMode == that.selectionMode;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = Objects.hash(currentDirectory, fileFilterDescription, selectionMode);
+		result = 31 * result + Arrays.hashCode(fileFilterExtensions);
+		return result;
 	}
 }
