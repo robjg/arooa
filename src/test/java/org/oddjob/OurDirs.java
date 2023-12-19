@@ -1,13 +1,15 @@
 package org.oddjob;
 
+import org.oddjob.arooa.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.oddjob.OurDirs.BuildType.*;
 
@@ -117,21 +119,32 @@ public class OurDirs {
     }
 
     public static Path workPathDir(Class<?> aClass) throws IOException {
-        return mkDirs(workDirPath().resolve(aClass.getSimpleName()), true);
+        return workPathDir(aClass.getSimpleName(), true);
     }
 
     public static Path workPathDir(Class<?> aClass, boolean recreate) throws IOException {
-        return mkDirs(workDirPath().resolve(aClass.getSimpleName()), recreate);
+        return workPathDir(aClass.getSimpleName(), recreate);
     }
 
     public static Path workPathDir(String dirName, boolean recreate) throws IOException {
         return mkDirs(workDirPath().resolve(dirName), recreate);
     }
 
+    public static Path workPathDir(Class<?> aClass, String dirName) throws IOException {
+        return workPathDir(aClass, dirName, true);
+    }
+
+    public static Path workPathDir(Class<?> aClass, String dirName, boolean recreate) throws IOException {
+        return mkDirs(workDirPath()
+                        .resolve(aClass.getSimpleName())
+                        .resolve(dirName),
+                recreate);
+    }
+
     private static Path mkDirs(Path dir, boolean recreate) throws IOException {
         if (Files.exists(dir)) {
             if (recreate) {
-                deleteDir(dir);
+                FileUtils.deleteDirectory(dir);
             } else {
                 if (!Files.isDirectory(dir)) {
                     throw new IllegalArgumentException(dir + " is not a directory");
@@ -142,26 +155,11 @@ public class OurDirs {
         return Files.createDirectories(dir);
     }
 
-    private static void deleteDir(Path directory) throws IOException {
-        Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                Files.delete(file);
-                return FileVisitResult.CONTINUE;
-            }
-
-            @Override
-            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                Files.delete(dir);
-                return FileVisitResult.CONTINUE;
-            }
-        });
-    }
 
     public static Path classesDir(Class<?> forClass) throws URISyntaxException {
 
         Path classes = Paths.get(forClass.getResource(
-                forClass.getSimpleName() + ".class").toURI())
+                        forClass.getSimpleName() + ".class").toURI())
                 .getParent();
 
         String classPackage = forClass.getPackage().getName();
