@@ -15,16 +15,14 @@ import java.net.URI;
  * treated as a primary and a secondary. Combination is as follows:
  * <ul>
  *  <li>Both primary and secondary conversions are registered with 
- *  primary conversions overriding any identical secondary conversions.
- *  </ul>
- *  
+ *  primary conversions overriding any identical secondary conversions.</li>
+ *
  *  <li>First a primary then a secondary BeanDescriptor is sought.
  *  <em>Should BeanDescriptors be chained to allow 'global' intercepts
- *  to be applied?</em>
+ *  to be applied?</em></li>
  *  
  *  <li>Component and Value mappings are searched such that any match
- *  in the primary is used before searching the secondary.
- *  
+ *  in the primary is used before searching the secondary.</li>
  * </ul>
  *  
  * @author rob

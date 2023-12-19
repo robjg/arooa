@@ -6,7 +6,7 @@ import org.oddjob.arooa.ConfiguredHow;
 import org.oddjob.arooa.ParsingInterceptor;
 
 /**
- * Link together two {@link BeanDescriptor}s.
+ * Link together two {@link ArooaBeanDescriptor}s.
  * 
  * @author rob
  *

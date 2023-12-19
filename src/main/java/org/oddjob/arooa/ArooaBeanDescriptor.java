@@ -7,7 +7,7 @@ package org.oddjob.arooa;
  * A description of any special types of properties a 
  * class might have.
  * <p>
- * @see {@link ArooaDescriptor}
+ * @see ArooaDescriptor
  *
  */
 public interface ArooaBeanDescriptor {
@@ -15,7 +15,7 @@ public interface ArooaBeanDescriptor {
 	/**
 	 * Get The {@link ParsingInterceptor}.
 	 * 
-	 * @return
+	 * @return A Parsing Interceptor or null if one isn't available
 	 */
 	ParsingInterceptor getParsingInterceptor();
 	

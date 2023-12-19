@@ -24,8 +24,8 @@ public interface ElementMappings {
 	 * 
 	 * @return The ArooaClass. Null if no mappings exists.
 	 */
-	public ArooaClass mappingFor(ArooaElement element, 
-			InstantiationContext context);
+    ArooaClass mappingFor(ArooaElement element,
+                          InstantiationContext context);
 	
 	/**
 	 * Provide a mapping from an element to the name of a java class
@@ -36,8 +36,8 @@ public interface ElementMappings {
 	 * 
 	 * @return The DesignFactory. May be null.
 	 */
-	public DesignFactory designFor(ArooaElement element, 
-			InstantiationContext context);
+    DesignFactory designFor(ArooaElement element,
+                            InstantiationContext context);
 	
 	/**
 	 * Provide a list of all elements in this mapping that support
@@ -45,13 +45,13 @@ public interface ElementMappings {
 	 * 
 	 * @return The elements. May be null.
 	 */
-	public ArooaElement[] elementsFor(InstantiationContext context);		
+    ArooaElement[] elementsFor(InstantiationContext context);
 
 	/**
-	 * Get the {@link} BeanDoc for this mapping.
+	 * Get the BeanDoc {@link MappingsContents} for this mapping.
 	 * 
 	 * @param arooaType The type of Mapping.
 	 * @return The BeanDoc. May be null.
 	 */
-	public MappingsContents getBeanDoc(ArooaType arooaType);
+    MappingsContents getBeanDoc(ArooaType arooaType);
 }

@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * @oddjob.description Provide an element to class name mapping for a 
- * java bean. Additionally allows an {@link ArooaBeanDescriptor} to be
+ * java bean. Additionally, allows an {@link ArooaBeanDescriptor} to be
  * provided for the class by specifying additional {@link PropertyDefinitionBean}s.
  * 
  * @author rob
@@ -77,7 +77,7 @@ public class BeanDefinitionBean implements BeanDefinition {
 	/**
 	 * Setter for interceptor.
 	 * 
-	 * @param parsingInterceptor
+	 * @param parsingInterceptor The interceptor
 	 */
 	public void setInterceptor(ParsingInterceptor parsingInterceptor) {
 		this.parsingInterceptor = parsingInterceptor;
@@ -86,7 +86,7 @@ public class BeanDefinitionBean implements BeanDefinition {
 	/**
 	 * Getter for interceptor.
 	 * 
-	 * @return
+	 * @return The interceptor.
 	 */
 	public ParsingInterceptor getInterceptor() {
 		return parsingInterceptor;
@@ -95,7 +95,7 @@ public class BeanDefinitionBean implements BeanDefinition {
 	/**
 	 * Getter for class name;
 	 * 
-	 * @return
+	 * @return The class name.
 	 */
 	public String getClassName() {
 		return className;
@@ -104,7 +104,7 @@ public class BeanDefinitionBean implements BeanDefinition {
 	/**
 	 * Setter for class name.
 	 * 
-	 * @param className
+	 * @param className The class name.
 	 */
 	public void setClassName(String className) {
 		this.className = className;
@@ -113,7 +113,7 @@ public class BeanDefinitionBean implements BeanDefinition {
 	/**
 	 * Getter for design factory.
 	 * 
-	 * @return
+	 * @return The design factory.
 	 */
 	public String getDesignFactory() {
 		return designFactory;
@@ -122,7 +122,7 @@ public class BeanDefinitionBean implements BeanDefinition {
 	/**
 	 * Setter for design factory.
 	 * 
-	 * @param designFactory
+	 * @param designFactory The design factory.
 	 */
 	public void setDesignFactory(String designFactory) {
 		this.designFactory = designFactory;
@@ -149,7 +149,7 @@ public class BeanDefinitionBean implements BeanDefinition {
 	/**
 	 * Getter for element.
 	 * 
-	 * @return
+	 * @return The element.
 	 */
 	public String getElement() {
 		return element;
@@ -158,7 +158,7 @@ public class BeanDefinitionBean implements BeanDefinition {
 	/**
 	 * Setter for element
 	 * 
-	 * @param element
+	 * @param element The element.
 	 */
 	public void setElement(String element) {
 		this.element = element;
@@ -167,8 +167,8 @@ public class BeanDefinitionBean implements BeanDefinition {
 	/**
 	 * Setter for property definitions.
 	 *  
-	 * @param index
-	 * @param property
+	 * @param index The index.
+	 * @param property The property definition.
 	 */
 	public void setProperties(int index, PropertyDefinitionBean property) {
 		if (property == null) {
@@ -182,7 +182,7 @@ public class BeanDefinitionBean implements BeanDefinition {
 	/**
 	 * Convert the property definitions to a collection.
 	 * 
-	 * @return
+	 * @return The property definitions.
 	 */
 	public Collection<PropertyDefinitionBean> toPropertyDefinitions() {
 		return properties;
@@ -191,8 +191,8 @@ public class BeanDefinitionBean implements BeanDefinition {
 	/**
 	 * Setter for annotations.
 	 * 
-	 * @param index
-	 * @param annotation
+	 * @param index The index
+	 * @param annotation The Annotation Definition.
 	 */
 	public void setAnnotations(int index, AnnotationDefinitionBean annotation) {
 		if (annotation == null) {
@@ -205,7 +205,8 @@ public class BeanDefinitionBean implements BeanDefinition {
 
 	/**
 	 * Convert annotations to a collection.
-	 * @return
+	 *
+	 * @return The Annotation Definitions.
 	 */
 	public Collection<AnnotationDefinitionBean> toAnnotationDefinitions() {
 		return annotations;
