@@ -16,5 +16,7 @@ public interface ElementVisitor<C, R> {
 
     R visitXmlBlock(XmlBlock element, C context);
 
+    R visitException(ExceptionElement element, C context);
+
     R visitStandard(StandardElement element, C context);
 }

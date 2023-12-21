@@ -7,6 +7,12 @@ public class StandardElement implements BeanDocElement {
 
     private String text;
 
+    public static StandardElement of(String text) {
+        StandardElement standardElement = new StandardElement();
+        standardElement.setText(text);
+        return standardElement;
+    }
+
     public String getText() {
         return text;
     }

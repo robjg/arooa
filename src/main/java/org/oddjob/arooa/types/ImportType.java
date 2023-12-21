@@ -1,23 +1,10 @@
 package org.oddjob.arooa.types;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaValue;
 import org.oddjob.arooa.ClassResolver;
-import org.oddjob.arooa.convert.ArooaConversionException;
-import org.oddjob.arooa.convert.ArooaConverter;
-import org.oddjob.arooa.convert.ConversionLookup;
-import org.oddjob.arooa.convert.ConversionStep;
-import org.oddjob.arooa.convert.ConversionProvider;
-import org.oddjob.arooa.convert.ConversionRegistry;
-import org.oddjob.arooa.convert.Joker;
+import org.oddjob.arooa.convert.*;
 import org.oddjob.arooa.deploy.annotations.ArooaAttribute;
 import org.oddjob.arooa.deploy.annotations.ArooaHidden;
 import org.oddjob.arooa.life.ArooaSessionAware;
@@ -25,11 +12,14 @@ import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.standard.StandardFragmentParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
+import java.io.*;
+import java.net.URL;
+
 /**
  * @oddjob.description Import XML which is processed as if it's
  * in-line.
  * 
- * @oddjob.exmple
+ * @oddjob.example
  * 
  * Using import for a file list. the variables pathA and pathB are identical.
  * 
@@ -60,30 +50,32 @@ public class ImportType implements ArooaValue, ArooaSessionAware {
 		
 		public void registerWith(ConversionRegistry registry) {
 			registry.registerJoker(ImportType.class,
-					new Joker<ImportType>() {
-				public <T> ConversionStep<ImportType, T> lastStep(
-						Class<? extends ImportType> from, 
-						final Class<T> to, 
-						ConversionLookup conversions) {
-					
-					return new ConversionStep<ImportType, T>() {
-						public Class<ImportType> getFromClass() {
-							return ImportType.class;
-						}
-						public Class<T> getToClass() {
-							return to;
-						}
-						public T convert(ImportType from, ArooaConverter converter) 
-						throws ArooaConversionException {
-							try {
-								return converter.convert(from.toObject(), to);
-							} catch (Exception e) {
-								throw new ArooaConversionException(e);
-							}
-						}
-					};			
-				}
-			});
+                    new Joker<>() {
+                        public <T> ConversionStep<ImportType, T> lastStep(
+                                Class<? extends ImportType> from,
+                                final Class<T> to,
+                                ConversionLookup conversions) {
+
+                            return new ConversionStep<>() {
+                                public Class<ImportType> getFromClass() {
+                                    return ImportType.class;
+                                }
+
+                                public Class<T> getToClass() {
+                                    return to;
+                                }
+
+                                public T convert(ImportType from, ArooaConverter converter)
+                                        throws ArooaConversionException {
+                                    try {
+                                        return converter.convert(from.toObject(), to);
+                                    } catch (Exception e) {
+                                        throw new ArooaConversionException(e);
+                                    }
+                                }
+                            };
+                        }
+                    });
 		}
 	}
 	
@@ -131,10 +123,8 @@ public class ImportType implements ArooaValue, ArooaSessionAware {
 		} catch (ArooaParseException e) {
 			throw new RuntimeException(e);
 		}
-		
-		Object imported = parser.getRoot();
-		
-		return imported;
+
+        return parser.getRoot();
 	}
 	
 	

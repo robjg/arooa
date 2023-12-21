@@ -1,5 +1,9 @@
 package org.oddjob.arooa.beandocs;
 
+import org.oddjob.arooa.beandocs.element.BeanDocElement;
+
+import java.util.List;
+
 /**
  * Documentation for a bean.
  */
@@ -13,9 +17,9 @@ public interface BeanDoc {
 	
 	String getClassName();
 	
-	String getFirstSentence();
-	
-	String getAllText();
+	List<BeanDocElement> getFirstSentence();
+
+	List<BeanDocElement> getAllText();
 		
 	PropertyDoc[] getPropertyDocs();
 	

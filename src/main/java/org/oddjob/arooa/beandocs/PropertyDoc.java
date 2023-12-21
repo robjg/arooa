@@ -1,6 +1,9 @@
 package org.oddjob.arooa.beandocs;
 
 import org.oddjob.arooa.ConfiguredHow;
+import org.oddjob.arooa.beandocs.element.BeanDocElement;
+
+import java.util.List;
 
 /**
  * Provides the documentation for the property of a bean.
@@ -22,10 +25,10 @@ public interface PropertyDoc {
 	}
 	
 	String getPropertyName();
-	
-	String getFirstSentence();
-	
-	String getAllText();
+
+	List<BeanDocElement> getFirstSentence();
+
+	List<BeanDocElement> getAllText();
 	
 	ConfiguredHow getConfiguredHow();
 	

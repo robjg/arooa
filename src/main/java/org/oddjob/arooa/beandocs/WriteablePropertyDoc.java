@@ -1,7 +1,9 @@
 package org.oddjob.arooa.beandocs;
 
 import org.oddjob.arooa.ConfiguredHow;
+import org.oddjob.arooa.beandocs.element.BeanDocElement;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -11,9 +13,9 @@ public class WriteablePropertyDoc implements PropertyDoc {
 
 	private String propertyName;
 	
-	private String firstSentence;
+	private List<BeanDocElement> firstSentence;
 	
-	private String allText;
+	private List<BeanDocElement> allText;
 	
 	private ConfiguredHow configuredHow;
 	
@@ -37,20 +39,20 @@ public class WriteablePropertyDoc implements PropertyDoc {
 	}
 	
 	@Override
-	public String getFirstSentence() {
+	public List<BeanDocElement> getFirstSentence() {
 		return firstSentence;
 	}
 
-	public void setFirstSentence(String firstLine) {
+	public void setFirstSentence(List<BeanDocElement> firstLine) {
 		this.firstSentence = firstLine;
 	}
 	
 	@Override
-	public String getAllText() {
+	public List<BeanDocElement> getAllText() {
 		return allText;
 	}
 
-	public void setAllText(String allText) {
+	public void setAllText(List<BeanDocElement> allText) {
 		this.allText = allText;
 	}
 	

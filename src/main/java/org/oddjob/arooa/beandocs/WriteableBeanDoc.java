@@ -1,5 +1,7 @@
 package org.oddjob.arooa.beandocs;
 
+import org.oddjob.arooa.beandocs.element.BeanDocElement;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,15 +15,15 @@ public class WriteableBeanDoc implements BeanDoc {
 	
 	private String className;
 	
-	private String firstSentence;
+	private List<BeanDocElement> firstSentence;
 	
-	private String allText;
+	private List<BeanDocElement> allText;
 	
-	private Map<String, WriteablePropertyDoc> propertyDocs =
-		new TreeMap<String, WriteablePropertyDoc>();
+	private final Map<String, WriteablePropertyDoc> propertyDocs =
+            new TreeMap<>();
 	
-	private List<ExampleDoc> exampleDocs =
-		new ArrayList<ExampleDoc>();
+	private final List<ExampleDoc> exampleDocs =
+            new ArrayList<>();
 	
 	@Override
 	public String getPrefix() {
@@ -60,27 +62,26 @@ public class WriteableBeanDoc implements BeanDoc {
 	}
 	
 	@Override
-	public String getFirstSentence() {
+	public List<BeanDocElement> getFirstSentence() {
 		return firstSentence;
 	}
 
-	public void setFirstSentence(String firstLine) {
+	public void setFirstSentence(List<BeanDocElement> firstLine) {
 		this.firstSentence = firstLine;
 	}
 	
 	@Override
-	public String getAllText() {
+	public List<BeanDocElement> getAllText() {
 		return allText;
 	}
 
-	public void setAllText(String allText) {
+	public void setAllText(List<BeanDocElement> allText) {
 		this.allText = allText;
 	}
 
 	@Override
 	public WriteablePropertyDoc[] getPropertyDocs() {
-		return propertyDocs.values().toArray(
-				new WriteablePropertyDoc[propertyDocs.size()]);
+		return propertyDocs.values().toArray(new WriteablePropertyDoc[0]);
 	}
 
 	@Override
@@ -95,7 +96,7 @@ public class WriteableBeanDoc implements BeanDoc {
 	
 	@Override
 	public ExampleDoc[] getExampleDocs() {
-		return exampleDocs.toArray(new ExampleDoc[exampleDocs.size()]);
+		return exampleDocs.toArray(new ExampleDoc[0]);
 	}
 	
 	public void addExampleDoc(WriteableExampleDoc exampleDoc) {

@@ -1,8 +1,12 @@
 package org.oddjob.arooa.beandocs;
 
+import org.oddjob.arooa.beandocs.element.BeanDocElement;
+
+import java.util.List;
+
 public interface ExampleDoc {
 
-	public String getFirstSentence();
-	
-	public String getAllText();
+	List<BeanDocElement> getFirstSentence();
+
+	List<BeanDocElement> getAllText();
 }
