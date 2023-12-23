@@ -18,5 +18,9 @@ public interface ElementVisitor<C, R> {
 
     R visitException(ExceptionElement element, C context);
 
+    R visitLiteral(LiteralElement element, C context);
+
+    R visitCode(CodeElement element, C context);
+
     R visitStandard(StandardElement element, C context);
 }
