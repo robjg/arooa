@@ -6,9 +6,9 @@ package org.oddjob.arooa.beandocs.element;
  * @param <C> The type of the Context that will be passed through.
  * @param <R> The type of the Result that this visitor will return.
  */
-public interface ElementVisitor<C, R> {
+public interface DocElementVisitor<C, R> {
 
-    R visitInternalLink(InternalLink element, C context);
+    R visitInternalLink(LinkElement element, C context);
 
     R visitPreformattedBlock(PreformattedBlock element, C context);
 

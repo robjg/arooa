@@ -16,7 +16,7 @@ public class PreformattedBlock implements BeanDocElement {
     }
 
     @Override
-    public <C, R> R accept(ElementVisitor<C, R> visitor, C context) {
+    public <C, R> R accept(DocElementVisitor<C, R> visitor, C context) {
         return visitor.visitPreformattedBlock(this, context);
     }
 }

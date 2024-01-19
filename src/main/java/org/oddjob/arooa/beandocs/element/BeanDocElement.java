@@ -16,5 +16,5 @@ public interface BeanDocElement {
      * @param <C> The type of the context.
      * @param <R> The type of the result.
      */
-    <C, R> R accept(ElementVisitor<C, R> visitor, C context);
+    <C, R> R accept(DocElementVisitor<C, R> visitor, C context);
 }
