@@ -1,12 +1,12 @@
 package org.oddjob.arooa;
 
-import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ParseContext;
 
 /**
  * Something returned by an {@link ArooaParser}
  * as the result of parsing an {@link ArooaConfiguration}.
  *
+ * @param <P> The type of the {@link ParseContext}
  * @author rob
  */
 public interface ConfigurationHandle<P extends ParseContext<P>> {
@@ -20,10 +20,10 @@ public interface ConfigurationHandle<P extends ParseContext<P>> {
 	void save() throws ArooaParseException;
 	
 	/**
-	 * Get the {@link ArooaContext} that corresponds to
-	 * the document element or it's equivalent.
+	 * Get the {@link ParseContext} that corresponds to
+	 * the document element or its equivalent.
 	 * 
-	 * @return The ArooaContext.
+	 * @return The ParseContext.
 	 */
 	P getDocumentContext();
 }

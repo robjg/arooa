@@ -17,7 +17,7 @@ public interface ArooaDoc {
 
 	/**
 	 * Get an inividual bean doc {@link BeanDoc}s by namespace prefix
-	 * and tag..
+	 * and tag.
 	 * 
 	 * @param prefixed The namespace prefix. May be null if there is
 	 * no prefix.

@@ -5,8 +5,7 @@ import java.util.TreeMap;
 
 public class WriteableArooaDoc implements ArooaDoc {
 
-	private final Map<Tag, WriteableBeanDoc> beanDocs = 
-		new TreeMap<Tag, WriteableBeanDoc>();
+	private final Map<Tag, WriteableBeanDoc> beanDocs = new TreeMap<>();
 	
 	@Override
 	public WriteableBeanDoc beanDocFor(String prefix, String tag) {
@@ -15,8 +14,7 @@ public class WriteableArooaDoc implements ArooaDoc {
 	
 	@Override
 	public WriteableBeanDoc[] getBeanDocs() {
-		return beanDocs.values().toArray(
-				new WriteableBeanDoc[beanDocs.size()]);
+		return beanDocs.values().toArray(new WriteableBeanDoc[0]);
 	}
 	
 	public void add(WriteableBeanDoc beanDocBean) {
@@ -56,14 +54,9 @@ public class WriteableArooaDoc implements ArooaDoc {
 			}
 			
 			Tag other = (Tag) obj;
-						
-			if (other.prefix.equals(prefix) 
-				&& other.tag.equals(tag)) {
-				return true;
-			}
-			else {
-				return false;
-			}
+
+            return other.prefix.equals(prefix)
+                    && other.tag.equals(tag);
 		}
 		
 		@Override
@@ -81,7 +74,7 @@ public class WriteableArooaDoc implements ArooaDoc {
 		
 		@Override
 		public String toString() {
-			if (prefix.length() == 0) {
+			if (prefix.isEmpty()) {
 				return tag;
 			}
 			return prefix + ":" + tag;

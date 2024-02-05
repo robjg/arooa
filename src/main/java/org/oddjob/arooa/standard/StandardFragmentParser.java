@@ -1,15 +1,7 @@
 package org.oddjob.arooa.standard;
 
-import org.oddjob.arooa.ArooaConfiguration;
-import org.oddjob.arooa.ArooaConfigurationException;
-import org.oddjob.arooa.ArooaDescriptor;
-import org.oddjob.arooa.ArooaParseException;
-import org.oddjob.arooa.ArooaParser;
-import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ArooaType;
-import org.oddjob.arooa.ConfigurationHandle;
+import org.oddjob.arooa.*;
 import org.oddjob.arooa.parsing.ArooaContext;
-import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.parsing.ArooaHandler;
 import org.oddjob.arooa.parsing.RootContext;
 
@@ -20,7 +12,7 @@ import org.oddjob.arooa.parsing.RootContext;
  * @author rob
  *
  */
-public class StandardFragmentParser implements ArooaParser {
+public class StandardFragmentParser implements ArooaParser<ArooaContext> {
 
 	private final ArooaSession session;
 
@@ -46,43 +38,39 @@ public class StandardFragmentParser implements ArooaParser {
 		this(new StandardArooaSession());
 	}
 	
-	public ConfigurationHandle parse(ArooaConfiguration configuration)
+	public ConfigurationHandle<ArooaContext> parse(ArooaConfiguration configuration)
 			throws ArooaParseException {
 
-		ArooaHandler handler = new ArooaHandler() {
-			public ArooaContext onStartElement(ArooaElement element,
-					ArooaContext parentContext) 
-			throws ArooaConfigurationException {
+		ArooaHandler handler = (element, parentContext) -> {
 
-				final InstanceConfiguration instanceConfiguration;
-				
-				if (type == ArooaType.COMPONENT) {
-					instanceConfiguration = new ComponentConfigurationCreator().onElement(
-							element, parentContext);
-				}
-				else {
-					instanceConfiguration = new ValueConfigurationCreator().onElement(
-							element, parentContext);
-				}
-				
-				rootRuntime = new RootRuntime(instanceConfiguration, parentContext);
-				
-	    		InstanceConfigurationNode node = new InstanceConfigurationNode(
-	    				element, rootRuntime);
-	    		
-				ArooaContext ourContext = new StandardArooaContext(
-						type, rootRuntime, node, parentContext);				
-				
-				rootRuntime.setContext(ourContext);
-				
-				return rootRuntime.getContext();
-			}
-		};
+            final InstanceConfiguration instanceConfiguration;
+
+            if (type == ArooaType.COMPONENT) {
+                instanceConfiguration = new ComponentConfigurationCreator().onElement(
+                        element, parentContext);
+            }
+            else {
+                instanceConfiguration = new ValueConfigurationCreator().onElement(
+                        element, parentContext);
+            }
+
+            rootRuntime = new RootRuntime(instanceConfiguration, parentContext);
+
+            InstanceConfigurationNode node = new InstanceConfigurationNode(
+                    element, rootRuntime);
+
+            ArooaContext ourContext = new StandardArooaContext(
+                    type, rootRuntime, node, parentContext);
+
+            rootRuntime.setContext(ourContext);
+
+            return rootRuntime.getContext();
+        };
 
 		RootContext rootContext = new RootContext(
 				type, session, handler);
 
-		ConfigurationHandle handle = null;
+		ConfigurationHandle<ArooaContext> handle;
 		
 		handle = configuration.parse(rootContext);
 		
@@ -122,11 +110,7 @@ public class StandardFragmentParser implements ArooaParser {
 		}
 		
 		ParentPropertySetter getParentPropertySetter() {
-			return new ParentPropertySetter() {
-				public void parentSetProperty(Object value) {
-					result = value;
-				}
-			};
+			return value -> result = value;
 		}
 	}
 

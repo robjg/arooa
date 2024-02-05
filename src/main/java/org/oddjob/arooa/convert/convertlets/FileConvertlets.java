@@ -65,13 +65,13 @@ public class FileConvertlets implements ConversionProvider {
 				(FinalConvertlet<File, File[]>) from -> new File[] { from });
 		
 		registry.register(String.class, File[].class,
-				(FinalConvertlet<String, File[]>) this::pathToFiles);
+				(FinalConvertlet<String, File[]>) FileConvertlets::pathToFiles);
 		
 		registry.register(File[].class, String.class,
-				(FinalConvertlet<File[], String>) this::filesToPath);
+				(FinalConvertlet<File[], String>) FileConvertlets::filesToPath);
 	}
 
-	public String filesToPath(File... from) {
+	public static String filesToPath(File... from) {
 		StringBuilder path = new StringBuilder();
 		for (File file : from) {
 			if (path.length() > 0) {
@@ -82,7 +82,7 @@ public class FileConvertlets implements ConversionProvider {
 		return path.toString();		
 	}
 	
-	public File[] pathToFiles(String from) {
+	public static File[] pathToFiles(String from) {
 		String[] strings = from.split(File.pathSeparator);
 		File[] files = new File[strings.length];
 		for (int i = 0; i < strings.length; ++i) {

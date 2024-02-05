@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -217,12 +218,14 @@ public class ClassUtils {
      * Try and work out the simple name from anonymous classes and the like.
      *
      * @param cl
-     * @return
+     *
+     * @return The simple name, may be empty but not null.
      */
     public static String getSimpleName(Class<?> cl) {
 
+        // returns an empty string if the class is anonymous
         String simpleName = cl.getSimpleName();
-        if ("".equals(simpleName)) {
+        if (simpleName.isEmpty()) {
             if (cl.getEnclosingClass() != null) {
                 simpleName = cl.getEnclosingClass().getSimpleName();
             } else {
@@ -251,7 +254,14 @@ public class ClassUtils {
         }
     }
 
-
+    /**
+     * Get the contained type of a container class such as list that is the nth parameter of a method.
+     * Probably contained or element type would be a better name for this method.
+     *
+     * @param method          The method.
+     * @param parameterNumber The parameter to get the element type of.
+     * @return The type that is the first generic parameter of the argument or null if it is raw.
+     */
     public static Class<?> getComponentTypeOfParameter(Method method, int parameterNumber) {
 
         Type[] genericParameterTypes = method.getGenericParameterTypes();
@@ -267,5 +277,59 @@ public class ClassUtils {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Provide a dump of the class loader and its parents. Used for debug messages.
+     *
+     * @param classLoader The classloader. Maybe be null.
+     *
+     * @return Text of the stack containing newline characters.
+     */
+    public static String classLoaderStack(ClassLoader classLoader, String name) {
+
+        StringBuilder builder = new StringBuilder(Objects.requireNonNullElse(name, "ClassLoader"));
+        builder.append(" Stack:\n");
+        if (classLoader == null) {
+            builder.append(" null");
+        } else {
+
+            for (ClassLoader next = classLoader; next != null; next = next.getParent()) {
+                builder.append("  ");
+                builder.append(next);
+                builder.append('\n');
+            }
+        }
+        return builder.toString();
+    }
+
+    /**
+     * Provide a dump of the class loader of a class and its parents. Used for debug messages.
+     *
+     * @param ofClass The class. must not be null.
+     *
+     * @return Text of the stack containing newline characters.
+     */
+    public static String classLoaderStack(Class<?> ofClass) {
+
+        return classLoaderStack(ofClass.getClassLoader(), ofClass.getName() + " ClassLoader");
+    }
+
+    /**
+     * Provide a dump of the class loader of a class and the thread context loader and their parents.
+     * Used for debug messages.
+     *
+     * @param ofClass The class. Must not be null.
+     *
+     * @return Text of the stack containing newline characters.
+     */
+    public static String classLoaderAndContextLoaderStack(Class<?> ofClass) {
+        ClassLoader contextLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader classLoader = ofClass.getClassLoader();
+        if (contextLoader == classLoader) {
+            return classLoaderStack(classLoader, ofClass.getName() + " and Context ClassLoader");
+        }
+        return classLoaderStack(ofClass) +
+                classLoaderStack(contextLoader, "ContextLoader");
     }
 }

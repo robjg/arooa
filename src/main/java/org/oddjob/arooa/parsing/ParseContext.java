@@ -9,6 +9,8 @@ import org.oddjob.arooa.runtime.ConfigurationNode;
  * such as bean creation or design.
  * <p/>
  * param <P> The type of the context.
+ *
+ * @see ArooaContext
  */
 public interface ParseContext<P extends ParseContext<P>> {
 
