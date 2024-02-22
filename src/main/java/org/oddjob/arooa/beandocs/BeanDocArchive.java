@@ -10,6 +10,8 @@ import java.util.List;
  */
 public interface BeanDocArchive {
 
+    BeanDoc docFor(String fqn);
+
     List<BeanDoc> allJobDoc();
 
     List<BeanDoc> allTypeDoc();
