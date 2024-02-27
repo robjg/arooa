@@ -23,4 +23,8 @@ public interface DocElementVisitor<C, R> {
     R visitCode(CodeElement element, C context);
 
     R visitStandard(StandardElement element, C context);
+
+    R visitStartHtmlElement(StartHtmlElement element, C context);
+
+    R visitEndHtmlElement(EndHtmlElement element, C context);
 }
