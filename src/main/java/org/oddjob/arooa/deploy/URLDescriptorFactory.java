@@ -1,13 +1,13 @@
 package org.oddjob.arooa.deploy;
 
+import org.oddjob.arooa.ArooaDescriptor;
+import org.oddjob.arooa.xml.XMLConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.oddjob.arooa.ArooaDescriptor;
-import org.oddjob.arooa.xml.XMLConfiguration;
 
 /**
  * Create an {link ArooaDescriptor} from a collection of URLs.
@@ -43,7 +43,7 @@ implements ArooaDescriptorFactory {
 	
 	public ArooaDescriptor createDescriptor(ClassLoader classLoader) {
 
-		if (urls.size() == 0) {
+		if (urls.isEmpty()) {
 			return null;
 		}
 		
@@ -66,7 +66,7 @@ implements ArooaDescriptorFactory {
 
 				listDescriptor.addDescriptor(descriptor);
 			}
-			catch (Exception e) {
+			catch (Throwable e) {
 				throw new RuntimeException(
 						"Failed creating descriptor factory from url " + 
 						url, e);
