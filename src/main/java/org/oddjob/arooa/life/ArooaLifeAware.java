@@ -13,18 +13,18 @@ public interface ArooaLifeAware {
 	 * Constant properties and
 	 * element properties will have been injected.
 	 */
-	public void initialised();
+    void initialised();
 	
 	/**
 	 * The configuration for the bean has been fully configured. 
 	 * Runtime properties will 
 	 * have been injected.
 	 */
-	public void configured();
+    void configured();
 	
 	/**
 	 * The configuration for the bean is about to be destroyed. A
 	 * bean can use this method to free resources.
 	 */
-	public void destroy();	
+    void destroy();
 }
