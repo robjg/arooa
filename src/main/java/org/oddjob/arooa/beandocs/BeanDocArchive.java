@@ -1,6 +1,7 @@
 package org.oddjob.arooa.beandocs;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  *  Something that is able to provide {@link BeanDoc}s for jobs and types. This
@@ -10,7 +11,7 @@ import java.util.List;
  */
 public interface BeanDocArchive {
 
-    BeanDoc docFor(String fqn);
+    Optional<BeanDoc> docFor(String fqn);
 
     List<BeanDoc> allJobDoc();
 
