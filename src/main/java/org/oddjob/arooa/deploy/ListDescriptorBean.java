@@ -16,14 +16,13 @@ import java.util.List;
  * This type can be used wherever an {@link ArooaDescriptorBean} can
  * be used.
  * 
- * @oddjob.example
- * 
- * Oddjob's descriptor!. Note that it started life before the descriptor 
+ * @oddjob.example Oddjob's descriptor. Note that it started life before the descriptor
  * elements were created, and so {@link IsType} is used instead of 
  * {@link BeanDefinitionBean} elements.
- * 
- * {@oddjob.xml.resource META-INF/arooa.xml}
- * 
+ * <p>
+ *     It can be found <a href="https://github.com/robjg/oddjob/blob/master/src/main/resources/META-INF/arooa.xml">Here on Github</a>
+ * </p>
+ *
  * @author rob
  *
  */

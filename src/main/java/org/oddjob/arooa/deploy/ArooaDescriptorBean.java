@@ -26,16 +26,19 @@ import java.util.*;
 
 /**
  * A bean style implementation of an {@link ArooaDescriptorFactory}.
- * As such it is able to be configured using a {@link StandardArooaParser}.
+ * As such it can be configured using a {@link StandardArooaParser}.
  *
  * @author rob
  * @oddjob.description A definition of an Arooa descriptor.
- * @oddjob.example See the Dev Guide. There is an example of a custom descriptor
+ *
+ * @oddjob.example In the Dev Guide. There is an example of a custom descriptor
  * <a href="http://rgordon.co.uk/projects/oddjob/devguide/oddballs.html">here</a>.
- * @oddjob.example The descriptor for the JMX client and server. This is the internal descriptor
+ *
+ * @oddjob.example The descriptor for Oddjob's JMX client and server. This is the internal descriptor
  * used by Oddjob.
  * <p>
- * {@oddjob.xml.resource org/oddjob/jmx/jmx.xml}
+ *     It can be found <a href="https://github.com/robjg/oddjob/blob/master/src/main/resources/org/oddjob/jmx/jmx.xml">Here on Github</a>
+ * </p>
  */
 public class ArooaDescriptorBean
         implements ArooaDescriptorFactory {
