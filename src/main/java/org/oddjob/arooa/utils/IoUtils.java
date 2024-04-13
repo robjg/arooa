@@ -1,16 +1,14 @@
 package org.oddjob.arooa.utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.function.LongConsumer;
 
 /**
  * IO utilities. The sort of things that are in Apache Commons or Guava but
  * we don't want the dependency.
- * <p/>
+ * <p>
  * As with Apache Commons IO these methods do not close or flush any streams.
  */
 public class IoUtils {
@@ -43,4 +41,17 @@ public class IoUtils {
 
         return copy(new ByteArrayInputStream(string.getBytes()), out);
     }
+
+    /**
+     * Read an Input Stream in as a String.
+     *
+     * @param in The InputStream.
+     * @return A string.
+     * @throws IOException If the stream can't be read.
+     */
+    public static String read(InputStream in) throws IOException {
+
+        return new String(new BufferedInputStream(in).readAllBytes(), StandardCharsets.UTF_8);
+    }
+
 }
