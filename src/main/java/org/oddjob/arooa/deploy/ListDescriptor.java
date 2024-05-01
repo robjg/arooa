@@ -40,7 +40,13 @@ public class ListDescriptor implements ArooaDescriptor {
 			addDescriptor(descriptor);
 		}
 	}
-	
+
+	public ListDescriptor(Collection<ArooaDescriptor> descriptors) {
+		for (ArooaDescriptor descriptor: descriptors) {
+			addDescriptor(descriptor);
+		}
+	}
+
 	public void addDescriptor(ArooaDescriptor descriptor) {
 		descriptors.add(0, descriptor);
 		

@@ -22,7 +22,11 @@ public class ListSetterHelper<E> {
 	public ListSetterHelper(List<E> list) {
 		this.elements = list;
 	}
-	
+
+	public static <E> ListSetterHelper<E> newInstance() {
+		return new ListSetterHelper<>();
+	}
+
 	public void set(int index, E element) {
 		if (index < elements.size()) {
 			if (element == null) {
@@ -39,6 +43,10 @@ public class ListSetterHelper<E> {
 			throw new IllegalArgumentException("Index " +
 					index + " would leave gaps which isn't allowed.");
 		}		
+	}
+
+	public E get(int index) {
+		return elements.get(index);
 	}
 
 	public List<E> getList() {
