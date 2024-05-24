@@ -39,8 +39,8 @@ implements ArooaContainer {
 		setUpDeleteAction();
 	}
 	
-	public ArooaTree(TreeNode treeNode, boolean askAllowsChldren) {
-		super(treeNode, askAllowsChldren);
+	public ArooaTree(TreeNode treeNode, boolean askAllowsChildren) {
+		super(treeNode, askAllowsChildren);
 		setUpDeleteAction();
 	}
 	
