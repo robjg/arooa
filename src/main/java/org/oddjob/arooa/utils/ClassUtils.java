@@ -64,7 +64,8 @@ public class ClassUtils {
     /**
      * Provide the wrapper class for a primitive type.
      *
-     * @param primitiveType
+     * @param primitiveType The class.
+     *
      * @return The wrapper class or null if the provided class is not
      * a primitive type.
      */
@@ -73,9 +74,27 @@ public class ClassUtils {
     }
 
     /**
+     * Provide the wrapper class when the class is primitive or the same
+     * class when it isn't
+     *
+     * @param maybePrimitiveType The class.
+     *
+     * @return Wrapper class or the provided class.
+     */
+    public static Class<?> wrapperClassWhenPrimitive(Class<?> maybePrimitiveType) {
+        if (maybePrimitiveType.isPrimitive()) {
+            return wrapperClassForPrimitive(maybePrimitiveType);
+        }
+        else {
+            return maybePrimitiveType;
+        }
+    }
+
+    /**
      * Provide the primitive type for a wrapper class.
      *
-     * @param wrapperType
+     * @param wrapperType The class.
+     *
      * @return The primitive type or null if the provided class is not
      * a wrapper class.
      */
@@ -89,8 +108,10 @@ public class ClassUtils {
      *
      * @param className The class name.
      * @param loader    The class loader.
+     *
      * @return The class if it exists;
-     * @throws ClassNotFoundException
+     *
+     * @throws ClassNotFoundException When the class can't by th class loader.
      */
     public static Class<?> classFor(String className, ClassLoader loader)
             throws ClassNotFoundException {
@@ -173,21 +194,23 @@ public class ClassUtils {
      * @param t           The exception. May not be null.
      */
     private static void errorMessage(ClassLoader classLoader, Throwable t) {
-        logger.error("Exception [" + t.toString() + "] on it's way. " +
+        logger.error("Exception [{}]] on it's way. {}", t,
                 (classLoader == null ? "The class loader is null, maybe that's why." :
-                        "Here's the class loader stack:"));
+                "Here's the class loader stack:"));
         for (ClassLoader next = classLoader; next != null; next = next.getParent()) {
-            logger.error("\t" + next);
+            logger.error("\t{}", next);
         }
     }
 
     /**
      * Instantiates a Class but converts the exception if it fails.
      *
-     * @param className
-     * @param loader
-     * @return
-     * @throws ArooaException
+     * @param className The class name.
+     * @param loader The class loader.
+     *
+     * @return The new instance.
+     *
+     * @throws ArooaException If the class can't be instantiated.
      */
     public static Object instantiate(String className, ClassLoader loader)
             throws ArooaException {
@@ -217,7 +240,7 @@ public class ClassUtils {
     /**
      * Try and work out the simple name from anonymous classes and the like.
      *
-     * @param cl
+     * @param cl The class.
      *
      * @return The simple name, may be empty but not null.
      */
@@ -255,7 +278,7 @@ public class ClassUtils {
     }
 
     /**
-     * Get the contained type of a container class such as list that is the nth parameter of a method.
+     * Get the parameterized Type of a container class such as List that is the nth parameter of a method.
      * Probably contained or element type would be a better name for this method.
      *
      * @param method          The method.
