@@ -21,7 +21,7 @@ import java.net.URL;
  * 
  * @oddjob.example
  * 
- * Using import for a file list. the variables pathA and pathB are identical.
+ * Using import for a file list. The variables pathA and pathB are identical.
  * 
  * {@oddjob.xml.resource org/oddjob/arooa/types/ImportExample.xml}
  * 
