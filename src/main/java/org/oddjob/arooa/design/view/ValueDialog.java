@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.concurrent.Callable;
+import java.util.function.Consumer;
 
 /**
  * Create dialogs for forms.
@@ -72,9 +73,18 @@ public class ValueDialog {
 	 * @param parent The parent component/frame.
 	 * @param hideCancel Hide the cancel button.
 	 */
-	public void showDialog(Component parent, boolean hideCancel) {
+	public void showDialog(Component parent,
+						   boolean hideCancel) {
+		showDialog(parent, hideCancel, ignored -> {});
+	}
+
+
+	public void showDialog(Component parent,
+									boolean hideCancel,
+									Consumer<? super AutoCloseable> asyncClose) {
 			
-		
+		chosen = false;
+
 		Window window = ViewHelper.getWindowForComponent(parent);
 		
 		final JDialog dialog;  
@@ -150,7 +160,8 @@ public class ValueDialog {
 			ScreenPresence screen = ScreenPresence.of(window);
 			dialog.setLocation(screen.locationToCenter(dialog.getPreferredSize()));
 		}
-		
+
+		asyncClose.accept((AutoCloseable) dialog::dispose);
 		dialog.setVisible(true);
 	}
 	

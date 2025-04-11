@@ -1,20 +1,11 @@
 package org.oddjob.arooa.design.view;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.HeadlessException;
+import javax.swing.*;
+import java.awt.*;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.concurrent.Callable;
-
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.UIManager;
+import java.util.function.Consumer;
 
 /**
  * Helpers for dialogues.
@@ -61,13 +52,15 @@ public class DialogueHelper {
 				"Exception!", JOptionPane.ERROR_MESSAGE);
 		
 	}
-	
+
 	public static boolean showOKCancelDialogue(Component parentComponent,
-			Component dialogueForm, Callable<Boolean >okAction) {
-		
+													 Component dialogueForm,
+													 Callable<Boolean> okAction,
+													 Consumer<? super AutoCloseable> asyncClose) {
+
 		ValueDialog dialogue = new ValueDialog(dialogueForm, okAction);
-		dialogue.showDialog(parentComponent);
-		
+		dialogue.showDialog(parentComponent, true, asyncClose);
+
 		return dialogue.isChosen();
 	}
 }

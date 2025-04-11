@@ -1,5 +1,6 @@
 package org.oddjob.arooa.design;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaType;
@@ -14,7 +15,7 @@ import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 public class MappedDesignPropertyTest {
@@ -25,14 +26,14 @@ public class MappedDesignPropertyTest {
 	}
 	
 	
-	class MyDesFa implements DesignFactory {
+	static class MyDesFa implements DesignFactory {
 		public DesignInstance createDesign(
 				ArooaElement element, ArooaContext parentContext) {
 			return new MyDesign(element, parentContext);
 		}
 	}
 	
-	class MyDesign extends DesignValueBase {
+	static class MyDesign extends DesignValueBase {
 		
 		private final MappedDesignProperty test;
 		
@@ -56,7 +57,7 @@ public class MappedDesignPropertyTest {
 		
 	DesignInstance design;
 	
-	String EOL = System.getProperty("line.separator");
+	String EOL = System.lineSeparator();
 	
    @Test
 	public void testCreateInstance() throws Exception {
@@ -80,11 +81,11 @@ public class MappedDesignPropertyTest {
 		MappedDesignProperty test = 
 			(MappedDesignProperty) design.children()[0]; 
 		
-		assertEquals(1, test.instanceCount());
+		assertThat(test.instanceCount(), Matchers.is(1));
 		
 		DesignInstance instance = test.instanceAt(0);
-		
-		assertFalse(instance instanceof Unknown);
+
+	   assertThat(instance, Matchers.instanceOf(Unknown.class));
 		
 		XMLArooaParser xmlParser = new XMLArooaParser(NamespaceMappings.empty());
 		xmlParser.parse(design.getArooaContext().getConfigurationNode());
@@ -94,7 +95,7 @@ public class MappedDesignPropertyTest {
 		this.design = design;
 	}
 	
-	public static void main(String args[]) throws Exception {
+	public static void main(String[] args) throws Exception {
 
 		MappedDesignPropertyTest test = new MappedDesignPropertyTest();
 		test.testCreateInstance();
