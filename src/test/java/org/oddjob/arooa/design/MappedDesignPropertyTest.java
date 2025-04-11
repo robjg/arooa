@@ -16,6 +16,8 @@ import org.oddjob.arooa.xml.XMLArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.not;
 import static org.xmlunit.matchers.CompareMatcher.isSimilarTo;
 
 public class MappedDesignPropertyTest {
@@ -85,7 +87,7 @@ public class MappedDesignPropertyTest {
 		
 		DesignInstance instance = test.instanceAt(0);
 
-	   assertThat(instance, Matchers.instanceOf(Unknown.class));
+	   assertThat(instance, not(instanceOf(Unknown.class)));
 		
 		XMLArooaParser xmlParser = new XMLArooaParser(NamespaceMappings.empty());
 		xmlParser.parse(design.getArooaContext().getConfigurationNode());
