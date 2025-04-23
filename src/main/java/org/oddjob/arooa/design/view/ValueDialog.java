@@ -78,7 +78,16 @@ public class ValueDialog {
 		showDialog(parent, hideCancel, ignored -> {});
 	}
 
-
+	/**
+	 * Show the dialogue with the ability to close it being passed out.
+	 * Required so the Input Dialogue can be closed when the job that created it
+	 * stops.
+	 *
+	 * @param parent The parent component/frame.
+	 * @param hideCancel Hide the cancel button.
+	 * @param asyncClose A consumer that will be given a way to close this
+	 *                   dialog.
+	 */
 	public void showDialog(Component parent,
 									boolean hideCancel,
 									Consumer<? super AutoCloseable> asyncClose) {

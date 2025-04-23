@@ -59,7 +59,7 @@ public class DialogueHelper {
 													 Consumer<? super AutoCloseable> asyncClose) {
 
 		ValueDialog dialogue = new ValueDialog(dialogueForm, okAction);
-		dialogue.showDialog(parentComponent, true, asyncClose);
+		dialogue.showDialog(parentComponent, false, asyncClose);
 
 		return dialogue.isChosen();
 	}
