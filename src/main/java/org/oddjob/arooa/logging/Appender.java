@@ -1,7 +1,7 @@
 package org.oddjob.arooa.logging;
 
 /**
- * Implementations may be add to an {@link AppenderAdapter} to capture log messages.
+ * Implementations may be added to an {@link AppenderAdapter} to capture log messages.
  * 
  * @author rob
  *

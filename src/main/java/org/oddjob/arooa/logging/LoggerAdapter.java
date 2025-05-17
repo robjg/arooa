@@ -3,37 +3,37 @@ package org.oddjob.arooa.logging;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+import java.util.ServiceLoader;
+
 /**
  * Adapt an underlying logging framework.
  * 
  * @author rob
  *
  */
-abstract public class LoggerAdapter {	
+public class LoggerAdapter {
 	
-	private static final LoggerAdapter delegate;
+	private static final AppenderService delegate;
 
 	static {
 		ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
 		String className = loggerFactory.getClass().getName();
-		String concreteClassName;
-		switch (className) {
-		case "org.slf4j.impl.Log4jLoggerFactory":
-			concreteClassName = "org.oddjob.arooa.logging.Log4jLoggerAdapter";
-			break;
-		case "ch.qos.logback.classic.LoggerContext":
-			concreteClassName = "org.oddjob.arooa.logging.LogbackLoggerAdapter";
-			break;
-		default:
+
+		ServiceLoader<AppenderServiceFactory> serviceLoader = ServiceLoader.load(AppenderServiceFactory.class);
+
+		AppenderService last = null;
+		for (AppenderServiceFactory factory : serviceLoader) {
+			last = Optional.ofNullable(factory.appenderServiceFor(className)).orElse(last);
+		}
+		if (last == null) {
 			throw new IllegalStateException("No Appender for " + className);
 		}
-		
-		try {
-			delegate = (LoggerAdapter) Class.forName(concreteClassName).newInstance();
-		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-			throw new RuntimeException(e);
+		else {
+			delegate = last;
 		}
-	}	
+
+	}
 	
 	/**
 	 * Provide an {@link AppenderAdapter} for the underlying logger.
@@ -43,7 +43,7 @@ abstract public class LoggerAdapter {
 	 * @return An Appender Adapter. Never null.
 	 */
 	public static AppenderAdapter appenderAdapterFor(String loggerName) {
-		return delegate._appenderAdapterFor(loggerName);
+		return delegate.appenderAdapterFor(loggerName);
 	}
 	
 	/**
@@ -52,7 +52,7 @@ abstract public class LoggerAdapter {
 	 * @return An Appender Adapter. Never null.
 	 */
 	public static AppenderAdapter appenderAdapterForRoot() {
-		return delegate._appenderAdapterFor((String) null);
+		return delegate.appenderAdapterFor((String) null);
 	}
 	
 	/**
@@ -63,7 +63,7 @@ abstract public class LoggerAdapter {
 	 * @return An Appender Adapter. Never null.
 	 */
 	public static AppenderAdapter appenderAdapterFor(Class<?> cl) {
-		return delegate._appenderAdapterFor(cl.getName());
+		return delegate.appenderAdapterFor(cl.getName());
 	}
 
 	/**
@@ -74,24 +74,13 @@ abstract public class LoggerAdapter {
 	 * @return A Layout.
 	 */
 	public static Layout layoutFor(String pattern) {
-		return delegate._layoutFor(pattern);
+		return delegate.layoutFor(pattern);
 	}
 
 	public static void configure(String logConfigFileName) {
-		delegate._configure(logConfigFileName);
+		delegate.configure(logConfigFileName);
 	}
 
-	abstract protected AppenderAdapter _appenderAdapterFor(String loggerName);
-	
-	protected AppenderAdapter _appenderAdapterForRoot() {
-		return _appenderAdapterFor((String) null);
-	}
-	
-	protected AppenderAdapter _appenderAdapterFor(Class<?> cl) {
-		return _appenderAdapterFor(cl.getName());
-	}
-
-	abstract protected Layout _layoutFor(String pattern);
-
-	abstract protected void _configure(String logConfigFileName);
+	// No non-static methods.
+	private LoggerAdapter() {}
 }

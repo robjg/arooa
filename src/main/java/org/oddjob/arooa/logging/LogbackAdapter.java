@@ -1,15 +1,5 @@
 package org.oddjob.arooa.logging;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
-import org.slf4j.LoggerFactory;
-
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
@@ -20,6 +10,11 @@ import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 
 /**
@@ -28,17 +23,16 @@ import ch.qos.logback.core.util.StatusPrinter;
  * @author rob
  *
  */
-public class LogbackLoggerAdapter extends LoggerAdapter {
+public class LogbackAdapter implements AppenderService {
 
-	
-	
+
 	private final ConcurrentMap<Appender, LogbackAppender> appenders = 
 			new ConcurrentHashMap<>();
 	
 	private final Context context = (Context) LoggerFactory.getILoggerFactory();
 
 	@Override
-	public AppenderAdapter _appenderAdapterFor(String loggerName) {
+	public AppenderAdapter appenderAdapterFor(String loggerName) {
 
 		Logger logger = (Logger) Optional.ofNullable(loggerName)
 				.map(name -> LoggerFactory.getLogger(name))
@@ -79,7 +73,7 @@ public class LogbackLoggerAdapter extends LoggerAdapter {
 	}
 	
 	@Override
-	public Layout _layoutFor(String pattern) {
+	public Layout layoutFor(String pattern) {
 		PatternLayout layout = new PatternLayout();
 		layout.setPattern(pattern);
 		layout.setContext(context);
@@ -94,7 +88,7 @@ public class LogbackLoggerAdapter extends LoggerAdapter {
 	}
 	
 	@Override
-	protected void _configure(String logConfigFileName) {
+	public void configure(String logConfigFileName) {
 		
 		
 		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();

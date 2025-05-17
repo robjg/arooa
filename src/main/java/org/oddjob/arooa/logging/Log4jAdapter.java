@@ -1,17 +1,13 @@
 package org.oddjob.arooa.logging;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.PropertyConfigurator;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Adapter for Log4J.
@@ -20,13 +16,13 @@ import org.apache.log4j.PropertyConfigurator;
  *
  */
 @SuppressWarnings("deprecation")
-public class Log4jLoggerAdapter extends LoggerAdapter {
+public class Log4jAdapter implements AppenderService {
 
 	private final ConcurrentMap<Appender, AppenderSkeleton> appenders = 
 			new ConcurrentHashMap<>();
 
 	@Override
-	public AppenderAdapter _appenderAdapterFor(String loggerName) {
+	public AppenderAdapter appenderAdapterFor(String loggerName) {
 
 		Logger logger = Optional.ofNullable(loggerName)
 				.map(name -> Logger.getLogger(name))
@@ -62,7 +58,7 @@ public class Log4jLoggerAdapter extends LoggerAdapter {
 	}
 	
 	@Override
-	public Layout _layoutFor(String pattern) {
+	public Layout layoutFor(String pattern) {
 		org.apache.log4j.Layout layout = new PatternLayout(pattern);
 		return new Layout() {
 			@Override
@@ -73,7 +69,7 @@ public class Log4jLoggerAdapter extends LoggerAdapter {
 	}
 	
 	@Override
-	protected void _configure(String logConfigFileName) {
+	public void configure(String logConfigFileName) {
 		System.setProperty("log4j.defaultInitOverride", "true");
 	    PropertyConfigurator.configure(logConfigFileName);
 	}
