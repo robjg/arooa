@@ -1,2 +1,2 @@
-org.oddjob.arooa.logging.Log4jAdapterFactory
+org.oddjob.arooa.logging.Log4j2AdapterFactory
 org.oddjob.arooa.logging.LogbackAdapterFactory
