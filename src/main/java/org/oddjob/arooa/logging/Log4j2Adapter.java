@@ -7,10 +7,16 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
-import org.apache.logging.log4j.core.filter.ThresholdFilter;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,12 +32,27 @@ public class Log4j2Adapter implements AppenderService {
     private final ConcurrentMap<Appender, Log4j2Appender> appenders =
             new ConcurrentHashMap<>();
 
+    private final LoggerContext loggerContext;
+
+    public Log4j2Adapter(LoggerContext loggerContext) {
+        this.loggerContext = loggerContext;
+    }
+
+    public static AppenderService forSlf4j() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Object loggerFactory = LoggerFactory.getILoggerFactory();
+        Method method = loggerFactory.getClass().getMethod("getLoggerContexts");
+        Set<?> contexts = (Set<?>) method.invoke(loggerFactory);
+        LoggerContext loggerContext = Objects.requireNonNull(
+                (LoggerContext) contexts.iterator().next(), "No LoggerContext found");
+        return new Log4j2Adapter(loggerContext);
+    }
+
     @Override
     public AppenderAdapter appenderAdapterFor(String loggerName) {
 
-        final Logger logger = (Logger) Optional.ofNullable(loggerName)
-                .map(LogManager::getLogger)
-                .orElse(LogManager.getRootLogger());
+        final Logger logger = Optional.ofNullable(loggerName)
+                .map(loggerContext::getLogger)
+                .orElse(loggerContext.getLogger(LogManager.ROOT_LOGGER_NAME));
 
         return new Log4J2AppenderAdapter(logger);
     }
@@ -40,29 +61,38 @@ public class Log4j2Adapter implements AppenderService {
 
         private final Logger logger;
 
-        private Level level;
-
         Log4J2AppenderAdapter(Logger logger) {
             this.logger = logger;
         }
 
         @Override
         public AppenderAdapter setLevel(LogLevel level) {
-            this.level = LOG4J_FROM_LEVELS.get(level);
+            Level log4j2level = LOG4J_FROM_LEVELS.get(level);
+
+            Configuration config = loggerContext.getConfiguration();
+            LoggerConfig loggerConfig = config.getLoggerConfig(logger.getName());
+            loggerConfig.setLevel(log4j2level);
+            loggerContext.updateLoggers();
+
             return this;
         }
 
         @Override
-        public AppenderAdapter addAppender(Appender appender) {
+        public AppenderAdapter addAppender(Appender appender, Layout layout) {
 
-            Log4j2Appender log4jAppender = appenders.computeIfAbsent(
-                    appender, key -> new Log4j2Appender(
-                            logger.getName(),
-                            ThresholdFilter.createFilter(Objects.requireNonNullElse(level, Level.INFO), Filter.Result.ACCEPT, Filter.Result.DENY),
-                            null,
-                            key));
-            log4jAppender.start();
-            logger.addAppender(log4jAppender);
+            appenders.computeIfAbsent(
+                    appender,
+                    key -> {
+                        Log4j2Appender log4jAppender = new Log4j2Appender(
+                                "Log4j2Adaptor:" + appender,
+                                null,
+                                ((Log4j2Layout) layout).layout,
+                                key);
+                        log4jAppender.start();
+                        logger.addAppender(log4jAppender);
+                        return log4jAppender;
+                    });
+
             return this;
         }
 
@@ -82,15 +112,23 @@ public class Log4j2Adapter implements AppenderService {
     public Layout layoutFor(String pattern) {
         org.apache.logging.log4j.core.Layout<? extends Serializable> layout =
                 PatternLayout.newBuilder().withPattern(pattern).build();
-        return event -> layout.toSerializable(((AdaptedOddjobLoggingEvent) event).log4jEvent).toString();
+        return new Log4j2Layout(layout);
     }
 
     @Override
     public void configure(String logConfigFileName) {
-        LoggerContext loggerContext = (LoggerContext) LogManager.getContext();
         loggerContext.stop();
         loggerContext.setConfigLocation(Path.of(logConfigFileName).toUri());
         loggerContext.start();
+    }
+
+    static class Log4j2Layout implements Layout {
+
+        private final  org.apache.logging.log4j.core.Layout<? extends Serializable> layout;
+
+        Log4j2Layout(org.apache.logging.log4j.core.Layout<? extends Serializable> layout) {
+            this.layout = layout;
+        }
     }
 
     private static class Log4j2Appender extends AbstractAppender {
@@ -101,13 +139,21 @@ public class Log4j2Adapter implements AppenderService {
                        Filter filter,
                        org.apache.logging.log4j.core.Layout<? extends Serializable> layout,
                        Appender appender) {
-            super(name, filter, layout);
+            super(name, filter, layout, false, new Property[0]);
             this.appender = appender;
         }
 
         @Override
-        public void append(LogEvent event) {
-            this.appender.append(new AdaptedOddjobLoggingEvent(event));
+        public void append(LogEvent log4jEvent) {
+            this.appender.append(new AdaptedOddjobLoggingEvent(
+                    log4jEvent.getLoggerName(),
+            LOG4J_TO_LEVELS.get(log4jEvent.getLevel()),
+            log4jEvent.getContextData(),
+            getLayout().toSerializable(log4jEvent).toString(),
+            Optional.ofNullable(log4jEvent.getThrownProxy())
+                    .map(ThrowableProxyAdapter::new)
+                    .orElse(null)
+            ));
         }
     }
 
@@ -137,52 +183,56 @@ public class Log4j2Adapter implements AppenderService {
 
     static class AdaptedOddjobLoggingEvent implements LoggingEvent {
 
-        private final LogEvent log4jEvent;
+        private final String loggerName;
+        private final LogLevel logLevel;
+        private final ReadOnlyStringMap mdcs;
+        private final String message;
+        private final ThrowableProxy throwableProxy;
 
-        AdaptedOddjobLoggingEvent(LogEvent log4jEvent) {
-            this.log4jEvent = log4jEvent;
+        AdaptedOddjobLoggingEvent(String loggerName,
+                                  LogLevel logLevel,
+                                  ReadOnlyStringMap mdcs,
+                                  String message,
+                                  ThrowableProxy throwableProxy) {
+
+            this.loggerName = loggerName;
+            this.logLevel = logLevel;
+            this.mdcs = mdcs;
+            this.message = message;
+            this.throwableProxy = throwableProxy;
         }
 
         @Override
         public LogLevel getLevel() {
-            return LOG4J_TO_LEVELS.get(log4jEvent.getLevel());
+            return logLevel;
         }
 
         @Override
         public String getMdc(String mdc) {
-            return log4jEvent.getContextMap().get(mdc);
+            return this.mdcs.getValue(mdc);
         }
 
         @Override
         public String getLoggerName() {
-            return log4jEvent.getLoggerName();
+            return this.loggerName;
         }
 
         @Override
         public String getMessage() {
-            return log4jEvent.getMessage().getFormattedMessage();
-        }
-
-        @Override
-        public String getThreadName() {
-            return log4jEvent.getThreadName();
-        }
-
-        @Override
-        public Object[] getArgumentArray() {
-            return null;
-        }
-
-        @Override
-        public long getTimeStamp() {
-            return log4jEvent.getTimeMillis();
+            return message;
         }
 
         @Override
         public ThrowableProxy getThrowable() {
-            return Optional.ofNullable(log4jEvent.getThrownProxy())
-                    .map(ThrowableProxyAdapter::new)
-                    .orElse(null);
+            return this.throwableProxy;
+        }
+
+        @Override
+        public String toString() {
+            return "AdaptedOddjobLoggingEvent{" +
+                    "loggerName=" + loggerName +
+                    ", message=" + message +
+                    '}';
         }
     }
 

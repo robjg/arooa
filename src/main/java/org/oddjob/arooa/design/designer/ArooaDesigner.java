@@ -13,6 +13,7 @@ import org.oddjob.arooa.design.view.Standards;
 import org.oddjob.arooa.life.ArooaSessionAware;
 import org.oddjob.arooa.logging.Appender;
 import org.oddjob.arooa.logging.AppenderAdapter;
+import org.oddjob.arooa.logging.Layout;
 import org.oddjob.arooa.logging.LoggerAdapter;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
@@ -282,8 +283,10 @@ public class ArooaDesigner
         frame.setSize(Looks.DESIGNER_WIDTH, Looks.DESIGNER_HEIGHT);
         frame.setVisible(true);
 
+        Layout layout = LoggerAdapter.layoutFor("%m");
         AppenderAdapter appenderAdapter = LoggerAdapter
-                .appenderAdapterFor("org.oddjob.arooa.design").addAppender(errorListener);
+                .appenderAdapterFor("org.oddjob.arooa.design")
+                .addAppender(errorListener, layout);
 
         if (file != null) {
             try {
@@ -301,7 +304,7 @@ public class ArooaDesigner
                 try {
                     wait();
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             }
         }
@@ -340,7 +343,7 @@ public class ArooaDesigner
     /**
      * Get the root element.
      *
-     * @return
+     * @return The root element.
      */
     public ArooaElement getDocumentElement() {
         return documentElement;
@@ -350,7 +353,7 @@ public class ArooaDesigner
      * Set the root element when a designer is restricted to
      * a single root element.
      *
-     * @param documentElement
+     * @param documentElement the root element.
      */
     public void setDocumentElement(ArooaElement documentElement) {
         this.documentElement = documentElement;
@@ -395,7 +398,7 @@ public class ArooaDesigner
                 final ConfigurationHandle<ArooaContext> newHandle = parser.parse(
                         new ElementConfiguration(newDocElement));
 
-                configHandle = new ConfigurationHandle<ArooaContext>() {
+                configHandle = new ConfigurationHandle<>() {
 
                     public ArooaContext getDocumentContext() {
                         return newHandle.getDocumentContext();
@@ -418,7 +421,7 @@ public class ArooaDesigner
                     }
                 };
             } catch (Exception ex) {
-                logger.error("Failed: " + ex.getMessage(), ex);
+                logger.error("Failed: {}", ex.getMessage(), ex);
                 return;
             }
 
@@ -456,7 +459,7 @@ public class ArooaDesigner
             try {
                 load(file);
             } catch (Exception ex) {
-                logger.error("Failed on load file: " + ex.getMessage(), ex);
+                logger.error("Failed on load file: {}", ex.getMessage(), ex);
             }
 
             setFile(file);
@@ -516,7 +519,7 @@ public class ArooaDesigner
                 try {
                     configHandle.save();
                 } catch (Exception ex) {
-                    logger.error("Failed to save: " + ex.getMessage(), ex);
+                    logger.error("Failed to save: {}", ex.getMessage(), ex);
                 }
             }
         }
@@ -555,7 +558,7 @@ public class ArooaDesigner
             try {
                 configHandle.save();
             } catch (Exception ex) {
-                logger.error("Failed to save: " + ex.getMessage(), ex);
+                logger.error("Failed to save: {}", ex.getMessage(), ex);
             }
         }
     }
@@ -636,7 +639,7 @@ public class ArooaDesigner
     /**
      * A MenuBar that allows menus to be added and removed.
      */
-	static class DesignerMenuBar extends JMenuBar {
+    static class DesignerMenuBar extends JMenuBar {
         private static final long serialVersionUID = 2008121900L;
 
         JMenu[] existingFormMenus;

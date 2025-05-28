@@ -34,30 +34,9 @@ public interface LoggingEvent {
     /**
      * Get the message.
      * 
-     * @return
+     * @return The formatted message.
      */
     String getMessage();
-
-    /**
-     * Get the thread name.
-     * 
-     * @return
-     */
-    String getThreadName();
-
-    
-    /**
-     * Not sure this is used.
-     * 
-     * @return
-     */
-    Object[] getArgumentArray();
-
-    /**
-     * Get the time the event was created.
-     * @return
-     */
-    long getTimeStamp();
 
     /**
      * Get the throwable.

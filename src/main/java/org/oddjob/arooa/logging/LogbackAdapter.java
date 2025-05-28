@@ -6,8 +6,8 @@ import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
+import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.core.AppenderBase;
-import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
 import org.slf4j.LoggerFactory;
@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Function;
 
 
 /**
@@ -29,14 +30,22 @@ public class LogbackAdapter implements AppenderService {
 	private final ConcurrentMap<Appender, LogbackAppender> appenders = 
 			new ConcurrentHashMap<>();
 	
-	private final Context context = (Context) LoggerFactory.getILoggerFactory();
+	private final LoggerContext context;
+
+	public LogbackAdapter() {
+		this.context = (LoggerContext) LoggerFactory.getILoggerFactory();
+	}
+
+	public LogbackAdapter(LoggerContext context) {
+		this.context = context;
+	}
 
 	@Override
 	public AppenderAdapter appenderAdapterFor(String loggerName) {
 
-		Logger logger = (Logger) Optional.ofNullable(loggerName)
-				.map(name -> LoggerFactory.getLogger(name))
-				.orElse(LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME));
+		Logger logger = Optional.ofNullable(loggerName)
+				.map(context::getLogger)
+				.orElse(context.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME));
 		
 		return new AppenderAdapter() {
 						
@@ -47,25 +56,39 @@ public class LogbackAdapter implements AppenderService {
 			}
 			
 			@Override
-			public AppenderAdapter addAppender(Appender appender) {
-				
-				LogbackAppender logbackAppender = appenders.computeIfAbsent(
-						appender, key -> new LogbackAppender(key));
-				logbackAppender.setName(this.toString());
-				logbackAppender.setContext(context);
-				logbackAppender.start();
-				logger.addAppender(logbackAppender);
+			public AppenderAdapter addAppender(Appender appender, Layout layout) {
+
+				// Might be a bug in Logback - when it's not adapting something
+				// get MDCs throws an NPE.
+				Function<ILoggingEvent, Map<String, String>> mdcExtractor =
+						context.getMDCAdapter() == null ?
+								e -> Collections.emptyMap() :
+								e -> e.getMDCPropertyMap();
+
+				appenders.computeIfAbsent(
+						appender,
+						key -> {
+							LogbackAppender logbackAppender = new LogbackAppender(
+									key,
+									((LogbackLayout) layout).layout,
+									mdcExtractor);
+							logbackAppender.setName(this.toString());
+							logbackAppender.setContext(context);
+							logbackAppender.start();
+							logger.addAppender(logbackAppender);
+							return logbackAppender;
+						});
 				return this;
 			}
 
 			@Override
 			public AppenderAdapter removeAppender(Appender appender) {
 				
-				Optional.ofNullable(appenders.get(appender))
+				Optional.ofNullable(appenders.remove(appender))
 						.ifPresent(a -> { 
 							logger.detachAppender(a); 
-							a.stop(); 
-							return;});
+							a.stop();
+                        });
 				return this;
 			}
 			
@@ -74,19 +97,24 @@ public class LogbackAdapter implements AppenderService {
 	
 	@Override
 	public Layout layoutFor(String pattern) {
+
 		PatternLayout layout = new PatternLayout();
 		layout.setPattern(pattern);
 		layout.setContext(context);
 		layout.start();
 		
-		return new Layout() {
-			@Override
-			public String format(LoggingEvent event) {
-				return layout.doLayout(((AdaptedOddjobLoggingEvent) event).logbackEvent);
-			}
-		};
+		return new LogbackLayout(layout);
 	}
-	
+
+	static class LogbackLayout implements Layout{
+
+		private final PatternLayout layout;
+
+        LogbackLayout(PatternLayout layout) {
+            this.layout = layout;
+        }
+    }
+
 	@Override
 	public void configure(String logConfigFileName) {
 		
@@ -109,24 +137,41 @@ public class LogbackAdapter implements AppenderService {
 	private static class LogbackAppender extends AppenderBase<ILoggingEvent>{
 
 		private final Appender appender;
-		
-		LogbackAppender(Appender appender) {
+
+		private final PatternLayout patternLayout;
+
+		private final Function<ILoggingEvent, Map<String, String>> mdcExtractor;
+
+		LogbackAppender(Appender appender,
+						PatternLayout patternLayout,
+						Function<ILoggingEvent, Map<String, String>> mdcExtractor) {
 			this.appender = appender;
+			this.patternLayout = patternLayout;
+			this.mdcExtractor = mdcExtractor;
 		}
 
-		
 		@Override
-		protected void append(ILoggingEvent event) {	
-			this.appender.append(new AdaptedOddjobLoggingEvent(event));
+		protected void append(ILoggingEvent logbackEvent) {
+			LoggingEvent oddjobEvent = new AdaptedOddjobLoggingEvent(
+					logbackEvent.getLoggerName(),
+					LOG4J_TO_LEVELS.get(logbackEvent.getLevel()),
+					mdcExtractor.apply(logbackEvent),
+					patternLayout.doLayout(logbackEvent),
+					Optional.ofNullable(logbackEvent.getThrowableProxy())
+							.map(ThrowableProxyAdapter::new)
+							.orElse(null)
+			);
+
+			this.appender.append(oddjobEvent);
 		}
 		
 	}
 	
 	
-	private static Map<ch.qos.logback.classic.Level, LogLevel> LOG4J_TO_LEVELS
+	private static final Map<ch.qos.logback.classic.Level, LogLevel> LOG4J_TO_LEVELS
 		= new HashMap<>();
 
-	private static Map<LogLevel, ch.qos.logback.classic.Level> LOG4J_FROM_LEVELS
+	private static final Map<LogLevel, ch.qos.logback.classic.Level> LOG4J_FROM_LEVELS
 		= new HashMap<>();
 
 	static {
@@ -147,54 +192,57 @@ public class LogbackAdapter implements AppenderService {
 	}
 	
 	static class AdaptedOddjobLoggingEvent implements LoggingEvent {
-		
-		private final ILoggingEvent logbackEvent;
-		
-		AdaptedOddjobLoggingEvent(ILoggingEvent logbackEvent) {
-			this.logbackEvent = logbackEvent;
+
+		private final String loggerName;
+		private final LogLevel logLevel;
+		private final Map<String, String> mdcs;
+		private final String message;
+		private final ThrowableProxy throwableProxy;
+
+		AdaptedOddjobLoggingEvent(String loggerName,
+								  LogLevel logLevel,
+								  Map<String, String> mdcs,
+								  String message,
+								  ThrowableProxy throwableProxy) {
+			this.loggerName = loggerName;
+			this.logLevel = logLevel;
+			this.mdcs = mdcs;
+			this.message = message;
+			this.throwableProxy = throwableProxy;
 		}
 		
 		@Override
 		public LogLevel getLevel() {
-			return LOG4J_TO_LEVELS.get(logbackEvent.getLevel());
+			return logLevel;
 		}
 
 		@Override
 		public String getMdc(String mdc) {
-			return (String) logbackEvent.getMDCPropertyMap().get(mdc);
+			return mdcs.get(mdc);
 		}
 		
 		@Override
 		public String getLoggerName() {
-			return logbackEvent.getLoggerName();
+			return loggerName;
 		}
 
 		@Override
 		public String getMessage() {
-			return logbackEvent.getMessage().toString();
-		}
-
-		@Override
-		public String getThreadName() {
-			return logbackEvent.getThreadName();
-		}
-
-		@Override
-		public Object[] getArgumentArray() {
-			return null;
-		}
-
-		@Override
-		public long getTimeStamp() {
-			return logbackEvent.getTimeStamp();
+			return message;
 		}
 
 		@Override
 		public ThrowableProxy getThrowable() {
-			return Optional.ofNullable(logbackEvent.getThrowableProxy())
-					.map(t -> new ThrowableProxyAdapter(t))
-					.orElse(null);
-		}		
+			return throwableProxy;
+		}
+
+		@Override
+		public String toString() {
+			return "AdaptedOddjobLoggingEvent{" +
+					"loggerName=" + loggerName +
+					", message=" + message +
+					'}';
+		}
 	}
 	
 	static class ThrowableProxyAdapter implements ThrowableProxy {
@@ -219,7 +267,7 @@ public class LogbackAdapter implements AppenderService {
 		@Override
 		public ThrowableProxy getCause() {
 			return Optional.ofNullable(iThrowableProxy.getCause())
-					.map(t -> new ThrowableProxyAdapter(t))
+					.map(ThrowableProxyAdapter::new)
 					.orElse(null);
 		}
 
@@ -227,16 +275,16 @@ public class LogbackAdapter implements AppenderService {
 		public StackTraceElement[] getStackTraceElementArray() {
 			
 			return Arrays.stream(iThrowableProxy.getStackTraceElementProxyArray())
-						.map(e-> e.getStackTraceElement())
-						.toArray(i -> new StackTraceElement[i]);
+						.map(StackTraceElementProxy::getStackTraceElement)
+						.toArray(StackTraceElement[]::new);
 		}
 		
 		@Override
 		public ThrowableProxy[] getSuppressed() {
 
 			return Arrays.stream(iThrowableProxy.getSuppressed())
-					.map(e-> new ThrowableProxyAdapter(e))
-					.toArray(i -> new ThrowableProxyAdapter[i]);
+					.map(ThrowableProxyAdapter::new)
+					.toArray(ThrowableProxyAdapter[]::new);
 		}
 	}
 	

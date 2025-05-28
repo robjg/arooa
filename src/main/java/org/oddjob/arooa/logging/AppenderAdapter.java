@@ -23,10 +23,11 @@ public interface AppenderAdapter {
 	 * Add an Appender that will receive log events at the point the adapter has been created.
 	 * 
 	 * @param appender An Appender.
+	 * @param layout Layout pattern.
 	 * 
 	 * @return This.
 	 */
-	AppenderAdapter addAppender(Appender appender);
+	AppenderAdapter addAppender(Appender appender, Layout layout);
 	
 	/**
 	 * Remove the Appender from the point the adapter has been created.

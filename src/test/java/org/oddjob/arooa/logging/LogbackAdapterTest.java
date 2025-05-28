@@ -1,8 +1,7 @@
 package org.oddjob.arooa.logging;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -11,15 +10,17 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-class Log4j2AdapterTest {
+class LogbackAdapterTest {
 
     @Test
     void addAndRemoveOddjobAppender() {
 
-        LoggerContext loggerContext = (LoggerContext) LogManager.getContext();
-        Logger logger = loggerContext.getLogger("foo.bar.Stuff");
+        LoggerContext loggerContext = new LoggerContext();
+        loggerContext.putProperty("logback.debug", "true");
 
-        Log4j2Adapter adapter = new Log4j2Adapter(loggerContext);
+        LogbackAdapter adapter = new LogbackAdapter(loggerContext);
+
+        Logger logger = loggerContext.getLogger("foo.bar.Stuff");
 
         List<String> results = new ArrayList<>();
 

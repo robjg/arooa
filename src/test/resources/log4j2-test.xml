@@ -5,13 +5,17 @@
                    https://logging.apache.org/xml/ns/log4j-config-2.xsd">
     <Appenders>
         <Console name="CONSOLE">
-            <PatternLayout pattern="%-5p [%t]: %m%n"/>
+            <PatternLayout pattern="%5p [%t] %X{ojpad}\(%F:%L\) [%X{ojname}] - %m%n"/>
         </Console>
     </Appenders>
     <Loggers>
         <Root level="INFO">
             <AppenderRef ref="CONSOLE"/>
         </Root>
-        <Logger name="org.oddjob" level="INFO"/>
+
+        <logger name="org.oddjob" level="DEBUG"/>
+        <logger name="org.oddjob.arooa" level="INFO"/>
+        <logger name="org.oddjob.schedules" level="INFO"/>
+
     </Loggers>
 </Configuration>
