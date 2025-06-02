@@ -20,7 +20,7 @@ public interface PropertyAccessor {
 	 * @param expression The name. Must not be null.
 	 * @param value The value. Can be null.
 	 */
-	public void setProperty(Object bean, String expression, Object value) 
+    void setProperty(Object bean, String expression, Object value)
 	throws ArooaPropertyException; 
 	
 	/**
@@ -30,7 +30,7 @@ public interface PropertyAccessor {
 	 * @param name The name. Must not be null.
 	 * @param value The value. Can be null.
 	 */
-	public void setSimpleProperty(Object bean, String name, Object value) 
+    void setSimpleProperty(Object bean, String name, Object value)
 	throws ArooaPropertyException; 
 	
 	/**
@@ -41,7 +41,7 @@ public interface PropertyAccessor {
 	 * @param key The mapped property's key. Must not be null.
 	 * @param value The value. Can be null.
 	 */
-	public void setMappedProperty(Object bean, String name, String key, Object value) 
+    void setMappedProperty(Object bean, String name, String key, Object value)
 	throws ArooaPropertyException;
 	
 	/**
@@ -52,58 +52,90 @@ public interface PropertyAccessor {
 	 * @param index The indexed property's index. 0 based.
 	 * @param value The value. Can be null.
 	 */
-	public void setIndexedProperty(Object bean, String name, int index, Object value) 
+    void setIndexedProperty(Object bean, String name, int index, Object value)
 	throws ArooaPropertyException;
 
 	/**
 	 * Get the {@link ArooaClass} for a bean.
 	 * 
-	 * @param bean
-	 * @return
+	 * @param bean The bean.
+	 * @return An Arooa Class
 	 */
-	public ArooaClass getClassName(Object bean);
+    ArooaClass getClassName(Object bean);
 	
 	/**
-	 * Provide {@link org.oddjob.arooo.BeanOverview}. Note that this
+	 * Provide {@link BeanOverview}. Note that this
 	 * will provide the overview for the Java class. If using a bean
-	 * that might be a dynabean then use 
-	 * <code>getArooaClass(bean).getBeanOverview()</code> instead.
+	 * that might be a DynaBean then use
+	 * {@link #getClassName(Object)} and then {@link ArooaClass#getBeanOverview(PropertyAccessor)} instead.
 	 * 
-	 * @param forClassCl
-	 * @return
-	 * @throws ArooaException
-	 */	
-	public BeanOverview getBeanOverview(Class<?> forClass)  
+	 * @param forClass The class to provide the overview for.
+	 * @return An overview. Never null.
+	 * @throws ArooaException If something goes wrong.
+	 */
+    BeanOverview getBeanOverview(Class<?> forClass)
 	throws ArooaException;
 		
 	/**
-	 * Get a property.
+	 * Get a property. The property is a full property expression.
 	 * 
 	 * @param bean The bean.
-	 * @param The property.
+	 * @param property The property expression.
 	 * @return The property value.
 	 */
-	public Object getProperty(Object bean, String property) 
+    Object getProperty(Object bean, String property)
 	throws ArooaPropertyException;
 	
 	/**
 	 * Get a property of a required type.
 	 * 
 	 * @param bean The bean.
-	 * @param The property.
+	 * @param property The property expression.
 	 * @return The property value.
 	 */
-	public <T> T getProperty(Object bean, 
-			String property, Class<T> required) 
+    <T> T getProperty(Object bean,
+                      String property, Class<T> required)
 	throws ArooaPropertyException, ArooaConversionException;
-	
 
+	/**
+	 * Get a simple property. A none nested, none indexed, none mapped property.
+	 *
+	 * @param bean The bean.
+	 * @param property The property name.
+	 * @return The property value.
+	 */
+	Object getSimpleProperty(Object bean, String property)
+			throws ArooaPropertyException;
+
+	/**
+	 * Get an indexed property.
+	 *
+	 * @param bean The bean.
+	 * @param property The property name.
+	 * @param index The index.
+	 *
+	 * @return The property value.
+	 */
+	Object getIndexedProperty(Object bean, String property, int index)
+			throws ArooaPropertyException;
+
+	/**
+	 * Get a property. The property is a full property expression.
+	 *
+	 * @param bean The bean.
+	 * @param property The property name.
+	 * @param key The key
+	 *               .
+	 * @return The property value.
+	 */
+	Object getMappedProperty(Object bean, String property, String key)
+			throws ArooaPropertyException;
 	/**
 	 * Provide an accessor that performs conversions.
 	 * 
 	 * @param converter The converter.
 	 * @return An accessor that performs conversions.
 	 */
-	public PropertyAccessor accessorWithConversions(
-			ArooaConverter converter);
+    PropertyAccessor accessorWithConversions(
+            ArooaConverter converter);
 }

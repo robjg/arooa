@@ -1,52 +1,35 @@
 package org.oddjob.arooa.reflect;
 
-import org.junit.Test;
-
 import org.junit.Assert;
-
-import org.oddjob.arooa.ArooaBeanDescriptor;
-import org.oddjob.arooa.ArooaDescriptor;
-import org.oddjob.arooa.ArooaException;
-import org.oddjob.arooa.ArooaSession;
-import org.oddjob.arooa.ArooaTools;
-import org.oddjob.arooa.ArooaType;
-import org.oddjob.arooa.ConfiguredHow;
-import org.oddjob.arooa.MockArooaBeanDescriptor;
-import org.oddjob.arooa.MockArooaDescriptor;
-import org.oddjob.arooa.MockArooaSession;
-import org.oddjob.arooa.MockArooaTools;
-import org.oddjob.arooa.ParsingInterceptor;
+import org.junit.Test;
+import org.mockito.ArgumentMatchers;
+import org.oddjob.arooa.*;
 import org.oddjob.arooa.handlers.ElementAction;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.parsing.MockArooaContext;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+
 public class PropertyIdentifierTest extends Assert {
 
-	private class Result {
+	private static class Result {
 		String element;
 		String internal;
 	}
 	
-	private class StringElementActionFactory implements PropertyIdentifier.ElementActionFactory<String> {
+	private static class StringElementActionFactory implements PropertyIdentifier.ElementActionFactory<String> {
 		public ElementAction<String> createComponentElementAction() {
-			return new ElementAction<String>() {
-				public String onElement(ArooaElement element, ArooaContext context) {
-					return "Component: " + element.getTag();
-				}
-			};
+			return (element, context) -> "Component: " + element.getTag();
 		}
 		public ElementAction<String> createValueElementAction() {
-			return new ElementAction<String>() {
-				public String onElement(ArooaElement element, ArooaContext context) {
-					return "Value: " + element.getTag();
-				}
-			};
+			return (element, context) -> "Value: " + element.getTag();
 		}
 	}		
 
-	private class MockAction implements PropertyIdentifier.PropertyTypeActions<Result, String> {
+	private static class MockAction implements PropertyIdentifier.PropertyTypeActions<Result, String> {
 		
 		
 		public Result onIndexedElement(ArooaElement element, ArooaContext context, ElementAction<String> action) {
@@ -70,29 +53,41 @@ public class PropertyIdentifierTest extends Assert {
 		
 	}
 
-	private class OurToolFactory extends MockArooaTools {
-		
-		@Override
-		public PropertyAccessor getPropertyAccessor() {
-			return new MockPropertyAccessor() {
-			
-				@Override
-				public BeanOverview getBeanOverview(final Class<?> forClass)
-				throws ArooaException {
-					
-					return new MockBeanOverview() {
-						public boolean isIndexed(String property) {
-							return forClass.getName().contains("Indexed");
-						}
-						public boolean isMapped(String property) {
-							return forClass.getName().contains("Mapped");
-						}
-					};
-				}
-			};
-		}		
+	ArooaTools mockArooaTools() {
+
+		BeanOverview indexedOverview = mock(BeanOverview.class);
+		when(indexedOverview.isIndexed(anyString())).thenReturn(true);
+		when(indexedOverview.isMapped(anyString())).thenReturn(false);
+
+		BeanOverview mappedOverview = mock(BeanOverview.class);
+		when(mappedOverview.isIndexed(anyString())).thenReturn(false);
+		when(mappedOverview.isMapped(anyString())).thenReturn(true);
+
+		BeanOverview simpleOverview = mock(BeanOverview.class);
+		when(simpleOverview.isIndexed(anyString())).thenReturn(false);
+		when(simpleOverview.isMapped(anyString())).thenReturn(false);
+
+		PropertyAccessor propertyAccessor = mock(PropertyAccessor.class);
+		doAnswer(invocationOnMock -> {
+			final Class<?> forClass = invocationOnMock.getArgument(0);
+			if (forClass.getName().contains("Indexed")) {
+				return indexedOverview;
+			}
+			else if (forClass.getName().contains("Mapped")) {
+				return mappedOverview;
+			}
+			else {
+				return simpleOverview;
+			}
+		}).when(propertyAccessor).getBeanOverview(ArgumentMatchers.any(Class.class));
+
+		ArooaTools arooaTools = mock(ArooaTools.class);
+		when(arooaTools.getPropertyAccessor()).thenReturn(propertyAccessor);
+
+		return arooaTools;
 	}
-	
+
+
 	class OurArooaSession extends MockArooaSession {
 		@Override
 		public ArooaDescriptor getArooaDescriptor() {
@@ -123,7 +118,7 @@ public class PropertyIdentifierTest extends Assert {
 		}
 		@Override
 		public ArooaTools getTools() {
-			return new OurToolFactory();
+			return mockArooaTools();
 		}
 	}
 	
@@ -145,17 +140,17 @@ public class PropertyIdentifierTest extends Assert {
 		}
 	}
 	
-	class MockObject {
+	static class MockObject {
 //		public void setMyComponent(Object component) { }
 //		public void setMyValue(Object value) { }
 	}
 	
-	class MockIndexedObject {
+	static class MockIndexedObject {
 //		public void setMyIndexComponent(int i, Object component) { }
 //		public void setMyIndexedValue(int i, Object value) { }
 	}
 	
-	class MockMappedObject {
+	static class MockMappedObject {
 //		public void setMyMappedComponent(String name, Object component) { }
 //		public void setMyMappedValue(String name, Object value) { }
 	}
@@ -163,9 +158,9 @@ public class PropertyIdentifierTest extends Assert {
    @Test
 	public void testComponent() throws ArooaPropertyException {
 
-		PropertyIdentifier<Result, String> test = new PropertyIdentifier<Result, String>(
-				new StringElementActionFactory(),
-				new MockAction());
+		PropertyIdentifier<Result, String> test = new PropertyIdentifier<>(
+                new StringElementActionFactory(),
+                new MockAction());
 		
 		OurArooaContext context = new OurArooaContext(ArooaType.COMPONENT);
 
@@ -183,9 +178,9 @@ public class PropertyIdentifierTest extends Assert {
    @Test
 	public void testValue() {
 
-		PropertyIdentifier<Result, String> test = new PropertyIdentifier<Result, String>(
-				new StringElementActionFactory(),
-				new MockAction());
+		PropertyIdentifier<Result, String> test = new PropertyIdentifier<>(
+                new StringElementActionFactory(),
+                new MockAction());
 		
 		OurArooaContext context = new OurArooaContext(ArooaType.VALUE);
 
@@ -203,9 +198,9 @@ public class PropertyIdentifierTest extends Assert {
    @Test
 	public void testMappedComponent() {
 
-		PropertyIdentifier<Result, String> test = new PropertyIdentifier<Result, String>(
-				new StringElementActionFactory(),
-				new MockAction());
+		PropertyIdentifier<Result, String> test = new PropertyIdentifier<>(
+                new StringElementActionFactory(),
+                new MockAction());
 		
 		OurArooaContext context = new OurArooaContext(ArooaType.COMPONENT);
 
@@ -223,9 +218,9 @@ public class PropertyIdentifierTest extends Assert {
    @Test
 	public void testMappedValue() {
 
-		PropertyIdentifier<Result, String> test = new PropertyIdentifier<Result, String>(
-				new StringElementActionFactory(),
-				new MockAction());
+		PropertyIdentifier<Result, String> test = new PropertyIdentifier<>(
+                new StringElementActionFactory(),
+                new MockAction());
 		
 		OurArooaContext context = new OurArooaContext(ArooaType.VALUE);
 
@@ -243,9 +238,9 @@ public class PropertyIdentifierTest extends Assert {
    @Test
 	public void testIndexedComponent() {
 
-		PropertyIdentifier<Result, String> test = new PropertyIdentifier<Result, String>(
-				new StringElementActionFactory(),
-				new MockAction());
+		PropertyIdentifier<Result, String> test = new PropertyIdentifier<>(
+                new StringElementActionFactory(),
+                new MockAction());
 		
 		OurArooaContext context = new OurArooaContext(ArooaType.COMPONENT);
 
@@ -263,9 +258,9 @@ public class PropertyIdentifierTest extends Assert {
    @Test
 	public void testIndexedValue() {
 
-		PropertyIdentifier<Result, String> test = new PropertyIdentifier<Result, String>(
-				new StringElementActionFactory(),
-				new MockAction());
+		PropertyIdentifier<Result, String> test = new PropertyIdentifier<>(
+                new StringElementActionFactory(),
+                new MockAction());
 		
 		OurArooaContext context = new OurArooaContext(ArooaType.VALUE);
 

@@ -3,7 +3,7 @@ package org.oddjob.arooa.reflect;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.convert.ArooaConverter;
 
-public class MockPropertyAccessor implements PropertyAccessor {
+abstract public class MockPropertyAccessor implements PropertyAccessor {
 
 	public ArooaClass getClassName(Object bean) {
 		throw new RuntimeException("Unexpected from class: " + 
@@ -46,7 +46,25 @@ public class MockPropertyAccessor implements PropertyAccessor {
 		throw new RuntimeException("Unexpected from class: " + 
 				this.getClass().getName());
 	}
-	
+
+	@Override
+	public Object getSimpleProperty(Object bean, String property) throws ArooaPropertyException {
+		throw new RuntimeException("Unexpected from class: " +
+				this.getClass().getName());
+	}
+
+	@Override
+	public Object getIndexedProperty(Object bean, String property, int index) throws ArooaPropertyException {
+		throw new RuntimeException("Unexpected from class: " +
+				this.getClass().getName());
+	}
+
+	@Override
+	public Object getMappedProperty(Object bean, String property, String key) throws ArooaPropertyException {
+		throw new RuntimeException("Unexpected from class: " +
+				this.getClass().getName());
+	}
+
 	@Override
 	public PropertyAccessor accessorWithConversions(ArooaConverter converter) {
 		throw new RuntimeException("Unexpected from class: " + 

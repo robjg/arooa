@@ -1,5 +1,7 @@
 package org.oddjob.arooa.beanutils;
 
+import org.apache.commons.beanutils.*;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.beans.PropertyDescriptor;
@@ -9,19 +11,16 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Assert;
-
-import org.apache.commons.beanutils.DynaProperty;
-import org.apache.commons.beanutils.LazyDynaMap;
-import org.apache.commons.beanutils.PropertyUtils;
-
 public class DynaBeanAssumptionsTest extends Assert {
 
    @Test
 	public void testDescrptors1() {
-		
+
+	   PropertyUtilsBean propertyUtilsBean = new PropertyUtilsBean();
+	   propertyUtilsBean.removeBeanIntrospector(SuppressPropertiesBeanIntrospector.SUPPRESS_CLASS);
+
 		PropertyDescriptor[] descriptors =
-			PropertyUtils.getPropertyDescriptors(LazyDynaMap.class);
+			propertyUtilsBean.getPropertyDescriptors(LazyDynaMap.class);
 		
 		assertEquals(7, descriptors.length);
 		
