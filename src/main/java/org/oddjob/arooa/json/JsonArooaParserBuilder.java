@@ -1,10 +1,10 @@
 package org.oddjob.arooa.json;
 
+import jakarta.json.Json;
+import jakarta.json.stream.JsonGenerator;
+import jakarta.json.stream.JsonGeneratorFactory;
 import org.oddjob.arooa.parsing.NamespaceMappings;
 
-import javax.json.Json;
-import javax.json.stream.JsonGenerator;
-import javax.json.stream.JsonGeneratorFactory;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;

@@ -19,7 +19,7 @@
     <!-- encoders are assigned the type
          ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
     <encoder>
-      <pattern>%-4relative %-5level [%thread] %X{ojpad}\(%F:%L\) [%X{ojname}] - %msg%n</pattern>
+      <pattern>%d %-5level [%thread] %X{ojpad}\(%F:%L\) [%X{ojname}] - %msg%n</pattern>
     </encoder>
   </appender>
 

@@ -1,5 +1,9 @@
 package org.oddjob.arooa.json;
 
+import jakarta.json.Json;
+import jakarta.json.stream.JsonLocation;
+import jakarta.json.stream.JsonParser;
+import jakarta.json.stream.JsonParser.Event;
 import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaParseException;
@@ -8,10 +12,6 @@ import org.oddjob.arooa.parsing.Location;
 import org.oddjob.arooa.parsing.NamespaceMappings;
 import org.oddjob.arooa.parsing.ParseContext;
 
-import javax.json.Json;
-import javax.json.stream.JsonLocation;
-import javax.json.stream.JsonParser;
-import javax.json.stream.JsonParser.Event;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
@@ -158,7 +158,7 @@ public class JsonConfiguration implements ArooaConfiguration {
      Location toArooaLocation(JsonParser jsonParser) {
          JsonLocation jsonLocation = jsonParser.getLocation();
          return new Location(sourceFactory.toString(),
-                 new Long(jsonLocation.getLineNumber()).intValue(),
-                 new Long(jsonLocation.getColumnNumber()).intValue());
+                 Long.valueOf(jsonLocation.getLineNumber()).intValue(),
+                 Long.valueOf(jsonLocation.getColumnNumber()).intValue());
     }
 }

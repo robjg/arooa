@@ -1,5 +1,6 @@
 package org.oddjob.arooa.json;
 
+import jakarta.json.stream.JsonGenerator;
 import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaParser;
@@ -7,7 +8,6 @@ import org.oddjob.arooa.ConfigurationHandle;
 import org.oddjob.arooa.parsing.NamespaceMappings;
 import org.oddjob.arooa.parsing.SimpleParseContext;
 
-import javax.json.stream.JsonGenerator;
 import java.util.List;
 
 /**
