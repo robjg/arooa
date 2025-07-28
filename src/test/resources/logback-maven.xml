@@ -12,7 +12,7 @@
   </appender>
 
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    <file>${build.directory}/test-logs/oddjob.log</file>
+    <file>${build.directory}/test-logs/logback-oddjob.log</file>
     <append>true</append>
     <!-- set immediateFlush to false for much higher logging throughput -->
     <immediateFlush>true</immediateFlush>
