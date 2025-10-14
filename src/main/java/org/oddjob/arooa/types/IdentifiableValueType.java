@@ -132,5 +132,12 @@ implements ArooaValue, ArooaSessionAware, ArooaLifeAware {
 		if (value != null) {
 			session.getBeanRegistry().remove(value);
 		}
-	}	
+	}
+
+    @Override
+    public String toString() {
+        return "IdentifiableValueType{" +
+                "id='" + id + '\'' +
+                '}';
+    }
 }

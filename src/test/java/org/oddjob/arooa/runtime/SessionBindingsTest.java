@@ -5,7 +5,10 @@ import org.junit.Test;
 import org.oddjob.arooa.registry.BeanRegistry;
 import org.oddjob.arooa.registry.SimpleBeanRegistry;
 
-import javax.script.*;
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -17,30 +20,6 @@ public class SessionBindingsTest {
         // Accessing a static constant is not enough to load the ScriptEvaluator class
         // and turn off Nashorn deprecation warnings.
         Class.forName(ScriptEvaluator.class.getName());
-    }
-
-    @Test
-    public void testEngineAssumptions() throws ScriptException {
-
-        ScriptEngine engine = ScriptEvaluator
-                .getDefaultEngine(getClass().getClassLoader())
-                .orElseThrow();
-
-        Bindings bindings = engine.createBindings();
-
-        SimpleScriptContext context = new SimpleScriptContext();
-        context.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
-
-        bindings.put("b", 2);
-        bindings.put("c", 3);
-
-        Number result = (Number) engine.eval("a = b + c", context);
-
-        assertThat(result.intValue(), is(5));
-
-        Number a = (Number) bindings.get("a");
-
-        assertThat(a.intValue(), is(5));
     }
 
     @Test

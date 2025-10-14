@@ -70,6 +70,8 @@ public class ScriptEvaluator implements Evaluator {
         Object result;
         try {
             ScriptContext scriptContext = engine.getContext();
+            scriptContext.setBindings(engine.createBindings(),
+                    ScriptContext.ENGINE_SCOPE);
             scriptContext.setBindings(new SessionBindings(session.getBeanRegistry()),
                     ScriptContext.GLOBAL_SCOPE);
             result = engine.eval(propertyExpression,
@@ -106,7 +108,7 @@ public class ScriptEvaluator implements Evaluator {
         ScriptEngine engine = manager.getEngineByName(language);
 
         if (engine != null) {
-            logger.debug("Using Script Engine " + language);
+            logger.debug("Using Script Engine {}", language);
             return Try.of(engine);
         }
 

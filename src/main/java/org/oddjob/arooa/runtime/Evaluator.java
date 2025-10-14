@@ -18,13 +18,13 @@ public interface Evaluator {
 	 * Evaluate the property expression.
 	 * 
 	 * @param propertyExpression The property expression such as a.b.c.
-	 * @param session
-	 * @param type
+	 * @param session The Arooa Session
+	 * @param type The Type to evaluate the expression to.
 	 * 
 	 * @return The evaluation.
 	 * 
-	 * @throws ArooaPropertyException
-	 * @throws ArooaConversionException
+	 * @throws ArooaPropertyException If any property reference fails other than being null.
+	 * @throws ArooaConversionException If conversion to the type fails.
 	 */
 	<T> T evaluate(String propertyExpression,
 				   ArooaSession session,
