@@ -32,7 +32,7 @@ public class NashornConvertlets implements ConversionProvider {
                 cl = Class.forName(SCRIPT_OBJECT_MIRROR_8);
                 logger.debug("Using Jdk 8 Nashorn Scripting {}", cl.getName());
             } catch (ClassNotFoundException ex) {
-                logger.debug("No Noashorn Scripting found");
+                logger.debug("No Nashorn Scripting found");
                 return;
             }
         }
