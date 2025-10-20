@@ -52,4 +52,8 @@ public class ListSetterHelper<E> {
 	public List<E> getList() {
 		return this.elements;
 	}
+
+    public boolean isEmpty() {
+        return this.elements.isEmpty();
+    }
 }
