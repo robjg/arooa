@@ -29,6 +29,9 @@ import java.util.function.Consumer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.contains;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
 
 /**
  * Tests for ListType.
@@ -46,8 +49,7 @@ public class ListTypeTest {
 
     @Before
     public void setUp() throws Exception {
-        logger.info("-----------------------  " + getName() +
-                "  ----------------------------");
+        logger.info("-----------------------  {}  ----------------------------", getName());
     }
 
     @Test
@@ -82,30 +84,19 @@ public class ListTypeTest {
     @Test
     public void testConvertContents() throws Exception {
         ListType test = new ListType();
+        test.setValues(0, new ArooaObject("Foo"));
 
+        ArooaConverter arooaConverter = mock(ArooaConverter.class);
+        test.convertContents(arooaConverter, String[].class);
 
-        test.convertContents(new ArooaConverter() {
-            @SuppressWarnings("unchecked")
-            public <F, T> T convert(F from, Class<T> required) {
-                assertThat(required, Matchers.instanceOf(String[].class));
-                return (T) new String[]{(String) from};
-            }
-
-            public <F, T> ConversionPath<F, T> findConversion(Class<F> from,
-                                                              Class<T> to) {
-                throw new RuntimeException("Unexpected!");
-            }
-        }, String[].class);
+        verify(arooaConverter).convert(any(), eq(String[].class));
     }
 
     /**
      * Test a ListType can be a List, and that the
      * containing ArooaValue is converted to it's
      * simplest type (i.e. doesn't stay an ArooaValue).
-     *
-     * @throws Exception
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testGettingAsList() throws Exception {
         ListType test = new ListType();
@@ -126,7 +117,6 @@ public class ListTypeTest {
      * containing ArooaValue is converted to it's
      * simplest type (i.e. doesn't stay an ArooaValue).
      *
-     * @throws Exception
      */
     @Test
     public void testGettingAsObjectArray() throws Exception {
@@ -140,14 +130,13 @@ public class ListTypeTest {
 
         Object[] result = converter.convert(test, Object[].class);
 
-        assertThat(result, is( new Object[] {"test"}));
+        assertThat(result, is(new Object[]{"test"}));
     }
 
     /**
      * Test that when the content type is String, a conversion
      * to a String[] is possible.
      *
-     * @throws Exception
      */
     @Test
     public void testGetAsStringArray() throws Exception {
@@ -162,14 +151,13 @@ public class ListTypeTest {
         String[] result = converter.convert(
                 test, String[].class);
 
-        assertThat(result, is( new String[] {"test"}));
+        assertThat(result, is(new String[]{"test"}));
     }
 
     /**
-     * Test that when the content is convertable to an int
+     * Test that when the content is convertible to an int
      * a conversion type int[] is possible.
      *
-     * @throws Exception
      */
     @Test
     public void testGetArrayOfInts() throws Exception {
@@ -186,7 +174,7 @@ public class ListTypeTest {
         int[] result = new DefaultConverter().convert(
                 test, int[].class);
 
-        assertThat(result, is( new int[] { 1, 2}));
+        assertThat(result, is(new int[]{1, 2}));
     }
 
     @Test
@@ -215,9 +203,9 @@ public class ListTypeTest {
 
         assertThat(results, contains(nullValue()));
 
-        results = test.convert(new int[] {3, 5});
+        results = test.convert(new int[]{3, 5});
 
-        assertThat(results, contains(3 , 5));
+        assertThat(results, contains(3, 5));
 
         results = test.convert(Arrays.asList(
                 new ArooaObject("apples"), new ArooaObject("oranges")));
@@ -273,12 +261,11 @@ public class ListTypeTest {
 
         ArooaConverter converter = new DefaultConverter();
 
-        @SuppressWarnings("unchecked")
         List<String[]> list = converter.convert(
                 test, List.class);
 
         assertThat(list, contains(
-                new String[] {"a", "b", "c"}, new String[] {"d", "e", "f"}));
+                new String[]{"a", "b", "c"}, new String[]{"d", "e", "f"}));
     }
 
     @Test
@@ -309,13 +296,13 @@ public class ListTypeTest {
                 test, List.class);
 
         assertThat(listResult, contains(
-                "a", "b", "c", "d" ));
+                "a", "b", "c", "d"));
 
         String[] arrayResult = converter.convert(
                 test, String[].class);
 
         assertThat(arrayResult, is(
-                new String[] { "a", "b", "c", "d" }));
+                new String[]{"a", "b", "c", "d"}));
     }
 
     @Test
@@ -341,13 +328,13 @@ public class ListTypeTest {
                 test, List.class);
 
         assertThat(listResult, contains(
-                "a", "b", "c" ));
+                "a", "b", "c"));
 
         Object[] arrayResult = converter.convert(
                 test, Object[].class);
 
         assertThat(arrayResult, is(
-                new String[] { "a", "b", "c" }));
+                new String[]{"a", "b", "c"}));
 
     }
 
@@ -376,7 +363,7 @@ public class ListTypeTest {
         Object[] arrayResult = converter.convert(test, Object[].class);
 
         assertThat(arrayResult, is(
-                new Object[] { null }));
+                new Object[]{null}));
     }
 
     @Test
@@ -400,9 +387,9 @@ public class ListTypeTest {
         Object[] result = converter.convert(test, Object[].class);
 
         assertThat(result, is(
-                new Object[] {
-                        new String[] { "a", "b" },
-                        new String[] { "c", "d" } } ));
+                new Object[]{
+                        new String[]{"a", "b"},
+                        new String[]{"c", "d"}}));
     }
 
     @Test
@@ -433,12 +420,12 @@ public class ListTypeTest {
         Number[] arrayResult = converter.convert(
                 test, Number[].class);
 
-        assertThat(arrayResult, is(new Number[] {3, 7}));
+        assertThat(arrayResult, is(new Number[]{3, 7}));
 
         try {
             converter.convert(
                     test, String[].class);
-            assertThat("This isn't possilbe.", false);
+            assertThat("This isn't possible.", false);
         } catch (ArooaConversionException e) {
             // expected
         }
@@ -482,11 +469,8 @@ public class ListTypeTest {
         }
     }
 
-
     /**
      * Test that a list of mixed types gets resolved.
-     *
-     * @throws Exception
      */
     @Test
     public void testObjects() throws Exception {
@@ -504,20 +488,18 @@ public class ListTypeTest {
                 new XMLConfiguration("XML", descriptorXML)).createDescriptor(
                 getClass().getClassLoader());
 
-
-        String EOL = System.getProperty("line.separator");
-
-        String xml =
-                "<root>" + EOL +
-                        " <results>" + EOL +
-                        "  <list>" + EOL +
-                        "   <values>" + EOL +
-                        "    <a/>\n" + EOL +
-                        "    <value value='apple'/>\n" +
-                        "   </values>" + EOL +
-                        "  </list>\n" + EOL +
-                        "</results>\n" + EOL +
-                        "</root>\n" + EOL;
+        String xml = """
+                <root>
+                 <results>
+                  <list>
+                   <values>
+                    <a/>
+                    <value value='apple'/>
+                   </values>
+                  </list>
+                 </results>
+                </root>
+                """;
 
         Root1 root = new Root1();
 
@@ -537,7 +519,7 @@ public class ListTypeTest {
         Object[] o = new DefaultConverter(registry).convert(
                 root.results, Object[].class);
 
-        assertThat(o, is(new Object[] { new A(), "apple" }));
+        assertThat(o, is(new Object[]{new A(), "apple"}));
     }
 
     @Test
@@ -566,7 +548,7 @@ public class ListTypeTest {
 
         session.getComponentPool().configure(root);
 
-        assertThat(root.results, is(new Object[] { "orange", "apple" }));
+        assertThat(root.results, is(new Object[]{"orange", "apple"}));
     }
 
     @Test
@@ -595,29 +577,28 @@ public class ListTypeTest {
 
         session.getComponentPool().configure(root);
 
-        assertThat(root.results, is(new int[] { 1, 2 }));
+        assertThat(root.results, is(new int[]{1, 2}));
     }
 
     /**
      * Configure/Destroy sets null values. How does list cope?
      *
-     * @throws Exception
      */
     @Test
     public void testNullsAndReconfiguring() throws Exception {
-        String EOL = System.getProperty("line.separator");
 
-        String xml =
-                "<root>" + EOL +
-                        " <results>" + EOL +
-                        "  <list>" + EOL +
-                        "   <values>" + EOL +
-                        "    <value/>\n" + EOL +
-                        "    <value value='apple'/>\n" +
-                        "   </values>" + EOL +
-                        "  </list>\n" + EOL +
-                        "</results>\n" + EOL +
-                        "</root>\n" + EOL;
+        String xml = """
+                <root>
+                 <results>
+                  <list>
+                   <values>
+                    <value/>
+                    <value value='apple'/>
+                   </values>
+                  </list>
+                 </results>
+                </root>
+                """;
 
         Root1 root = new Root1();
 
@@ -676,7 +657,6 @@ public class ListTypeTest {
 
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testAsConsumer() throws NoConversionAvailableException, ConversionFailedException {
 

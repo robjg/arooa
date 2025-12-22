@@ -1,5 +1,6 @@
 package org.oddjob.arooa.convert;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,8 +12,8 @@ import java.util.Map;
  */
 public class NullConversions {
 
-	private static final Map<Class<?>, Object> NULL_CONVERSIONS =
-			new HashMap<Class<?>, Object>(8);
+	private static final Map<Type, Object> NULL_CONVERSIONS =
+			new HashMap<>(8);
 	
 	static {
 		NULL_CONVERSIONS.put(boolean.class, false);
@@ -26,7 +27,7 @@ public class NullConversions {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static <T> T nullConversionFor(Class<T> required) {
+	public static <T> T nullConversionFor(Type required) {
 		return (T) NULL_CONVERSIONS.get(required);
 	}
 }

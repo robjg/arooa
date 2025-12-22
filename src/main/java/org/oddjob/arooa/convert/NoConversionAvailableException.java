@@ -1,26 +1,34 @@
 package org.oddjob.arooa.convert;
 
+import java.io.Serial;
+import java.lang.reflect.Type;
+
 public class NoConversionAvailableException extends ArooaConversionException {
-	private static final long serialVersionUID = 20070219;
+	@Serial
+    private static final long serialVersionUID = 20070219;
 	
-	private final Class<?> fromClass;
-	private final Class<?> toClass;
+	private final TypeArooa<?> fromType;
+	private final Type toType;
 	
-	public NoConversionAvailableException(Class<?> fromClass, Class<?> toClass) {
-		this.fromClass = fromClass;
-		this.toClass = toClass;
+	public NoConversionAvailableException(Class<?> fromClass, Type toType) {
+        this(TypeArooa.of(fromClass), toType);
+	}
+
+    public NoConversionAvailableException(TypeArooa<?> fromType, Type toType) {
+        this.fromType = fromType;
+        this.toType = toType;
+    }
+
+	public TypeArooa<?> getFromType() {
+		return fromType;
 	}
 	
-	public Class<?> getFromClass() {
-		return fromClass;
+	public Type getToType() {
+		return toType;
 	}
-	
-	public Class<?> getToClass() {
-		return toClass;
-	}
-	
+
 	public String getMessage() {
 		return "There is no conversion available between [" +
-				fromClass.getName() + "] and [" + toClass.getName() + "]";
+				fromType.getType().getTypeName() + "] and [" + toType.getTypeName() + "]";
 	}
 }

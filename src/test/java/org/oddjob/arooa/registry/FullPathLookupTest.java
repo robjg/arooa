@@ -5,7 +5,7 @@ import org.oddjob.arooa.ArooaTools;
 import org.oddjob.arooa.MockArooaSession;
 import org.oddjob.arooa.MockArooaTools;
 import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
-import org.oddjob.arooa.convert.MockArooaConverter;
+import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 
@@ -70,10 +70,11 @@ public class FullPathLookupTest {
     @Test
     public void testNestedLookup() {
 
+        ArooaConverter arooaConverter = mock(ArooaConverter.class);
 
         SimpleBeanRegistry test = new SimpleBeanRegistry(
                 mock(PropertyAccessor.class),
-                new MockArooaConverter());
+                arooaConverter);
 
         Component c1 = new Component();
 

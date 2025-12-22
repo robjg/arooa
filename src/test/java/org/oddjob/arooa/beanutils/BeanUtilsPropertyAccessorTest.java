@@ -19,9 +19,12 @@ import org.oddjob.arooa.types.ArooaObject;
 import java.beans.IndexedPropertyDescriptor;
 import java.beans.PropertyDescriptor;
 import java.io.File;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+
+import static org.hamcrest.Matchers.is;
 
 /**
  * Tests for BeanUtilsBeanHelper
@@ -90,7 +93,7 @@ public class BeanUtilsPropertyAccessorTest extends Assert {
 
         // set Integer on Integer
         bubh.setProperty(subject, "seven", 2);
-        MatcherAssert.assertThat(subject.seven, Matchers.is(2));
+        MatcherAssert.assertThat(subject.seven, is(2));
 
         // set String on File
         bubh.setProperty(subject, "eight", "hello.txt");
@@ -183,7 +186,7 @@ public class BeanUtilsPropertyAccessorTest extends Assert {
 
         // get Integer on Integer
         Integer seven = test.getProperty(subject, "seven", Integer.class);
-        MatcherAssert.assertThat(seven, Matchers.is(2));
+        MatcherAssert.assertThat(seven, is(2));
 
         // get String from File
         String eight = test.getProperty(subject, "eight", String.class);
@@ -206,12 +209,8 @@ public class BeanUtilsPropertyAccessorTest extends Assert {
         assertEquals(new File("hello.txt"), nine2_[0]);
 
         // get String[] from int[]
-        try {
-            test.getProperty(subject, "ten", String[].class);
-            fail("Can't convert int[] to String[]");
-        } catch (NoConversionAvailableException e) {
-            // Expected but, but maybe it shouldn't be.
-        }
+        MatcherAssert.assertThat(test.getProperty(subject, "ten", String[].class),
+                is(new String[] {"1", "2", "3" }));
 
         // get String[] from Integer[]
         String[] ten2 = test.getProperty(subject, "ten2", String[].class);
@@ -278,7 +277,7 @@ public class BeanUtilsPropertyAccessorTest extends Assert {
 
         // set Integer on Integer
         test.setProperty(subject, "nested.seven", 2);
-        MatcherAssert.assertThat(subject.nested.seven, Matchers.is(2));
+        MatcherAssert.assertThat(subject.nested.seven, is(2));
 
         test.setProperty(subject, "nested.ten", new String[]{"1", "2", "3"});
         assertEquals(1, subject.nested.ten[0]);
@@ -316,7 +315,6 @@ public class BeanUtilsPropertyAccessorTest extends Assert {
     /**
      * Test the setMappedProperty method.
      *
-     * @throws ArooaException
      */
     @Test
     public void testMappedProperties() throws ArooaException {
@@ -368,7 +366,7 @@ public class BeanUtilsPropertyAccessorTest extends Assert {
 
         // set Integer on int
         test.setMappedProperty(subject, "six", "x", 2);
-        MatcherAssert.assertThat(subject.six.get("x"), Matchers.is(2));
+        MatcherAssert.assertThat(subject.six.get("x"), is(2));
 
     }
 
@@ -677,7 +675,7 @@ public class BeanUtilsPropertyAccessorTest extends Assert {
 
         // remember property type is content type
         // for indexed (and mapped) properties.
-        Class<?> result = test.getPropertyType(oj, "args");
+        Type result = test.getPropertyType(oj, "args");
         assertEquals(String.class, result);
     }
 

@@ -18,7 +18,7 @@ public interface ConversionStack {
 	 * 
 	 * @return A ConversionPath.
 	 */
-	public ConversionPath<?, ?> getConversionPath();
+    ConversionPath<?, ?> getConversionPath();
 	
 	/**
 	 * The size of the stack. Will always equal the length of the 
@@ -26,7 +26,7 @@ public interface ConversionStack {
 	 * 
 	 * @return The size.
 	 */
-	public int size();
+    int size();
 	
 	/**
 	 * Get stack element info.
@@ -35,59 +35,61 @@ public interface ConversionStack {
 	 * 
 	 * @return the Elemement at that position in the stack.
 	 */
-	public Element getElement(int index);
+    Element getElement(int index);
 	
 	/**
 	 * Print the stack trace to a PrintStream.
 	 * 
-	 * @param out
+	 * @param out Where to print to.
 	 */
-	public void printStack(PrintStream out);
+    void printStack(PrintStream out);
 	
 	/**
-	 * Get the StackTrace as a Sring.
+	 * Get the stack trace as a String.
 	 * 
-	 * @return
+	 * @return The stack trace.
 	 */
-	public String getStackTrace();
+    String getStackTrace();
 	
 	/**
 	 * The index of the element at which conversion failed.
 	 * 
 	 * @return The index, -1 if it didn't fail.
 	 */
-	public int getFailedElementIndex();
+    int getFailedElementIndex();
 	
 	/**
 	 * Holds information about a paticular element in the stack.
 	 */
-	public interface Element {
+    interface Element {
 		
 		/**
 		 * The from class.
 		 * 
-		 * @return
+		 * @return The from type
 		 */
-		public Class<?> getFromClass();
+        TypeArooa<?> getFromType();
 		
 		/**
 		 * The to class
-		 * @return
+         *
+		 * @return The to type.
 		 */
-		public Class<?> getToClass();
+        TypeArooa<?> getToType();
 		
 		/**
 		 * The object before.
 		 * 
-		 * @return
+		 * @return The object in.
 		 */
-		public Object getBefore();
+		Object getBefore();
 		
 		/**
 		 * The converted object.
-		 * @return
+         *
+		 * @return The converted object.
 		 */
-		public Object getConverted();
+        Object getConverted();
 	}
 	
 }

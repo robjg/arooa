@@ -15,7 +15,11 @@ import org.oddjob.arooa.reflect.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.beans.IndexedPropertyDescriptor;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -192,9 +196,9 @@ public class BeanUtilsPropertyAccessor implements PropertyAccessor {
             throw new NullPointerException("Property name must not be null");
         }
 
-        Class<?> type = getPropertyType(bean, name);
+        Type type = getPropertyType(bean, name);
         logger.debug("Setting property [{}] ({}) on [{}] value [{}]",
-                name, type.getName(), bean.getClass().getName(), value);
+                name, type.getTypeName(), bean.getClass().getName(), value);
         try {
             propertyUtilsBean.setSimpleProperty(bean, name,
                     convert(value, type));
@@ -225,9 +229,9 @@ public class BeanUtilsPropertyAccessor implements PropertyAccessor {
             throw new NullPointerException("Key must not be null");
         }
 
-        Class<?> type = getPropertyType(bean, name);
+        Type type = getPropertyType(bean, name);
         logger.debug("Setting mapped property [{}] ({}) key [{}] on [{}] value [{}]",
-                name, type.getName(), key, bean.getClass().getName(), value);
+                name, type.getTypeName(), key, bean.getClass().getName(), value);
         try {
             Object converted = convert(value, type);
 
@@ -258,9 +262,9 @@ public class BeanUtilsPropertyAccessor implements PropertyAccessor {
             throw new NullPointerException("Property name must not be null");
         }
 
-        Class<?> type = getPropertyType(bean, name);
+        Type type = getPropertyType(bean, name);
         logger.debug("Setting index property [{}] ({}) index [{}] on [{}] value [{}]",
-                name, type.getName(), index, bean.getClass().getName(), value);
+                name, type.getTypeName(), index, bean.getClass().getName(), value);
         try {
             propertyUtilsBean.setIndexedProperty(bean,
                     name, index, convert(value, type));
@@ -269,7 +273,7 @@ public class BeanUtilsPropertyAccessor implements PropertyAccessor {
         }
     }
 
-    Object convert(Object from, Class<?> type) throws NoConversionAvailableException, ConversionFailedException {
+    Object convert(Object from, Type type) throws NoConversionAvailableException, ConversionFailedException {
         if (converter == null) {
             return from;
         }
@@ -283,7 +287,7 @@ public class BeanUtilsPropertyAccessor implements PropertyAccessor {
      * @param name the property name.
      * @return The property type.
      */
-    Class<?> getPropertyType(Object bean, String name)
+    Type getPropertyType(Object bean, String name)
             throws ArooaPropertyException {
 
         if (bean instanceof DynaBean) {
@@ -315,21 +319,50 @@ public class BeanUtilsPropertyAccessor implements PropertyAccessor {
             return type;
         }
 
-        Class<?> type;
+        final PropertyDescriptor descriptor;
         try {
-            type = propertyUtilsBean.getPropertyType(bean, name);
+            descriptor = propertyUtilsBean.getPropertyDescriptor(bean, name);
         } catch (Exception e) {
             throw new PropertyAccessException(bean, name, e);
         }
 
-        if (type == null) {
+        if (descriptor == null) {
             throw new ArooaNoPropertyException(name,
                     bean.getClass(),
                     getClassName(bean).getBeanOverview(this).getProperties());
         }
-        return type;
-    }
 
+        switch (descriptor) {
+            case IndexedPropertyDescriptor indexedPropertyDescriptor -> {
+                Method method = indexedPropertyDescriptor.getIndexedWriteMethod();
+                if (method != null) {
+                    return method.getGenericParameterTypes()[1];
+                }
+            }
+            case MappedPropertyDescriptor mappedPropertyDescriptor -> {
+                Method method = mappedPropertyDescriptor.getMappedWriteMethod();
+                if (method != null) {
+                    return method.getGenericParameterTypes()[1];
+                }
+            }
+            default -> {
+                Method method = descriptor.getWriteMethod();
+                if (method != null) {
+                    return method.getGenericParameterTypes()[0];
+                }
+            }
+        }
+
+        Method method = descriptor.getReadMethod();
+
+        if (method == null) {
+            throw new ArooaNoPropertyException(name,
+                    bean.getClass(),
+                    getClassName(bean).getBeanOverview(this).getProperties());
+        } else {
+            return method.getGenericReturnType();
+        }
+    }
 
     /**
      * Get a property.

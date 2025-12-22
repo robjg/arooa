@@ -3,6 +3,8 @@
  */
 package org.oddjob.arooa.convert;
 
+import java.lang.reflect.Type;
+
 /**
  * Something that finds a {@link ConversionPath} between two classes.
  * 
@@ -21,4 +23,5 @@ public interface ConversionLookup {
 	 */
 	<F, T> ConversionPath<F, T> findConversion(Class<F> from, Class<T> to);
 
+    <F, T> ConversionPath<F, T> findConversion(TypeArooa<F> from, Type to);
 }

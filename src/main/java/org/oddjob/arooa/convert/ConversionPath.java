@@ -12,39 +12,49 @@ public interface ConversionPath<F, T> {
 	/**
 	 * Create a new ConversionPath by adding the given ConversionStep.
 	 * 
-	 * @param following
-	 * @return
+	 * @param following The next step.
+	 * @return A new path.
 	 */
-	public <X> ConversionPath<F, X> append(ConversionStep<T, X> following);
+    <X> ConversionPath<F, X> append(ConversionStep<T, X> following);
 	
 	/**
 	 * Create a new ConversionPath by prepending the given ConversionStep.
 	 * 
-	 * @param preceeding
-	 * @return
+	 * @param preceding The step before.
+	 * @return A new path.
 	 */
-	public <X> ConversionPath<X, T> prepend(ConversionStep<X, F> preceeding);
+    <X> ConversionPath<X, T> prepend(ConversionStep<X, F> preceding);
 	
 	/**
-	 * Get the from Class of this ConversionPath.
+	 * Get the 'from' Class of this ConversionPath.
 	 * 
-	 * @return
+	 * @return The 'from' type.
 	 */
-	public Class<F> getFromClass();
-	
+    default Class<F> getFromClass() {
+        return getFromType().getRawType();
+    }
+
+    TypeArooa<F> getFromType();
+
 	/**
 	 * Get the to Class of this ConversionPath.
 	 * 
-	 * @return
+	 * @return The to type.
 	 */
-	public Class<T> getToClass();
+    default Class<T> getToClass() {
+        return getToType().getRawType();
+    }
+
+    TypeArooa<T> getToType();
+
+
 
 	/**
 	 * Get the number of Steps in this ConversionPath.
 	 * 
-	 * @return
+	 * @return the number of steps.
 	 */
-	public int length();
+    int length();
 	
 	/**
 	 * Get the conversion step for the given index.
@@ -53,24 +63,26 @@ public interface ConversionPath<F, T> {
 	 * 
 	 * @return A ConversionStep.
 	 */
-	public <X, Y> ConversionStep<X, Y> getStep(int index);
+    <X, Y> ConversionStep<X, Y> getStep(int index);
 	
 	/**
 	 * Test if this ConversionPath contains a conversion
 	 * from the given Class.
 	 * 
-	 * @param from
-	 * @return
+	 * @param type The type
+	 * @return true if it does.
 	 */
-	public boolean contains(Class<?> from);
+    boolean contains(TypeArooa<?> type);
 	
 	/**
-	 * 
-	 * @param from
-	 * @return
-	 * @throws ConversionFailedException
+	 * Convert the given object with this path.
+     *
+	 * @param from The thing to convert.
+     * @param converter A converter to do the converting.
+	 * @return The converted thing.
+	 * @throws ConversionFailedException If conversion fails
 	 */
-	public T convert(F from, ArooaConverter converter)
+	T convert(F from, ArooaConverter converter)
 	throws ConversionFailedException;
 	
 }

@@ -9,21 +9,26 @@ public class DefaultConversionPath<F, T> implements ConversionPath<F, T> {
 
 	private final List<ConversionStep<?, ?>> steps;
 
-	private final Class<F> fromClass;
-	private final Class<T> toClass;
+	private final TypeArooa<F> fromType;
+	private final TypeArooa<T> toType;
 
-	public static <X> ConversionPath<X, X> instance(Class<X> start) {
+    public static <X> ConversionPath<X, X> instance(Class<X> start) {
 
-		return new DefaultConversionPath<X, X>(start, start, 
-				new ArrayList<ConversionStep<?, ?>>());
+        return instance(TypeArooa.of(start));
+    }
+
+	public static <X> ConversionPath<X, X> instance(TypeArooa<X> start) {
+
+		return new DefaultConversionPath<>(start, start,
+                new ArrayList<>());
 	}
 	
-	private DefaultConversionPath(Class<F> from, Class<T> to,
+	private DefaultConversionPath(TypeArooa<F> from, TypeArooa<T> to,
 			List<ConversionStep<?, ?>> steps) {
 		this.steps = steps;
 		
-		this.fromClass = from;
-		this.toClass = to;
+		this.fromType = from;
+		this.toType = to;
 	}
 	
 	public <X> ConversionPath<F, X> append(ConversionStep<T, X> following) {
@@ -37,54 +42,54 @@ public class DefaultConversionPath<F, T> implements ConversionPath<F, T> {
 					getToClass() + "]");
 		}
 		
-		List<ConversionStep<?, ?>> next = 
-			new ArrayList<ConversionStep<?, ?>>(steps);
+		List<ConversionStep<?, ?>> next =
+                new ArrayList<>(steps);
 		
 		next.add(following);
 		
-		return new DefaultConversionPath<F, X>(
-				fromClass, following.getToClass(), next);
+		return new DefaultConversionPath<>(
+                fromType, following.getToType(), next);
 	}
 
-	public <X> ConversionPath<X, T> prepend(ConversionStep<X, F> preceeding) {
-		if (preceeding == null) {
+	public <X> ConversionPath<X, T> prepend(ConversionStep<X, F> preceding) {
+		if (preceding == null) {
 			throw new NullPointerException("ConversionStep can not be null.");
 		}
 		
-		if (!preceeding.getToClass().equals(getFromClass())) {
+		if (!preceding.getToClass().equals(getFromClass())) {
 			throw new IllegalArgumentException("Can't preceed with [" + 
-					preceeding.getToClass() + "]");
+					preceding.getToClass() + "]");
 		}
 		
-		List<ConversionStep<?, ?>> next = 
-			new ArrayList<ConversionStep<?, ?>>();
+		List<ConversionStep<?, ?>> next =
+                new ArrayList<>();
 		
-		next.add(preceeding);
+		next.add(preceding);
 		next.addAll(steps);
 		
-		return new DefaultConversionPath<X, T>(
-				preceeding.getFromClass(), toClass, next);
+		return new DefaultConversionPath<>(
+                preceding.getFromType(), toType, next);
 	}
 	
-	public Class<F> getFromClass() {
-		return fromClass;
+	public TypeArooa<F> getFromType() {
+		return fromType;
 	}
 	
-	public Class<T> getToClass() {
-		return toClass;
+	public TypeArooa<T> getToType() {
+		return toType;
 	}
 	
 	public int length() {
 		return steps.size();
 	}
 	
-	public boolean contains(Class<?> from) {
+	public boolean contains(TypeArooa<?> type) {
 		// check we're not going back on ourselves
-		for (int i = 0; i < steps.size(); ++i) {
-			if (((ConversionStep<?, ?>) steps.get(i)).getFromClass().equals(from)) {
-				return true;
-			}
-		}
+        for (ConversionStep<?, ?> step : steps) {
+            if (step.getFromType().equals(type)) {
+                return true;
+            }
+        }
 		return false;
 	}
 	
@@ -93,46 +98,39 @@ public class DefaultConversionPath<F, T> implements ConversionPath<F, T> {
 		return (ConversionStep<X, Y>) steps.get(step);
 	}
 
-	/**
-	 * Convert the given object using the ConversionPath.
-	 * 
-	 * @param from
-	 * @return
-	 * @throws ConvertletException
-	 */
 	@SuppressWarnings("unchecked")
 	public T convert(F from, ArooaConverter converter) throws ConversionFailedException {
 
 		OurConversionStack stack = new OurConversionStack();
 		
 		Object converted = from;
-		for (int i = 0; i < steps.size(); ++i) {
-			try {
-				ConversionStep<Object, Object> nextStep = 
-					(ConversionStep<Object, Object>) steps.get(i);
-				
-				Object before = converted;
+        for (ConversionStep<?, ?> step : steps) {
+            try {
+                ConversionStep<Object, Object> nextStep =
+                        (ConversionStep<Object, Object>) step;
 
-				// apply this conversion
-				converted = nextStep.convert(converted, converter);
-				
-				stack.addApplied(before, converted);
-				if (converted == null) {
-					return null;
-				}
-			} catch (Exception e) {
-				stack.setConvertletException(e);
-				throw new ConversionFailedException(stack, e);
-			}
-		}
+                Object before = converted;
+
+                // apply this conversion
+                converted = nextStep.convert(converted, converter);
+
+                stack.addApplied(before, converted);
+                if (converted == null) {
+                    return null;
+                }
+            } catch (Exception e) {
+                stack.setConvertletException(e);
+                throw new ConversionFailedException(stack, e);
+            }
+        }
 		return (T) converted;
 	}
 	
 	
 	class OurConversionStack implements ConversionStack {
 		
-		private List<Object> applied = new ArrayList<Object>();
-		private List<Object> before = new ArrayList<Object>();
+		private final List<Object> applied = new ArrayList<>();
+		private final List<Object> before = new ArrayList<>();
 		
 		private Exception exception;
 		
@@ -163,11 +161,11 @@ public class DefaultConversionPath<F, T> implements ConversionPath<F, T> {
 					}
 					return null;
 				}
-				public Class<?> getFromClass() {
-					return ((ConversionStep<?, ?>) steps.get(index)).getFromClass();
+				public TypeArooa<?> getFromType() {
+					return steps.get(index).getFromType();
 				}
-				public Class<?> getToClass() {
-					return ((ConversionStep<?, ?>) steps.get(index)).getToClass();
+				public TypeArooa<?> getToType() {
+					return steps.get(index).getToType();
 				}
 				
 			};
@@ -182,14 +180,10 @@ public class DefaultConversionPath<F, T> implements ConversionPath<F, T> {
 		}
 	
 		public void printStack(PrintStream out) {
-			if (applied == null) {
-				throw new IllegalStateException("No conversion attempted.");
-			}
-			
 			for (int i = 0; i < applied.size(); ++i ) {
-				Element appliedStep = (Element) getElement(i);
-				out.println(appliedStep.getFromClass() + 
-						" to " + appliedStep.getToClass() + ": [" +
+				Element appliedStep = getElement(i);
+				out.println(appliedStep.getFromType() +
+						" to " + appliedStep.getToType() + ": [" +
 						before.get(i) + "] to [" + applied.get(i) + "]");
 			}
 			
@@ -204,15 +198,15 @@ public class DefaultConversionPath<F, T> implements ConversionPath<F, T> {
 				} else {
 					out.print("Missed: ");
 				}
-				out.println("" + ((ConversionStep<?, ?>) steps.get(i)).getFromClass() + 
-						" to " + ((ConversionStep<?, ?>) steps.get(i)).getToClass());
+				out.println(steps.get(i).getFromClass() +
+						" to " + steps.get(i).getToClass());
 			}
 		}
 	
 		public String getStackTrace() {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			printStack(new PrintStream(out));
-			return new String(out.toByteArray());
+			return out.toString();
 		}
 
 	}
@@ -221,7 +215,7 @@ public class DefaultConversionPath<F, T> implements ConversionPath<F, T> {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		for (ConversionStep<?, ?> step : steps) {
-			if (builder.length() == 0) {
+			if (builder.isEmpty()) {
 				builder.append(step.getFromClass().getSimpleName());
 			}
 			builder.append('-');

@@ -10,7 +10,7 @@ import org.oddjob.arooa.types.ValueType;
  * 
  * @author rob
  *
- * @param <F> The from type.
+ * @param <F> The 'from' type.
  */
 public interface Joker<F> {
 
@@ -30,4 +30,10 @@ public interface Joker<F> {
 	<T> ConversionStep<F, T> lastStep(
 			Class<? extends F> from, Class<T> to, 
 			ConversionLookup conversions);
+
+    default <T> ConversionStep<F, T> lastStep(
+            TypeArooa<? extends F> from, TypeArooa<T> to,
+            ConversionLookup conversions) {
+        return lastStep(from.getRawType(), to.getRawType(), conversions);
+    }
 }

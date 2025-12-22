@@ -1,5 +1,7 @@
 package org.oddjob.arooa.convert;
 
+import java.lang.reflect.Type;
+
 public class EmptyArooaConverter implements ArooaConverter {
 
 	/**
@@ -9,7 +11,8 @@ public class EmptyArooaConverter implements ArooaConverter {
 		new DefaultConversionRegistry();
 	
 	@SuppressWarnings("unchecked")
-	public <F, T> T convert(F from, Class<T> required)
+    @Override
+	public <F, T> T convert(F from, Type required)
 	throws NoConversionAvailableException,
 	ConversionFailedException {
 		if (from == null) {
@@ -17,7 +20,7 @@ public class EmptyArooaConverter implements ArooaConverter {
 		}
 		
 		ConversionPath<F, T> path = 
-			findConversion((Class<F>) from.getClass(), required);
+			findConversion((TypeArooa<F>) TypeArooa.of(from.getClass()), required);
 		
 		if (path == null) {
 			throw new NoConversionAvailableException(from.getClass(), required);
@@ -25,10 +28,14 @@ public class EmptyArooaConverter implements ArooaConverter {
 		
 		return path.convert(from, this);
 	}
-	
-	public <F, T> ConversionPath<F, T> findConversion(
-			final Class<F> from, final Class<T> to) {		
-		
-		return emptyRegistry.findConversion(from, to);
-	}
+
+    @Override
+    public <F, T> ConversionPath<F, T> findConversion(Class<F> from, Class<T> to) {
+        return emptyRegistry.findConversion(from, to);
+    }
+
+    @Override
+    public <F, T> ConversionPath<F, T> findConversion(TypeArooa<F> from, Type to) {
+        return emptyRegistry.findConversion(from, to);
+    }
 }

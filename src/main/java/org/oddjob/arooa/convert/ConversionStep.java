@@ -16,16 +16,24 @@ public interface ConversionStep<F, T> {
 	 * 
 	 * @return The class. Never null.
 	 */
-	public Class<F> getFromClass();
+	Class<F> getFromClass();
+
+    default TypeArooa<F> getFromType() {
+        return TypeArooa.of(getFromClass());
+    }
 
 	/**
 	 * Get the class the ConversionStep is to.
 	 * 
 	 * @return The class. Never null.
 	 */
-	public Class<T> getToClass();
-	
-	public T convert(F from, ArooaConverter converter)
+	Class<T> getToClass();
+
+    default TypeArooa<T> getToType() {
+        return TypeArooa.of(getToClass());
+    }
+
+	T convert(F from, ArooaConverter converter)
 	throws ArooaConversionException;
 	
 }

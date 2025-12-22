@@ -4,6 +4,7 @@
 package org.oddjob.arooa.convert;
 
 
+import java.lang.reflect.Type;
 import java.util.Arrays;
 
 /**
@@ -69,10 +70,11 @@ public class DefaultConverter implements ArooaConverter {
 	 * @throws NoConversionAvailableException If ther is no conversion to
 	 * the required type.
 	 * 
-	 * @see org.oddjob.arooa.convert.ArooaConverter#convert(java.lang.Object, java.lang.Class)
+	 * @see org.oddjob.arooa.convert.ArooaConverter#convert(Object, Type)
 	 */
 	@SuppressWarnings("unchecked")
-	public <F, T> T convert(F from, Class<T> required) 
+    @Override
+	public <F, T> T convert(F from, Type required)
 	throws NoConversionAvailableException, ConversionFailedException {
 		if (required == null) {
 			throw new NullPointerException("Required class must not be null");
@@ -81,10 +83,10 @@ public class DefaultConverter implements ArooaConverter {
 		if (from == null) {
 			return NullConversions.nullConversionFor(required);
 		}
+
+        TypeArooa<F> fromType = (TypeArooa<F>) TypeArooa.of(from.getClass());
 		
-		Class<F> fromClass = (Class<F>) from.getClass();
-		
-		ConversionPath<F, T> conversionPath = findConversion(fromClass, required);
+		ConversionPath<F, T> conversionPath = findConversion(fromType, required);
 		
 		if (conversionPath !=  null) {
 			T conversion = conversionPath.convert(from, this);
@@ -97,7 +99,7 @@ public class DefaultConverter implements ArooaConverter {
 		}
 		else {
 			throw new NoConversionAvailableException(
-				from.getClass(), required);
+				fromType, required);
 		}
 	}	
 
@@ -108,14 +110,16 @@ public class DefaultConverter implements ArooaConverter {
 	 * @param required Class to convert to.
 	 * 
 	 * @return A conversion path that can be used to perform the conversion.
-	 * 
-	 * @throws NoConversionAvailableException If no conversion is available.
 	 */
 	public <F, T> ConversionPath<F, T> findConversion(Class<F> fromClass, Class<T> required) {
 		
 		return convertlets.findConversion(fromClass, required);
 	}
-	
+
+    @Override
+    public <F, T> ConversionPath<F, T> findConversion(TypeArooa<F> from, Type to) {
+        return convertlets.findConversion(from, to);
+    }
 }
 
 

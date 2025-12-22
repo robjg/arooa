@@ -3,6 +3,8 @@
  */
 package org.oddjob.arooa.convert;
 
+import java.lang.reflect.Type;
+
 /**
  * Something that can provide conversions between objects of different types.
  * 
@@ -26,7 +28,6 @@ public interface ArooaConverter extends ConversionLookup {
 	 * 
 	 * @throws ConversionFailedException If applying the conversion failed.
 	 */
-	<F, T> T convert(F from, Class<T> required)
-	throws NoConversionAvailableException, ConversionFailedException;
-	
+    <F, T> T convert(F from, Type required)
+            throws NoConversionAvailableException, ConversionFailedException;
 }
