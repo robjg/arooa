@@ -3,9 +3,7 @@
  */
 package org.oddjob.arooa.convert.convertlets;
 
-import org.oddjob.arooa.convert.ConversionProvider;
-import org.oddjob.arooa.convert.ConversionRegistry;
-import org.oddjob.arooa.convert.FinalConvertlet;
+import org.oddjob.arooa.convert.*;
 
 /**
  * Provides conversions for booleans.
@@ -16,11 +14,20 @@ import org.oddjob.arooa.convert.FinalConvertlet;
  */
 public class BooleanConvertlets implements ConversionProvider {
 
+    /**
+     * @oddjob.conversion 0 is false, anything else is true.
+     */
+    static class NumberToBoolean implements Convertlet<Number, Boolean> {
+        @Override
+        public Boolean convert(Number from) throws ArooaConversionException {
+            return !(from.intValue() == 0);
+        }
+    }
+
 	public void registerWith(ConversionRegistry registry) {
 		
-		registry.register(Number.class, Boolean.class,
-                from -> !(from.intValue() == 0));
-		
+		registry.register(Number.class, Boolean.class, new NumberToBoolean());
+
 		registry.register(Boolean.class, Number.class,
                 from -> from ?
                         Integer.valueOf(1) : Integer.valueOf(0));

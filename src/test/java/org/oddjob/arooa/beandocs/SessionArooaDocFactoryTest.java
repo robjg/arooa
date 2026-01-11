@@ -1,19 +1,25 @@
 package org.oddjob.arooa.beandocs;
 
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.ConfiguredHow;
+import org.oddjob.arooa.convert.convertlets.BooleanConvertlets;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.types.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class SessionArooaDocFactoryTest extends Assert {
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class SessionArooaDocFactoryTest {
 
     @Test
 	public void testStandardSession() {
@@ -56,7 +62,7 @@ public class SessionArooaDocFactoryTest extends Assert {
 		}
 		
 		assertEquals(1, beanProperties.size());
-		MatcherAssert.assertThat(beanProperties.get(BeanType.ATTRIBUTE),
+		assertThat(beanProperties.get(BeanType.ATTRIBUTE),
 				Matchers.notNullValue());
 
 		// Class
@@ -159,5 +165,32 @@ public class SessionArooaDocFactoryTest extends Assert {
 		assertEquals(ConfiguredHow.ELEMENT,
 				mapElementTypePropertyDoc.getConfiguredHow());
 	}
+
+    @Test
+    void conversions() {
+
+        StandardArooaSession session = new StandardArooaSession();
+
+        SessionArooaDocFactory test = new SessionArooaDocFactory(session);
+
+        WriteableConversionDocs conversionsByType = test.createConversionDocs();
+
+        ConversionDoc[] docs = conversionsByType.getConversionDocsFrom(Number.class.getTypeName());
+
+        List<ConversionDoc> numberToBooleans = Arrays.stream(docs)
+                .filter(conversionDoc -> conversionDoc.getToType().equals(Boolean.class.getTypeName()))
+                .toList();
+
+        assertThat(numberToBooleans.size(), is(1));
+
+        ConversionDoc numberToBoolean = numberToBooleans.getFirst();
+
+        assertThat(numberToBoolean.getTypeOrMethod(),
+                is(BooleanConvertlets.class.getName() + ".NumberToBoolean"));
+
+        WriteableConversionDoc docByType = conversionsByType.conversionDocumentedByType(numberToBoolean.getTypeOrMethod());
+
+        assertThat(docByType, sameInstance(numberToBoolean));
+    }
 
 }

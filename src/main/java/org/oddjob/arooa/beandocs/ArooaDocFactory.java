@@ -14,5 +14,7 @@ public interface ArooaDocFactory {
 	 * @return The doc.
 	 */
 	ArooaDoc createBeanDocs(ArooaType type);
-	
+
+
+    ConversionDocs createConversionDocs();
 }

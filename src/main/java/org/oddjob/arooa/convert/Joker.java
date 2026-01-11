@@ -36,4 +36,8 @@ public interface Joker<F> {
             ConversionLookup conversions) {
         return lastStep(from.getRawType(), to.getRawType(), conversions);
     }
+
+    default ClassOrMethod documentedBy() {
+        return ClassOrMethod.ofClass(getClass());
+    }
 }

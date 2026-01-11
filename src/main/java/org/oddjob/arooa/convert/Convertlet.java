@@ -35,4 +35,8 @@ public interface Convertlet<F, T> {
 	 * a number or date can't be parsed.
 	 */
 	T convert(F from) throws ArooaConversionException;
+
+    default ClassOrMethod documentedBy() {
+        return ClassOrMethod.ofClass(getClass());
+    }
 }
