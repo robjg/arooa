@@ -1,10 +1,12 @@
 package org.oddjob.arooa.beandocs;
 
 import org.oddjob.arooa.*;
-import org.oddjob.arooa.convert.ClassOrMethod;
 import org.oddjob.arooa.convert.ConversionRegistry;
 import org.oddjob.arooa.convert.Convertlet;
 import org.oddjob.arooa.convert.Joker;
+import org.oddjob.arooa.convert.doc.ConversionDocProvider;
+import org.oddjob.arooa.convert.doc.ConversionItemProvider;
+import org.oddjob.arooa.convert.doc.ConversionOrganiser;
 import org.oddjob.arooa.parsing.ArooaElement;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.BeanOverview;
@@ -156,35 +158,26 @@ public class SessionArooaDocFactory
     @Override
     public WriteableConversionDocs createConversionDocs() {
 
-        WriteableConversionDocs conversionsByType = new WriteableConversionDocs();
+        ConversionOrganiser<WriteableConversionDoc> docOrganiser = new ConversionOrganiser<>();
+
+        ConversionItemProvider<WriteableConversionDoc> factory = new ConversionDocProvider();
 
         descriptor.getConvertletProvider().registerWith(new ConversionRegistry() {
             @Override
             public <F, T> void register(Class<F> from, Class<T> to, Convertlet<F, T> convertlet) {
 
-                ClassOrMethod documentedBy = convertlet.documentedBy();
-
-                WriteableConversionDoc doc = new WriteableConversionDoc();
-                doc.setTypeOrMethod(documentedBy == null ? null : documentedBy.getName());
-                doc.setFromType(from.getTypeName());
-                doc.setToType(to.getTypeName());
-
-                conversionsByType.add(documentedBy, doc);
+                convertlet.documentedHow().processIn(docOrganiser, factory)
+                        .register(from, to, convertlet);
             }
 
             @Override
             public <F> void registerJoker(Class<F> from, Joker<F> joker) {
 
-                ClassOrMethod documentedBy = joker.documentedBy();
-
-                WriteableConversionDoc doc = new WriteableConversionDoc();
-                doc.setTypeOrMethod(documentedBy == null ? null : documentedBy.getName());
-                doc.setFromType(from.getTypeName());
-
-                conversionsByType.add(documentedBy, doc);
+                joker.documentedHow().processIn(docOrganiser, factory)
+                        .registerJoker(from, joker);
             }
         });
 
-        return conversionsByType;
+        return new WriteableConversionDocs(docOrganiser);
     }
 }

@@ -50,7 +50,7 @@ class ClassOrMethodTest {
 
         ClassOrMethod test = ClassOrMethod.ofClass(foo.getClass());
 
-        assertThat(test, nullValue());
+        assertThat(test.getCanonicalClassName(), nullValue());
     }
 
     @Test

@@ -6,24 +6,18 @@ import java.util.Objects;
 /**
  * Wraps a Class or Method as something that provides documentation for a conversion.
  *
- * @see Convertlet#documentedBy()
- * @see Joker#documentedBy()
+ * @see org.oddjob.arooa.convert.doc.StandardItemAccess
  */
 abstract public class ClassOrMethod {
 
     protected final String canonicalClassName;
 
     private ClassOrMethod(String canonicalClassName) {
-        this.canonicalClassName = Objects.requireNonNull(canonicalClassName);
+        this.canonicalClassName = canonicalClassName;
     }
 
     public static ClassOrMethod ofClass(Class<?> type) {
-        String canonicalClassName = type.getCanonicalName();
-        if (canonicalClassName == null) {
-            // a lambda
-            return null;
-        }
-        return new AsClass(canonicalClassName);
+        return new AsClass(type.getCanonicalName());
     }
 
     public static ClassOrMethod ofCanonicalClassName(String typeName) {
@@ -66,7 +60,7 @@ abstract public class ClassOrMethod {
 
         @Override
         public int hashCode() {
-            return canonicalClassName.hashCode();
+            return Objects.hash(canonicalClassName);
         }
 
         @Override
@@ -75,7 +69,7 @@ abstract public class ClassOrMethod {
                 return true;
             }
             if (obj instanceof AsClass other) {
-                return other.canonicalClassName.equals(canonicalClassName);
+                return Objects.equals(canonicalClassName, other.canonicalClassName);
             }
             return false;
         }
@@ -86,7 +80,7 @@ abstract public class ClassOrMethod {
         private final String methodName;
 
         AsMethod(String typeName, String methodName) {
-            super(typeName);
+            super(Objects.requireNonNull(typeName));
             this.methodName = Objects.requireNonNull(methodName);
         }
 

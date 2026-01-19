@@ -1,13 +1,15 @@
 package org.oddjob.arooa.beandocs;
 
 import org.junit.jupiter.api.Test;
-import org.oddjob.arooa.convert.ClassOrMethod;
+import org.oddjob.arooa.convert.doc.ConversionItemAccess;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class WriteableConversionDocsTest {
 
@@ -16,14 +18,17 @@ class WriteableConversionDocsTest {
 
         Method method = WriteableConversionDocsTest.class.getDeclaredMethod("addAndGet");
 
-        WriteableConversionDocs test = new WriteableConversionDocs();
+        WriteableConversionDoc item = new WriteableConversionDoc();
 
-        WriteableConversionDoc doc = new WriteableConversionDoc();
-        doc.setTypeOrMethod(ClassOrMethod.ofMethod(method).getName());
-        doc.setFromType(String.class.getTypeName());
-        doc.setToType(Integer.class.getTypeName());
+        ConversionItemAccess<WriteableConversionDoc> itemAccess = mock(ConversionItemAccess.class);
+        when(itemAccess.containsForType(WriteableConversionDocsTest.class.getTypeName()))
+                .thenReturn(true);
+        when(itemAccess.getForMethod(WriteableConversionDocsTest.class.getTypeName(), "addAndGet"))
+                .thenReturn(item);
+        when(itemAccess.getAll())
+                .thenReturn(List.of(item));
 
-        test.add(ClassOrMethod.ofMethod(method), doc);
+        WriteableConversionDocs test = new WriteableConversionDocs(itemAccess);
 
         assertThat(test.containsDocumentedByType(WriteableConversionDocsTest.class.getTypeName()),
                 is(true));
@@ -31,13 +36,12 @@ class WriteableConversionDocsTest {
         assertThat(test.conversionDocumentedByType(WriteableConversionDocsTest.class.getTypeName()),
                 nullValue());
 
-        assertThat(test.conversionDocumentedByMethod(WriteableConversionDocsTest.class.getTypeName(),
-                        method.getName()),
-                is(doc));
+        WriteableConversionDoc doc = test.conversionDocumentedByMethod(WriteableConversionDocsTest.class.getTypeName(),
+                method.getName());
 
-        assertThat(test.getConversionDocsFrom(String.class.getTypeName()),
-                is(new ConversionDoc[] { doc }));
+        assertThat(doc, sameInstance(item));
+
         assertThat(test.getConversionDocs(),
-                is(new ConversionDoc[] { doc }));
+                is(new ConversionDoc[]{doc}));
     }
 }

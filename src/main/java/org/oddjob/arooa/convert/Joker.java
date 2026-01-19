@@ -1,5 +1,7 @@
 package org.oddjob.arooa.convert;
 
+import org.oddjob.arooa.convert.doc.ItemAccessStrategy;
+import org.oddjob.arooa.convert.doc.StandardItemAccess;
 import org.oddjob.arooa.types.ValueType;
 
 
@@ -37,7 +39,14 @@ public interface Joker<F> {
         return lastStep(from.getRawType(), to.getRawType(), conversions);
     }
 
-    default ClassOrMethod documentedBy() {
-        return ClassOrMethod.ofClass(getClass());
+    /**
+     * How this joker is documented. The strategy will ultimately provide
+     * a means by which a Doclet can access the documentation by class or method name
+     * to add documentation.
+     *
+     * @return A Strategy. Never Null.
+     */
+    default ItemAccessStrategy documentedHow() {
+        return StandardItemAccess.strategy;
     }
 }

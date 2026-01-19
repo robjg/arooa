@@ -175,20 +175,19 @@ public class SessionArooaDocFactoryTest {
 
         WriteableConversionDocs conversionsByType = test.createConversionDocs();
 
-        ConversionDoc[] docs = conversionsByType.getConversionDocsFrom(Number.class.getTypeName());
+        ConversionDoc[] docs = conversionsByType.getConversionDocs();
 
         List<ConversionDoc> numberToBooleans = Arrays.stream(docs)
-                .filter(conversionDoc -> conversionDoc.getToType().equals(Boolean.class.getTypeName()))
+                .filter(conversionDoc -> Number.class.getTypeName().equals(conversionDoc.getFromType())
+                        && Boolean.class.getTypeName().equals(conversionDoc.getToType()))
                 .toList();
 
         assertThat(numberToBooleans.size(), is(1));
 
         ConversionDoc numberToBoolean = numberToBooleans.getFirst();
 
-        assertThat(numberToBoolean.getTypeOrMethod(),
-                is(BooleanConvertlets.class.getName() + ".NumberToBoolean"));
-
-        WriteableConversionDoc docByType = conversionsByType.conversionDocumentedByType(numberToBoolean.getTypeOrMethod());
+        WriteableConversionDoc docByType = conversionsByType
+                .conversionDocumentedByType(BooleanConvertlets.class.getCanonicalName() + ".NumberToBoolean");
 
         assertThat(docByType, sameInstance(numberToBoolean));
     }
