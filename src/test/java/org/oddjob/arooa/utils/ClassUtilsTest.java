@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.oddjob.arooa.ClassResolver;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -93,6 +94,19 @@ class ClassUtilsTest {
         assertThat(ClassUtils.getSimpleName(Shapes.SQUARE.getClass()), is("Shapes"));
         assertThat(ClassUtils.getSimpleName(Colours.RED.getClass()), is("Colours"));
         assertThat(ClassUtils.getSimpleName(foo.getClass()), is("ClassUtilsTest"));
+    }
+
+    @Test
+    void comparison() {
+
+        assertThat(ClassUtils.compareFqcn("java.util.Date", "java.lang.Double"), greaterThan(0));
+
+        assertThat(ClassUtils.compareFqcn("a.b.X", "a.b.X"), is(0));
+        assertThat(ClassUtils.compareFqcn("a.b.X", "a.b.Y"), is(-1));
+        assertThat(ClassUtils.compareFqcn("a.b.Y", "a.b.X"), is(1));
+        assertThat(ClassUtils.compareFqcn("a.Y", "a.b.X"), is(-1));
+        assertThat(ClassUtils.compareFqcn("a.b.Y", "a.X"), is(1));
+
     }
 }
 

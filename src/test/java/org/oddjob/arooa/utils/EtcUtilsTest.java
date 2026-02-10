@@ -3,10 +3,12 @@ package org.oddjob.arooa.utils;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 class EtcUtilsTest {
 
@@ -71,4 +73,30 @@ class EtcUtilsTest {
         assertThat(EtcUtils.toString(l, l.size(), 5, 3), is("[abc..., (and 1 more)]"));
 
     }
+
+    // Just to prove we didn't need this in EtcUtils
+    @Test
+    void arrayComparator() {
+
+        Comparator<String[]> test = (l, r) ->
+                Arrays.compare(l, r, String::compareTo);
+
+        assertThat(test.compare(new String[0],
+                new String[0]), is(0));
+        assertThat(test.compare(new String[0],
+                new String[] { "A", "B"}), lessThan(0));
+        assertThat(test.compare(new String[] { "A", "B"},
+                new String[0]), greaterThan(0));
+
+        assertThat(test.compare(new String[] { "A", "B"},
+                new String[] { "A", "B"}), is(0));
+        assertThat(test.compare(new String[] { "A" },
+                new String[] { "A", "B"}), lessThan(0));
+        assertThat(test.compare(new String[] { "A", "B" },
+                new String[] { "A" }), greaterThan(0));
+
+        assertThat(test.compare(new String[] { "A", "B"},
+                new String[] { "A", "C"}), lessThan(0));
+    }
+
 }

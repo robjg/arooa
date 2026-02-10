@@ -1,6 +1,6 @@
 package org.oddjob.arooa.beandocs;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Something that provides an archive of {@link ConversionDoc}. This is analogous to {@link BeanDocArchive}.
@@ -9,8 +9,8 @@ import java.util.List;
  */
 public interface ConversionArchive {
 
-    List<ConversionDoc> conversionDocFor(String typeName);
+    Collection<ConversionDoc> conversionDocFor(String typeName);
 
-    List<ConversionDoc> allConversionDoc();
+    Collection<ConversionDoc> allConversionDoc();
 
 }

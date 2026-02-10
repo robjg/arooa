@@ -4,7 +4,11 @@
 package org.oddjob.arooa.convert;
 
 
+/**
+ * Something that can provide a Conversion. It does so by registering its
+ * conversion in a {@link ConversionRegistry}.
+ */
 public interface ConversionProvider {
 
-	public void registerWith(ConversionRegistry registry);
+	void registerWith(ConversionRegistry registry);
 }

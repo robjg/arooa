@@ -3,7 +3,6 @@ package org.oddjob.arooa.convert.doc;
 import org.junit.jupiter.api.Test;
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.convert.Convertlet;
-import org.oddjob.arooa.convert.Joker;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -21,20 +20,15 @@ class DocOrganiserTest {
         }
     }
 
-    record Foo(Type from, Type to, Class<?> type) {
+    record Foo(Type from, Type to, TypeIdentifier type) {
 
     }
 
     static class FooFactory implements ConversionItemProvider<Foo> {
 
         @Override
-        public Foo forConvertlet(Type from, Type to, Convertlet<?, ?> convertlet) {
-            return new Foo(from, to , convertlet.getClass());
-        }
-
-        @Override
-        public Foo forJoker(Type from, Joker<?> joker) {
-            throw new RuntimeException("Unexpected");
+        public Foo create(Type from, Type to, TypeIdentifier typeIdentifier) {
+            return new Foo(from, to , typeIdentifier);
         }
     }
 
@@ -46,12 +40,12 @@ class DocOrganiserTest {
         StandardItemAccess.strategy.processIn(test, new FooFactory())
                 .register(Integer.class, String.class, new OurConvertlet());
 
-        assertThat(test.containsForType(OurConvertlet.class.getCanonicalName()),
+        assertThat(test.containsForType(TypeIdentifier.ofClass(OurConvertlet.class)),
                 is(true));
 
-        Foo item = test.getForType(OurConvertlet.class.getCanonicalName());
+        Foo item = test.getForType(TypeIdentifier.ofClass(OurConvertlet.class));
 
-        assertThat(item.type(), is(OurConvertlet.class));
+        assertThat(item.type(), is(TypeIdentifier.ofClass(OurConvertlet.class)));
         assertThat(item.from(), is(Integer.class));
         assertThat(item.to(), is(String.class));
 

@@ -2,10 +2,12 @@ package org.oddjob.arooa.beandocs;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.oddjob.arooa.ArooaConfiguration;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.ConfiguredHow;
 import org.oddjob.arooa.convert.convertlets.BooleanConvertlets;
+import org.oddjob.arooa.convert.doc.TypeIdentifier;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.types.*;
 
@@ -13,6 +15,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -167,7 +170,7 @@ public class SessionArooaDocFactoryTest {
 	}
 
     @Test
-    void conversions() {
+    void conversions() throws ClassNotFoundException {
 
         StandardArooaSession session = new StandardArooaSession();
 
@@ -175,21 +178,35 @@ public class SessionArooaDocFactoryTest {
 
         WriteableConversionDocs conversionsByType = test.createConversionDocs();
 
+        assertThat(conversionsByType.containsDocumentedByType(TypeIdentifier.ofClass(InlineType.class)),
+                is(true));
+
         ConversionDoc[] docs = conversionsByType.getConversionDocs();
 
-        List<ConversionDoc> numberToBooleans = Arrays.stream(docs)
-                .filter(conversionDoc -> Number.class.getTypeName().equals(conversionDoc.getFromType())
-                        && Boolean.class.getTypeName().equals(conversionDoc.getToType()))
+        Map<String, List<ConversionDoc>> conversions = Arrays.stream(docs)
+                .collect(Collectors.groupingBy(ConversionDoc::getFromType));
+
+        List<ConversionDoc> numberToBooleans = conversions.get(Number.class.getTypeName())
+                .stream()
+                .filter(conversionDoc -> Boolean.class.getTypeName().equals(conversionDoc.getToType()))
                 .toList();
 
         assertThat(numberToBooleans.size(), is(1));
 
         ConversionDoc numberToBoolean = numberToBooleans.getFirst();
 
+        Class<?> cl = Class.forName(BooleanConvertlets.class.getCanonicalName() + "$NumberToBoolean");
+        TypeIdentifier typeIdentifier = TypeIdentifier.ofClass(cl);
+
         WriteableConversionDoc docByType = conversionsByType
-                .conversionDocumentedByType(BooleanConvertlets.class.getCanonicalName() + ".NumberToBoolean");
+                .conversionDocumentedByType(typeIdentifier);
 
         assertThat(docByType, sameInstance(numberToBoolean));
+
+        ConversionDoc inlineConversion = conversions.get(InlineType.class.getTypeName())
+                .getFirst();
+
+        assertThat(inlineConversion.getToType(), is(ArooaConfiguration.class.getTypeName()));
     }
 
 }

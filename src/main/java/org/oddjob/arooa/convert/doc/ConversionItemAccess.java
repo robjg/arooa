@@ -10,11 +10,11 @@ import java.util.List;
  */
 public interface ConversionItemAccess<I> {
 
-    I getForType(String canonicalTypeName);
+    I getForType(TypeIdentifier typeIdentifier);
 
-    I getForMethod(String canonicalTypeName, String methodName);
+    I getForMethod(MethodIdentifier methodIdentifier);
 
-    boolean containsForType(String canonicalTypeName);
+    boolean containsForType(TypeIdentifier typeIdentifier);
 
     List<I> getAll();
 }

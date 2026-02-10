@@ -15,7 +15,8 @@ import java.util.Objects;
  * @oddjob.description A type that provides configuration. It is very like {@link XMLType} but provides a form for the
  * configuration during design rather than a Text Area for raw XML.
  *
- * <p/>
+ * @oddjob.conversion A conversion to a Configuration.
+ *
  */
 @ArooaInterceptor("org.oddjob.arooa.xml.XMLInterceptor")
 public class InlineType implements ArooaContextAware, ValueFactory<ArooaConfiguration> {
@@ -25,7 +26,7 @@ public class InlineType implements ArooaContextAware, ValueFactory<ArooaConfigur
     /**
      * To support the correct root element in the form, {@link DesignFactory}s must provide a
      * {@link ConfigurationDefinition} registered in the session's {@link org.oddjob.arooa.registry.BeanRegistry}
-     * with the name given by {@link InlineType#INLINE_CONFIGURATION_DEFINITION}.
+     * with the name given by this {@code INLINE_CONFIGURATION_DEFINITION}.
      */
     public static final String INLINE_CONFIGURATION_DEFINITION =
             "InlineConfigurationDefinition";

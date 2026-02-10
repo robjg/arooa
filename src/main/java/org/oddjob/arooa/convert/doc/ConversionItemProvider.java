@@ -1,8 +1,5 @@
 package org.oddjob.arooa.convert.doc;
 
-import org.oddjob.arooa.convert.Convertlet;
-import org.oddjob.arooa.convert.Joker;
-
 import java.lang.reflect.Type;
 
 /**
@@ -15,7 +12,6 @@ import java.lang.reflect.Type;
  */
 public interface ConversionItemProvider<I> {
 
-    I forConvertlet(Type from, Type to, Convertlet<?, ?> convertlet);
+    I create(Type from, Type to, TypeIdentifier typeIdentifier);
 
-    I forJoker(Type from, Joker<?> joker);
 }

@@ -16,9 +16,9 @@ public class ConversionOrganiser<I> implements StrategyContext<I>, ConversionIte
     private final Map<Object, ConversionItemAccess<I>> containers = new HashMap<>();
 
     @Override
-    public I getForType(String canonicalTypeName) {
+    public I getForType(TypeIdentifier typeIdentifier) {
         for (ConversionItemAccess<I> container: containers.values()) {
-            I item = container.getForType(canonicalTypeName);
+            I item = container.getForType(typeIdentifier);
             if (item != null) {
                 return item;
             }
@@ -27,9 +27,9 @@ public class ConversionOrganiser<I> implements StrategyContext<I>, ConversionIte
     }
 
     @Override
-    public I getForMethod(String canonicalTypeName, String methodName) {
+    public I getForMethod(MethodIdentifier methodIdentifier) {
         for (ConversionItemAccess<I> container: containers.values()) {
-            I item = container.getForMethod(canonicalTypeName, methodName);
+            I item = container.getForMethod(methodIdentifier);
             if (item != null) {
                 return item;
             }
@@ -38,9 +38,9 @@ public class ConversionOrganiser<I> implements StrategyContext<I>, ConversionIte
     }
 
     @Override
-    public boolean containsForType(String canonicalTypeName) {
+    public boolean containsForType(TypeIdentifier  typeIdentifier) {
         for (ConversionItemAccess<I> container: containers.values()) {
-            boolean contains = container.containsForType(canonicalTypeName);
+            boolean contains = container.containsForType(typeIdentifier);
             if (contains) {
                 return true;
             }

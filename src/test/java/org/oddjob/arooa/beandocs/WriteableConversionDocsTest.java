@@ -2,6 +2,8 @@ package org.oddjob.arooa.beandocs;
 
 import org.junit.jupiter.api.Test;
 import org.oddjob.arooa.convert.doc.ConversionItemAccess;
+import org.oddjob.arooa.convert.doc.MethodIdentifier;
+import org.oddjob.arooa.convert.doc.TypeIdentifier;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -21,23 +23,22 @@ class WriteableConversionDocsTest {
         WriteableConversionDoc item = new WriteableConversionDoc();
 
         ConversionItemAccess<WriteableConversionDoc> itemAccess = mock(ConversionItemAccess.class);
-        when(itemAccess.containsForType(WriteableConversionDocsTest.class.getTypeName()))
+        when(itemAccess.containsForType(TypeIdentifier.ofClass(WriteableConversionDocsTest.class)))
                 .thenReturn(true);
-        when(itemAccess.getForMethod(WriteableConversionDocsTest.class.getTypeName(), "addAndGet"))
+        when(itemAccess.getForMethod(MethodIdentifier.ofMethod(method)))
                 .thenReturn(item);
         when(itemAccess.getAll())
                 .thenReturn(List.of(item));
 
         WriteableConversionDocs test = new WriteableConversionDocs(itemAccess);
 
-        assertThat(test.containsDocumentedByType(WriteableConversionDocsTest.class.getTypeName()),
+        assertThat(test.containsDocumentedByType(TypeIdentifier.ofClass(WriteableConversionDocsTest.class)),
                 is(true));
 
-        assertThat(test.conversionDocumentedByType(WriteableConversionDocsTest.class.getTypeName()),
+        assertThat(test.conversionDocumentedByType(TypeIdentifier.ofClass(WriteableConversionDocsTest.class)),
                 nullValue());
 
-        WriteableConversionDoc doc = test.conversionDocumentedByMethod(WriteableConversionDocsTest.class.getTypeName(),
-                method.getName());
+        WriteableConversionDoc doc = test.conversionDocumentedByMethod(MethodIdentifier.ofMethod(method));
 
         assertThat(doc, sameInstance(item));
 

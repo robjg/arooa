@@ -1,6 +1,5 @@
 package org.oddjob.arooa.convert.doc;
 
-import org.oddjob.arooa.convert.ClassOrMethod;
 import org.oddjob.arooa.convert.ConversionRegistry;
 import org.oddjob.arooa.convert.Convertlet;
 import org.oddjob.arooa.convert.Joker;
@@ -31,9 +30,9 @@ public class StandardItemAccess<I> implements ConversionItemAccess<I> {
                 }
             };
 
-    private final Map<ClassOrMethod, I> specified = new HashMap<>();
+    private final Map<ElementIdentifier, I> specified = new HashMap<>();
 
-    private final Set<String> specifiedTypes = new HashSet<>();
+    private final Set<TypeIdentifier> specifiedTypes = new HashSet<>();
 
     private final Map<FromTo, I> contents = new HashMap<>();
 
@@ -47,30 +46,30 @@ public class StandardItemAccess<I> implements ConversionItemAccess<I> {
         public <F, T> void register(Class<F> from, Class<T> to,
                                     Convertlet<F, T> convertlet) {
 
-            I contents = factory.forConvertlet(from, to, convertlet);
+            TypeIdentifier typeIdentifier = TypeIdentifier.ofClass(convertlet.getClass());
 
-            ClassOrMethod classOrMethod = ClassOrMethod.ofClass(convertlet.getClass());
+            I contents = factory.create(from, to, typeIdentifier);
 
-            add(new FromTo(from, to), classOrMethod, contents);
+            add(new FromTo(from, to), typeIdentifier, contents);
         }
 
         @Override
         public <F> void registerJoker(Class<F> from, Joker<F> joker) {
 
-            I contents = factory.forJoker(from, joker);
+            TypeIdentifier typeIdentifier = TypeIdentifier.ofClass(joker.getClass());
 
-            ClassOrMethod classOrMethod = ClassOrMethod.ofClass(joker.getClass());
+            I contents = factory.create(from, null, typeIdentifier);
 
-            add(new FromTo(from, null), classOrMethod, contents);
+            add(new FromTo(from, null), typeIdentifier, contents);
         }
     }
 
-    void add(FromTo fromTo, ClassOrMethod classOrMethod, I content) {
+    void add(FromTo fromTo, ElementIdentifier elementIdentifier, I content) {
 
         contents.put(fromTo, content);
-        if (classOrMethod != null) {
-            specified.put(classOrMethod, content);
-            specifiedTypes.add(classOrMethod.getCanonicalClassName());
+        if (elementIdentifier != null) {
+            specified.put(elementIdentifier, content);
+            specifiedTypes.add(elementIdentifier.getTypeIdentifier());
         }
     }
 
@@ -79,18 +78,18 @@ public class StandardItemAccess<I> implements ConversionItemAccess<I> {
     }
 
     @Override
-    public I getForType(String canonicalTypeName) {
-        return specified.get(ClassOrMethod.ofCanonicalClassName(canonicalTypeName));
+    public I getForType(TypeIdentifier typeIdentifier) {
+        return specified.get(typeIdentifier);
     }
 
     @Override
-    public I getForMethod(String canonicalTypeName, String methodName) {
-        return specified.get(ClassOrMethod.ofTypeAndMethodNames(canonicalTypeName, methodName));
+    public I getForMethod(MethodIdentifier methodIdentifier) {
+        return specified.get(methodIdentifier);
     }
 
     @Override
-    public boolean containsForType(String canonicalTypeName) {
-        return specifiedTypes.contains(canonicalTypeName);
+    public boolean containsForType(TypeIdentifier typeIdentifier) {
+        return specifiedTypes.contains(typeIdentifier);
     }
 
     @Override

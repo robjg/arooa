@@ -1,6 +1,9 @@
 package org.oddjob.arooa.beandocs;
 
 
+import org.oddjob.arooa.convert.doc.MethodIdentifier;
+import org.oddjob.arooa.convert.doc.TypeIdentifier;
+
 /**
  * Something that is able to provide {@link ConversionDoc}. This is analogous to {@link ArooaDoc}.
  */
@@ -8,10 +11,10 @@ public interface ConversionDocs {
 
     ConversionDoc[] getConversionDocs();
 
-    ConversionDoc conversionDocumentedByType(String typeName);
+    ConversionDoc conversionDocumentedByType(TypeIdentifier typeIdentifier);
 
-    ConversionDoc conversionDocumentedByMethod(String typeName, String methodName);
+    ConversionDoc conversionDocumentedByMethod(MethodIdentifier methodIdentifier);
 
-    boolean containsDocumentedByType(String typeName);
+    boolean containsDocumentedByType(TypeIdentifier typeIdentifier);
 
 }

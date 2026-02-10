@@ -91,7 +91,7 @@ public class DefaultConversionProvider implements ConversionProvider {
 		// Some special conversions.
 		new ArooaValueConvertlets().registerWith(registry);
 		new ArooaObject.Conversions().registerWith(registry);
-		new ValueFactory.Conversions().registerWith(registry);
+		new ValueFactoryConversion.Conversions().registerWith(registry);
 		new IdentifiableValueType.Conversions().registerWith(registry);
 		new ConversionConvertlets().registerWith(registry);
 		// Mainly for Scripts

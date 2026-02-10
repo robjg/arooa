@@ -1,6 +1,8 @@
 package org.oddjob.arooa.beandocs;
 
 import org.oddjob.arooa.convert.doc.ConversionItemAccess;
+import org.oddjob.arooa.convert.doc.MethodIdentifier;
+import org.oddjob.arooa.convert.doc.TypeIdentifier;
 
 /**
  * Writable {@link ConversionDocs}.
@@ -14,21 +16,21 @@ public class WriteableConversionDocs implements ConversionDocs {
     }
 
     @Override
-    public WriteableConversionDoc conversionDocumentedByType(String typeName) {
+    public WriteableConversionDoc conversionDocumentedByType(TypeIdentifier typeIdentifier) {
 
-        return itemAccess.getForType(typeName);
+        return itemAccess.getForType(typeIdentifier);
     }
 
     @Override
-    public WriteableConversionDoc conversionDocumentedByMethod(String typeName, String methodName) {
+    public WriteableConversionDoc conversionDocumentedByMethod(MethodIdentifier methodIdentifier) {
 
-        return itemAccess.getForMethod(typeName, methodName);
+        return itemAccess.getForMethod(methodIdentifier);
     }
 
     @Override
-    public boolean containsDocumentedByType(String typeName) {
+    public boolean containsDocumentedByType(TypeIdentifier typeIdentifier) {
 
-        return itemAccess.containsForType(typeName);
+        return itemAccess.containsForType(typeIdentifier);
     }
 
     @Override

@@ -355,4 +355,44 @@ public class ClassUtils {
         return classLoaderStack(ofClass) +
                 classLoaderStack(contextLoader, "ContextLoader");
     }
+
+    /**
+     * Compare two fully qualified class names.
+     * <ul>
+     *     <li>a.Y < a.b.X</li>
+     *     <li>a.ab.X < a.b.A</li>
+     * </ul>
+     *
+     * @param leftClassName A fully qualified class name.
+     * @param rightClassName Another fully qualified class name.
+     *
+     * @return An int representing the comparison as above.
+     */
+    public static int compareFqcn(String leftClassName, String rightClassName) {
+
+        int leftDot = leftClassName.indexOf('.');
+        int rightDot = rightClassName.indexOf('.');
+
+        if (leftDot == -1 && rightDot == -1) {
+            return leftClassName.compareTo(rightClassName);
+        }
+        if (leftDot == -1) {
+            return -1;
+        }
+        if (rightDot == -1) {
+            return 1;
+        }
+
+        String left = leftClassName.substring(0, leftDot);
+        String right = rightClassName.substring(0, rightDot);
+
+        int c = left.compareTo(right);
+        if (c == 0) {
+            return compareFqcn(leftClassName.substring(leftDot + 1),
+                    rightClassName.substring(rightDot + 1));
+        }
+        else {
+            return c;
+        }
+    }
 }
