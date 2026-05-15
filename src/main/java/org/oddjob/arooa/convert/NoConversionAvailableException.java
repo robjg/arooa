@@ -7,19 +7,15 @@ public class NoConversionAvailableException extends ArooaConversionException {
 	@Serial
     private static final long serialVersionUID = 20070219;
 	
-	private final TypeArooa<?> fromType;
+	private final Type fromType;
 	private final Type toType;
-	
-	public NoConversionAvailableException(Class<?> fromClass, Type toType) {
-        this(TypeArooa.of(fromClass), toType);
-	}
 
-    public NoConversionAvailableException(TypeArooa<?> fromType, Type toType) {
+    public NoConversionAvailableException(Type fromType, Type toType) {
         this.fromType = fromType;
         this.toType = toType;
     }
 
-	public TypeArooa<?> getFromType() {
+	public Type getFromType() {
 		return fromType;
 	}
 	
@@ -29,6 +25,6 @@ public class NoConversionAvailableException extends ArooaConversionException {
 
 	public String getMessage() {
 		return "There is no conversion available between [" +
-				fromType.getType().getTypeName() + "] and [" + toType.getTypeName() + "]";
+				fromType.getTypeName() + "] and [" + toType.getTypeName() + "]";
 	}
 }

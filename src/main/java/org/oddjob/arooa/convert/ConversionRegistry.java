@@ -16,10 +16,22 @@ public interface ConversionRegistry {
 	 * @param to The convert to class.
 	 * @param convertlet The Convertlet.
 	 */
-	<F, T> void register(Class<F> from, Class<T> to,
-			Convertlet<F, T> convertlet);
-	
-	
+	default <F, T> void register(Class<F> from, Class<T> to,
+			Convertlet<F, T> convertlet) {
+
+		register(TypeArooa.of(from), TypeArooa.of(to), convertlet);
+	}
+
+	/**
+	 * Register a Convertlet.
+	 *
+	 * @param from The convert from type.
+	 * @param to The convert to type.
+	 * @param convertlet The Convertlet.
+	 */
+	<F, T> void register(TypeArooa<F> from, TypeArooa<?> to,
+	                            Convertlet<F, T> convertlet);
+
 	/**
 	 * Register a joker which is a conversion that trumps all other
 	 * conversion. The joker must be able to perform the final conversion

@@ -1,9 +1,6 @@
 package org.oddjob.arooa.convert.doc;
 
-import org.oddjob.arooa.convert.ConversionRegistry;
-import org.oddjob.arooa.convert.Convertlet;
-import org.oddjob.arooa.convert.Joker;
-import org.oddjob.arooa.convert.ValueFactoryConversion;
+import org.oddjob.arooa.convert.*;
 import org.oddjob.arooa.types.ValueFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,8 +43,8 @@ public class ValueFactoryItemAccess<I> implements ConversionItemAccess<I> {
     static class Registration implements ConversionRegistry {
 
         @Override
-        public <F, T> void register(Class<F> from, Class<T> to,
-                                    Convertlet<F, T> convertlet) {
+        public <F, T> void register(TypeArooa<F> from, TypeArooa<?> to, Convertlet<F, T> convertlet) {
+
         }
 
         @Override

@@ -10,7 +10,6 @@ public class EmptyArooaConverter implements ArooaConverter {
 	private final DefaultConversionRegistry emptyRegistry =
 		new DefaultConversionRegistry();
 	
-	@SuppressWarnings("unchecked")
     @Override
 	public <F, T> T convert(F from, Type required)
 	throws NoConversionAvailableException,
@@ -20,7 +19,7 @@ public class EmptyArooaConverter implements ArooaConverter {
 		}
 		
 		ConversionPath<F, T> path = 
-			findConversion((TypeArooa<F>) TypeArooa.of(from.getClass()), required);
+			findConversion(from.getClass(), required);
 		
 		if (path == null) {
 			throw new NoConversionAvailableException(from.getClass(), required);
@@ -30,12 +29,7 @@ public class EmptyArooaConverter implements ArooaConverter {
 	}
 
     @Override
-    public <F, T> ConversionPath<F, T> findConversion(Class<F> from, Class<T> to) {
-        return emptyRegistry.findConversion(from, to);
-    }
-
-    @Override
-    public <F, T> ConversionPath<F, T> findConversion(TypeArooa<F> from, Type to) {
+    public <F, T> ConversionPath<F, T> findConversion(Type from, Type to) {
         return emptyRegistry.findConversion(from, to);
     }
 }

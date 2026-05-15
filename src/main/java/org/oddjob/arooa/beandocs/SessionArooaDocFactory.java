@@ -4,6 +4,7 @@ import org.oddjob.arooa.*;
 import org.oddjob.arooa.convert.ConversionRegistry;
 import org.oddjob.arooa.convert.Convertlet;
 import org.oddjob.arooa.convert.Joker;
+import org.oddjob.arooa.convert.TypeArooa;
 import org.oddjob.arooa.convert.doc.ConversionDocProvider;
 import org.oddjob.arooa.convert.doc.ConversionItemProvider;
 import org.oddjob.arooa.convert.doc.ConversionOrganiser;
@@ -163,8 +164,10 @@ public class SessionArooaDocFactory
         ConversionItemProvider<WriteableConversionDoc> factory = new ConversionDocProvider();
 
         descriptor.getConvertletProvider().registerWith(new ConversionRegistry() {
+
             @Override
-            public <F, T> void register(Class<F> from, Class<T> to, Convertlet<F, T> convertlet) {
+            public <F, T> void register(TypeArooa<F> from, TypeArooa<?> to,
+                                        Convertlet<F, T> convertlet) {
 
                 convertlet.documentedHow().processIn(docOrganiser, factory)
                         .register(from, to, convertlet);

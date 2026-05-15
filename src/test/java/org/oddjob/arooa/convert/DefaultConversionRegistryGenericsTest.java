@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.Type;
 import java.util.function.Function;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
+
 public class DefaultConversionRegistryGenericsTest {
 
     static class FunctionSupplier {
@@ -47,7 +50,8 @@ public class DefaultConversionRegistryGenericsTest {
                 FunctionSupplier::intParser);
 
         ConversionPath<?, ?> conversionPath =
-                conversionRegistry.findConversion(TypeArooa.of(FunctionSupplier.class), intParserParam);
+                conversionRegistry.findConversion(FunctionSupplier.class, intParserParam);
 
+        assertThat(conversionPath, notNullValue());
     }
 }

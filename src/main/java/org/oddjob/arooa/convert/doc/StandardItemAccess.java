@@ -3,6 +3,7 @@ package org.oddjob.arooa.convert.doc;
 import org.oddjob.arooa.convert.ConversionRegistry;
 import org.oddjob.arooa.convert.Convertlet;
 import org.oddjob.arooa.convert.Joker;
+import org.oddjob.arooa.convert.TypeArooa;
 
 import java.lang.reflect.Type;
 import java.util.*;
@@ -43,14 +44,17 @@ public class StandardItemAccess<I> implements ConversionItemAccess<I> {
     class Registration implements ConversionRegistry {
 
         @Override
-        public <F, T> void register(Class<F> from, Class<T> to,
+        public <F, T> void register(TypeArooa<F> from, TypeArooa<?> to,
                                     Convertlet<F, T> convertlet) {
+
+            Type fromType = from.getType();
+            Type toType = to.getType();
 
             TypeIdentifier typeIdentifier = TypeIdentifier.ofClass(convertlet.getClass());
 
-            I contents = factory.create(from, to, typeIdentifier);
+            I contents = factory.create(fromType, toType, typeIdentifier);
 
-            add(new FromTo(from, to), typeIdentifier, contents);
+            add(new FromTo(fromType, toType), typeIdentifier, contents);
         }
 
         @Override

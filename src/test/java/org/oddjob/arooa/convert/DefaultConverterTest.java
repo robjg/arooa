@@ -208,15 +208,11 @@ public class DefaultConverterTest {
 
         DefaultConverter test = new DefaultConverter(
                 new ConversionLookup() {
-                    public <F, T> ConversionPath<F, T> findConversion(
-                            Class<F> from, Class<T> to) {
-                        throw new RuntimeException("Unexpected");
-                    }
 
                     @SuppressWarnings("unchecked")
                     @Override
-                    public <F, T> ConversionPath<F, T> findConversion(TypeArooa<F> from, Type to) {
-                        assertEquals(AV.class, from.getRawType());
+                    public <F, T> ConversionPath<F, T> findConversion(Type from, Type to) {
+                        assertEquals(AV.class, from);
                         assertEquals(String.class, to);
                         ConversionPath<AV, AV> conversion = DefaultConversionPath.instance(AV.class);
                         ConversionPath<AV, String> conversion2 = conversion.append(new ConversionStep<>() {

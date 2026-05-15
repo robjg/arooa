@@ -2,6 +2,7 @@ package org.oddjob.arooa.convert;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 /**
  * Provide an {@link ConversionProvider} via reflection.
@@ -12,27 +13,57 @@ public class ReflectionConversionProvider implements ConversionProviderFactory {
 
     private final Method method;
 
-    public ReflectionConversionProvider(Class<?> providerClass, Method method) {
+    private final boolean arooaValue;
+
+    public ReflectionConversionProvider(Class<?> providerClass,
+                                        Method method,
+                                        boolean arooaValue) {
         this.providerClass = providerClass;
         this.method = method;
+        this.arooaValue = arooaValue;
     }
 
     @Override
     public ConversionProvider createConversionProvider(ClassLoader classLoader) {
         return registry -> {
-            Class<?> to = method.getReturnType();
+            Type to = method.getGenericReturnType();
 
             registerWithInferredTypes(registry, providerClass, to);
         };
     }
 
-    <F, T> void registerWithInferredTypes(ConversionRegistry registry,
-                                   Class<F> from, Class<T> to) {
-        registry.register(from,
-                to,
+    <F> void registerWithInferredTypes(ConversionRegistry registry,
+                                   Class<F> from, Type to) {
+
+        boolean arooaValue = this.arooaValue;
+
+        TypeArooa<F> fromType = new TypeArooa<F>() {
+            @Override
+            public Type getType() {
+                return from;
+            }
+
+            @Override
+            public Class<F> getRawType() {
+                return from;
+            }
+
+            @Override
+            public boolean isArooaValue() {
+                return arooaValue;
+            }
+
+            @Override
+            public boolean isAssignableFrom(TypeArooa<?> other) {
+                return from.isAssignableFrom(other.getRawType());
+            }
+        };
+
+        registry.register(fromType,
+                TypeArooa.of(to),
                 fromObject -> {
                     try {
-                        return to.cast(method.invoke(fromObject));
+                        return method.invoke(fromObject);
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         throw new ArooaConversionException(e);
                     }

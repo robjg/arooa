@@ -6,10 +6,7 @@ package org.oddjob.arooa.convert;
 import org.oddjob.arooa.ArooaValue;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Implementation of a ConvertletRegistry.
@@ -26,43 +23,38 @@ public class DefaultConversionRegistry implements ConversionRegistry, Conversion
     private final Map<TypeArooa<?>, Map<TypeArooa<?>, Convertlet<?, ?>>> fromMap =
             new LinkedHashMap<>();
 
+    private final Map<Type, TypeArooa<?>> typeArooaMap = new HashMap<>();
+
     private final JokerMap jokers =
             new JokerMap();
 
-
-    /*
-     * (non-Javadoc)
-     * @see org.oddjob.arooa.convert.ConvertletRegistry#register(java.lang.Class, java.lang.Class, org.oddjob.arooa.convert.Convertlet)
-     */
-    public <F, T> void register(Class<F> from, Class<T> to,
-                                Convertlet<F, T> convertlet) {
-
-        register(TypeArooa.of(from), TypeArooa.of(to), convertlet);
-    }
-
-    public <F> void registerJoker(Class<F> from, Joker<F> joker) {
-        jokers.register(from, joker);
-    }
-
+    @Override
     public <F, T> void register(TypeArooa<F> from, TypeArooa<?> to,
                                 Convertlet<F, T> convertlet) {
         fromMap.computeIfAbsent(from, k -> new LinkedHashMap<>())
                 .put(to, convertlet);
+        typeArooaMap.put(from.getType(), from);
+    }
+
+    @Override
+    public <F> void registerJoker(Class<F> from, Joker<F> joker) {
+        jokers.register(from, joker);
     }
 
 
-    /*
-     * (non-Javadoc)
-     * @see org.oddjob.arooa.convert.ConvertletRegistry#findConversion(java.lang.Class, java.lang.Class)
-     */
-    public <F, T> ConversionPath<F, T> findConversion(Class<F> from, Class<T> to) {
+    @Override
+    public <F, T> ConversionPath<F, T> findConversion(Type from, Type to) {
 
-        return findConversion(TypeArooa.of(from), to);
+        TypeArooa<F> fromType = typeArooaOf(from);
+        return best(fromType, fromType, to,
+                DefaultConversionPath.instance(fromType), 0);
     }
 
-    public <F, T> ConversionPath<F, T> findConversion(TypeArooa<F> from, Type to) {
+    <X> TypeArooa<X> typeArooaOf(Type type) {
 
-        return best(from, from, to, DefaultConversionPath.instance(from), 0);
+        @SuppressWarnings("unchecked")
+        TypeArooa<X> to = (TypeArooa<X>) typeArooaMap.get(type);
+        return Objects.requireNonNullElseGet(to, () -> TypeArooa.of(type));
     }
 
     /**
@@ -76,7 +68,8 @@ public class DefaultConversionRegistry implements ConversionRegistry, Conversion
                                            ConversionPath<F, X> stepsSoFar,
                                            int maxLevels) {
 
-        TypeArooa<T> to = TypeArooa.of(toType);
+        TypeArooa<T> to = typeArooaOf(toType);
+
         // have we reached the end of the conversion?
         // Only true for ArooaValues if the required is an ArooaValue
         if (to.isAssignableFrom(from) &&

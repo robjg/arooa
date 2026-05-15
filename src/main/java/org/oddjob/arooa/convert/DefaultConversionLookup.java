@@ -17,14 +17,9 @@ public class DefaultConversionLookup implements ConversionLookup {
 	public DefaultConversionLookup() {
 		new DefaultConversionProvider().registerWith(registry);
 	}
-	
-	
-	public <F, T> ConversionPath<F, T> findConversion(Class<F> from, Class<T> to) {
-		return registry.findConversion(from, to);
-	}
 
     @Override
-    public <F, T> ConversionPath<F, T> findConversion(TypeArooa<F> from, Type to) {
+    public <F, T> ConversionPath<F, T> findConversion(Type from, Type to) {
         return registry.findConversion(from, to);
     }
 }

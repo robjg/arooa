@@ -72,7 +72,6 @@ public class DefaultConverter implements ArooaConverter {
 	 * 
 	 * @see org.oddjob.arooa.convert.ArooaConverter#convert(Object, Type)
 	 */
-	@SuppressWarnings("unchecked")
     @Override
 	public <F, T> T convert(F from, Type required)
 	throws NoConversionAvailableException, ConversionFailedException {
@@ -84,9 +83,7 @@ public class DefaultConverter implements ArooaConverter {
 			return NullConversions.nullConversionFor(required);
 		}
 
-        TypeArooa<F> fromType = (TypeArooa<F>) TypeArooa.of(from.getClass());
-		
-		ConversionPath<F, T> conversionPath = findConversion(fromType, required);
+		ConversionPath<F, T> conversionPath = findConversion(from.getClass(), required);
 		
 		if (conversionPath !=  null) {
 			T conversion = conversionPath.convert(from, this);
@@ -99,7 +96,7 @@ public class DefaultConverter implements ArooaConverter {
 		}
 		else {
 			throw new NoConversionAvailableException(
-				fromType, required);
+				from.getClass(), required);
 		}
 	}	
 
@@ -117,7 +114,7 @@ public class DefaultConverter implements ArooaConverter {
 	}
 
     @Override
-    public <F, T> ConversionPath<F, T> findConversion(TypeArooa<F> from, Type to) {
+    public <F, T> ConversionPath<F, T> findConversion(Type from, Type to) {
         return convertlets.findConversion(from, to);
     }
 }

@@ -39,6 +39,15 @@ public class ConversionDescriptorBean implements ConversionProviderFactory {
      */
     private String methodName;
 
+    /**
+     * @oddjob.property
+     * @oddjob.description Whether the conversion is from an Arooa Value.
+     * An Arooa Value is something that can only be used as a property via
+     * a conversion.
+     * @oddjob.required No. Defaults to false.
+     */
+    private boolean arooaValue;
+
     @Override
     public ConversionProvider createConversionProvider(ClassLoader classLoader) {
 
@@ -52,7 +61,7 @@ public class ConversionDescriptorBean implements ConversionProviderFactory {
             }
             else {
                 Method method = providerClass.getMethod(methodName);
-                return new ReflectionConversionProvider(providerClass, method)
+                return new ReflectionConversionProvider(providerClass, method, arooaValue)
                         .createConversionProvider(classLoader);
             }
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException | ClassNotFoundException e) {
@@ -76,11 +85,20 @@ public class ConversionDescriptorBean implements ConversionProviderFactory {
         this.methodName = methodName;
     }
 
+    public boolean isArooaValue() {
+        return arooaValue;
+    }
+
+    public void setArooaValue(boolean arooaValue) {
+        this.arooaValue = arooaValue;
+    }
+
     @Override
     public String toString() {
         return "ConversionDescriptorBean{" +
                 "className='" + className + '\'' +
                 ", methodName='" + methodName + '\'' +
+                ", arooaValue=" + arooaValue +
                 '}';
     }
 }
