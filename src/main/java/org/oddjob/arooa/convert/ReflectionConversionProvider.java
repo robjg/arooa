@@ -35,29 +35,8 @@ public class ReflectionConversionProvider implements ConversionProviderFactory {
     <F> void registerWithInferredTypes(ConversionRegistry registry,
                                    Class<F> from, Type to) {
 
-        boolean arooaValue = this.arooaValue;
-
-        TypeArooa<F> fromType = new TypeArooa<F>() {
-            @Override
-            public Type getType() {
-                return from;
-            }
-
-            @Override
-            public Class<F> getRawType() {
-                return from;
-            }
-
-            @Override
-            public boolean isArooaValue() {
-                return arooaValue;
-            }
-
-            @Override
-            public boolean isAssignableFrom(TypeArooa<?> other) {
-                return from.isAssignableFrom(other.getRawType());
-            }
-        };
+        TypeArooa<F> fromType = this.arooaValue ?
+                TypeArooas.ofArooaValue(from) : TypeArooas.of(from);
 
         registry.register(fromType,
                 TypeArooa.of(to),

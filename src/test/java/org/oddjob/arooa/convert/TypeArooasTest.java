@@ -1,6 +1,7 @@
 package org.oddjob.arooa.convert;
 
 import org.junit.jupiter.api.Test;
+import org.oddjob.arooa.ArooaValue;
 import org.oddjob.arooa.types.ValueType;
 
 import java.util.function.Function;
@@ -8,13 +9,13 @@ import java.util.function.Function;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-class LangTypeArooaTest {
+class TypeArooasTest {
 
     @Test
     void simpleClasses() {
         
-        TypeArooa<Number> numberType = LangTypeArooa.of(Number.class);
-        TypeArooa<Integer> integerType = LangTypeArooa.of(Integer.class);
+        TypeArooa<Number> numberType = TypeArooas.of(Number.class);
+        TypeArooa<Integer> integerType = TypeArooas.of(Integer.class);
 
         assertThat(numberType.isAssignableFrom(integerType), is(true));
         assertThat(integerType.isAssignableFrom(numberType), is(false));
@@ -51,18 +52,18 @@ class LangTypeArooaTest {
     @Test
     void parameterisedTypes() throws NoSuchMethodException {
 
-        TypeArooa<?> retType1 =  LangTypeArooa.of(FunctionSupplier.class.getDeclaredMethod("intParser")
+        TypeArooa<?> retType1 =  TypeArooas.of(FunctionSupplier.class.getDeclaredMethod("intParser")
                 .getGenericReturnType());
-        TypeArooa<?> retType2 = LangTypeArooa.of(FunctionSupplier.class.getDeclaredMethod("doubleParser")
+        TypeArooa<?> retType2 = TypeArooas.of(FunctionSupplier.class.getDeclaredMethod("doubleParser")
                 .getGenericReturnType());
-        TypeArooa<?> retType3 = LangTypeArooa.of(FunctionSupplier.class.getDeclaredMethod("rawThing")
+        TypeArooa<?> retType3 = TypeArooas.of(FunctionSupplier.class.getDeclaredMethod("rawThing")
                 .getGenericReturnType());
 
-        TypeArooa<?> intParserParam = LangTypeArooa.of(getClass().getDeclaredMethod("setIntParser", Function.class)
+        TypeArooa<?> intParserParam = TypeArooas.of(getClass().getDeclaredMethod("setIntParser", Function.class)
                 .getGenericParameterTypes()[0]);
-        TypeArooa<?> doubleParserParam = LangTypeArooa.of(getClass().getDeclaredMethod("setDoubleParser", Function.class)
+        TypeArooa<?> doubleParserParam = TypeArooas.of(getClass().getDeclaredMethod("setDoubleParser", Function.class)
                 .getGenericParameterTypes()[0]);
-        TypeArooa<?> rawThingParam = LangTypeArooa.of(getClass().getDeclaredMethod("setRawThing", Function.class)
+        TypeArooa<?> rawThingParam = TypeArooas.of(getClass().getDeclaredMethod("setRawThing", Function.class)
                 .getGenericParameterTypes()[0]);
 
         assertThat(intParserParam.isAssignableFrom(retType1), is(true));
@@ -81,7 +82,13 @@ class LangTypeArooaTest {
     @Test
     void isArooaType() {
 
-        assertThat(LangTypeArooa.of(Number.class).isArooaValue(), is(false));
-        assertThat(LangTypeArooa.of(ValueType.class).isArooaValue(), is(true));
+        assertThat(TypeArooas.of(Number.class).isArooaValue(), is(false));
+        assertThat(TypeArooas.of(ValueType.class).isArooaValue(), is(true));
+
+        assertThat(TypeArooas.of(Number.class)
+                .isAssignableFrom(TypeArooas.ofArooaValue(Integer.class)), is(false));
+
+        assertThat(TypeArooas.of(ArooaValue.class)
+                .isAssignableFrom(TypeArooas.ofArooaValue(Integer.class)), is(false));
     }
 }

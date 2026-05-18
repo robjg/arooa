@@ -19,15 +19,15 @@ public interface TypeArooa<T> {
     boolean isAssignableFrom(TypeArooa<?> other);
 
     static <T> TypeArooa<T> of(Class<T> type) {
-        return LangTypeArooa.of(type);
+        return TypeArooas.of(type);
     }
 
     static <T> TypeArooa<T> of(Type type) {
-        return LangTypeArooa.of(type);
+        return TypeArooas.of(type);
     }
 
     static <T> TypeArooa<T> ofArooaValue(Type type) {
-        return LangTypeArooa.ofArooaValue(type);
+        return TypeArooas.ofArooaValue(type);
     }
 
 }

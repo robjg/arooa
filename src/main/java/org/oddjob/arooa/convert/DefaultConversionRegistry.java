@@ -72,8 +72,7 @@ public class DefaultConversionRegistry implements ConversionRegistry, Conversion
 
         // have we reached the end of the conversion?
         // Only true for ArooaValues if the required is an ArooaValue
-        if (to.isAssignableFrom(from) &&
-                (from.isArooaValue() == to.isArooaValue())) {
+        if (to.isAssignableFrom(from)) {
             return (ConversionPath<F, T>) stepsSoFar;
         }
 
