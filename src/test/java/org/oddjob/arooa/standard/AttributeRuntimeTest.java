@@ -1,9 +1,7 @@
 package org.oddjob.arooa.standard;
 
-import org.junit.Test;
-
 import org.junit.Assert;
-
+import org.junit.Test;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.ArooaTools;
@@ -18,9 +16,11 @@ import org.oddjob.arooa.registry.MockBeanRegistry;
 import org.oddjob.arooa.runtime.ParsedExpression;
 import org.oddjob.arooa.runtime.PropertyManager;
 
+import java.lang.reflect.Type;
+
 public class AttributeRuntimeTest extends Assert {
 
-	private class ColourAttributeConfiguration extends MockInstanceConfiguration {
+	private static class ColourAttributeConfiguration extends MockInstanceConfiguration {
 		public ColourAttributeConfiguration() {
 			super(new SimpleArooaClass(Object.class), new Object(), new MutableAttributes());
 		}
@@ -33,14 +33,14 @@ public class AttributeRuntimeTest extends Assert {
 		}
 	}
 
-	private class OurSession extends MockArooaSession {
+	private static class OurSession extends MockArooaSession {
 		
 		@Override
 		public BeanRegistry getBeanRegistry() {
 			return new MockBeanRegistry() {
 				@SuppressWarnings("unchecked")
 				@Override
-				public <T> T lookup(String path, Class<T> required) {
+				public <T> T lookup(String path, Type required) {
 					assertEquals("red", path);
 					assertEquals(String.class, required);
 					return (T) "blue";
@@ -64,7 +64,7 @@ public class AttributeRuntimeTest extends Assert {
 		}
 	}
 	
-	private class OurContext extends MockArooaContext {
+	private static class OurContext extends MockArooaContext {
 		
 		@Override
 		public ArooaSession getSession() {
@@ -109,8 +109,8 @@ public class AttributeRuntimeTest extends Assert {
 		assertNull(parentRuntime.colour);
 		
 		test.init(new OurContext());
-		
-		assertEquals(null, parentRuntime.colour);
+
+       assertNull(parentRuntime.colour);
 
 		test.configure(new OurContext());
 		

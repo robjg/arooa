@@ -11,6 +11,7 @@ import org.oddjob.arooa.convert.NullConversions;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -153,7 +154,7 @@ public class SimpleBeanRegistry implements BeanRegistry {
 	}
 
 	@Override
-	public <T> T lookup(String path, Class<T> required)
+	public <T> T lookup(String path, Type required)
 	throws ArooaPropertyException, ArooaConversionException {
 		PathBreakdown breakdown = new PathBreakdown(path);
 		Object bean;

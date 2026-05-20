@@ -399,12 +399,13 @@ public class BeanUtilsPropertyAccessor implements PropertyAccessor {
      * @return The property value.
      */
     public <T> T getProperty(Object bean,
-                             String property, Class<T> required)
+                             String property, Type required)
             throws ArooaPropertyException, ArooaConversionException {
         Object prop = getProperty(bean, property);
 
         if (converter == null) {
-            return required.cast(prop);
+            //noinspection unchecked
+            return (T) prop;
         } else {
             return converter.convert(prop, required);
         }

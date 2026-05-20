@@ -7,6 +7,7 @@ package org.oddjob.arooa.reflect;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.convert.ArooaConverter;
+import java.lang.reflect.Type;
 
 /**
  * Property access.
@@ -91,10 +92,12 @@ public interface PropertyAccessor {
 	 * 
 	 * @param bean The bean.
 	 * @param property The property expression.
+	 * @param required The required {@link Type}.
 	 * @return The property value.
 	 */
-    <T> T getProperty(Object bean,
-                      String property, Class<T> required)
+	<T> T getProperty(Object bean,
+					  String property,
+					  Type required)
 	throws ArooaPropertyException, ArooaConversionException;
 
 	/**

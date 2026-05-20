@@ -2,6 +2,7 @@ package org.oddjob.arooa.reflect;
 
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.convert.ArooaConverter;
+import java.lang.reflect.Type;
 
 abstract public class MockPropertyAccessor implements PropertyAccessor {
 
@@ -20,8 +21,8 @@ abstract public class MockPropertyAccessor implements PropertyAccessor {
 				this.getClass().getName());
 	}
 	
-	public <T> T getProperty(Object bean, 
-			String property, Class<T> required) 
+	public <T> T getProperty(Object bean,
+			String property, Type required)
 	throws ArooaException {
 		throw new RuntimeException("Unexpected from class: " + 
 				this.getClass().getName());

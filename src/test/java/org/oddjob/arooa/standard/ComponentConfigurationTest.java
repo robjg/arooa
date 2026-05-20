@@ -17,6 +17,8 @@ import org.oddjob.arooa.registry.MockBeanRegistry;
 import org.oddjob.arooa.registry.MockComponentPool;
 import org.oddjob.arooa.runtime.*;
 
+import java.lang.reflect.Type;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -90,7 +92,7 @@ public class ComponentConfigurationTest {
             return new MockBeanRegistry() {
                 @SuppressWarnings("unchecked")
                 @Override
-                public <T> T lookup(String path, Class<T> required) {
+                public <T> T lookup(String path, Type required) {
                     assertThat("Value to replace.", path, is("To be replaced"));
                     assertThat(required, is(String.class));
                     return (T) "red";

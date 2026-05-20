@@ -1,12 +1,14 @@
 package org.oddjob.arooa.registry;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.convert.ArooaConverter;
+import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A {@link BeanRegistry} that will attempt to find a bean value in an
@@ -60,8 +62,8 @@ public class LinkedBeanRegistry extends SimpleBeanRegistry {
 	}
 
 	@Override
-	public <T> T lookup(String path, Class<T> required)
-			throws ArooaConversionException {
+	public <T> T lookup(String path, Type required)
+			throws ArooaPropertyException, ArooaConversionException {
 		T component = super.lookup(path, required);
 		if (component == null) {
 			return existingDirectory.lookup(path, required);

@@ -6,6 +6,7 @@ package org.oddjob.arooa.registry;
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 
 
@@ -57,7 +58,7 @@ public interface BeanDirectory {
 	 * @throws ArooaPropertyException If property access fails.
 	 */
 	<T> T lookup(String path,
-			Class<T> required)
+			Type required)
 	throws ArooaPropertyException, ArooaConversionException;
 	
 	/**

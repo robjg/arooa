@@ -1,5 +1,7 @@
 package org.oddjob.arooa.registry;
 
+import java.lang.reflect.Type;
+
 
 public class MockBeanRegistry implements BeanRegistry {
 
@@ -13,8 +15,8 @@ public class MockBeanRegistry implements BeanRegistry {
 				this.getClass().getName() + ".");
 	}
 
-	public <T> T lookup(String path, Class<T> required) {
-		throw new RuntimeException("Unexpected in " + 
+	public <T> T lookup(String path, Type required) {
+		throw new RuntimeException("Unexpected in " +
 				this.getClass().getName() + ".");
 	}
 	

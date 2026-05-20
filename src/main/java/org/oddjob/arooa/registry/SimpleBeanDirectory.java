@@ -8,6 +8,7 @@ import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 
+import java.lang.reflect.Type;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -90,7 +91,7 @@ public class SimpleBeanDirectory implements BeanDirectory {
 		}
 	}
 	
-	public <T> T lookup(String path, Class<T> required) 
+	public <T> T lookup(String path, Type required)
 	throws ArooaPropertyException, ArooaConversionException {
 
 		return converter.convert(lookup(path), required);
