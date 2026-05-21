@@ -5,12 +5,15 @@ import org.oddjob.arooa.convert.*;
 import org.oddjob.arooa.deploy.annotations.ArooaHidden;
 import org.oddjob.arooa.life.Configured;
 import org.oddjob.arooa.parsing.ArooaElement;
+import org.oddjob.arooa.utils.ClassUtils;
 import org.oddjob.arooa.utils.EtcUtils;
 import org.oddjob.arooa.utils.ListSetterHelper;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Array;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -102,83 +105,112 @@ public class ListType implements ArooaValue, Serializable {
      */
     private Class<?> elementType;
 
+    /**
+     * @oddjob.conversion Conversions to Lists and Arrays.
+     */
+    static class ListConversion implements Joker<ListType> {
+
+        @Override
+        public <T> ConversionStep<ListType, T> lastStep(Class<? extends ListType> from, Class<T> to, ConversionLookup conversions) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public <T> ConversionStep<ListType, T> lastStep(
+                TypeArooa<ListType> from,
+                final TypeArooa<T> to,
+                ConversionLookup conversions) {
+
+            abstract class AbstractLastStep implements ConversionStep<ListType, T> {
+
+                @Override
+                public Class<ListType> getFromClass() {
+                    throw new UnsupportedOperationException();
+                }
+
+                @Override
+                public TypeArooa<ListType> getFromType() {
+                    return from;
+                }
+
+                @Override
+                public Class<T> getToClass() {
+                    throw new UnsupportedOperationException();
+                }
+
+                @Override
+                public TypeArooa<T> getToType() {
+                    return to;
+                }
+            }
+
+            if (to.getRawType().isAssignableFrom(List.class)) {
+                return new AbstractLastStep() {
+
+                    @Override
+                    @SuppressWarnings("unchecked")
+                    public T convert(ListType from, ArooaConverter converter)
+                            throws ArooaConversionException {
+
+                        Type toType = to.getType();
+                        Type elementType;
+                        if (toType instanceof ParameterizedType pt) {
+                            elementType = pt.getActualTypeArguments()[0];
+                        }
+                        else {
+                            elementType = Object.class;
+                        }
+                        return (T) from.convertContents(
+                                converter, elementType);
+                    }
+                };
+            }
+
+            if (to.getRawType().isArray()) {
+
+                Class<?> componentType = to.getRawType().componentType();
+
+                return new AbstractLastStep() {
+
+                    @Override
+                    @SuppressWarnings("unchecked")
+                    public T convert(ListType from, ArooaConverter converter)
+                            throws ArooaConversionException {
+
+                        List<?> converted = from.convertContents(converter, componentType);
+
+                        Object newArray = Array.newInstance(
+                                componentType, converted.size());
+
+                        for (int i = 0; i < converted.size(); ++i) {
+                            Array.set(newArray, i,
+                                    converted.get(i));
+                        }
+
+                        return (T) newArray;
+                    }
+                };
+            }
+
+            if (to.getRawType().isAssignableFrom(Consumer.class)) {
+                return new AbstractLastStep() {
+
+                    @Override
+                    @SuppressWarnings("unchecked")
+                    public T convert(ListType from, ArooaConverter converter) {
+                        return (T) new ListConsumer(from, converter);
+                    }
+                };
+            }
+
+            return null;
+        }
+    }
+
     public static class Conversions implements ConversionProvider {
 
         public void registerWith(ConversionRegistry registry) {
-            registry.registerJoker(ListType.class,
-                    new Joker<>() {
-                        public <T> ConversionStep<ListType, T> lastStep(
-                                Class<? extends ListType> from,
-                                final Class<T> to,
-                                ConversionLookup conversions) {
-
-                            if (to.isAssignableFrom(List.class)) {
-                                return new ConversionStep<>() {
-                                    public Class<ListType> getFromClass() {
-                                        return ListType.class;
-                                    }
-
-                                    public Class<T> getToClass() {
-                                        return to;
-                                    }
-
-                                    @SuppressWarnings("unchecked")
-                                    public T convert(ListType from, ArooaConverter converter)
-                                            throws ArooaConversionException {
-
-                                        return (T) from.convertContents(
-                                                converter, Object.class);
-                                    }
-                                };
-                            }
-                            if (to.isArray()) {
-                                return new ConversionStep<>() {
-                                    public Class<ListType> getFromClass() {
-                                        return ListType.class;
-                                    }
-
-                                    public Class<T> getToClass() {
-                                        return to;
-                                    }
-
-                                    @SuppressWarnings("unchecked")
-                                    public T convert(ListType from, ArooaConverter converter)
-                                            throws ArooaConversionException {
-                                        List<?> converted =
-                                                from.convertContentsGenericType(
-                                                        converter, to.getComponentType());
-
-                                        Object newArray = Array.newInstance(
-                                                to.getComponentType(), converted.size());
-                                        for (int i = 0; i < converted.size(); ++i) {
-                                            Array.set(newArray, i,
-                                                    converted.get(i));
-                                        }
-                                        return (T) newArray;
-                                    }
-                                };
-                            }
-                            if (to.isAssignableFrom(Consumer.class)) {
-                                return new ConversionStep<>() {
-                                    public Class<ListType> getFromClass() {
-                                        return ListType.class;
-                                    }
-
-                                    public Class<T> getToClass() {
-                                        return to;
-                                    }
-
-                                    @SuppressWarnings("unchecked")
-                                    public T convert(ListType from, ArooaConverter converter) {
-                                        return (T) new ListConsumer(from, converter);
-                                    }
-                                };
-                            }
-                            return null;
-                        }
-
-
-                    });
+            registry.registerJoker(ListType.class, new ListConversion());
 
             registry.register(ListConsumer.class, ListType.class,
                     from -> from.listType);
@@ -216,25 +248,6 @@ public class ListType implements ArooaValue, Serializable {
         public String toString() {
             return "ListConsumer of " + listType;
         }
-    }
-
-
-    /**
-     * Converts to a list of a given generic type.
-     *
-     * @param converter Converter for element conversion.
-     * @param required  The required type.
-     * @return Converted list
-     * @throws ArooaConversionException If it fails.
-     */
-    private <X> List<X> convertContentsGenericType(ArooaConverter converter,
-                                                   Class<?> required)
-            throws ArooaConversionException {
-
-        @SuppressWarnings("unchecked")
-        Class<X> trueType = (Class<X>) required;
-
-        return convertContents(converter, trueType);
     }
 
     @Configured
@@ -277,23 +290,22 @@ public class ListType implements ArooaValue, Serializable {
      * @throws NoConversionAvailableException If conversion fails
      */
     @SuppressWarnings("unchecked")
-    <T> List<T> convertContents(ArooaConverter converter, Class<T> required)
+    <T> List<T> convertContents(ArooaConverter converter, Type required)
             throws ArooaConversionException {
 
         List<T> results = new ArrayList<>();
 
         if (this.elementType != null) {
 
-            if (
-                    !required.isAssignableFrom(
+            if (!ClassUtils.rawType(required).isAssignableFrom(
                             this.elementType)) {
                 throw new ArooaConversionException(
                         "ListType can't convert to required Array/List of " +
-                                required.getComponentType() +
+                                required.getTypeName() +
                                 " because elementType attribute is specified as " +
                                 this.elementType);
             }
-            required = (Class<T>) elementType;
+            required = elementType;
         }
 
         List<ArooaValue> valuesAndExtras = new ArrayList<>();
@@ -305,7 +317,7 @@ public class ListType implements ArooaValue, Serializable {
         for (Object element : valuesAndExtras) {
             if (merge) {
 
-                List<T> thingsToMerge = new ToListConverter<>(
+                List<T> thingsToMerge = new ToListConverter<T>(
                         required, converter).convert(element);
 
                 for (T subElement : thingsToMerge) {
@@ -330,10 +342,10 @@ public class ListType implements ArooaValue, Serializable {
     @SuppressWarnings("unchecked")
     static class ToListConverter<T> {
 
-        private final Class<T> elementType;
+        private final Type elementType;
         private final ArooaConverter converter;
 
-        ToListConverter(Class<T> elementType,
+        ToListConverter(Type elementType,
                         ArooaConverter converter) {
             this.elementType = elementType;
             this.converter = converter;

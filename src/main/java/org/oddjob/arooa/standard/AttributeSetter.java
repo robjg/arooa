@@ -13,6 +13,7 @@ import org.oddjob.arooa.runtime.ExpressionParser;
 import org.oddjob.arooa.runtime.ParsedExpression;
 import org.oddjob.arooa.types.BeanType;
 
+import java.lang.reflect.Type;
 import java.util.*;
 
 /**
@@ -125,7 +126,7 @@ class AttributeSetter {
             if (initAttributes.contains(propertyName)) {
 			    useEvaluator = new ParsedExpression() {
                     @Override
-                    public <T> T evaluate(ArooaSession session, Class<T> type) throws ArooaConversionException {
+                    public <T> T evaluate(ArooaSession session, Type type) throws ArooaConversionException {
                         return evaluator.evaluate(session, type);
                     }
 

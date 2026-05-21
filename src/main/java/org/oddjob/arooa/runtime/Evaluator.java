@@ -4,6 +4,8 @@ import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 
+import java.lang.reflect.Type;
+
 /**
  * Something that's able to evaluate a property expression. 
  * <p>
@@ -28,6 +30,6 @@ public interface Evaluator {
 	 */
 	<T> T evaluate(String propertyExpression,
 				   ArooaSession session,
-				   Class<T> type)
+				   Type type)
 	throws ArooaPropertyException, ArooaConversionException;
 }

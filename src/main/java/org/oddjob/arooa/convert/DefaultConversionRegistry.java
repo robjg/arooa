@@ -62,7 +62,7 @@ public class DefaultConversionRegistry implements ConversionRegistry, Conversion
      *
      */
     @SuppressWarnings("unchecked")
-    <F, X, Y, T> ConversionPath<F, T> best(final TypeArooa<? extends X> start,
+    <F, X, Y, T> ConversionPath<F, T> best(final TypeArooa<X> start,
                                            final TypeArooa<X> from,
                                            final Type toType,
                                            ConversionPath<F, X> stepsSoFar,
@@ -128,10 +128,12 @@ public class DefaultConversionRegistry implements ConversionRegistry, Conversion
                         return maybeTo.getRawType();
                     }
 
+                    @Override
                     public TypeArooa<X> getFromType() {
                         return from;
                     }
 
+                    @Override
                     public TypeArooa<Y> getToType() {
                         return maybeTo;
                     }
@@ -184,7 +186,7 @@ public class DefaultConversionRegistry implements ConversionRegistry, Conversion
             };
 
             // recursively call. A non null result means we found a match.
-            ConversionPath<F, T> result = nextBest((TypeArooa<? extends Y>) from,
+            ConversionPath<F, T> result = nextBest((TypeArooa<Y>) from,
                     stepsSoFar, nextStep, toType, bestLevels, false);
 
             if (result != null) {
@@ -237,7 +239,7 @@ public class DefaultConversionRegistry implements ConversionRegistry, Conversion
      * @param maxLevels  The maximum number of levels to try.
      * @return The result.
      */
-    <F, X, Y, T> ConversionPath<F, T> nextBest(TypeArooa<? extends Y> start,
+    <F, X, Y, T> ConversionPath<F, T> nextBest(TypeArooa<Y> start,
                                                ConversionPath<F, X> stepsSoFar,
                                                ConversionStep<X, Y> nextStep,
                                                Type to,

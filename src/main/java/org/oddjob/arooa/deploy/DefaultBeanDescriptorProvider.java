@@ -5,6 +5,7 @@ import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 
+import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -56,7 +57,7 @@ public class DefaultBeanDescriptorProvider {
 					beanOverview.isMapped(property)) {
 				accumulator.addElementProperty(property);
 			} else {
-				Class<?> propertyType = beanOverview.getPropertyType(property);
+				Type propertyType = beanOverview.getPropertyType(property);
 
 				// this happens with Proxies. It's a bug Oddjob isn't
 				// affected by it, so fix later.
@@ -74,9 +75,10 @@ public class DefaultBeanDescriptorProvider {
 		}
 	}
 
-	public static boolean isAttribute(Class<?> propertyType) {
-		return propertyType.isPrimitive() ||
-				propertyType.isEnum() ||
-				ATTRIBUTE_TYPES.contains(propertyType);
+	public static boolean isAttribute(Type propertyType) {
+		return propertyType instanceof Class<?> cl && (
+				cl.isPrimitive() ||
+				cl.isEnum() ||
+				ATTRIBUTE_TYPES.contains(propertyType));
 	}
 }

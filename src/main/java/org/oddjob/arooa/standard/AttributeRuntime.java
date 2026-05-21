@@ -9,6 +9,8 @@ import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.runtime.ParsedExpression;
 
+import java.lang.reflect.Type;
+
 /**
  * Holds an attribute name value pair, and handles set the
  * property on the parent runtime.
@@ -21,14 +23,14 @@ class AttributeRuntime {
 	private final String attribute;
 	private final ParsedExpression evaluator;
 	
-	private final Class<?> type;
+	private final Type type;
 	
 	private final InstanceConfiguration parentRuntime;
 	
 	public AttributeRuntime(InstanceConfiguration parentRuntime,
 			String attribute,
 			ParsedExpression evaluator,
-			Class<?> type) 
+			Type type)
 	throws ArooaException {
 		this.parentRuntime = parentRuntime;
 		this.attribute = attribute;

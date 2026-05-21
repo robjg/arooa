@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.script.*;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -50,7 +51,9 @@ public class ScriptEvaluator implements Evaluator {
             return new Evaluator() {
 
                 @Override
-                public <T> T evaluate(String propertyExpression, ArooaSession session, Class<T> type) throws ArooaPropertyException, ArooaConversionException {
+                public <T> T evaluate(String propertyExpression,
+                                      ArooaSession session,
+                                      Type type) throws ArooaPropertyException, ArooaConversionException {
                     return evaluatorTry
                             .orElseThrow(t -> new IllegalArgumentException(
                                     "Failed to evaluate " + propertyExpression, t))
@@ -61,7 +64,9 @@ public class ScriptEvaluator implements Evaluator {
     }
 
     @Override
-    public <T> T evaluate(String propertyExpression, ArooaSession session, Class<T> type) throws ArooaPropertyException, ArooaConversionException {
+    public <T> T evaluate(String propertyExpression,
+                          ArooaSession session,
+                          Type type) throws ArooaPropertyException, ArooaConversionException {
 
         if (propertyExpression == null) {
             return null;

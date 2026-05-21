@@ -11,6 +11,7 @@ import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ abstract class DesignPropertyBase implements DesignElementProperty {
 	 * @param parent The parent DesignInstance.
 	 */
 	DesignPropertyBase(String property,
-			Class<?> propertyClass,
+			Type propertyClass,
 			ArooaType type,
 			DesignInstance parent) {
 		this.property = property;
@@ -55,7 +56,7 @@ abstract class DesignPropertyBase implements DesignElementProperty {
 	 * @param property The property name.
 	 * @param parent The parent DesignInstance.
 	 * 
-	 * @throws ArooaPropertyException
+	 * @throws ArooaPropertyException If the property is missing or can't be accessed.
 	 */
 	DesignPropertyBase(String property,
 			DesignInstance parent) 
@@ -78,7 +79,7 @@ abstract class DesignPropertyBase implements DesignElementProperty {
 		BeanOverview overview = parentClass.getBeanOverview(
 				propertyAccessor);
 		
-		Class<?> propertyClass = overview.getPropertyType(property);
+		Type propertyClass = overview.getPropertyType(property);
 
 		this.arooaContext = new PropertyContext(
 				propertyClass, this, type, parent.getArooaContext());
@@ -91,7 +92,7 @@ abstract class DesignPropertyBase implements DesignElementProperty {
 	 * This allows the mapped property to extract the key. Not very
 	 * elegant!
 	 * 
-	 * @param element
+	 * @param element The element.
 	 * @return The thing that will insert the design into this property.
 	 */
 	DesignSetter getDesignSetter(final ArooaElement element) {
@@ -168,8 +169,8 @@ abstract class DesignPropertyBase implements DesignElementProperty {
 	 * Used by {@link DesignSetter}s to do the actual design insertion. 
 	 * This method notifies design listeners of the design change.
 	 * 
-	 * @param index
-	 * @param design
+	 * @param index The index.
+	 * @param design The instance
 	 */
 	void synchronizedInsert(int index, DesignInstance design) {
 		synchronized (listeners) {

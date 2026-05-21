@@ -12,6 +12,7 @@ import org.oddjob.arooa.registry.ServiceFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,7 +34,7 @@ public class AutoSetter {
 	 * Allows a property to be marked as already set. This allows configuration
 	 * to override the auto setting.
 	 * 
-	 * @param propertyName
+	 * @param propertyName The property name.
 	 */
 	public void markAsSet(String propertyName) {
 		if (!itsUsDoingTheSetting) {
@@ -86,7 +87,7 @@ public class AutoSetter {
 					context.getSession().getTools().getServiceHelper(
 							).serviceFinderFor(context);
 
-			Class<?> propertyType = overview.getPropertyType(property);
+			Type propertyType = overview.getPropertyType(property);
 			String qualifier = beanDescriptor.getFlavour(property);
 
 			Object value;
@@ -95,13 +96,13 @@ public class AutoSetter {
 			}
 			catch (Exception e) {
 				throw new ArooaPropertyException(property, "Unexpected Exception finding service of type " +
-						propertyType.getName() + " qualifier " + qualifier +
+						propertyType.getTypeName() + " qualifier " + qualifier +
 						" in class " + classIdentifier.forClass().getName(), e);
 			}
 
 			if (value == null) {
 				logger.debug("No service for property {} of type {} qualifier {} in class {}",
-						property, propertyType.getName(), qualifier, classIdentifier.forClass().getName());
+						property, propertyType.getTypeName(), qualifier, classIdentifier.forClass().getName());
 			}
 			else {
 				try {

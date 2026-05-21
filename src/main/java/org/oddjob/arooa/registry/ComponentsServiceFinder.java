@@ -1,12 +1,14 @@
 package org.oddjob.arooa.registry;
 
+import org.oddjob.arooa.ComponentTrinity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.oddjob.arooa.ComponentTrinity;
+
+import java.lang.reflect.Type;
 
 /**
  * A {@link ServiceFinder] for a {@link ComponentPool}.
- * 
+ * <p>
  * @author rob
  *
  */
@@ -20,8 +22,9 @@ public class ComponentsServiceFinder implements ServiceFinder {
 	public ComponentsServiceFinder(ComponentPool directory) {
 		this.directory = directory;
 	}
-	
-	public <T> T find(Class<T> cl, String flavour) {
+
+	@Override
+	public <T> T find(Type cl, String flavour) {
 		
 		for (ComponentTrinity trinity: directory.allTrinities()) {
 			
@@ -47,22 +50,18 @@ public class ComponentsServiceFinder implements ServiceFinder {
 				continue;
 			}
 			
-			T service = cl.cast(lookup.getService(identifier));
+			@SuppressWarnings("unchecked")
+			T service = (T) (lookup.getService(identifier));
 
 			if (logger.isDebugEnabled()) {
-				logger.debug("Found Service [" + service + "] for " + 
-						cl.getName() + ( flavour == null ? "" : ", " + flavour) +
-						" from provider [" + provider + 
-						"] in the Component Pool.");
+                logger.debug("Found Service [{}] for {}{} from provider [{}] in the Component Pool.", service, cl.getTypeName(), flavour == null ? "" : ", " + flavour, provider);
 			}
 			
 			return service;
 		}
 		
 		if (logger.isDebugEnabled()) {
-			logger.debug("No Service for " + 
-					cl.getName() + ( flavour == null ? "" : ", " + flavour) +
-					" found from providers in the Component Pool.");
+            logger.debug("No Service for {}{} found from providers in the Component Pool.", cl.getTypeName(), flavour == null ? "" : ", " + flavour);
 		}
 		
 		return null;

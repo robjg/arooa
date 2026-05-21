@@ -6,6 +6,8 @@ import org.oddjob.arooa.reflect.ArooaInstantiationException;
 import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 
+import java.lang.reflect.Type;
+
 /**
  * An {@link ArooaClass} for {@link DynaClass}es.
  * 
@@ -34,16 +36,19 @@ public class DynaArooaClass implements ArooaClass {
 	public Class<?> forClass() {
 		return forClass;
 	}
-	
+
+	@Override
+	public Type getType() {
+		return forClass;
+	}
+
 	public Object newInstance() throws ArooaInstantiationException {
 		try {
 			return dynaClass.newInstance();
-		} catch (IllegalAccessException e) {
-			throw new ArooaInstantiationException(e);
-		} catch (InstantiationException e) {
+		} catch (IllegalAccessException | InstantiationException e) {
 			throw new ArooaInstantiationException(e);
 		}
-	}
+    }
 	
 	@Override
 	public BeanOverview getBeanOverview(PropertyAccessor accessor) {

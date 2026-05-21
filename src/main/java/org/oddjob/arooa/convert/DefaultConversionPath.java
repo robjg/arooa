@@ -36,10 +36,10 @@ public class DefaultConversionPath<F, T> implements ConversionPath<F, T> {
 			throw new NullPointerException("ConversionStep can not be null.");
 		}
 
-		if (!following.getFromClass().equals(getToClass())) {
+		if (!following.getFromType().equals(getToType())) {
 			throw new IllegalArgumentException("Can't append path with [" + 
-					following.getFromClass() + "], expected [" + 
-					getToClass() + "]");
+					following.getFromType() + "], expected [" +
+					getToType() + "]");
 		}
 		
 		List<ConversionStep<?, ?>> next =
@@ -198,8 +198,8 @@ public class DefaultConversionPath<F, T> implements ConversionPath<F, T> {
 				} else {
 					out.print("Missed: ");
 				}
-				out.println(steps.get(i).getFromClass() +
-						" to " + steps.get(i).getToClass());
+				out.println(steps.get(i).getFromType() +
+						" to " + steps.get(i).getToType());
 			}
 		}
 	
@@ -216,10 +216,10 @@ public class DefaultConversionPath<F, T> implements ConversionPath<F, T> {
 		StringBuilder builder = new StringBuilder();
 		for (ConversionStep<?, ?> step : steps) {
 			if (builder.isEmpty()) {
-				builder.append(step.getFromClass().getSimpleName());
+				builder.append(step.getFromType().getRawType().getSimpleName());
 			}
 			builder.append('-');
-			builder.append(step.getToClass().getSimpleName());
+			builder.append(step.getToType().getRawType().getSimpleName());
 		}
 		return builder.toString();
 	}

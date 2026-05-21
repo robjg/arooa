@@ -58,10 +58,6 @@
 
 package org.oddjob.arooa.standard;
 
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Vector;
-
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.convert.ArooaConversionException;
@@ -69,6 +65,11 @@ import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.runtime.Evaluator;
 import org.oddjob.arooa.runtime.ExpressionParser;
 import org.oddjob.arooa.runtime.ParsedExpression;
+
+import java.lang.reflect.Type;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Vector;
 
 
 /**
@@ -84,14 +85,14 @@ public class StandardPropertyHelper implements ExpressionParser {
 			throw new NullPointerException("Null Expression.");
 		}
 
-    	Vector<String> fragments = new Vector<String>();
-    	Vector<String> propertyRefs = new Vector<String>();
+    	Vector<String> fragments = new Vector<>();
+    	Vector<String> propertyRefs = new Vector<>();
     	
 		parsePropertyString(expression, fragments, propertyRefs);
 		
 		// return an object if there was only one ref and no fragments.
 		if (propertyRefs.size() == 1 && fragments.size() == 1) {
-			String propertyName = (String)propertyRefs.elementAt(0);
+			String propertyName = propertyRefs.elementAt(0);
 			return new SinglePropertyOnly(propertyName);
 		}
 		else {
@@ -105,7 +106,7 @@ public class StandardPropertyHelper implements ExpressionParser {
 	 * of text fragments, while the other is a set of string property names.
 	 * <code>null</code> entries in the first list indicate a property
 	 * reference from the second list.
-	 *
+	 * <p></p>
 	 * It can be overridden with a more efficient or customized version.
 	 *
 	 * @param value     Text to parse. Must not be <code>null</code>.
@@ -176,7 +177,7 @@ public class StandardPropertyHelper implements ExpressionParser {
 		}
 	}
 	
-	class StandardPropertyEvaluator implements ParsedExpression {
+	static class StandardPropertyEvaluator implements ParsedExpression {
 		
 		private final Vector<String> fragments;
 		
@@ -193,12 +194,8 @@ public class StandardPropertyHelper implements ExpressionParser {
 	     * Replaces <code>${xxx}</code> style constructions in the given value
 	     * with the string value of the corresponding data types.
 	     *
-	     * @param thing The string to be scanned for property references.
-	     *              May be <code>null</code>, in which case this
-	     *              method returns immediately with no effect.
-	     * @param keys  Mapping (String to String) of property names to their
-	     *              values. If <code>null</code>, only project properties will
-	     *              be used.
+	     * @param session The session.
+	     * @param type  required type.
 	     *
 	     * @exception ArooaException if the string contains an opening
 	     *                           <code>${</code> without a closing
@@ -207,18 +204,18 @@ public class StandardPropertyHelper implements ExpressionParser {
 	     *         <code>null</code> if the original string is <code>null</code>.
 	     */
 		@Override
-		public <T> T evaluate(ArooaSession session, Class<T> type) 
+		public <T> T evaluate(ArooaSession session, Type type)
 		throws ArooaConversionException {
 	    	Evaluator evaluator = session.getTools().getEvaluator();
-	        StringBuffer sb = new StringBuffer();
+	        StringBuilder sb = new StringBuilder();
 	        
 	        Enumeration<String> i = fragments.elements();
 	        Enumeration<String> j = propertyRefs.elements();
 	
 	        while (i.hasMoreElements()) {
-	            String fragment = (String) i.nextElement();
+	            String fragment = i.nextElement();
 	            if (fragment == null) {
-	                String propertyName = (String) j.nextElement();
+	                String propertyName = j.nextElement();
 	                String replacement = evaluator.evaluate(
 		                		propertyName, session, String.class);
 	                if (replacement == null) {
@@ -241,7 +238,7 @@ public class StandardPropertyHelper implements ExpressionParser {
 		 */
 		@Override
 		public boolean isConstant() {
-			return propertyRefs.size() == 0;
+			return propertyRefs.isEmpty();
 		}
 	
 	}
@@ -249,7 +246,7 @@ public class StandardPropertyHelper implements ExpressionParser {
 	/**
 	 * A {@link ParsedExpression} for 
 	 */
-	class SinglePropertyOnly implements ParsedExpression {
+    static class SinglePropertyOnly implements ParsedExpression {
 		
 		private final String propertyExpression;
 	
@@ -258,7 +255,7 @@ public class StandardPropertyHelper implements ExpressionParser {
 		}
 		
 		@Override
-		public <T> T evaluate(ArooaSession session, Class<T> type) 
+		public <T> T evaluate(ArooaSession session, Type type)
 		throws ArooaConversionException {
 			
 			Evaluator evaluator = session.getTools().getEvaluator();

@@ -1,5 +1,7 @@
 package org.oddjob.arooa.reflect;
 
+import java.lang.reflect.Type;
+
 /**
  * 
  * A container for type information that can be more than just class,
@@ -21,6 +23,8 @@ public interface ArooaClass {
      * @return A class. Never null.
      */
 	Class<?> forClass();
+
+    Type getType();
 
     /**
      * Create a new instance of the Object this represents.

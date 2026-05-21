@@ -4,6 +4,8 @@ import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.design.screem.FormItem;
 import org.oddjob.arooa.design.screem.SingleTypeSelection;
 
+import java.lang.reflect.Type;
+
 /**
  * A {@link DesignElementProperty} for a simple property, i.e. not an 
  * indexed property or a mapped property.
@@ -28,7 +30,7 @@ public class SimpleDesignProperty extends DesignPropertyBase {
 	 * @param parent
 	 */
 	public SimpleDesignProperty(String property, 
-			Class<?> propertyClass,
+			Type propertyClass,
 			ArooaType type, DesignInstance parent) {
 		super(property, propertyClass, type, parent);		
 	}

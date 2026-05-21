@@ -3,19 +3,20 @@
  */
 package org.oddjob.arooa.beanutils;
 
-import java.beans.IndexedPropertyDescriptor;
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.apache.commons.beanutils.MappedPropertyDescriptor;
 import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.oddjob.arooa.reflect.ArooaNoPropertyException;
 import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyExceptionBuilder;
+
+import java.beans.IndexedPropertyDescriptor;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 class BeanUtilsBeanOverview implements BeanOverview {
 
@@ -90,7 +91,7 @@ class BeanUtilsBeanOverview implements BeanOverview {
 				new String[this.descriptors.size()]);
 	}
 	
-	public Class<?> getPropertyType(String property) throws ArooaNoPropertyException {
+	public Type getPropertyType(String property) throws ArooaNoPropertyException {
 		PropertyDescriptor propertyDescriptor = descriptors.get(property);
 		if (propertyDescriptor == null) {
 			throw new PropertyExceptionBuilder(

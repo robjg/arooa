@@ -1,12 +1,7 @@
 package org.oddjob.arooa.runtime;
 
-import org.junit.Test;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.junit.Assert;
-
+import org.junit.Test;
 import org.oddjob.arooa.ArooaException;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
@@ -22,6 +17,10 @@ import org.oddjob.arooa.registry.Services;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.standard.StandardArooaSession;
 import org.oddjob.arooa.xml.XMLConfiguration;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.lang.reflect.Type;
 
 public class AutoSetterTest extends Assert {
 	
@@ -48,7 +47,7 @@ public class AutoSetterTest extends Assert {
 	}
 	
 
-	private class OurRuntime extends MockRuntimeConfiguration {
+	private static class OurRuntime extends MockRuntimeConfiguration {
 		
 		String name;
 		Object value;
@@ -61,7 +60,7 @@ public class AutoSetterTest extends Assert {
 		@Override
 		public void setProperty(String name, Object value)
 				throws ArooaException {
-			assertEquals(null, this.name);
+            assertNull(this.name);
 			this.name = name;
 			this.value = value;
 		}
@@ -86,7 +85,7 @@ public class AutoSetterTest extends Assert {
 					else throw new RuntimeException("Unexpected!");
 				}
 				@Override
-				public String serviceNameFor(Class<?> theClass, String flavour) {
+				public String serviceNameFor(Type theClass, String flavour) {
 					if (Integer.class == theClass) {
 						return null;
 					}
@@ -105,7 +104,7 @@ public class AutoSetterTest extends Assert {
 		}
 	}
 	
-	private class OurContext extends MockArooaContext {
+	private static class OurContext extends MockArooaContext {
 		ArooaSession session;
 		RuntimeConfiguration runtime;
 				
@@ -157,7 +156,7 @@ public class AutoSetterTest extends Assert {
 			return new Services() {
 				
 				@Override
-				public String serviceNameFor(Class<?> theClass, String flavour) {
+				public String serviceNameFor(Type theClass, String flavour) {
 					if (Integer.class == theClass) {
 						return "numbers";
 					}
@@ -170,18 +169,11 @@ public class AutoSetterTest extends Assert {
 				@Override
 				public Object getService(String serviceName)
 						throws IllegalArgumentException {
-					if ("numbers".equals(serviceName)) {
-						return new Integer(2);
-					}
-					else if (serviceName.equals("fruit")) {
-						return null;
-					}
-					else if (serviceName.equals("crisps")) {
-						return null;
-					}
-					else {
-						throw new RuntimeException("Unexpected " + serviceName);
-					}
+                    return switch (serviceName) {
+                        case "numbers" -> 2;
+                        case "fruit", "crisps" -> null;
+                        default -> throw new RuntimeException("Unexpected " + serviceName);
+                    };
 				}
 			};
 		}
@@ -229,7 +221,7 @@ public class AutoSetterTest extends Assert {
 		
 		assertEquals("salt and vinegar", root.thing.prop1);
 		assertEquals("pears", root.thing.prop2);
-		assertEquals(new Integer(2), root.thing.prop3);
+		assertEquals(Integer.valueOf(2), root.thing.prop3);
 		
 		CutAndPasteSupport cnp = new CutAndPasteSupport(
 				components.contextFor(root));
@@ -242,7 +234,7 @@ public class AutoSetterTest extends Assert {
 		
 		assertEquals("salt and vinegar", root.thing.prop1);
 		assertEquals("pears", root.thing.prop2);
-		assertEquals(new Integer(2), root.thing.prop3);
+		assertEquals(Integer.valueOf(2), root.thing.prop3);
 		
 		
 		root.thing.prop1 = null;
@@ -253,7 +245,7 @@ public class AutoSetterTest extends Assert {
 		
 		assertEquals("salt and vinegar", root.thing.prop1);
 		assertEquals("pears", root.thing.prop2);
-		assertEquals(new Integer(2), root.thing.prop3);
+		assertEquals(Integer.valueOf(2), root.thing.prop3);
 		
 		
 	}

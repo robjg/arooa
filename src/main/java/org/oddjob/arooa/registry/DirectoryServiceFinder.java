@@ -3,6 +3,8 @@ package org.oddjob.arooa.registry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Type;
+
 /**
  * A {@link ServiceFinder} that looks through a {@link BeanDirectory}
  * for services.
@@ -20,13 +22,14 @@ public class DirectoryServiceFinder implements ServiceFinder {
 	/**
 	 * Only Constructor.
 	 * 
-	 * @param directory
+	 * @param directory A Bean Directory.
 	 */
 	public DirectoryServiceFinder(BeanDirectory directory) {
 		this.directory = directory;
 	}
-	
-	public <T> T find(Class<T> cl, String flavour) {
+
+	@Override
+	public <T> T find(Type cl, String flavour) {
 		
 		Iterable<ServiceProvider> providers = 
 			directory.getAllByType(ServiceProvider.class);
@@ -43,22 +46,18 @@ public class DirectoryServiceFinder implements ServiceFinder {
 				continue;
 			}
 			
-			T service = cl.cast(lookup.getService(identifier));
+			@SuppressWarnings("unchecked")
+			T service = (T) (lookup.getService(identifier));
 			
 			if (logger.isDebugEnabled()) {
-				logger.debug("Found Service [" + service + "] for " + 
-						cl.getName() + ( flavour == null ? "" : ", " + flavour) +
-						" from provider [" + provider + 
-						"] in the Bean Directory.");
+                logger.debug("Found Service [{}] for {}{} from provider [{}] in the Bean Directory.", service, cl.getTypeName(), flavour == null ? "" : ", " + flavour, provider);
 			}
 			
 			return service;
 		}
 		
 		if (logger.isDebugEnabled()) {
-			logger.debug("No Service for " + 
-					cl.getName() + ( flavour == null ? "" : ", " + flavour) +
-					" found from providers in the Bean Directory.");
+            logger.debug("No Service for {}{} found from providers in the Bean Directory.", cl.getTypeName(), flavour == null ? "" : ", " + flavour);
 		}
 		
 		return null;

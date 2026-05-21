@@ -7,11 +7,12 @@ import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.convert.ConversionFailedException;
 import org.oddjob.arooa.convert.NoConversionAvailableException;
 import org.oddjob.arooa.parsing.ArooaContext;
-import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.ArooaClass;
+import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.runtime.RuntimeEvent;
 import org.oddjob.arooa.runtime.RuntimeListener;
 
+import java.lang.reflect.Type;
 import java.util.Objects;
 
 /**
@@ -113,15 +114,15 @@ abstract class ContainerRuntime extends StandardRuntime {
     /**
      * Convert if not a component property.
      * 
-     * @param from
-     * @return
+     * @param from The thing to convert.
+     * @return The converted thing.
      */
     Object convert(Object from) {
     	
     	if (getContext().getArooaType() == ArooaType.COMPONENT) {
     		return from;
     	}
-		Class<?> propertyType = getClassIdentifier().forClass();
+		Type propertyType = getClassIdentifier().getType();
 		ArooaConverter converter = getContext().getSession(
 			).getTools().getArooaConverter();
 		

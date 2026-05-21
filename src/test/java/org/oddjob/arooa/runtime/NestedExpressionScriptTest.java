@@ -7,6 +7,7 @@ import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class NestedExpressionScriptTest {
 
             Evaluator scriptEval = new Evaluator() {
                 @Override
-                public <T> T evaluate(String propertyExpression, ArooaSession session, Class<T> type) throws ArooaPropertyException {
+                public <T> T evaluate(String propertyExpression, ArooaSession session, Type type) throws ArooaPropertyException {
                     evaluated.add(propertyExpression);
 
                     return (T) ("Evaluated:" + Integer.valueOf(evaluated.size()).toString());
@@ -40,7 +41,7 @@ public class NestedExpressionScriptTest {
 
             Evaluator propertyEval = new Evaluator() {
                 @Override
-                public <T> T evaluate(String propertyExpression, ArooaSession session, Class<T> type) throws ArooaPropertyException {
+                public <T> T evaluate(String propertyExpression, ArooaSession session, Type type) throws ArooaPropertyException {
                     evaluated.add(propertyExpression);
 
                     return (T) propertyExpression.toUpperCase();
@@ -74,7 +75,7 @@ public class NestedExpressionScriptTest {
 
         assertThat(scriptCapture.evaluate("#{function foo(x) { x + 2 }}"),
                 is("Evaluated:1"));
-        assertThat(scriptCapture.evaluated.get(0),
+        assertThat(scriptCapture.evaluated.getFirst(),
                 is("function foo(x) { x + 2 }"));
     }
 
@@ -111,7 +112,7 @@ public class NestedExpressionScriptTest {
 
         assertThat(scriptCapture.evaluate("#{x => { x {{Y}{Z}} }}"),
                 is("Evaluated:1"));
-        assertThat(scriptCapture.evaluated.get(0),
+        assertThat(scriptCapture.evaluated.getFirst(),
                 is("x => { x {{Y}{Z}} }"));
     }
 }

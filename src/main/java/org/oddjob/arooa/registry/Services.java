@@ -1,5 +1,7 @@
 package org.oddjob.arooa.registry;
 
+import java.lang.reflect.Type;
+
 /**
  * A Lookup for services. Looking up services is a two step
  * process. First get the name of the service, then use the
@@ -34,7 +36,7 @@ public interface Services {
 	 * 
 	 * @return A service name, or null if none can be provided.
 	 */
-	String serviceNameFor(Class<?> theClass, String flavour);
+	String serviceNameFor(Type theClass, String flavour);
 	
 	/**
 	 * Provide the service for the given name.

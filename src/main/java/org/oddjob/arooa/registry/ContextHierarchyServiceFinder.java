@@ -1,15 +1,17 @@
 package org.oddjob.arooa.registry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.runtime.InstanceRuntimeConfiguration;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Type;
 
 /**
  * A {@link ServiceFinder] that uses the hierarchy of {@link ArooaContext}s
  * to find a service.
- * 
+ * <p>
  * @author rob
  *
  */
@@ -30,7 +32,7 @@ public class ContextHierarchyServiceFinder implements ServiceFinder {
 	}
 	
 	@Override
-	public <T> T find(Class<T> cl, String flavour) {
+	public <T> T find(Type cl, String flavour) {
 		
 		for (ArooaContext context = this.arooaContext; 
 				context != null; context = context.getParent()) {
@@ -48,13 +50,11 @@ public class ContextHierarchyServiceFinder implements ServiceFinder {
 				continue;
 			}
 			
-			if (! (instance instanceof ServiceProvider)) {
+			if (! (instance instanceof ServiceProvider provider)) {
 				continue;
 			}
-						
-			ServiceProvider provider = (ServiceProvider) instance;
-						
-			Services lookup = provider.getServices();
+
+            Services lookup = provider.getServices();
 			if (lookup == null) {
 				continue;
 			}
@@ -64,22 +64,18 @@ public class ContextHierarchyServiceFinder implements ServiceFinder {
 				continue;
 			}
 			
-			T service = cl.cast(lookup.getService(identifier));
+			@SuppressWarnings("unchecked")
+			T service = (T) (lookup.getService(identifier));
 			
 			if (logger.isDebugEnabled()) {
-				logger.debug("Found Service [" + service + "] for " + 
-						cl.getName() + ( flavour == null ? "" : ", " + flavour) +
-						" from provider [" + provider + 
-						"] in the Context Hierarchy.");
+                logger.debug("Found Service [{}] for {}{} from provider [{}] in the Context Hierarchy.", service, cl.getTypeName(), flavour == null ? "" : ", " + flavour, provider);
 			}
 			
 			return service;
 		}
 		
 		if (logger.isDebugEnabled()) {
-			logger.debug("No Service for " + 
-					cl.getName() + ( flavour == null ? "" : ", " + flavour) +
-					" found from providers in the Context Hierarchy.");
+            logger.debug("No Service for {}{} found from providers in the Context Hierarchy.", cl.getTypeName(), flavour == null ? "" : ", " + flavour);
 		}
 		
 		return null;

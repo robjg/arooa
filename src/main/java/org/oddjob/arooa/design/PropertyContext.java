@@ -8,6 +8,8 @@ import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.runtime.ConfigurationNode;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
+import java.lang.reflect.Type;
+
 class PropertyContext implements ArooaContext {
 
 	private final DesignPropertyBase designProperty;
@@ -26,8 +28,8 @@ class PropertyContext implements ArooaContext {
 		/**
 		 * Set the DesignInstance in the parent DesignProperty.
 		 * 
-		 * @param index
-		 * @param design
+		 * @param index The index.
+		 * @param design The instance.
 		 */
 		void setDesign(int index, DesignInstance design);
 		
@@ -141,7 +143,7 @@ class PropertyContext implements ArooaContext {
 	}
 
 
-	private final ConfigurationNode<ArooaContext> configurationNode = new DesignConfigurationNode() {
+	private final ConfigurationNode<ArooaContext> configurationNode = new DesignConfigurationNode<>() {
 
 		public ArooaContext getContext() {
 			return PropertyContext.this;
@@ -149,7 +151,7 @@ class PropertyContext implements ArooaContext {
 		
 		public void addText(String text) {
 			String trimmedText = text.trim(); 
-			if (trimmedText.length() > 0) {
+			if (!trimmedText.isEmpty()) {
 				throw new ArooaException("No text expected: " + trimmedText);				
 			}
 		}
@@ -216,7 +218,7 @@ class PropertyContext implements ArooaContext {
 	
 	
 	public PropertyContext(
-			Class<?> propertyClass,
+			Type propertyClass,
 			DesignPropertyBase designProperty,
 			ArooaType type,
 			ArooaContext parentContext) {

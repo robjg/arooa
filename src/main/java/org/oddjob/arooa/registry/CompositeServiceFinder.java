@@ -1,5 +1,7 @@
 package org.oddjob.arooa.registry;
 
+import java.lang.reflect.Type;
+
 /**
  * A {@link ServiceFinder} that combines the results of other
  * {@code ServiceFinder}s.
@@ -15,7 +17,7 @@ public class CompositeServiceFinder implements ServiceFinder {
     }
 
     @Override
-    public <T> T find(Class<T> cl, String flavour) {
+    public <T> T find(Type cl, String flavour) {
         for (ServiceFinder finder : finders) {
             T service = finder.find(cl, flavour);
             if (service != null) {

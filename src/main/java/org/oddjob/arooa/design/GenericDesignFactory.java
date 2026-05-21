@@ -11,6 +11,7 @@ import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -104,7 +105,7 @@ public class GenericDesignFactory implements DesignFactory {
                 continue;
             }
 
-            Class<?> propertyClassName = overview.getPropertyType(property);
+            Type propertyClassName = overview.getPropertyType(property);
 
             ConfiguredHow configuredHow = arooaBeanDescriptor
                     .getConfiguredHow(property);

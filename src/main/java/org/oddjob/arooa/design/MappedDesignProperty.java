@@ -11,6 +11,7 @@ import org.oddjob.arooa.reflect.ArooaPropertyException;
 import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,7 @@ public class MappedDesignProperty extends DesignPropertyBase {
 	 * @param parent
 	 */
 	public MappedDesignProperty(String property,
-			Class<?> propertyClass,
+			Type propertyClass,
 			ArooaType type,
 			DesignInstance parent) {
 		super(property, propertyClass, type, parent);

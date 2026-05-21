@@ -12,6 +12,7 @@ import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
 import javax.inject.Inject;
+import java.lang.reflect.Type;
 
 public class SimpleComponentPoolIdTest extends Assert {
 
@@ -63,7 +64,7 @@ public class SimpleComponentPoolIdTest extends Assert {
 			return new Services() {
 				
 				@Override
-				public String serviceNameFor(Class<?> theClass, String flavour) {
+				public String serviceNameFor(Type theClass, String flavour) {
 					assertEquals(SnackProvider.class, theClass);
 					return "snacks";
 				}

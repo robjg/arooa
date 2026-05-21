@@ -1,5 +1,7 @@
 package org.oddjob.arooa.registry;
 
+import java.lang.reflect.Type;
+
 /**
  * Finds services for automatically setting on bean instances.
  * 
@@ -14,8 +16,8 @@ public interface ServiceFinder {
 	 * @param cl The class of the service.
 	 * @param qualifier The flavour of the service. Not yet implemented.
 	 * 
-	 * @return
+	 * @return A service or null.
 	 */
-	<T> T find(Class<T> cl, String qualifier);
+	<T> T find(Type cl, String qualifier);
 
 }

@@ -1,17 +1,16 @@
 package org.oddjob.arooa.standard;
 
-import org.junit.Test;
-
-import javax.inject.Inject;
-
 import org.junit.Assert;
-
+import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.registry.InvalidIdException;
 import org.oddjob.arooa.registry.ServiceProvider;
 import org.oddjob.arooa.registry.Services;
 import org.oddjob.arooa.xml.XMLConfiguration;
+
+import javax.inject.Inject;
+import java.lang.reflect.Type;
 
 public class AutoConfigurationTest extends Assert {
 
@@ -29,14 +28,14 @@ public class AutoConfigurationTest extends Assert {
 		
 	}
 	
-	private class OurProvider implements ServiceProvider {
+	private static class OurProvider implements ServiceProvider {
 		
 		int provided;
 		
 		public Services getServices() {
 			return new Services() {
 				
-				public String serviceNameFor(Class<?> theClass, String flavour) {
+				public String serviceNameFor(Type theClass, String flavour) {
 					assertEquals(Fruit.class, theClass);
 					return "fruit";
 				}

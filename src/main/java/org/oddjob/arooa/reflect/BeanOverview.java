@@ -3,6 +3,8 @@
  */
 package org.oddjob.arooa.reflect;
 
+import java.lang.reflect.Type;
+
 /**
  * A Bean Overview is a very light look at the characteristics of
  * a bean.
@@ -16,7 +18,7 @@ public interface BeanOverview {
 	 * 
 	 * @return An array of names.
 	 */
-	public String[] getProperties();
+    String[] getProperties();
 	
 	/**
 	 * Is there a writable property of the given name.
@@ -25,7 +27,7 @@ public interface BeanOverview {
 	 * 
 	 * @return true/false
 	 */
-	public boolean hasWriteableProperty(String property);
+    boolean hasWriteableProperty(String property);
 	
 	/**
 	 * Is there a readable property of the given name.
@@ -34,7 +36,7 @@ public interface BeanOverview {
 	 * 
 	 * @return true/false
 	 */
-	public boolean hasReadableProperty(String property);
+    boolean hasReadableProperty(String property);
 	
 	/**
 	 * Get the property type.
@@ -42,10 +44,10 @@ public interface BeanOverview {
 	 * @param property The property name.
 	 * 
 	 * @return The class of the property.
-	 * 
-	 * @throws ArooaNoPropertyException
+	 *
+	 * @throws ArooaNoPropertyException If the property doesn't exist or can't be accessed.
 	 */
-	public Class<?> getPropertyType(String property) throws ArooaNoPropertyException;
+	Type getPropertyType(String property) throws ArooaNoPropertyException;
 	
 	/**
 	 * Is the property indexed.
@@ -54,9 +56,9 @@ public interface BeanOverview {
 	 * 
 	 * @return true/false.
 	 * 
-	 * @throws ArooaNoPropertyException
+	 * @throws ArooaNoPropertyException If the property doesn't exist or can't be accessed.
 	 */
-	public boolean isIndexed(String property) throws ArooaNoPropertyException;
+	boolean isIndexed(String property) throws ArooaNoPropertyException;
 
 	/**
 	 * Is the property mapped.
@@ -65,8 +67,8 @@ public interface BeanOverview {
 	 * 
 	 * @return true/false.
 	 * 
-	 * @throws ArooaNoPropertyException
+	 * @throws ArooaNoPropertyException If the property doesn't exist or can't be accessed.
 	 */
-	public boolean isMapped(String property) throws ArooaNoPropertyException;
+	boolean isMapped(String property) throws ArooaNoPropertyException;
 	
 }

@@ -3,6 +3,8 @@ package org.oddjob.arooa.runtime;
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.convert.ArooaConversionException;
 
+import java.lang.reflect.Type;
+
 /**
  * The result of parsing an expression with an {@link ExpressionParser}.
  * A ParsedExpression is an intermediate step to being evaluated.
@@ -20,7 +22,7 @@ public interface ParsedExpression {
 	 * 
 	 * @return An object result. May be null.
 	 */
-	<T> T evaluate(ArooaSession session, Class<T> type)
+	<T> T evaluate(ArooaSession session, Type type)
 	throws ArooaConversionException;
 		
 	/**

@@ -6,6 +6,8 @@ import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.convert.NullConversions;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 
+import java.lang.reflect.Type;
+
 /**
  * Evaluates the property expression first as an a.b.c type property
  * then as a property of an object.
@@ -15,15 +17,16 @@ import org.oddjob.arooa.reflect.ArooaPropertyException;
  */
 public class PropertyFirstEvaluator implements Evaluator {
 
+	@Override
 	public <T> T evaluate(String propertyExpression, 
-			ArooaSession session, Class<T> cl) 
+			ArooaSession session, Type cl)
 	throws ArooaPropertyException, ArooaConversionException {
 		
 		if (propertyExpression == null) {
 			return NullConversions.nullConversionFor(cl);
 		}
 		
-		if (propertyExpression.length() == 0) {
+		if (propertyExpression.isEmpty()) {
 			return NullConversions.nullConversionFor(cl);
 		}
 		

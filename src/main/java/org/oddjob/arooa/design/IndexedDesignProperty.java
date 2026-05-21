@@ -1,11 +1,12 @@
 package org.oddjob.arooa.design;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.oddjob.arooa.ArooaType;
 import org.oddjob.arooa.design.screem.FormItem;
 import org.oddjob.arooa.design.screem.MultiTypeTable;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 public class IndexedDesignProperty extends DesignPropertyBase {
 
@@ -14,8 +15,8 @@ public class IndexedDesignProperty extends DesignPropertyBase {
 	
 	
 	public IndexedDesignProperty(String property,
-			Class<?> propertyClass,
-			ArooaType type ,
+			Type propertyClass,
+			ArooaType type,
 			DesignInstance parent) {
 		super(property, propertyClass, type, parent);
 	}

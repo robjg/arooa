@@ -5,6 +5,9 @@ import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.ArooaInstantiationException;
 import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyAccessor;
+import org.oddjob.arooa.utils.ClassUtils;
+
+import java.lang.reflect.Type;
 
 /**
  * Wrapper for a standard Java class.
@@ -14,18 +17,31 @@ import org.oddjob.arooa.reflect.PropertyAccessor;
 public class SimpleArooaClass implements ArooaClass {
 
 	private final Class<?> forClass;
-	
+
+	private final Type type;
+
 	public SimpleArooaClass(Class<?> forClass) {
 		this.forClass = forClass;
+		this.type = forClass;
 	}
-	
+
+	public SimpleArooaClass(Type type) {
+		this.type = type;
+		this.forClass = ClassUtils.rawType(type);
+	}
+
 	public Class<?> forClass() {
 		return forClass;
 	}
-	
+
+	@Override
+	public Type getType() {
+		return type;
+	}
+
 	public Object newInstance() throws ArooaInstantiationException {
 		try {
-			return forClass.newInstance();
+			return forClass.getConstructor().newInstance();
 		}
 		catch (Exception e) {
 			throw new ArooaInstantiationException(e);

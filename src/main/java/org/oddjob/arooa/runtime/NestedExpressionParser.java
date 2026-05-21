@@ -5,6 +5,7 @@ import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.convert.ArooaConverter;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -158,7 +159,7 @@ public class NestedExpressionParser implements ExpressionParser {
 		}
 		
 		@Override
-		public <T> T evaluate(ArooaSession session, Class<T> type)
+		public <T> T evaluate(ArooaSession session, Type type)
 				throws ArooaConversionException {
 			return session.getTools().getArooaConverter().convert(
 					value, type);
@@ -189,7 +190,7 @@ public class NestedExpressionParser implements ExpressionParser {
 		}
 		
 		@Override
-		public <T> T evaluate(ArooaSession session, Class<T> type)
+		public <T> T evaluate(ArooaSession session, Type type)
 				throws ArooaConversionException {
 			String propertyRef = expression.evaluate(session, String.class);
 			Evaluator evaluator = session.getTools().getEvaluator();
@@ -219,7 +220,7 @@ public class NestedExpressionParser implements ExpressionParser {
 		}
 
 		@Override
-		public <T> T evaluate(ArooaSession session, Class<T> type)
+		public <T> T evaluate(ArooaSession session, Type type)
 				throws ArooaConversionException {
 			String script = expression.evaluate(session, String.class);
 			Evaluator evaluator = session.getTools().getScriptEvaluator();
@@ -255,7 +256,7 @@ public class NestedExpressionParser implements ExpressionParser {
 		}
 		
 		@Override
-		public <T> T evaluate(ArooaSession session, Class<T> type)
+		public <T> T evaluate(ArooaSession session, Type type)
 				throws ArooaConversionException {
 			if (expressions.size() == 1) {
 				return expressions.get(0).evaluate(session, type);

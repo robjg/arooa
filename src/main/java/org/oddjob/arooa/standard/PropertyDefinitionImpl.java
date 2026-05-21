@@ -9,11 +9,13 @@ import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.runtime.RuntimeConfiguration;
 
+import java.lang.reflect.Type;
+
 public class PropertyDefinitionImpl implements PropertyDefinition {
 
 	private final String property;
 	
-	private final Class<?> type;
+	private final Type type;
 	
 	PropertyDefinitionImpl(String property, ArooaContext parentContext) 
 	throws ArooaNoPropertyException, ArooaException {
