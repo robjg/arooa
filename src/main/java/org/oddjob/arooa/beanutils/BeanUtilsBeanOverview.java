@@ -22,15 +22,24 @@ class BeanUtilsBeanOverview implements BeanOverview {
 
 	private final Class<?> beanClass;
 
-	private final Map<String, PropertyDescriptor> descriptors = 
-		new LinkedHashMap<String, PropertyDescriptor>();
+	private final Map<String, PropertyOverview> descriptors =
+		new LinkedHashMap<String, PropertyOverview>();
 
 	BeanUtilsBeanOverview(Class<?> beanClass, PropertyUtilsBean propertyUtilsBean) {
 		this.beanClass = beanClass;
 		PropertyDescriptor[] descriptors = propertyUtilsBean
 				.getPropertyDescriptors(beanClass);
 		for (int i = 0; i < descriptors.length; i++) {
-			this.descriptors.put(descriptors[i].getName(), descriptors[i]);
+			PropertyDescriptor pd = descriptors[i];
+			PropertyOverview overview;
+			if (pd instanceof IndexedPropertyDescriptor) {
+				overview = PropertyOverview.ofIndexed((IndexedPropertyDescriptor) pd);
+			} else if (pd instanceof MappedPropertyDescriptor) {
+				overview = PropertyOverview.ofMapped((MappedPropertyDescriptor) pd);
+			} else {
+				overview = PropertyOverview.ofSimple(pd);
+			}
+			this.descriptors.put(pd.getName(), overview);
 		}
     	// now find mapped properties.
     	Method[] methods = beanClass.getMethods();
@@ -70,8 +79,9 @@ class BeanUtilsBeanOverview implements BeanOverview {
     				continue;
     			}
     			try {
-    				this.descriptors.put(propertyName, new MappedPropertyDescriptor(
-    						propertyName, beanClass));
+    				MappedPropertyDescriptor descriptor = new MappedPropertyDescriptor(
+    						propertyName, beanClass);
+    				this.descriptors.put(propertyName, PropertyOverview.ofMapped(descriptor));
     			} catch (IntrospectionException e) {
     				// really don't think this should happed
     				// so it's ok to through a runtime exception
@@ -92,86 +102,47 @@ class BeanUtilsBeanOverview implements BeanOverview {
 	}
 	
 	public Type getPropertyType(String property) throws ArooaNoPropertyException {
-		PropertyDescriptor propertyDescriptor = descriptors.get(property);
-		if (propertyDescriptor == null) {
+		PropertyOverview overview = descriptors.get(property);
+		if (overview == null) {
 			throw new PropertyExceptionBuilder(
 					).forClass(beanClass
 					).withOverview(this
 					).noPropertyException(property);
 		}
-		if (propertyDescriptor instanceof IndexedPropertyDescriptor) {
-			return ((IndexedPropertyDescriptor) 
-					propertyDescriptor).getIndexedPropertyType();
-		}
-		if (propertyDescriptor instanceof MappedPropertyDescriptor) {
-			return ((MappedPropertyDescriptor) 
-					propertyDescriptor).getMappedPropertyType();
-		}
-		return propertyDescriptor.getPropertyType();
+		return overview.getPropertyType();
 	}
 
 	public boolean hasReadableProperty(String property) {
-		PropertyDescriptor descriptor = (PropertyDescriptor) descriptors
-				.get(property);
-		if (descriptor == null) {
+		PropertyOverview overview = descriptors.get(property);
+		if (overview == null) {
 			return false;
 		}
-		Method m;
-		if (descriptor instanceof IndexedPropertyDescriptor) {
-			m = ((IndexedPropertyDescriptor) 
-					descriptor).getIndexedReadMethod();
-		}
-		else if (descriptor instanceof MappedPropertyDescriptor) {
-			m = ((MappedPropertyDescriptor) 
-					descriptor).getMappedReadMethod();
-		}
-		else {
-			m = descriptor.getReadMethod();			
-		}
-		m = MethodUtils.getAccessibleMethod(m);
-		return !(m == null);
+		return overview.isReadable();
 	}
 
 	public boolean hasWriteableProperty(String property) {
-		PropertyDescriptor descriptor = (PropertyDescriptor) descriptors
-				.get(property);
-		if (descriptor == null) {
+		PropertyOverview overview = descriptors.get(property);
+		if (overview == null) {
 			return false;
 		}
-		Method m;
-		if (descriptor instanceof IndexedPropertyDescriptor) {
-			m = ((IndexedPropertyDescriptor) 
-					descriptor).getIndexedWriteMethod();
-		}
-		else if (descriptor instanceof MappedPropertyDescriptor) {
-			m = ((MappedPropertyDescriptor) 
-					descriptor).getMappedWriteMethod();
-		}
-		else {
-			m = descriptor.getWriteMethod();			
-		}
-		if (m == null) {
-			return false;
-		}
-		m = MethodUtils.getAccessibleMethod(m);
-		return !(m == null);
+		return overview.isWritable();
 	}
 
 	public boolean isIndexed(String property) throws ArooaNoPropertyException {
-		PropertyDescriptor propertyDescriptor = descriptors.get(property);
-		if (propertyDescriptor == null) {
+		PropertyOverview overview = descriptors.get(property);
+		if (overview == null) {
 			throw new ArooaNoPropertyException(property, beanClass,
 					getProperties());
 		}
-		return propertyDescriptor instanceof IndexedPropertyDescriptor;
+		return overview.isIndexed();
 	}
 
 	public boolean isMapped(String property) throws ArooaNoPropertyException {
-		PropertyDescriptor propertyDescriptor = descriptors.get(property);
-		if (propertyDescriptor == null) {
+		PropertyOverview overview = descriptors.get(property);
+		if (overview == null) {
 			throw new ArooaNoPropertyException(property, beanClass,
 					getProperties());
 		}
-		return propertyDescriptor instanceof MappedPropertyDescriptor;
+		return overview.isMapped();
 	}
 }

@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.reflect.*;
+import org.oddjob.arooa.utils.TypeToken;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -195,7 +196,8 @@ public class BeanUtilsBeanOverviewTest {
         assertFalse(test.isIndexed("a"));
         assertTrue(test.isMapped("a"));
 
-        assertEquals(Map.class, test.getPropertyType("b"));
+        assertEquals(new TypeToken<Map<Object, Object>>() {}.getType(),
+                test.getPropertyType("b"));
         assertTrue(test.hasReadableProperty("b"));
         assertFalse(test.hasWriteableProperty("b"));
         assertFalse(test.isIndexed("b"));

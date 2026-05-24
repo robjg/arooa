@@ -1,11 +1,11 @@
 package org.oddjob.arooa.life;
 
 import org.oddjob.arooa.beanutils.DynaArooaClass;
+import org.oddjob.arooa.convert.TypeArooaUtils;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.ArooaInstantiationException;
 import org.oddjob.arooa.reflect.BeanOverview;
 import org.oddjob.arooa.reflect.PropertyAccessor;
-import org.oddjob.arooa.utils.ClassUtils;
 
 import java.lang.reflect.Type;
 
@@ -27,7 +27,7 @@ public class SimpleArooaClass implements ArooaClass {
 
 	public SimpleArooaClass(Type type) {
 		this.type = type;
-		this.forClass = ClassUtils.rawType(type);
+		this.forClass = TypeArooaUtils.rawType(type);
 	}
 
 	public Class<?> forClass() {

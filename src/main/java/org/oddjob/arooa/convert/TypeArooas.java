@@ -1,6 +1,5 @@
 package org.oddjob.arooa.convert;
 
-import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.oddjob.arooa.ArooaValue;
 
@@ -12,28 +11,18 @@ public class TypeArooas {
 
     @SuppressWarnings("unchecked")
     public static <T> TypeArooa<T> of(Type type) {
-        Class<T> rawType;
-        if (type instanceof Class<?> cl) {
-            if (cl.isPrimitive()) {
-                Class<?> wrapper = ClassUtils.primitiveToWrapper(cl);
-                return (TypeArooa<T>) new RawTypeArooa<>(wrapper);
-            } else {
-                rawType = (Class<T>) cl;
+        Type equivalent = TypeArooaUtils.arooaEquivalent(type);
+        if (equivalent instanceof Class<?> cl) {
+            if (ArooaValue.class.isAssignableFrom(cl)) {
+                return new ArooaValueType<>((Class<T>) cl);
             }
-        } else {
-            rawType = rawType(type);
-        }
-
-        if (ArooaValue.class.isAssignableFrom(rawType)) {
-            return new ArooaValueType<>(rawType);
-        }
-
-        if (type == rawType) {
-            return new RawTypeArooa<>(rawType);
+            else {
+                return (TypeArooa<T>) new RawTypeArooa<>(cl);
+            }
         }
 
         if (type instanceof ParameterizedType pt) {
-            return new ParameterizedTypeArooa<>(pt, rawType);
+            return new ParameterizedTypeArooa<>(pt);
         }
 
         throw new IllegalArgumentException("Unsupported type: " + type);
@@ -120,13 +109,13 @@ public class TypeArooas {
 
     static class ParameterizedTypeArooa<T> extends AbstractTypeArooa<T> {
 
-        private final Type type;
+        private final ParameterizedType type;
 
         private final Class<T> rawType;
 
-        public ParameterizedTypeArooa(ParameterizedType type, Class<T> rawType) {
+        public ParameterizedTypeArooa(ParameterizedType type) {
             this.type = type;
-            this.rawType = rawType;
+            this.rawType = (Class<T>) type.getRawType();
         }
 
         @Override
@@ -147,7 +136,7 @@ public class TypeArooas {
         @Override
         public boolean isAssignableFrom(TypeArooa<?> other) {
 
-            return TypeUtils.isAssignable(other.getType(), this.type);
+            return TypeArooaUtils.isAssignable(type, other.getType());
         }
 
     }

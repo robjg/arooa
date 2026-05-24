@@ -5,7 +5,6 @@ import org.oddjob.arooa.convert.*;
 import org.oddjob.arooa.deploy.annotations.ArooaHidden;
 import org.oddjob.arooa.life.Configured;
 import org.oddjob.arooa.parsing.ArooaElement;
-import org.oddjob.arooa.utils.ClassUtils;
 import org.oddjob.arooa.utils.EtcUtils;
 import org.oddjob.arooa.utils.ListSetterHelper;
 
@@ -297,7 +296,7 @@ public class ListType implements ArooaValue, Serializable {
 
         if (this.elementType != null) {
 
-            if (!ClassUtils.rawType(required).isAssignableFrom(
+            if (!TypeArooaUtils.rawType(required).isAssignableFrom(
                             this.elementType)) {
                 throw new ArooaConversionException(
                         "ListType can't convert to required Array/List of " +
