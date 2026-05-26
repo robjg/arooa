@@ -1,6 +1,5 @@
 package org.oddjob.arooa.convert;
 
-import org.apache.commons.lang3.reflect.TypeUtils;
 import org.oddjob.arooa.ArooaValue;
 
 import java.lang.reflect.ParameterizedType;
@@ -33,14 +32,8 @@ public class TypeArooas {
             throw new IllegalArgumentException("Primitive type " + cl.getName() + " can not be an ArooaValue.");
         }
 
-        return new ArooaValueType<>(rawType(type));
-    }
-
-    @SuppressWarnings("unchecked")
-    static <T> Class<T> rawType(Type type) {
-        return Objects.requireNonNull((Class<T>)
-                        TypeUtils.getRawType(Objects.requireNonNull(type), null),
-                "Can't extract raw type from " + type.getTypeName());
+        //noinspection unchecked
+        return new ArooaValueType<>((Class<T>) TypeArooaUtils.rawType(type));
     }
 
     abstract static class AbstractTypeArooa<T> implements TypeArooa<T> {
@@ -115,6 +108,7 @@ public class TypeArooas {
 
         public ParameterizedTypeArooa(ParameterizedType type) {
             this.type = type;
+            //noinspection unchecked
             this.rawType = (Class<T>) type.getRawType();
         }
 

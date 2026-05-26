@@ -1,6 +1,6 @@
 package org.oddjob.arooa.convert;
 
-import org.apache.commons.lang3.ClassUtils;
+import org.oddjob.arooa.utils.ClassUtils;
 
 import java.lang.reflect.*;
 import java.util.Arrays;
@@ -15,7 +15,7 @@ public class TypeArooaUtils {
 
         if (type instanceof Class<?> cl) {
             if (cl.isPrimitive()) {
-                return ClassUtils.primitiveToWrapper(cl);
+                return ClassUtils.wrapperClassForPrimitive(cl);
             } else {
                 return cl;
             }
