@@ -3,14 +3,9 @@
  */
 package org.oddjob.arooa.convert.convertlets;
 
-import org.junit.Test;
-
 import org.junit.Assert;
-
-import org.oddjob.arooa.convert.ConversionFailedException;
-import org.oddjob.arooa.convert.ConversionPath;
-import org.oddjob.arooa.convert.DefaultConversionProvider;
-import org.oddjob.arooa.convert.DefaultConversionRegistry;
+import org.junit.Test;
+import org.oddjob.arooa.convert.*;
 
 public class CharacterConvertletsTest extends Assert {
 
@@ -18,24 +13,28 @@ public class CharacterConvertletsTest extends Assert {
 	public void testStringToCharacter() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new CharacterConvertlets().registerWith(registry);
-		
-		ConversionPath<String, Character> path = registry.findConversion(
+
+	   ConversionLookup lookup = registry.get();
+
+		ConversionPath<String, Character> path = lookup.findConversion(
 				String.class, Character.class);
 		
 		Character result = path.convert("A", null);
-		
-		assertEquals(new Character('A'), result);  
+
+	   assertEquals(Character.valueOf('A'), result);
 	}
 	
    @Test
 	public void testCharacterToString() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new DefaultConversionProvider().registerWith(registry);
-		
-		ConversionPath<Character, String> path = registry.findConversion(
+
+	   ConversionLookup lookup = registry.get();
+
+	   ConversionPath<Character, String> path = lookup.findConversion(
 				Character.class, String.class);
 		
-		String result = path.convert(new Character('A'), null);
+		String result = path.convert('A', null);
 		
 		assertEquals("A", result);  
 	}
@@ -44,26 +43,30 @@ public class CharacterConvertletsTest extends Assert {
 	public void testNumberToCharacter() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new DefaultConversionProvider().registerWith(registry);
+
+	   ConversionLookup lookup = registry.get();
+
+
+	   ConversionPath<Number, Character> path = lookup.findConversion(
+			   Number.class, Character.class);
+	   Character result = path.convert(65, null);
 		
-		ConversionPath<Number, Character> path = registry.findConversion(
-				Number.class, Character.class);
-		
-		Character result = path.convert(new Integer(65), null);
-		
-		assertEquals(new Character('A'), result);  
+		assertEquals(Character.valueOf('A'), result);
 	}
 	
    @Test
 	public void testCharacterToNumber() throws ConversionFailedException {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		new DefaultConversionProvider().registerWith(registry);
-		
-		ConversionPath<Character, Number> path = registry.findConversion(
+
+	   ConversionLookup lookup = registry.get();
+
+	   ConversionPath<Character, Number> path = lookup.findConversion(
 				Character.class, Number.class);
 		
-		Number result = path.convert(new Character('A'), null);
+		Number result = path.convert('A', null);
 		
-		assertEquals(new Integer(65), result);  
+		assertEquals(65, result);
 	}
 	
 }

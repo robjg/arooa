@@ -39,7 +39,9 @@ public class ConversionDescriptorBeanTest {
 
         descriptor.getConvertletProvider().registerWith(conversionRegistry);
 
-        DefaultConverter converter = new DefaultConverter(conversionRegistry);
+        ConversionLookup lookup = conversionRegistry.get();
+
+        DefaultConverter converter = new DefaultConverter(lookup);
 
         GremlinSupplier gremlinSupplier = new GremlinSupplier();
         gremlinSupplier.setName("Gizmo");
@@ -70,7 +72,9 @@ public class ConversionDescriptorBeanTest {
 
         descriptor.getConvertletProvider().registerWith(conversionRegistry);
 
-        DefaultConverter converter = new DefaultConverter(conversionRegistry);
+        ConversionLookup lookup = conversionRegistry.get();
+
+        DefaultConverter converter = new DefaultConverter(lookup);
 
         GremlinSupplier gremlinSupplier = new GremlinSupplier();
         gremlinSupplier.setName("Gizmo");

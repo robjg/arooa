@@ -516,7 +516,9 @@ public class ListTypeTest {
         DefaultConversionRegistry registry = new DefaultConversionRegistry();
         new CollectionConvertlets().registerWith(registry);
 
-        Object[] o = new DefaultConverter(registry).convert(
+        ConversionLookup lookup = registry.get();
+
+        Object[] o = new DefaultConverter(lookup).convert(
                 root.results, Object[].class);
 
         assertThat(o, is(new Object[]{new A(), "apple"}));

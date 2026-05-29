@@ -1,14 +1,11 @@
 package org.oddjob.arooa.reflect;
 
 import org.oddjob.arooa.beanutils.BeanUtilsPropertyAccessor;
-import org.oddjob.arooa.convert.ArooaConverter;
-import org.oddjob.arooa.convert.ConversionFailedException;
-import org.oddjob.arooa.convert.Convertlet;
-import org.oddjob.arooa.convert.ConvertletException;
-import org.oddjob.arooa.convert.DefaultConversionRegistry;
-import org.oddjob.arooa.convert.DefaultConverter;
-import org.oddjob.arooa.convert.NoConversionAvailableException;
+import org.oddjob.arooa.convert.*;
 
+/**
+ * TODO: Review this. Not Thread safe?
+ */
 public class ArooaClasses {
 
 	private static final DefaultConversionRegistry registry =
@@ -40,7 +37,7 @@ public class ArooaClasses {
 		
 		try { 
 			
-			ArooaConverter converter = new DefaultConverter(registry);
+			ArooaConverter converter = new DefaultConverter(registry.get());
 			
 
 			factory = converter.convert(object, ArooaClassFactory.class);

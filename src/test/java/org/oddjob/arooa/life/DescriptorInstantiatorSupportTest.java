@@ -18,160 +18,162 @@ import java.net.URL;
 
 public class DescriptorInstantiatorSupportTest extends Assert {
 
-	
-	public interface Fruit {
-		
-	}
-	
-	public static class Apple implements Fruit {
-		
-		public void setRotten(boolean rotten) {
-			
-		}
-	}
-	
-	ArooaDescriptor descriptor;
-	
-   @Before
-   public void setUp() throws Exception {
-		ArooaDescriptorBean df = new ArooaDescriptorBean();
-				
-		BeanDefinitionBean def = new BeanDefinitionBean();
-		
-		def.setClassName(Apple.class.getName());
-		def.setElement("apple");
-		
-		df.setValues(0, def);
-		
-		descriptor = df.createDescriptor(getClass().getClassLoader());
-	}
-		
-   @Test
-	public void testSimpleTypes() {
-			
-		ElementMappings test = 
-			descriptor.getElementMappings();
 
-		ArooaConverter converter = new DefaultConverter();
-		
-		ArooaElement[] result;
+    public interface Fruit {
 
-		result = test.elementsFor(
-				new InstantiationContext(ArooaType.VALUE,
-						new SimpleArooaClass(Apple.class),
-						converter));
+    }
 
-		assertEquals(new ArooaElement("apple"), result[0]);
-		
-		result = test.elementsFor(
-				new InstantiationContext(ArooaType.VALUE,
-						new SimpleArooaClass(Fruit.class),
-						converter));
+    public static class Apple implements Fruit {
 
-		assertEquals(new ArooaElement("apple"), result[0]);
-		
-		result = test.elementsFor(
-				new InstantiationContext(ArooaType.VALUE,
-						new SimpleArooaClass(String.class),
-						converter));
-		
-		assertEquals(new ArooaElement("apple"), result[0]);
-		
-		result = test.elementsFor(
-				new InstantiationContext(ArooaType.VALUE,
-						new SimpleArooaClass(File.class),
-						converter));
-		
-		assertEquals(0, result.length);		
-	}
-	
-	public static class Conversions implements ConversionProvider { 
-		public void registerWith(ConversionRegistry registry) {
-			registry.register(Apple.class, URL.class, 
-					new Convertlet<Apple, URL>() {
-				public URL convert(Apple from)
-						throws ConvertletException {
-					return null;
-				}
-			});
-			registry.register(Apple.class, URL[].class, 
-					new Convertlet<Apple, URL[]>() {
-				public URL[] convert(Apple from)
-						throws ConvertletException {
-					return null;
-				}
-			});
-		}
-	}
-	
-   @Test
-	public void testArooaValue() {
-		
-		ElementMappings test = 
-				descriptor.getElementMappings();
-				
-		DefaultConversionRegistry registry = new DefaultConversionRegistry();
-		new DefaultConversionProvider().registerWith(registry);
-		new Conversions().registerWith(registry);
-		
-		ArooaConverter converter = new DefaultConverter(registry);
-		
-		ArooaElement[] result;
+        public void setRotten(boolean rotten) {
 
-		result = test.elementsFor(
-				new InstantiationContext(ArooaType.VALUE,
-						new SimpleArooaClass(URL.class),
-						converter));
+        }
+    }
 
-		assertEquals(new ArooaElement("apple"), result[0]);
-		
-		result = test.elementsFor(
-				new InstantiationContext(ArooaType.VALUE,
-						new SimpleArooaClass(URL[].class),
-						converter));
+    ArooaDescriptor descriptor;
 
-		assertEquals(new ArooaElement("apple"), result[0]);
+    @Before
+    public void setUp() throws Exception {
+        ArooaDescriptorBean df = new ArooaDescriptorBean();
 
-		result = test.elementsFor(
-				new InstantiationContext(ArooaType.VALUE,
-						new SimpleArooaClass(Object[].class),
-						converter));
+        BeanDefinitionBean def = new BeanDefinitionBean();
 
-		assertEquals(new ArooaElement("apple"), result[0]);
-		
-		result = test.elementsFor(
-				new InstantiationContext(ArooaType.VALUE,
-						new SimpleArooaClass(String.class),
-						converter));
+        def.setClassName(Apple.class.getName());
+        def.setElement("apple");
 
-		assertEquals(new ArooaElement("apple"), result[0]);
-		
-		result = test.elementsFor(
-				new InstantiationContext(ArooaType.VALUE,
-						new SimpleArooaClass(InputStream.class),
-						converter));
+        df.setValues(0, def);
 
-		assertEquals(new ArooaElement("apple"), result[0]);
-		
-		result = test.elementsFor(
-				new InstantiationContext(ArooaType.VALUE,
-						new SimpleArooaClass(Number.class)));
+        descriptor = df.createDescriptor(getClass().getClassLoader());
+    }
 
-		assertEquals(0, result.length);
-		
-		result = test.elementsFor(
-				new InstantiationContext(ArooaType.VALUE,
-						new SimpleArooaClass(ArooaValue.class),
-						converter));
+    @Test
+    public void testSimpleTypes() {
 
-		assertEquals(new ArooaElement("apple"), result[0]);
-		
-		result = test.elementsFor(
-				new InstantiationContext(ArooaType.VALUE,
-						new SimpleArooaClass(Apple.class),
-						converter));
+        ElementMappings test =
+                descriptor.getElementMappings();
 
-		assertEquals(new ArooaElement("apple"), result[0]);
-	}
-	
+        ArooaConverter converter = new DefaultConverter();
+
+        ArooaElement[] result;
+
+        result = test.elementsFor(
+                new InstantiationContext(ArooaType.VALUE,
+                        new SimpleArooaClass(Apple.class),
+                        converter));
+
+        assertEquals(new ArooaElement("apple"), result[0]);
+
+        result = test.elementsFor(
+                new InstantiationContext(ArooaType.VALUE,
+                        new SimpleArooaClass(Fruit.class),
+                        converter));
+
+        assertEquals(new ArooaElement("apple"), result[0]);
+
+        result = test.elementsFor(
+                new InstantiationContext(ArooaType.VALUE,
+                        new SimpleArooaClass(String.class),
+                        converter));
+
+        assertEquals(new ArooaElement("apple"), result[0]);
+
+        result = test.elementsFor(
+                new InstantiationContext(ArooaType.VALUE,
+                        new SimpleArooaClass(File.class),
+                        converter));
+
+        assertEquals(0, result.length);
+    }
+
+    public static class Conversions implements ConversionProvider {
+        public void registerWith(ConversionRegistry registry) {
+            registry.register(Apple.class, URL.class,
+                    new Convertlet<Apple, URL>() {
+                        public URL convert(Apple from)
+                                throws ConvertletException {
+                            return null;
+                        }
+                    });
+            registry.register(Apple.class, URL[].class,
+                    new Convertlet<Apple, URL[]>() {
+                        public URL[] convert(Apple from)
+                                throws ConvertletException {
+                            return null;
+                        }
+                    });
+        }
+    }
+
+    @Test
+    public void testArooaValue() {
+
+        ElementMappings test =
+                descriptor.getElementMappings();
+
+        DefaultConversionRegistry registry = new DefaultConversionRegistry();
+        new DefaultConversionProvider().registerWith(registry);
+        new Conversions().registerWith(registry);
+
+        ConversionLookup lookup = registry.get();
+
+        ArooaConverter converter = new DefaultConverter(lookup);
+
+        ArooaElement[] result;
+
+        result = test.elementsFor(
+                new InstantiationContext(ArooaType.VALUE,
+                        new SimpleArooaClass(URL.class),
+                        converter));
+
+        assertEquals(new ArooaElement("apple"), result[0]);
+
+        result = test.elementsFor(
+                new InstantiationContext(ArooaType.VALUE,
+                        new SimpleArooaClass(URL[].class),
+                        converter));
+
+        assertEquals(new ArooaElement("apple"), result[0]);
+
+        result = test.elementsFor(
+                new InstantiationContext(ArooaType.VALUE,
+                        new SimpleArooaClass(Object[].class),
+                        converter));
+
+        assertEquals(new ArooaElement("apple"), result[0]);
+
+        result = test.elementsFor(
+                new InstantiationContext(ArooaType.VALUE,
+                        new SimpleArooaClass(String.class),
+                        converter));
+
+        assertEquals(new ArooaElement("apple"), result[0]);
+
+        result = test.elementsFor(
+                new InstantiationContext(ArooaType.VALUE,
+                        new SimpleArooaClass(InputStream.class),
+                        converter));
+
+        assertEquals(new ArooaElement("apple"), result[0]);
+
+        result = test.elementsFor(
+                new InstantiationContext(ArooaType.VALUE,
+                        new SimpleArooaClass(Number.class)));
+
+        assertEquals(0, result.length);
+
+        result = test.elementsFor(
+                new InstantiationContext(ArooaType.VALUE,
+                        new SimpleArooaClass(ArooaValue.class),
+                        converter));
+
+        assertEquals(new ArooaElement("apple"), result[0]);
+
+        result = test.elementsFor(
+                new InstantiationContext(ArooaType.VALUE,
+                        new SimpleArooaClass(Apple.class),
+                        converter));
+
+        assertEquals(new ArooaElement("apple"), result[0]);
+    }
+
 }

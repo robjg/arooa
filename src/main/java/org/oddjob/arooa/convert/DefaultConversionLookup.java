@@ -11,15 +11,18 @@ import java.lang.reflect.Type;
  */
 public class DefaultConversionLookup implements ConversionLookup {
 
-	private final DefaultConversionRegistry registry = 
-		new DefaultConversionRegistry();
+	private final ConversionLookup conversionLookup;
 	
 	public DefaultConversionLookup() {
+
+		DefaultConversionRegistry registry =
+				new DefaultConversionRegistry();
 		new DefaultConversionProvider().registerWith(registry);
+		conversionLookup = registry.get();
 	}
 
     @Override
     public <F, T> ConversionPath<F, T> findConversion(Type from, Type to) {
-        return registry.findConversion(from, to);
+        return conversionLookup.findConversion(from, to);
     }
 }

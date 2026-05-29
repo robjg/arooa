@@ -46,8 +46,10 @@ public class DefaultConversionRegistryTest {
         DefaultConversionRegistry test = new DefaultConversionRegistry();
         new CP().registerWith(test);
 
+        ConversionLookup lookup = test.get();
+
         ConversionPath<Long, java.util.Date> result =
-                test.findConversion(Long.class, java.util.Date.class);
+                lookup.findConversion(Long.class, java.util.Date.class);
 
         assertEquals(1, result.length());
 
@@ -76,8 +78,10 @@ public class DefaultConversionRegistryTest {
         DefaultConversionRegistry test = new DefaultConversionRegistry();
         new CP().registerWith(test);
 
+        ConversionLookup lookup = test.get();
+
         ConversionPath<Long, java.util.Date> result =
-                test.findConversion(Long.class, java.util.Date.class);
+                lookup.findConversion(Long.class, java.util.Date.class);
 
         assertEquals(1, result.length());
 
@@ -92,7 +96,9 @@ public class DefaultConversionRegistryTest {
 
         new DefaultConversionProvider().registerWith(test);
 
-        ConversionPath<Double, Long> result = test.findConversion(Double.TYPE, Long.TYPE);
+        ConversionLookup lookup = test.get();
+
+        ConversionPath<Double, Long> result = lookup.findConversion(Double.TYPE, Long.TYPE);
 
         ArooaConverter converter = mock(ArooaConverter.class);
 
@@ -106,8 +112,10 @@ public class DefaultConversionRegistryTest {
 
         new DefaultConversionProvider().registerWith(test);
 
+        ConversionLookup lookup = test.get();
+
         ConversionPath<Float, Double> result =
-                test.findConversion(Float.class, Double.class);
+                lookup.findConversion(Float.class, Double.class);
 
         assertEquals(2, result.length());
 
@@ -127,7 +135,10 @@ public class DefaultConversionRegistryTest {
      */
     @Test
     public void testAlreadyInstance() {
-        ConversionLookup test = new DefaultConversionRegistry();
+
+        DefaultConversionRegistry registry = new DefaultConversionRegistry();
+
+        ConversionLookup test = registry.get();
 
         // sql.Date is already an instanceof util.data
         ConversionPath<?, ?> result =
@@ -165,60 +176,73 @@ public class DefaultConversionRegistryTest {
 
         new ArooaValueConvertlets().registerWith(test);
 
-        ConversionPath<?, ?> result = test.findConversion(String.class, ArooaValue.class);
+        ConversionLookup lookup = test.get();
+
+        ConversionPath<?, ?> result = lookup.findConversion(String.class, ArooaValue.class);
         assertEquals(2, result.length());
 
     }
 
     static class ConversionTracker extends DefaultConversionRegistry {
-        int index = 0;
-        Class<?>[] froms = {
-                String.class,
-                File.class,
-                InputStream.class,
-                URL.class,
-                Object.class,
-                Serializable.class,
-                Comparable.class,
-                CharSequence.class
-        };
-        int[] levels = {
-                0,
-                -1,
-                -2,
-                1,
-                1,
-                1,
-                1,
-                1
-        };
-        int[] conversions = {
-                0,
-                1,
-                2,
-                1,
-                1,
-                1,
-                1,
-                1
-        };
 
-        <F, X, Y, T> ConversionPath<F, T> best(TypeArooa<X> from,
-                                               Type to,
-                                               ConversionPath<F, X> stepsSoFar,
-                                               int maxLevels) {
-            if (index >= froms.length) {
-                fail(from + " to " + to.getTypeName() + " unexpected.");
+        @Override
+        public ConversionLookup get() {
+            return new LookupTracker();
+        }
+
+        class LookupTracker extends ConversionLookupImpl {
+
+
+            int index = 0;
+            Class<?>[] froms = {
+                    String.class,
+                    File.class,
+                    InputStream.class,
+                    URL.class,
+                    Object.class,
+                    Serializable.class,
+                    Comparable.class,
+                    CharSequence.class
+            };
+            int[] levels = {
+                    0,
+                    -1,
+                    -2,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+            };
+            int[] conversions = {
+                    0,
+                    1,
+                    2,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+            };
+
+            <F, X, Y, T> ConversionPath<F, T> best(TypeArooa<X> from,
+                                                   Type to,
+                                                   ConversionPath<F, X> stepsSoFar,
+                                                   int maxLevels) {
+                if (index >= froms.length) {
+                    fail(from + " to " + to.getTypeName() + " unexpected.");
+                }
+                logger.debug("{} to {}", from, to.getTypeName());
+
+                assertEquals(TypeArooa.of(froms[index]), from, "classes index " + index);
+                assertEquals(levels[index], maxLevels, "levels index " + index);
+                assertEquals(conversions[index], stepsSoFar.length(), "conversions index " + index);
+
+                ++index;
+
+                return super.best(from, from, to, stepsSoFar, maxLevels);
             }
-            logger.debug("{} to {}", from, to.getTypeName());
 
-            assertEquals(TypeArooa.of(froms[index]), from, "classes index " + index);
-            assertEquals(levels[index], maxLevels, "levels index " + index);
-            assertEquals(conversions[index], stepsSoFar.length(), "conversions index " + index);
-
-            ++index;
-
-            return super.best(from, from, to, stepsSoFar, maxLevels);
         }
     }
 
@@ -270,7 +294,9 @@ public class DefaultConversionRegistryTest {
         new FileConvertlets().registerWith(test1);
         new URLConvertlets().registerWith(test1);
 
-        ConversionPath<?, ?> result = test1.findConversion(String.class, InputStream.class);
+        ConversionLookup lookup1 = test1.get();
+
+        ConversionPath<?, ?> result = lookup1.findConversion(String.class, InputStream.class);
 
         assertEquals(
                 classesToString(String.class, File.class, InputStream.class),
@@ -281,7 +307,9 @@ public class DefaultConversionRegistryTest {
         new URLConvertlets().registerWith(test2);
         new FileConvertlets().registerWith(test2);
 
-        ConversionPath<?, ?> result2 = test2.findConversion(String.class, InputStream.class);
+        ConversionLookup lookup2 = test2.get();
+
+        ConversionPath<?, ?> result2 = lookup2.findConversion(String.class, InputStream.class);
 
         assertEquals(
                 classesToString(String.class, URL.class, InputStream.class),
@@ -289,44 +317,53 @@ public class DefaultConversionRegistryTest {
     }
 
     static class ConversionTracker2 extends DefaultConversionRegistry {
-        int index = 0;
-        Class<?>[] froms = {
-                RedApple.class,
-                Object.class,
-                Fruit.class,
-                Colour.class,
-        };
-        int[] levels = {
-                0,
-                -1,
-                -1,
-                -2,
-        };
-        int[] conversions = {
-                0,
-                1,
-                1,
-                2,
-        };
 
-        <F, X, Y, T> ConversionPath<F, T> best(TypeArooa<X> from,
-                                               Type to,
-                                               ConversionPath<F, X> stepsSoFar,
-                                               int maxLevels) {
+        @Override
+        public ConversionLookup get() {
+            return new LookupTracker2();
+        }
 
-            if (index >= froms.length) {
-                fail(from + " to " + to.getTypeName() + " unexpected.");
+        class LookupTracker2 extends ConversionLookupImpl {
+
+            int index = 0;
+            Class<?>[] froms = {
+                    RedApple.class,
+                    Object.class,
+                    Fruit.class,
+                    Colour.class,
+            };
+            int[] levels = {
+                    0,
+                    -1,
+                    -1,
+                    -2,
+            };
+            int[] conversions = {
+                    0,
+                    1,
+                    1,
+                    2,
+            };
+
+            <F, X, Y, T> ConversionPath<F, T> best(TypeArooa<X> from,
+                                                   Type to,
+                                                   ConversionPath<F, X> stepsSoFar,
+                                                   int maxLevels) {
+
+                if (index >= froms.length) {
+                    fail(from + " to " + to.getTypeName() + " unexpected.");
+                }
+                logger.debug("{} to {}", from, to.getTypeName());
+
+                assertEquals(TypeArooa.of(froms[index]), from, "classes index " + index);
+                assertEquals(levels[index], maxLevels, "levels index " + index);
+                assertEquals(conversions[index], stepsSoFar.length(), "conversions index " + index);
+
+                ++index;
+
+                return super.best(
+                        from, from, to, stepsSoFar, maxLevels);
             }
-            logger.debug("{} to {}", from, to.getTypeName());
-
-            assertEquals(TypeArooa.of(froms[index]), from, "classes index " + index);
-            assertEquals(levels[index], maxLevels, "levels index " + index);
-            assertEquals(conversions[index], stepsSoFar.length(), "conversions index " + index);
-
-            ++index;
-
-            return super.best(
-                    from, from, to, stepsSoFar, maxLevels);
         }
     }
 
@@ -358,8 +395,10 @@ public class DefaultConversionRegistryTest {
         test.register(Fruit.class, Colour.class,
                 from -> new Colour(from.getColour()));
 
+        ConversionLookup lookup = test.get();
+
         ConversionPath<?, ?> result =
-                test.findConversion(RedApple.class, Colour.class);
+                lookup.findConversion(RedApple.class, Colour.class);
 
         assertEquals(2, result.length());
     }
@@ -368,31 +407,40 @@ public class DefaultConversionRegistryTest {
     // as a test.
 
     static class Diagnose extends DefaultConversionRegistry {
-        int index = 0;
 
-        int level = 0;
+        @Override
+        public ConversionLookup get() {
+            return new DiagnoseLookup();
+        }
 
-        <F, X, T> ConversionPath<F, T> best(TypeArooa<X> from,
-                                            Type to,
-                                               ConversionPath<F, X> stepsSoFar,
-                                            int maxLevels) {
+        class DiagnoseLookup extends ConversionLookupImpl {
 
-            for (int i = 0; i < level; ++i) {
-                System.out.print('\t');
+            int index = 0;
+
+            int level = 0;
+
+            <F, X, T> ConversionPath<F, T> best(TypeArooa<X> from,
+                                                Type to,
+                                                ConversionPath<F, X> stepsSoFar,
+                                                int maxLevels) {
+
+                for (int i = 0; i < level; ++i) {
+                    System.out.print('\t');
+                }
+                System.out.println("From: " + from + ", To: " + to.getTypeName() +
+                        ", stepsSoFar: " + stepsSoFar.length() + ", " + maxLevels);
+
+
+                ++index;
+                ++level;
+
+                ConversionPath<F, T> result = super.best(
+                        from, from, to, stepsSoFar, maxLevels);
+
+                --level;
+
+                return result;
             }
-            System.out.println("From: " + from + ", To: " + to.getTypeName() +
-                    ", stepsSoFar: " + stepsSoFar.length() + ", " + maxLevels);
-
-
-            ++index;
-            ++level;
-
-            ConversionPath<F, T> result = super.best(
-                    from, from, to, stepsSoFar, maxLevels);
-
-            --level;
-
-            return result;
         }
     }
 
@@ -405,8 +453,10 @@ public class DefaultConversionRegistryTest {
         new URLConvertlets().registerWith(diagnose);
         new ArooaValueConvertlets().registerWith(diagnose);
 
+        ConversionLookup lookup = diagnose.get();
+
         Class<String> from = String.class;
-        ConversionPath<?, ?> result = diagnose.findConversion(from, ArooaValue.class);
+        ConversionPath<?, ?> result = lookup.findConversion(from, ArooaValue.class);
         System.out.print("Result: " + from.getName());
         for (int i = 0; i < result.length(); ++i) {
             System.out.print("->" + result.getStep(i).getToClass().getName());

@@ -40,7 +40,7 @@ public class DefaultConverter implements ArooaConverter {
 	public static ArooaConverter from(Iterable<ConversionProvider> conversionProviders) {
 		DefaultConversionRegistry registry = new DefaultConversionRegistry();
 		conversionProviders.forEach(provider -> provider.registerWith(registry));
-		return new DefaultConverter(registry);
+		return new DefaultConverter(registry.get());
 	}
 
 	public ConversionLookup getRegistry() {

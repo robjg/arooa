@@ -72,28 +72,32 @@ class ReflectionConversionProviderTest {
         conversionProvider1.registerWith(conversionRegistry1);
         conversionProvider2.registerWith(conversionRegistry2);
 
+        ConversionLookup lookup1 = conversionRegistry1.get();
+        ConversionLookup lookup2 = conversionRegistry2.get();
+
         ConversionPath<GremlinSupplier, ?> conversionToObject1
-                = conversionRegistry1.findConversion(GremlinSupplier.class, Object.class);
+                = lookup1.findConversion(GremlinSupplier.class, Object.class);
         assertThat(conversionToObject1.toString(), is(""));
         ConversionPath<GremlinSupplier, ?> conversionToGremlin1
-                = conversionRegistry1.findConversion(GremlinSupplier.class, Gremlin.class);
+                = lookup1.findConversion(GremlinSupplier.class, Gremlin.class);
         assertThat(conversionToGremlin1.toString(), is("GremlinSupplier-Gremlin"));
 
         ConversionPath<GremlinSupplier, ?> conversionToObject2
-                = conversionRegistry2.findConversion(GremlinSupplier.class, Object.class);
+                = lookup2.findConversion(GremlinSupplier.class, Object.class);
         assertThat(conversionToObject2.toString(), is("GremlinSupplier-Gremlin"));
-        ConversionPath<GremlinSupplier, ?> conversionToGremlin2 = conversionRegistry2.findConversion(GremlinSupplier.class, Object.class);
+        ConversionPath<GremlinSupplier, ?> conversionToGremlin2
+                = lookup2.findConversion(GremlinSupplier.class, Object.class);
         assertThat(conversionToGremlin2.toString(), is("GremlinSupplier-Gremlin"));
 
         GremlinSupplier in = new GremlinSupplier();
         in.setName("Gizmo");
 
-        DefaultConverter converter1 = new DefaultConverter(conversionRegistry1);
+        DefaultConverter converter1 = new DefaultConverter(lookup1);
 
         assertThat(conversionToObject1.convert(in, converter1), is(in));
         assertThat(conversionToGremlin1.convert(in, converter1), instanceOf(Gremlin.class));
 
-        DefaultConverter converter2 = new DefaultConverter(conversionRegistry2);
+        DefaultConverter converter2 = new DefaultConverter(lookup2);
 
         assertThat(conversionToObject2.convert(in, converter2), instanceOf(Gremlin.class));
         assertThat(conversionToGremlin2.convert(in, converter2), instanceOf(Gremlin.class));
@@ -120,20 +124,22 @@ class ReflectionConversionProviderTest {
 
         conversionProvider.registerWith(conversionRegistry);
 
+        ConversionLookup lookup = conversionRegistry.get();
+
         ConversionPath<ListSupplier, ?> conversionToObject
-                = conversionRegistry.findConversion(ListSupplier.class, Object.class);
+                = lookup.findConversion(ListSupplier.class, Object.class);
         assertThat(conversionToObject.toString(), is("ListSupplier-List"));
 
         ConversionPath<ListSupplier, ?> conversionToStringList
-                = conversionRegistry.findConversion(ListSupplier.class,
+                = lookup.findConversion(ListSupplier.class,
                 new TypeToken<List<String>>() {}.getType());
         assertThat(conversionToStringList.toString(), is("ListSupplier-List"));
 
         ConversionPath<ListSupplier, ?> conversionToRawList
-                = conversionRegistry.findConversion(ListSupplier.class, List.class);
+                = lookup.findConversion(ListSupplier.class, List.class);
         assertThat(conversionToRawList.toString(), is("ListSupplier-List"));
 
-        DefaultConverter converter = new DefaultConverter(conversionRegistry);
+        DefaultConverter converter = new DefaultConverter(lookup);
 
         Object list = conversionToObject.convert(new ListSupplier(), converter);
 

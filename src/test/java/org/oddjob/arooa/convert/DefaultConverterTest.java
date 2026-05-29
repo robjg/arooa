@@ -93,7 +93,6 @@ public class DefaultConverterTest {
     }
 
 
-
     /**
      * Test that the Converter chooses the possibility
      * with the shortest conversion path.
@@ -136,7 +135,9 @@ public class DefaultConverterTest {
                 from -> 42);
         new Conversions().registerWith(reg);
 
-        DefaultConverter test = new DefaultConverter(reg);
+        ConversionLookup lookup = reg.get();
+
+        DefaultConverter test = new DefaultConverter(lookup);
 
         Object result = test.convert(v, Integer.class);
 
@@ -162,7 +163,7 @@ public class DefaultConverterTest {
         assertEquals(0, (int) test.convert(null, int.class));
         assertEquals(0L, (long) test.convert(null, long.class));
         float f = test.convert(null, float.class);
-        assertThat(f  == 0.0F, is(true));
+        assertThat(f == 0.0F, is(true));
         assertEquals(0.0, test.convert(null, double.class), 0.01);
     }
 
@@ -178,7 +179,7 @@ public class DefaultConverterTest {
         assertEquals(0, (int) test.convert(" ", int.class));
         assertEquals(0L, (long) test.convert(" ", long.class));
         float f = test.convert(" ", float.class);
-        assertThat(f  == 0.0F, is(true));
+        assertThat(f == 0.0F, is(true));
         assertEquals(0.0, test.convert(" ", double.class), 0.01);
     }
 
@@ -191,7 +192,9 @@ public class DefaultConverterTest {
         DefaultConversionRegistry registry = new DefaultConversionRegistry();
         new DefaultConversionProvider().registerWith(registry);
 
-        ArooaConverter test = new DefaultConverter(registry);
+        ConversionLookup lookup = registry.get();
+
+        ArooaConverter test = new DefaultConverter(lookup);
 
         ArooaValue result = test.convert("Test", ArooaValue.class);
 
@@ -252,7 +255,9 @@ public class DefaultConverterTest {
         DefaultConversionRegistry registry = new DefaultConversionRegistry();
         new DefaultConversionProvider().registerWith(registry);
 
-        ArooaConverter test = new DefaultConverter(registry);
+        ConversionLookup lookup = registry.get();
+
+        ArooaConverter test = new DefaultConverter(lookup);
 
         String result = test.convert(vt, Object.class);
 
@@ -268,7 +273,9 @@ public class DefaultConverterTest {
         DefaultConversionRegistry registry = new DefaultConversionRegistry();
         new DefaultConversionProvider().registerWith(registry);
 
-        ArooaConverter test = new DefaultConverter(registry);
+        ConversionLookup lookup = registry.get();
+
+        ArooaConverter test = new DefaultConverter(lookup);
 
         class AV implements ArooaValue {
         }
@@ -308,7 +315,9 @@ public class DefaultConverterTest {
         DefaultConversionRegistry registry = new DefaultConversionRegistry();
         new DefaultConversionProvider().registerWith(registry);
 
-        ArooaConverter converter = new DefaultConverter(registry);
+        ConversionLookup lookup = registry.get();
+
+        ArooaConverter converter = new DefaultConverter(lookup);
 
         assertThat(converter.convert("1", Integer.class), is(1));
 
@@ -330,7 +339,9 @@ public class DefaultConverterTest {
         DefaultConversionRegistry registry = new DefaultConversionRegistry();
         new DefaultConversionProvider().registerWith(registry);
 
-        ArooaConverter test = new DefaultConverter(registry);
+        ConversionLookup lookup = registry.get();
+
+        ArooaConverter test = new DefaultConverter(lookup);
 
         String[] result = test.convert(vta, String[].class);
 

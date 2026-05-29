@@ -49,8 +49,10 @@ public class DefaultConversionRegistryGenericsTest {
         conversionRegistry.register(TypeArooa.of(FunctionSupplier.class), TypeArooa.of(intParserParam),
                 FunctionSupplier::intParser);
 
+        ConversionLookup lookup = conversionRegistry.get();
+
         ConversionPath<?, ?> conversionPath =
-                conversionRegistry.findConversion(FunctionSupplier.class, intParserParam);
+                lookup.findConversion(FunctionSupplier.class, intParserParam);
 
         assertThat(conversionPath, notNullValue());
     }

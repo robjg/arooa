@@ -3,6 +3,7 @@
  */
 package org.oddjob.arooa.convert.convertlets;
 
+import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oddjob.arooa.convert.*;
@@ -18,12 +19,14 @@ public class IntegerConvertletsTest extends Assert {
         DefaultConversionRegistry registry = new DefaultConversionRegistry();
         new IntegerConvertlets().registerWith(registry);
 
-        ConversionPath<Number, Integer> path = registry.findConversion(
+        ConversionLookup lookup = registry.get();
+
+        ConversionPath<Number, Integer> path = lookup.findConversion(
                 Number.class, Integer.class);
 
         Integer result = path.convert(new BigDecimal(42), null);
 
-        assertEquals(new Integer(42), result);
+        assertEquals(Integer.valueOf(42), result);
     }
 
     @Test
@@ -31,14 +34,16 @@ public class IntegerConvertletsTest extends Assert {
         DefaultConversionRegistry registry = new DefaultConversionRegistry();
         new IntegerConvertlets().registerWith(registry);
 
-        ConversionPath<String, Integer> path = registry.findConversion(
+        ConversionLookup lookup = registry.get();
+
+        ConversionPath<String, Integer> path = lookup.findConversion(
                 String.class, Integer.class);
 
         assertEquals("String-Integer", path.toString());
 
         Integer result = path.convert("2009090900", null);
 
-        assertEquals(new Integer(2009090900), result);
+        assertEquals(Integer.valueOf(2009090900), result);
     }
 
     @Test
@@ -48,11 +53,11 @@ public class IntegerConvertletsTest extends Assert {
 
         int i = converter.convert(null, int.class);
 
-        assertThat(i, is(0));
+        MatcherAssert.assertThat(i, is(0));
 
         Object o = converter.convert(null, int.class);
 
-        assertThat(o, is(0));
+        MatcherAssert.assertThat(o, is(0));
     }
 
     @Test
@@ -60,12 +65,14 @@ public class IntegerConvertletsTest extends Assert {
         DefaultConversionRegistry registry = new DefaultConversionRegistry();
         new DefaultConversionProvider().registerWith(registry);
 
-        ConversionPath<Integer, String> path = registry.findConversion(
+        ConversionLookup lookup = registry.get();
+
+        ConversionPath<Integer, String> path = lookup.findConversion(
                 Integer.class, String.class);
 
         assertEquals("Integer-String", path.toString());
 
-        Object result = path.convert(new Integer(2009090900), null);
+        Object result = path.convert(2009090900, null);
 
         assertEquals("2009090900", result);
     }

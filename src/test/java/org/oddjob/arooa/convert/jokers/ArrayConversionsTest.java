@@ -17,7 +17,9 @@ public class ArrayConversionsTest {
         DefaultConversionRegistry reg = new DefaultConversionRegistry();
         new DefaultConversionProvider().registerWith(reg);
 
-        DefaultConverter test = new DefaultConverter(reg);
+        ConversionLookup lookup = reg.get();
+
+        DefaultConverter test = new DefaultConverter(lookup);
 
         String[] sa = {"3", "9"};
         ConversionPath<String[], ?> result = test.findConversion(String[].class, int[].class);
@@ -41,7 +43,9 @@ public class ArrayConversionsTest {
         DefaultConversionRegistry registry = new DefaultConversionRegistry();
         new DefaultConversionProvider().registerWith(registry);
 
-        ConversionPath<Integer, Integer[]> path = registry.findConversion(
+        ConversionLookup lookup = registry.get();
+
+        ConversionPath<Integer, Integer[]> path = lookup.findConversion(
                 Integer.class, Integer[].class);
 
         assertEquals("Integer-Number-Object-Integer[]", path.toString());
@@ -62,7 +66,9 @@ public class ArrayConversionsTest {
         DefaultConversionRegistry registry = new DefaultConversionRegistry();
         new DefaultConversionProvider().registerWith(registry);
 
-        ConversionPath<Integer, String[]> path = registry.findConversion(
+        ConversionLookup lookup = registry.get();
+
+        ConversionPath<Integer, String[]> path = lookup.findConversion(
                 Integer.class, String[].class);
 
         assertEquals("Integer-Number-Object-String[]", path.toString());
@@ -80,7 +86,9 @@ public class ArrayConversionsTest {
         DefaultConversionRegistry registry = new DefaultConversionRegistry();
         new DefaultConversionProvider().registerWith(registry);
 
-        ConversionPath<File[], String[]> path = registry.findConversion(
+        ConversionLookup lookup = registry.get();
+
+        ConversionPath<File[], String[]> path = lookup.findConversion(
                 File[].class, String[].class);
 
         assertEquals("File[]-Object-String[]", path.toString());

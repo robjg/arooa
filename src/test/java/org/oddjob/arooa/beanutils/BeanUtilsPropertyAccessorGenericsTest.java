@@ -1,10 +1,7 @@
 package org.oddjob.arooa.beanutils;
 
 import org.junit.jupiter.api.Test;
-import org.oddjob.arooa.convert.ArooaConverter;
-import org.oddjob.arooa.convert.DefaultConversionRegistry;
-import org.oddjob.arooa.convert.DefaultConverter;
-import org.oddjob.arooa.convert.TypeArooa;
+import org.oddjob.arooa.convert.*;
 import org.oddjob.arooa.reflect.PropertyAccessor;
 import org.oddjob.arooa.utils.TypeToken;
 
@@ -33,14 +30,18 @@ class BeanUtilsPropertyAccessorGenericsTest {
         DefaultConversionRegistry conversionRegistry = new DefaultConversionRegistry();
         conversionRegistry.register(
                 TypeArooa.ofArooaValue(ThingWithFunctions.class),
-                TypeArooa.of(new TypeToken<Function<String, Integer>>(){}.getType()),
+                TypeArooa.of(new TypeToken<Function<String, Integer>>() {
+                }.getType()),
                 ThingWithFunctions::stringToInt);
         conversionRegistry.register(
                 TypeArooa.ofArooaValue(ThingWithFunctions.class),
-                TypeArooa.of(new TypeToken<Function<String, Double>>(){}.getType()),
+                TypeArooa.of(new TypeToken<Function<String, Double>>() {
+                }.getType()),
                 ThingWithFunctions::stringToDouble);
 
-        ArooaConverter converter = new DefaultConverter(conversionRegistry);
+        ConversionLookup lookup = conversionRegistry.get();
+
+        ArooaConverter converter = new DefaultConverter(lookup);
 
         PropertyAccessor test = new BeanUtilsPropertyAccessor()
                 .accessorWithConversions(converter);

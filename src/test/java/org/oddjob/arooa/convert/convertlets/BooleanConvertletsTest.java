@@ -3,75 +3,76 @@
  */
 package org.oddjob.arooa.convert.convertlets;
 
-import org.junit.Test;
-
 import org.junit.Assert;
-
-import org.oddjob.arooa.convert.ConversionFailedException;
-import org.oddjob.arooa.convert.ConversionPath;
-import org.oddjob.arooa.convert.DefaultConversionProvider;
-import org.oddjob.arooa.convert.DefaultConversionRegistry;
+import org.junit.Test;
+import org.oddjob.arooa.convert.*;
 
 public class BooleanConvertletsTest extends Assert {
 
-   @Test
-	public void testNumberToBoolean() throws ConversionFailedException {
-		DefaultConversionRegistry registry = new DefaultConversionRegistry();
-		new BooleanConvertlets().registerWith(registry);
-		
-		ConversionPath<Number, Boolean> path = registry.findConversion(
-				Number.class, Boolean.class);
-		
-		assertEquals(new Boolean(true), 
-				path.convert(new Double(42.24), null));
-		
-		assertEquals(new Boolean(false), 
-				path.convert(new Short((short) 0), null));
-	}
-	
-   @Test
-	public void testBooleanToNumber() throws ConversionFailedException {
-		DefaultConversionRegistry registry = new DefaultConversionRegistry();
-		new BooleanConvertlets().registerWith(registry);
-		
-		ConversionPath<Boolean, Number> path = registry.findConversion(
-				Boolean.class, Number.class);
+    @Test
+    public void testNumberToBoolean() throws ConversionFailedException {
+        DefaultConversionRegistry registry = new DefaultConversionRegistry();
+        new BooleanConvertlets().registerWith(registry);
 
-		assertEquals(new Integer(1), 
-				path.convert(new Boolean(true), null));
-		
-		assertEquals(new Integer(0), 
-				path.convert(new Boolean(false), null));
-	}
-	
-   @Test
-	public void testStringToBoolean() throws ConversionFailedException {
-		DefaultConversionRegistry registry = new DefaultConversionRegistry();
-		new BooleanConvertlets().registerWith(registry);
-		
-		ConversionPath<String, Boolean> path = registry.findConversion(
-				String.class, Boolean.class);
+        ConversionLookup lookup = registry.get();
 
-		assertEquals(new Boolean(true), 
-				path.convert("yes", null));
+        ConversionPath<Number, Boolean> path = lookup.findConversion(
+                Number.class, Boolean.class);
 
-		assertEquals(new Boolean(false), 
-				path.convert("no", null));
-	}
+        assertEquals(Boolean.TRUE,
+                path.convert(42.24, null));
 
-   @Test
-	public void testBooleanToString() throws ConversionFailedException {
-		DefaultConversionRegistry registry = new DefaultConversionRegistry();
-		new DefaultConversionProvider().registerWith(registry);
-		
-		ConversionPath<Boolean, String> path = registry.findConversion(
-				Boolean.class, String.class);
+        assertEquals(Boolean.FALSE,
+                path.convert((short) 0, null));
+    }
 
-		assertEquals("true", 
-				path.convert(new Boolean(true), null));
-		
-		assertEquals("false", 
-				path.convert(new Boolean(false), null));
-	}
-	
+    @Test
+    public void testBooleanToNumber() throws ConversionFailedException {
+        DefaultConversionRegistry registry = new DefaultConversionRegistry();
+        new BooleanConvertlets().registerWith(registry);
+
+        ConversionLookup lookup = registry.get();
+
+        ConversionPath<Boolean, Number> path = lookup.findConversion(
+                Boolean.class, Number.class);
+
+        assertEquals(1, path.convert(Boolean.TRUE, null));
+
+        assertEquals(0, path.convert(Boolean.FALSE, null));
+    }
+
+    @Test
+    public void testStringToBoolean() throws ConversionFailedException {
+        DefaultConversionRegistry registry = new DefaultConversionRegistry();
+        new BooleanConvertlets().registerWith(registry);
+
+        ConversionLookup lookup = registry.get();
+
+        ConversionPath<String, Boolean> path = lookup.findConversion(
+                String.class, Boolean.class);
+
+        assertEquals(Boolean.TRUE,
+                path.convert("yes", null));
+
+        assertEquals(Boolean.FALSE,
+                path.convert("no", null));
+    }
+
+    @Test
+    public void testBooleanToString() throws ConversionFailedException {
+        DefaultConversionRegistry registry = new DefaultConversionRegistry();
+        new DefaultConversionProvider().registerWith(registry);
+
+        ConversionLookup lookup = registry.get();
+
+        ConversionPath<Boolean, String> path = lookup.findConversion(
+                Boolean.class, String.class);
+
+        assertEquals("true",
+                path.convert(Boolean.TRUE, null));
+
+        assertEquals("false",
+                path.convert(Boolean.FALSE, null));
+    }
+
 }

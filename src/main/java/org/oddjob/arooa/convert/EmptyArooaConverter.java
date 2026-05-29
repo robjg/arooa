@@ -7,8 +7,8 @@ public class EmptyArooaConverter implements ArooaConverter {
 	/**
 	 * Provides primitive conversions only.
 	 */
-	private final DefaultConversionRegistry emptyRegistry =
-		new DefaultConversionRegistry();
+	private final ConversionLookup conversionLookup =
+		new DefaultConversionRegistry().get();
 	
     @Override
 	public <F, T> T convert(F from, Type required)
@@ -30,6 +30,6 @@ public class EmptyArooaConverter implements ArooaConverter {
 
     @Override
     public <F, T> ConversionPath<F, T> findConversion(Type from, Type to) {
-        return emptyRegistry.findConversion(from, to);
+        return conversionLookup.findConversion(from, to);
     }
 }

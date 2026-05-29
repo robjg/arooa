@@ -3,138 +3,145 @@
  */
 package org.oddjob.arooa.convert.convertlets;
 
-import org.junit.Test;
-
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.junit.Assert;
-
+import org.junit.Test;
 import org.oddjob.arooa.ArooaParseException;
 import org.oddjob.arooa.convert.ConversionFailedException;
+import org.oddjob.arooa.convert.ConversionLookup;
 import org.oddjob.arooa.convert.ConversionPath;
 import org.oddjob.arooa.convert.DefaultConversionRegistry;
 import org.oddjob.arooa.standard.StandardArooaParser;
 import org.oddjob.arooa.xml.XMLConfiguration;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 public class StringConvertletsTest extends Assert {
 
-	private class Apple {
-		@Override
-		public String toString() {
-			return "apple";
-		}
-	}
-	
-   @Test
-	public void testToString() throws ConversionFailedException {
-		
-		DefaultConversionRegistry registry = new DefaultConversionRegistry();
-		new StringConvertlets().registerWith(registry);
-		
-		ConversionPath<Apple, String> path = registry.findConversion(
-				Apple.class, String.class);
-		
-		String result = path.convert(new Apple(), null);
-		
-		assertEquals("apple", result);
-	}
+    private static class Apple {
+        @Override
+        public String toString() {
+            return "apple";
+        }
+    }
 
-   @Test
-	public void testStringToInputStream() throws ConversionFailedException {
-		
-		DefaultConversionRegistry registry = new DefaultConversionRegistry();
-		new StringConvertlets().registerWith(registry);
-		
-		ConversionPath<String, InputStream> path = registry.findConversion(
-				String.class, InputStream.class);
-		
-		InputStream input = path.convert("Apple", null);
-		
-		byte[] buffer = new byte[5];
-		try {
-			input.read(buffer);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		
-		assertEquals("Apple", new String(buffer));
-		
-	}
-	
-   @Test
-	public void testTokenizedString() throws ConversionFailedException {
-		
-		DefaultConversionRegistry registry = new DefaultConversionRegistry();
-		new StringConvertlets().registerWith(registry);
-		
-		ConversionPath<String, String[]> path = registry.findConversion(
-				String.class, String[].class);
-		
-		String[] results = path.convert("cat, dog, horse", null);
-		
-		assertEquals(3, results.length);
-		
-		assertEquals("cat", results[0]);
-		assertEquals("dog", results[1]);
-		assertEquals("horse", results[2]);
-	}
-	
-   @Test
-	public void testObjectToString() throws ConversionFailedException {
-		
-		DefaultConversionRegistry registry = new DefaultConversionRegistry();
-		new StringConvertlets().registerWith(registry);
-		
-		ConversionPath<Object, String> path = registry.findConversion(
-				Object.class, String.class);
-		
-		assertEquals("Object-String", path.toString());
-		
-		String result = path.convert(new Integer(42), null);
-		
-		assertEquals("42", result);
-	}
-	
-	public static class ThingWithArrayProperty implements Runnable {
-		
-		private String[] fruit;
+    @Test
+    public void testToString() throws ConversionFailedException {
 
-		public void setFruit(String[] fruit) {
-			this.fruit = fruit;
-		}
+        DefaultConversionRegistry registry = new DefaultConversionRegistry();
+        new StringConvertlets().registerWith(registry);
 
-		public String[] getFruit() {
-			return fruit;
-		}
-		
-		@Override
-		public void run() {
-			for (String item : fruit) {
-				System.out.println(item);
-			}
-		}
-	}
-	
-   @Test
-	public void testTokenizedStringToArray() throws ArooaParseException {
-		
-		ThingWithArrayProperty root = new ThingWithArrayProperty();
-		
-		StandardArooaParser parser = new StandardArooaParser(root);
+        ConversionLookup lookup = registry.get();
 
-		parser.parse(new XMLConfiguration(
-				"org/oddjob/arooa/convert/convertlets/StringTokenizerExample.xml",
-				getClass().getClassLoader()));
-		
-		parser.getSession().getComponentPool().configure(root);
-		
-		assertEquals("apple", root.getFruit()[0]);
-		assertEquals("orange", root.getFruit()[1]);
-		assertEquals("pear", root.getFruit()[2]);
-		
-		assertEquals(3, root.getFruit().length);
-		
-		root.run();
-	}
+        ConversionPath<Apple, String> path = lookup.findConversion(
+                Apple.class, String.class);
+
+        String result = path.convert(new Apple(), null);
+
+        assertEquals("apple", result);
+    }
+
+    @Test
+    public void testStringToInputStream() throws ConversionFailedException {
+
+        DefaultConversionRegistry registry = new DefaultConversionRegistry();
+        new StringConvertlets().registerWith(registry);
+
+        ConversionLookup lookup = registry.get();
+
+        ConversionPath<String, InputStream> path = lookup.findConversion(
+                String.class, InputStream.class);
+
+        InputStream input = path.convert("Apple", null);
+
+        byte[] buffer = new byte[5];
+        try {
+            input.read(buffer);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        assertEquals("Apple", new String(buffer));
+
+    }
+
+    @Test
+    public void testTokenizedString() throws ConversionFailedException {
+
+        DefaultConversionRegistry registry = new DefaultConversionRegistry();
+        new StringConvertlets().registerWith(registry);
+
+        ConversionLookup lookup = registry.get();
+
+        ConversionPath<String, String[]> path = lookup.findConversion(
+                String.class, String[].class);
+
+        String[] results = path.convert("cat, dog, horse", null);
+
+        assertEquals(3, results.length);
+
+        assertEquals("cat", results[0]);
+        assertEquals("dog", results[1]);
+        assertEquals("horse", results[2]);
+    }
+
+    @Test
+    public void testObjectToString() throws ConversionFailedException {
+
+        DefaultConversionRegistry registry = new DefaultConversionRegistry();
+        new StringConvertlets().registerWith(registry);
+
+        ConversionLookup lookup = registry.get();
+
+        ConversionPath<Object, String> path = lookup.findConversion(
+                Object.class, String.class);
+
+        assertEquals("Object-String", path.toString());
+
+        String result = path.convert(42, null);
+
+        assertEquals("42", result);
+    }
+
+    public static class ThingWithArrayProperty implements Runnable {
+
+        private String[] fruit;
+
+        public void setFruit(String[] fruit) {
+            this.fruit = fruit;
+        }
+
+        public String[] getFruit() {
+            return fruit;
+        }
+
+        @Override
+        public void run() {
+            for (String item : fruit) {
+                System.out.println(item);
+            }
+        }
+    }
+
+    @Test
+    public void testTokenizedStringToArray() throws ArooaParseException {
+
+        ThingWithArrayProperty root = new ThingWithArrayProperty();
+
+        StandardArooaParser parser = new StandardArooaParser(root);
+
+        parser.parse(new XMLConfiguration(
+                "org/oddjob/arooa/convert/convertlets/StringTokenizerExample.xml",
+                getClass().getClassLoader()));
+
+        parser.getSession().getComponentPool().configure(root);
+
+        assertEquals("apple", root.getFruit()[0]);
+        assertEquals("orange", root.getFruit()[1]);
+        assertEquals("pear", root.getFruit()[2]);
+
+        assertEquals(3, root.getFruit().length);
+
+        root.run();
+    }
 }

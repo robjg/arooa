@@ -30,8 +30,8 @@ public class ExtendedTools extends StandardTools {
 	/**
 	 * Uses the {@link ArooaDescriptor} to create the tools. 
 	 * 
-	 * @param descriptor
-	 * @param loader
+	 * @param existing Existing tools to delegate to.
+	 * @param descriptor The descriptor.
 	 */
 	public ExtendedTools(ArooaTools existing, 
 			ArooaDescriptor descriptor) {
@@ -49,7 +49,7 @@ public class ExtendedTools extends StandardTools {
 			convertletProvider.registerWith(registry);
 		}
 
-		this.arooaConverter = new DefaultConverter(registry);
+		this.arooaConverter = new DefaultConverter(registry.get());
 		this.propertyAccessor = existing.getPropertyAccessor();
 		this.expressionParser = existing.getExpressionParser();
 	}

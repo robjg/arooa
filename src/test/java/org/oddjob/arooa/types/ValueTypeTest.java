@@ -7,10 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.oddjob.ArooaTestHelper;
 import org.oddjob.arooa.*;
-import org.oddjob.arooa.convert.ArooaConverter;
-import org.oddjob.arooa.convert.Convertlet;
-import org.oddjob.arooa.convert.DefaultConversionRegistry;
-import org.oddjob.arooa.convert.DefaultConverter;
+import org.oddjob.arooa.convert.*;
 import org.oddjob.arooa.convert.convertlets.ArooaValueConvertlets;
 import org.oddjob.arooa.convert.convertlets.StringConvertlets;
 import org.oddjob.arooa.deploy.annotations.ArooaComponent;
@@ -32,8 +29,6 @@ public class ValueTypeTest extends Assert {
 
     /**
      * Test first principles.
-     *
-     * @throws Exception
      */
     @Test
     public void testText() throws Exception {
@@ -44,7 +39,9 @@ public class ValueTypeTest extends Assert {
         new ValueType.Conversions().registerWith(registry);
         new ArooaObject.Conversions().registerWith(registry);
 
-        final ArooaConverter converter = new DefaultConverter(registry);
+        ConversionLookup lookup = registry.get();
+
+        final ArooaConverter converter = new DefaultConverter(lookup);
 
         assertEquals("Text", "Hello World",
                 converter.convert(test, String.class));
@@ -56,8 +53,6 @@ public class ValueTypeTest extends Assert {
 
     /**
      * Test some conversion. These are as much tests on DefaultConverter.
-     *
-     * @throws Exception
      */
     @Test
     public void testConversions() throws Exception {
@@ -68,7 +63,9 @@ public class ValueTypeTest extends Assert {
         new ArooaObject.Conversions().registerWith(registry);
         new StringConvertlets().registerWith(registry);
 
-        ArooaConverter converter = new DefaultConverter(registry);
+        ConversionLookup lookup = registry.get();
+
+        ArooaConverter converter = new DefaultConverter(lookup);
 
         test.setValue(new ArooaObject("true"));
         assertNotNull(converter.convert(test, InputStream.class));
@@ -119,8 +116,6 @@ public class ValueTypeTest extends Assert {
      * Test that when ValueType is being used as a reference
      * to another ArooaValue, the correct conversions take
      * place.
-     *
-     * @throws Exception
      */
     @Test
     public void testAsArooaValues() throws Exception {
@@ -133,7 +128,9 @@ public class ValueTypeTest extends Assert {
         new ValueType.Conversions().registerWith(registry);
         registry.register(MockValueType.class, String.class, new OurConvertlet());
 
-        DefaultConverter converter = new DefaultConverter(registry);
+        ConversionLookup lookup = registry.get();
+
+        DefaultConverter converter = new DefaultConverter(lookup);
 
         MockValueType result1 = converter.convert(
                 test, MockValueType.class);
@@ -207,7 +204,10 @@ public class ValueTypeTest extends Assert {
 
         DefaultConversionRegistry registry = new DefaultConversionRegistry();
         new ArooaValueConvertlets().registerWith(registry);
-        ArooaConverter converter = new DefaultConverter(registry);
+
+        ConversionLookup lookup = registry.get();
+
+        ArooaConverter converter = new DefaultConverter(lookup);
 
         Object conversion = converter.convert(value, Object.class);
 

@@ -4,9 +4,12 @@
 package org.oddjob.arooa.convert;
 
 import org.oddjob.arooa.ArooaValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Implementation of a ConvertletRegistry.
@@ -14,7 +17,9 @@ import java.util.*;
  * @author rob
  *
  */
-public class DefaultConversionRegistry implements ConversionRegistry, ConversionLookup {
+public class DefaultConversionRegistry implements ConversionRegistry, Supplier<ConversionLookup> {
+
+    private static final Logger logger = LoggerFactory.getLogger(DefaultConversionRegistry.class);
 
     /**
      * Map of from class to possible Map of to class to Convertlet.
@@ -34,88 +39,145 @@ public class DefaultConversionRegistry implements ConversionRegistry, Conversion
         fromMap.computeIfAbsent(from, k -> new LinkedHashMap<>())
                 .put(to, convertlet);
         typeArooaMap.put(from.getType(), from);
+
+        logger.debug("Registered convertlet from {} to {}: {}", from, to, convertlet);
     }
 
     @Override
     public <F> void registerJoker(Class<F> from, Joker<F> joker) {
         jokers.register(from, joker);
-    }
 
+        logger.debug("Registered joker from {} : {}", from, joker);
+    }
 
     @Override
-    public <F, T> ConversionPath<F, T> findConversion(Type from, Type to) {
-
-        TypeArooa<F> fromType = typeArooaOf(from);
-        return best(fromType, fromType, to,
-                DefaultConversionPath.instance(fromType), 0);
+    public ConversionLookup get() {
+        return new ConversionLookupImpl();
     }
 
-    <X> TypeArooa<X> typeArooaOf(Type type) {
+    class ConversionLookupImpl implements ConversionLookup {
 
+
+        @Override
+        public <F, T> ConversionPath<F, T> findConversion(Type from, Type to) {
+
+            TypeArooa<F> fromType = typeArooaOf(from);
+            return best(fromType, fromType, to,
+                    DefaultConversionPath.instance(fromType), 0);
+        }
+
+        <X> TypeArooa<X> typeArooaOf(Type type) {
+
+            @SuppressWarnings("unchecked")
+            TypeArooa<X> to = (TypeArooa<X>) typeArooaMap.get(type);
+            return Objects.requireNonNullElseGet(to, () -> TypeArooa.of(type));
+        }
+
+        /**
+         * Recursive function to find the best conversion path.
+         *
+         */
         @SuppressWarnings("unchecked")
-        TypeArooa<X> to = (TypeArooa<X>) typeArooaMap.get(type);
-        return Objects.requireNonNullElseGet(to, () -> TypeArooa.of(type));
-    }
+        <F, X, Y, T> ConversionPath<F, T> best(final TypeArooa<X> start,
+                                               final TypeArooa<X> from,
+                                               final Type toType,
+                                               ConversionPath<F, X> stepsSoFar,
+                                               int maxLevels) {
 
-    /**
-     * Recursive function to find the best conversion path.
-     *
-     */
-    @SuppressWarnings("unchecked")
-    <F, X, Y, T> ConversionPath<F, T> best(final TypeArooa<X> start,
-                                           final TypeArooa<X> from,
-                                           final Type toType,
-                                           ConversionPath<F, X> stepsSoFar,
-                                           int maxLevels) {
+            TypeArooa<T> to = typeArooaOf(toType);
 
-        TypeArooa<T> to = typeArooaOf(toType);
-
-        // have we reached the end of the conversion?
-        // Only true for ArooaValues if the required is an ArooaValue
-        if (to.isAssignableFrom(from)) {
-            return (ConversionPath<F, T>) stepsSoFar;
-        }
-
-        Iterable<Joker<X>> jokersMatching = jokers.getMatching(from);
-        for (Joker<X> joker : jokersMatching) {
-            ConversionStep<X, T> step = joker.lastStep(start, to, this);
-
-            if (step != null) {
-
-                // joker trumps all.
-                return stepsSoFar.append(step);
+            // have we reached the end of the conversion?
+            // Only true for ArooaValues if the required is an ArooaValue
+            if (to.isAssignableFrom(from)) {
+                return (ConversionPath<F, T>) stepsSoFar;
             }
-        }
 
-        // keep track of best levels to save us going down unnecessary paths.
-        int bestLevels = maxLevels;
-        ConversionPath<F, T> bestResult = null;
+            Iterable<Joker<X>> jokersMatching = jokers.getMatching(from);
+            for (Joker<X> joker : jokersMatching) {
+                ConversionStep<X, T> step = joker.lastStep(start, to, this);
 
+                if (step != null) {
 
-        // get the converters for the next step.
-        Map<TypeArooa<?>, Convertlet<?, ?>> toConverters = fromMap.get(from);
-
-        if (toConverters != null) {
-            // iterate through all the possible conversions to.
-            for (Map.Entry<TypeArooa<?>, Convertlet<?, ?>> entry : toConverters.entrySet()) {
-
-                // the one to try the next
-                final TypeArooa<Y> maybeTo = (TypeArooa<Y>) entry.getKey();
-
-                final Convertlet<X, Y> convertlet = (Convertlet<X, Y>) entry.getValue();
-
-                if (convertlet instanceof FinalConvertlet
-                        && !to.equals(maybeTo)) {
-                    // only use a final convertlet if it converts to
-                    // the required class.
-                    continue;
+                    // joker trumps all.
+                    return stepsSoFar.append(step);
                 }
+            }
 
-                // work out what the next conversion steps would be
+            // keep track of best levels to save us going down unnecessary paths.
+            int bestLevels = maxLevels;
+            ConversionPath<F, T> bestResult = null;
+
+
+            // get the converters for the next step.
+            Map<TypeArooa<?>, Convertlet<?, ?>> toConverters = fromMap.get(from);
+
+            if (toConverters != null) {
+                // iterate through all the possible conversions to.
+                for (Map.Entry<TypeArooa<?>, Convertlet<?, ?>> entry : toConverters.entrySet()) {
+
+                    // the one to try the next
+                    final TypeArooa<Y> maybeTo = (TypeArooa<Y>) entry.getKey();
+
+                    final Convertlet<X, Y> convertlet = (Convertlet<X, Y>) entry.getValue();
+
+                    if (convertlet instanceof FinalConvertlet
+                            && !to.equals(maybeTo)) {
+                        // only use a final convertlet if it converts to
+                        // the required class.
+                        continue;
+                    }
+
+                    // work out what the next conversion steps would be
+                    ConversionStep<X, Y> nextStep = new ConversionStep<>() {
+                        public Y convert(X from, ArooaConverter converter)
+                                throws ArooaConversionException {
+                            return convertlet.convert(from);
+                        }
+
+                        @Override
+                        public Class<X> getFromClass() {
+                            return from.getRawType();
+                        }
+
+                        @Override
+                        public Class<Y> getToClass() {
+                            return maybeTo.getRawType();
+                        }
+
+                        @Override
+                        public TypeArooa<X> getFromType() {
+                            return from;
+                        }
+
+                        @Override
+                        public TypeArooa<Y> getToType() {
+                            return maybeTo;
+                        }
+                    };
+
+                    // recursively call. A non null result means we found a match.
+                    ConversionPath<F, T> result = nextBest(maybeTo,
+                            stepsSoFar, nextStep, toType, bestLevels, true);
+
+                    if (result != null) {
+                        // because of the check for best levels this result must
+                        // now be the best. So remember it.
+                        bestResult = result;
+                        bestLevels = result.length() - stepsSoFar.length();
+                    }
+                }
+            }
+
+            // Try a superclass conversion.
+            Class<? super X>[] supers = extendsAndImplements(from);
+            for (Class<? super X> aSuper : supers) {
+                final TypeArooa<Y> superClass = (TypeArooa<Y>) TypeArooa.of(aSuper);
+
+                // next conversion steps would be with super class
                 ConversionStep<X, Y> nextStep = new ConversionStep<>() {
-                    public Y convert(X from, ArooaConverter converter)
-                            throws ArooaConversionException {
-                        return convertlet.convert(from);
+                    @Override
+                    public Y convert(X from, ArooaConverter converter) {
+                        return (Y) from;
                     }
 
                     @Override
@@ -125,7 +187,7 @@ public class DefaultConversionRegistry implements ConversionRegistry, Conversion
 
                     @Override
                     public Class<Y> getToClass() {
-                        return maybeTo.getRawType();
+                        return superClass.getRawType();
                     }
 
                     @Override
@@ -135,68 +197,56 @@ public class DefaultConversionRegistry implements ConversionRegistry, Conversion
 
                     @Override
                     public TypeArooa<Y> getToType() {
-                        return maybeTo;
+                        return superClass;
                     }
                 };
 
                 // recursively call. A non null result means we found a match.
-                ConversionPath<F, T> result = nextBest(maybeTo,
-                        stepsSoFar, nextStep, toType, bestLevels, true);
+                ConversionPath<F, T> result = nextBest((TypeArooa<Y>) from,
+                        stepsSoFar, nextStep, toType, bestLevels, false);
 
                 if (result != null) {
-                    // because of the check for best levels this result must
-                    // now be the best. So remember it.
+                    // if the superclass gave us a result it must be a shorter path
+                    // so use it instead.
                     bestResult = result;
-                    bestLevels = result.length() - stepsSoFar.length();
                 }
             }
+
+            return bestResult;
         }
 
-        // Try a superclass conversion.
-        Class<? super X>[] supers = extendsAndImplements(from);
-        for (Class<? super X> aSuper : supers) {
-            final TypeArooa<Y> superClass = (TypeArooa<Y>) TypeArooa.of(aSuper);
 
-            // next conversion steps would be with super class
-            ConversionStep<X, Y> nextStep = new ConversionStep<>() {
-                @Override
-                public Y convert(X from, ArooaConverter converter) {
-                    return (Y) from;
-                }
+        /**
+         * Utility method to create the new ConversionPath.
+         *
+         * @param stepsSoFar Steps now.
+         * @param nextStep   Next Step to try.
+         * @param to         The class to convert to.
+         * @param maxLevels  The maximum number of levels to try.
+         * @return The result.
+         */
+        <F, X, Y, T> ConversionPath<F, T> nextBest(TypeArooa<Y> start,
+                                                   ConversionPath<F, X> stepsSoFar,
+                                                   ConversionStep<X, Y> nextStep,
+                                                   Type to,
+                                                   int maxLevels,
+                                                   boolean allowJokers) {
 
-                @Override
-                public Class<X> getFromClass() {
-                    return from.getRawType();
-                }
-
-                @Override
-                public Class<Y> getToClass() {
-                    return superClass.getRawType();
-                }
-
-                @Override
-                public TypeArooa<X> getFromType() {
-                    return from;
-                }
-
-                @Override
-                public TypeArooa<Y> getToType() {
-                    return superClass;
-                }
-            };
-
-            // recursively call. A non null result means we found a match.
-            ConversionPath<F, T> result = nextBest((TypeArooa<Y>) from,
-                    stepsSoFar, nextStep, toType, bestLevels, false);
-
-            if (result != null) {
-                // if the superclass gave us a result it must be a shorter path
-                // so use it instead.
-                bestResult = result;
+            // maxLevels of one means our previous recursive call
+            // actually found a perfect match.
+            if (maxLevels == 1) {
+                return null;
             }
-        }
 
-        return bestResult;
+            // check we're not going back on ourselves
+            if (stepsSoFar.contains(nextStep.getToType())) {
+                return null;
+            }
+
+            ConversionPath<F, Y> next = stepsSoFar.append(nextStep);
+
+            return best(start, nextStep.getToType(), to, next, maxLevels - 1);
+        }
     }
 
     /**
@@ -230,38 +280,6 @@ public class DefaultConversionRegistry implements ConversionRegistry, Conversion
         return results.toArray(new Class[0]);
     }
 
-    /**
-     * Utility method to create the new ConversionPath.
-     *
-     * @param stepsSoFar Steps now.
-     * @param nextStep   Next Step to try.
-     * @param to         The class to convert to.
-     * @param maxLevels  The maximum number of levels to try.
-     * @return The result.
-     */
-    <F, X, Y, T> ConversionPath<F, T> nextBest(TypeArooa<Y> start,
-                                               ConversionPath<F, X> stepsSoFar,
-                                               ConversionStep<X, Y> nextStep,
-                                               Type to,
-                                               int maxLevels,
-                                               boolean allowJokers) {
-
-        // maxLevels of one means our previous recursive call
-        // actually found a perfect match.
-        if (maxLevels == 1) {
-            return null;
-        }
-
-        // check we're not going back on ourselves
-        if (stepsSoFar.contains(nextStep.getToType())) {
-            return null;
-        }
-
-        ConversionPath<F, Y> next = stepsSoFar.append(nextStep);
-
-        return best(start, nextStep.getToType(), to, next, maxLevels - 1);
-    }
-
     private static class JokerMap {
 
         private final Map<TypeArooa<?>, List<Joker<?>>> map =
@@ -290,4 +308,5 @@ public class DefaultConversionRegistry implements ConversionRegistry, Conversion
             return results;
         }
     }
+
 }

@@ -14,6 +14,10 @@ import org.oddjob.arooa.standard.StandardFragmentParser;
  */
 public class ConfigurationDescriptorFactory implements ArooaDescriptorFactory{
 
+	/** We only want to create this once. */
+	private static final StandardFragmentParser parser =
+			new StandardFragmentParser(new ArooaDescriptorDescriptor());
+
 	/** The configuration. */
 	private final ArooaConfiguration config;
 	
@@ -23,9 +27,6 @@ public class ConfigurationDescriptorFactory implements ArooaDescriptorFactory{
 	
 	@Override
 	public ArooaDescriptor createDescriptor(ClassLoader classLoader) {
-
-		StandardFragmentParser parser = 
-			new StandardFragmentParser(new ArooaDescriptorDescriptor());
 
 		try {
 			parser.parse(config);

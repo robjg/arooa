@@ -2,6 +2,7 @@ package org.oddjob.arooa.convert.convertlets;
 
 import org.junit.Test;
 import org.oddjob.arooa.convert.ConversionFailedException;
+import org.oddjob.arooa.convert.ConversionLookup;
 import org.oddjob.arooa.convert.ConversionPath;
 import org.oddjob.arooa.convert.DefaultConversionRegistry;
 
@@ -26,7 +27,9 @@ public class FunctionalConvertletsTest {
         DefaultConversionRegistry registry = new DefaultConversionRegistry();
         new FunctionalConvertlets().registerWith(registry);
 
-        ConversionPath<Function, Predicate> path = registry.findConversion(
+        ConversionLookup lookup = registry.get();
+
+        ConversionPath<Function<?, ?>, Predicate<?>> path = lookup.findConversion(
                 Function.class, Predicate.class);
 
         Predicate predicate = path.convert(x -> Integer.valueOf(5).equals(x), null);
@@ -46,7 +49,9 @@ public class FunctionalConvertletsTest {
         DefaultConversionRegistry registry = new DefaultConversionRegistry();
         new FunctionalConvertlets().registerWith(registry);
 
-        ConversionPath<Function, Consumer> path = registry.findConversion(
+        ConversionLookup lookup = registry.get();
+
+        ConversionPath<Function, Consumer> path = lookup.findConversion(
                 Function.class, Consumer.class);
 
         List<Object> results = new ArrayList<>();
@@ -70,7 +75,9 @@ public class FunctionalConvertletsTest {
         DefaultConversionRegistry registry = new DefaultConversionRegistry();
         new FunctionalConvertlets().registerWith(registry);
 
-        ConversionPath<Function, Supplier> path = registry.findConversion(
+        ConversionLookup lookup = registry.get();
+
+        ConversionPath<Function, Supplier> path = lookup.findConversion(
                 Function.class, Supplier.class);
 
         Queue<Object> results = new ConcurrentLinkedQueue();
