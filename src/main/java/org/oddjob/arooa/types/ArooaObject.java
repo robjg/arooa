@@ -1,15 +1,10 @@
 package org.oddjob.arooa.types;
 
-import java.io.Serializable;
-
 import org.oddjob.arooa.ArooaValue;
-import org.oddjob.arooa.convert.ArooaConversionException;
-import org.oddjob.arooa.convert.ArooaConverter;
-import org.oddjob.arooa.convert.ConversionLookup;
-import org.oddjob.arooa.convert.ConversionStep;
-import org.oddjob.arooa.convert.ConversionProvider;
-import org.oddjob.arooa.convert.ConversionRegistry;
-import org.oddjob.arooa.convert.Joker;
+import org.oddjob.arooa.convert.*;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * Provide a conversion from any Java Object to an {@link ArooaValue}.
@@ -20,38 +15,62 @@ import org.oddjob.arooa.convert.Joker;
  *
  */
 public class ArooaObject implements ArooaValue, Serializable {
-	private static final long serialVersionUID = 2009011100L;
+	@Serial
+    private static final long serialVersionUID = 2009011100L;
 	
 	private final Object value;
+
+	/**
+	 * @oddjob.conversion Wrap any Object so it can be an {@code ArooaValue}. Required so any
+	 * bean can be used as an Oddjob Variable.
+	 */
+	static class ArooaObjectJoker implements Joker<ArooaObject> {
+
+		@Override
+		public <T> ConversionStep<ArooaObject, T> lastStep(ConversionPath<?, ArooaObject> pathBefore,
+														   TypeArooa<ArooaObject> from,
+														   TypeArooa<T> to,
+														   ConversionLookup conversions) {
+
+			return new ConversionStep<>() {
+
+				@Override
+				public Class<ArooaObject> getFromClass() {
+					return ArooaObject.class;
+				}
+
+				@Override
+				public TypeArooa<ArooaObject> getFromType() {
+					return from;
+				}
+
+				@Override
+				public Class<T> getToClass() {
+					return to.getRawType();
+				}
+
+				@Override
+				public TypeArooa<T> getToType() {
+					return to;
+				}
+
+				public T convert(ArooaObject from, ArooaConverter converter)
+						throws ArooaConversionException {
+					try {
+						return converter.convert(from.value, to.getType());
+					} catch (Exception e) {
+						throw new ArooaConversionException(e);
+					}
+				}
+			};
+		}
+	}
 
 	public static class Conversions implements ConversionProvider {
 		
 		public void registerWith(ConversionRegistry registry) {
-			registry.registerJoker(ArooaObject.class, 
-					new Joker<ArooaObject>() {
-				public <T> ConversionStep<ArooaObject, T> lastStep(
-								Class<? extends ArooaObject> form, 
-								final Class<T> to, 
-								ConversionLookup conversions) {
-					
-					return new ConversionStep<ArooaObject, T>() {
-						public Class<ArooaObject> getFromClass() {
-							return ArooaObject.class;
-						}
-						public Class<T> getToClass() {
-							return to;
-						}
-						public T convert(ArooaObject from, ArooaConverter converter) 
-						throws ArooaConversionException {
-							try {
-								return converter.convert(from.value, to);
-							} catch (Exception e) {
-								throw new ArooaConversionException(e);
-							}
-						}
-					};			
-				}
-			});
+			registry.registerJoker(ArooaObject.class,
+					new ArooaObjectJoker());
 		}
 	}
 	
@@ -69,13 +88,11 @@ public class ArooaObject implements ArooaValue, Serializable {
 			return true;
 		}
 
-		if (!(obj instanceof ArooaObject)) {
+		if (!(obj instanceof ArooaObject other)) {
 			return false;
 		}
-		
-		ArooaObject other = (ArooaObject) obj;
-		
-		if (this.value == null) {
+
+        if (this.value == null) {
 			return other.value == null;
 		}
 		

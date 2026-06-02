@@ -5,6 +5,7 @@ import org.oddjob.arooa.convert.doc.ValueFactoryItemAccess;
 import org.oddjob.arooa.types.ValueFactory;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 /**
  * Provide the conversion for an {@link ValueFactory}.
@@ -20,18 +21,21 @@ public class ValueFactoryConversion implements Joker<ValueFactory<?>> {
         }
     }
 
-    public <T> ConversionStep<ValueFactory<?>, T> lastStep(
-            final Class <? extends ValueFactory<?>> from,
-            final Class<T> to,
-            ConversionLookup conversions) {
+    @Override
+    public <T> ConversionStep<ValueFactory<?>, T> lastStep(ConversionPath<?, ValueFactory<?>> pathBefore,
+                                                           TypeArooa<ValueFactory<?>> from,
+                                                           TypeArooa<T> to,
+                                                           ConversionLookup conversions) {
+
+        ConversionStep<?, ?> stepBefore = pathBefore.getStep(pathBefore.length() - 1);
 
         // Get the return type.
-        Class returnType = toValueMethod(from).getReturnType();
+        Type returnType = toValueMethod(stepBefore.getFromType().getRawType()).getGenericReturnType();
 
         // Is there a conversion path from the type of the
         // factory to the required to type.
         final ConversionPath<Object, T> finalConversion =
-                conversions.findConversion(returnType, to);
+                conversions.findConversion(returnType, to.getType());
 
         if (finalConversion == null) {
             return null;
@@ -42,7 +46,7 @@ public class ValueFactoryConversion implements Joker<ValueFactory<?>> {
                 return (Class) ValueFactory.class;
             }
             public Class<T> getToClass() {
-                return to;
+                return to.getRawType();
             }
             public T convert(ValueFactory<?> from, ArooaConverter converter)
                     throws ArooaConversionException {
@@ -54,7 +58,7 @@ public class ValueFactoryConversion implements Joker<ValueFactory<?>> {
         };
     }
 
-    public static <F extends ValueFactory<?>> Method toValueMethod(Class<F> valueFactoryClass) {
+    public static Method toValueMethod(Class<?> valueFactoryClass) {
         try {
             return valueFactoryClass.getMethod("toValue");
         } catch (Exception e) {

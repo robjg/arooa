@@ -1,38 +1,35 @@
 package org.oddjob.arooa.types;
 
+import org.junit.Assert;
 import org.junit.Test;
-
 import org.oddjob.arooa.ArooaSession;
 import org.oddjob.arooa.convert.ArooaConversionException;
 import org.oddjob.arooa.convert.ArooaConverter;
 import org.oddjob.arooa.standard.StandardArooaSession;
-
-import org.junit.Assert;
 
 public class ConvertTypeTest extends Assert {
 
    @Test
 	public void testConvertStringToInteger() throws ArooaConversionException {
 		
-		ConvertType<Integer> test = new ConvertType<Integer>();
+		ConvertType test = new ConvertType();
 		test.setArooaSession(new StandardArooaSession());
 		test.setValue(new ArooaObject("42"));
 		test.setTo(Integer.class);
 				
-		assertEquals(new Integer(42), test.convert());
+		assertEquals(Integer.valueOf(42), test.convert());
 	}
 	
 	/**
 	 * How ForEach would see convert.
-	 * 
-	 * @throws ArooaConversionException
-	 */
+	 *
+     */
    @Test
 	public void testConvertStringToObjectArray() throws ArooaConversionException {
 		
 		ArooaSession session = new StandardArooaSession();
 		
-		ConvertType<String[]> test = new ConvertType<String[]>();
+		ConvertType test = new ConvertType();
 		test.setArooaSession(session);
 		test.setValue(new ArooaObject("a, b, c"));
 		test.setTo(String[].class);

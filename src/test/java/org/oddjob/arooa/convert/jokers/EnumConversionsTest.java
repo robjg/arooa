@@ -38,22 +38,31 @@ public class EnumConversionsTest extends Assert {
         DefaultConversionRegistry registry = new DefaultConversionRegistry();
 
         new EnumConversions().registerWith(registry);
+
         registry.registerJoker(Deed.class, new Joker<>() {
-            public <T> ConversionStep<Deed, T> lastStep(
-                    final Class<? extends Deed> from,
-                    final Class<T> to,
-                    ConversionLookup conversions) {
+
+            @Override
+            public <T> ConversionStep<Deed, T> lastStep(ConversionPath<?, Deed> pathBefore,
+                                                        TypeArooa<Deed> from,
+                                                        TypeArooa<T> toType,
+                                                        ConversionLookup conversions) {
+
+                Class<T> to = toType.getRawType();
 
                 if (String.class.isAssignableFrom(to)) {
                     return new ConversionStep<>() {
+
+                        @Override
                         public Class<Deed> getFromClass() {
                             return Deed.class;
                         }
 
+                        @Override
                         public Class<T> getToClass() {
                             return to;
                         }
 
+                        @Override
                         @SuppressWarnings("unchecked")
                         public T convert(Deed from, ArooaConverter converter) {
                             return switch (from) {

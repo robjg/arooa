@@ -40,14 +40,14 @@ public class DefaultConversionRegistry implements ConversionRegistry, Supplier<C
                 .put(to, convertlet);
         typeArooaMap.put(from.getType(), from);
 
-        logger.debug("Registered convertlet from {} to {}: {}", from, to, convertlet);
+        logger.trace("Registered convertlet from {} to {}: {}", from, to, convertlet);
     }
 
     @Override
     public <F> void registerJoker(Class<F> from, Joker<F> joker) {
         jokers.register(from, joker);
 
-        logger.debug("Registered joker from {} : {}", from, joker);
+        logger.trace("Registered joker from {} : {}", from, joker);
     }
 
     @Override
@@ -57,13 +57,19 @@ public class DefaultConversionRegistry implements ConversionRegistry, Supplier<C
 
     class ConversionLookupImpl implements ConversionLookup {
 
-
         @Override
         public <F, T> ConversionPath<F, T> findConversion(Type from, Type to) {
 
             TypeArooa<F> fromType = typeArooaOf(from);
-            return best(fromType, fromType, to,
+
+            ConversionPath<F, T> conversionPath = best(fromType, fromType, to,
                     DefaultConversionPath.instance(fromType), 0);
+
+            if (logger.isDebugEnabled() && conversionPath.length() > 0) {
+                logger.debug("Found conversion from {} to {}: {}", from, to, conversionPath);
+            }
+
+            return conversionPath;
         }
 
         <X> TypeArooa<X> typeArooaOf(Type type) {
@@ -94,7 +100,8 @@ public class DefaultConversionRegistry implements ConversionRegistry, Supplier<C
 
             Iterable<Joker<X>> jokersMatching = jokers.getMatching(from);
             for (Joker<X> joker : jokersMatching) {
-                ConversionStep<X, T> step = joker.lastStep(start, to, this);
+                ConversionStep<X, T> step = joker.lastStep(stepsSoFar,
+                        from, to, this);
 
                 if (step != null) {
 

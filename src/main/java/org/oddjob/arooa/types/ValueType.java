@@ -1,25 +1,16 @@
 package org.oddjob.arooa.types;
 
-import java.io.Serializable;
-
 import org.oddjob.arooa.ArooaValue;
-import org.oddjob.arooa.convert.ArooaConversionException;
-import org.oddjob.arooa.convert.ArooaConverter;
-import org.oddjob.arooa.convert.ConversionLookup;
-import org.oddjob.arooa.convert.ConversionStep;
-import org.oddjob.arooa.convert.ConversionProvider;
-import org.oddjob.arooa.convert.ConversionRegistry;
-import org.oddjob.arooa.convert.Joker;
+import org.oddjob.arooa.convert.*;
 import org.oddjob.arooa.deploy.annotations.ArooaAttribute;
-import org.oddjob.arooa.design.DesignFactory;
-import org.oddjob.arooa.design.DesignInstance;
-import org.oddjob.arooa.design.DesignProperty;
-import org.oddjob.arooa.design.DesignValueBase;
-import org.oddjob.arooa.design.SimpleTextAttribute;
+import org.oddjob.arooa.design.*;
 import org.oddjob.arooa.design.screem.Form;
 import org.oddjob.arooa.design.screem.TextPseudoForm;
 import org.oddjob.arooa.parsing.ArooaContext;
 import org.oddjob.arooa.parsing.ArooaElement;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * @oddjob.description A simple value. This is the most commonly used
@@ -42,30 +33,31 @@ import org.oddjob.arooa.parsing.ArooaElement;
  * @oddjob.example
  *
  * A value that is a constant string value.
- * 
+ * <p>
  * {@oddjob.xml.resource org/oddjob/arooa/types/ValueTypeExample1.xml}
  * 
  * @oddjob.example
  *
  * A value that is a reference to a property.
- * 
+ * <p>
  * {@oddjob.xml.resource org/oddjob/arooa/types/ValueTypeExample2.xml}
  * 
  * @oddjob.example
  * 
  * Examining the internals of a value in Oddjob.
- * 
+ * <p>
  * {@oddjob.xml.resource org/oddjob/arooa/types/ValueTypeInternalsExample.xml}
  * 
  * The output is:
- * 
+ * <p>
  * {@oddjob.text.resource org/oddjob/arooa/types/ValueTypeInternalsExampleOut.txt}
  * 
  * 
  * @author Rob Gordon.
  */
 public class ValueType implements ArooaValue, Serializable {
-	private static final long serialVersionUID = 20070312;
+	@Serial
+    private static final long serialVersionUID = 20070312;
 	
 	// private static final Logger logger = LoggerFactory.getLogger(ValueType.class);
 
@@ -78,34 +70,51 @@ public class ValueType implements ArooaValue, Serializable {
      */
 	private ArooaValue value;
 
+	static class ValueTypeJoker implements Joker<ValueType> {
+
+		@Override
+		public <T> ConversionStep<ValueType, T> lastStep(ConversionPath<?, ValueType> pathBefore,
+														 TypeArooa<ValueType> from,
+														 TypeArooa<T> to,
+														 ConversionLookup conversions) {
+
+			return new ConversionStep<>() {
+
+                @Override
+                public Class<ValueType> getFromClass() {
+                    return ValueType.class;
+                }
+
+                @Override
+                public TypeArooa<ValueType> getFromType() {
+                    return from;
+                }
+
+                @Override
+                public Class<T> getToClass() {
+                    return to.getRawType();
+                }
+
+                @Override
+                public TypeArooa<T> getToType() {
+                    return to;
+                }
+
+                public T convert(ValueType from,
+                                 ArooaConverter converter)
+                        throws ArooaConversionException {
+
+                    return converter.convert(from.value, to.getRawType());
+                }
+            };
+		}
+	}
+
 	public static class Conversions implements ConversionProvider {
 		
 		public void registerWith(ConversionRegistry registry) {
 			registry.registerJoker(ValueType.class,
-					new Joker<ValueType>() {
-				public <T> ConversionStep<ValueType, T> lastStep(
-								Class<? extends ValueType> from, 
-								final Class<T> to, 
-								ConversionLookup conversions) {
-					
-					return new ConversionStep<ValueType, T>() {
-						
-						public Class<ValueType> getFromClass() {
-							return ValueType.class;
-						}
-						
-						public Class<T> getToClass() {
-							return to;
-						}
-						
-						public T convert(ValueType from,
-								ArooaConverter converter)
-								throws ArooaConversionException {
-							return converter.convert(from.value, to);
-						}
-					};
-				}
-			});
+					new ValueTypeJoker());
 		}
 	}
 		

@@ -26,15 +26,20 @@ public interface Joker<F> {
      *                    converting content type but be careful of recursion.
      * @return The ConversionStep or null.
      */
-    <T> ConversionStep<F, T> lastStep(
+/*    <T> ConversionStep<F, T> lastStep(
             Class<? extends F> from, Class<T> to,
             ConversionLookup conversions);
 
-    default <T> ConversionStep<F, T> lastStep(TypeArooa<F> from,
+    default */
+
+    <T> ConversionStep<F, T> lastStep(ConversionPath<?, F> pathBefore,
+                                                 TypeArooa<F> from,
                                               TypeArooa<T> to,
-                                              ConversionLookup conversions) {
+                                              ConversionLookup conversions);
+
+    /* {
         return lastStep(from.getRawType(), to.getRawType(), conversions);
-    }
+    } */
 
     /**
      * How this joker is documented. The strategy will ultimately provide

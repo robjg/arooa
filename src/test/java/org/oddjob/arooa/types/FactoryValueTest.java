@@ -29,10 +29,12 @@ public class FactoryValueTest extends Assert {
         new DefaultConversionProvider().registerWith(registry);
 
         registry.registerJoker(MyFactory.class, new Joker<>() {
-            public <T> ConversionStep<MyFactory, T> lastStep(
-                    Class<? extends MyFactory> from,
-                    Class<T> to,
-                    ConversionLookup conversions) {
+
+            @Override
+            public <T> ConversionStep<MyFactory, T> lastStep(ConversionPath<?, MyFactory> pathBefore,
+                                                             TypeArooa<MyFactory> from,
+                                                             TypeArooa<T> to,
+                                                             ConversionLookup conversions) {
                 return null;
             }
         });

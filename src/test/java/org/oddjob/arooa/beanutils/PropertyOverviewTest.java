@@ -320,5 +320,37 @@ class PropertyOverviewTest {
         assertThat(overview.isMapped(), is(true));
     }
 
+    public static class GenericWriteStuff<T> {
+
+        public void setStuff(List<T> value) {
+        }
+    }
+
+    public static class StringWriteStuff extends GenericWriteStuff<String> {
+
+        @Override
+        public void setStuff(List<String> value) {
+
+        }
+    }
+
+    @Test
+    void simpleGenericImplProperty() throws Exception {
+
+        PropertyDescriptor descriptor = PropertyUtils.getPropertyDescriptor(
+                new StringWriteStuff(), "stuff");
+        assertThat(descriptor, notNullValue());
+
+        PropertyOverview overview = PropertyOverview.ofSimple(descriptor);
+        assertThat(overview, notNullValue());
+
+        assertThat(overview.getPropertyType(),
+                is(new TypeToken<List<String>>() {}.getType()));
+        assertThat(overview.isReadable(), is(false));
+        assertThat(overview.isWritable(), is(true));
+        assertThat(overview.isIndexed(), is(false));
+        assertThat(overview.isMapped(), is(false));
+    }
+
 }
 

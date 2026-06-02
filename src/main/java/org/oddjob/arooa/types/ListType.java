@@ -109,13 +109,14 @@ public class ListType implements ArooaValue, Serializable {
      */
     static class ListConversion implements Joker<ListType> {
 
-        @Override
+//        @Override
         public <T> ConversionStep<ListType, T> lastStep(Class<? extends ListType> from, Class<T> to, ConversionLookup conversions) {
             throw new UnsupportedOperationException();
         }
 
         @Override
         public <T> ConversionStep<ListType, T> lastStep(
+                ConversionPath<?, ListType> ignored,
                 TypeArooa<ListType> from,
                 final TypeArooa<T> to,
                 ConversionLookup conversions) {
@@ -288,7 +289,6 @@ public class ListType implements ArooaValue, Serializable {
      * @return A list of the correct type
      * @throws NoConversionAvailableException If conversion fails
      */
-    @SuppressWarnings("unchecked")
     <T> List<T> convertContents(ArooaConverter converter, Type required)
             throws ArooaConversionException {
 

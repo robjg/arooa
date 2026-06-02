@@ -1,23 +1,18 @@
 package org.oddjob.arooa.types;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.oddjob.arooa.ArooaValue;
-import org.oddjob.arooa.convert.ArooaConversionException;
-import org.oddjob.arooa.convert.ArooaConverter;
-import org.oddjob.arooa.convert.ConversionLookup;
-import org.oddjob.arooa.convert.ConversionPath;
-import org.oddjob.arooa.convert.ConversionProvider;
-import org.oddjob.arooa.convert.ConversionRegistry;
-import org.oddjob.arooa.convert.ConversionStep;
-import org.oddjob.arooa.convert.Joker;
-import org.oddjob.arooa.convert.NoConversionAvailableException;
+import org.oddjob.arooa.convert.*;
 import org.oddjob.arooa.deploy.annotations.ArooaHidden;
 import org.oddjob.arooa.life.Configured;
 import org.oddjob.arooa.parsing.ArooaElement;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @oddjob.description A map allows a map of strings to values to be created.
@@ -30,29 +25,30 @@ import org.oddjob.arooa.parsing.ArooaElement;
  * @oddjob.example
  * 
  * A simple map with element access.
- * 
+ * <p>
  * {@oddjob.xml.resource org/oddjob/arooa/types/MapElementTest.xml}
  * 
  * The output is:
- * 
+ * <p>
  * {@oddjob.text.resource org/oddjob/arooa/types/MapElementTest.txt}
  * 
  * @oddjob.example
  * 
  * Adding additional elements to a map. Also demonstrates iterable access
  * to the map.
- * 
+ * <p>
  * {@oddjob.xml.resource org/oddjob/arooa/types/MapTypeAddWithSet.xml}
  * 
  * The output is:
- * 
+ * <p>
  * {@oddjob.text.resource org/oddjob/arooa/types/MapTypeAddWithSet.txt}
  * 
  * 
  * @author Rob Gordon.
  */
 public class MapType implements ArooaValue, Serializable {
-	private static final long serialVersionUID = 20140227;
+	@Serial
+    private static final long serialVersionUID = 20140227;
 		
 	public static final ArooaElement ELEMENT = new ArooaElement("map");
 		
@@ -61,12 +57,12 @@ public class MapType implements ArooaValue, Serializable {
      * @oddjob.description Any values.
      * @oddjob.required No.
      */
-	private final Map<String, ArooaValue> values = 
-		new LinkedHashMap<String, ArooaValue>();
+	private final Map<String, ArooaValue> values =
+            new LinkedHashMap<>();
 	        
 	/** Values added after configuration. */
-	private final Map<String, ArooaValue> extras = 
-		new LinkedHashMap<String, ArooaValue>();
+	private final Map<String, ArooaValue> extras =
+            new LinkedHashMap<>();
 	
     /**
      * @oddjob.property
@@ -76,43 +72,73 @@ public class MapType implements ArooaValue, Serializable {
      * be.
      */
 	private volatile Class<?> elementType;
-	
+
+	/**
+	 * @oddjob.conversion Provides a conversion to a Map.
+	 */
+	static class MapTypeJoker implements Joker<MapType> {
+
+		@Override
+		public <T> ConversionStep<MapType, T> lastStep(ConversionPath<?, MapType> ignored,
+													   TypeArooa<MapType> from,
+													   TypeArooa<T> to,
+													   ConversionLookup conversions) {
+
+			@SuppressWarnings("rawtypes")
+			final ConversionPath<Map, T> finalConversion =
+					conversions.findConversion(Map.class, to.getType());
+
+			if (finalConversion == null) {
+				return null;
+			}
+
+			Type contentType;
+			if (to.getType() instanceof ParameterizedType pt) {
+				contentType = pt.getActualTypeArguments()[1];
+			}
+			else {
+				contentType = Object.class;
+			}
+
+			return new ConversionStep<>() {
+
+                @Override
+                public Class<MapType> getFromClass() {
+                    return MapType.class;
+                }
+
+                @Override
+                public TypeArooa<MapType> getFromType() {
+                    return from;
+                }
+
+                @Override
+                public Class<T> getToClass() {
+                    return to.getRawType();
+                }
+
+                @Override
+                public TypeArooa<T> getToType() {
+                    return to;
+                }
+
+                public T convert(MapType from, ArooaConverter converter)
+                        throws ArooaConversionException {
+
+                    Map<String, ?> map = from.convertContents(
+                            converter, contentType);
+
+                    return finalConversion.convert(map, converter);
+                }
+            };
+		}
+	}
+
 	public static class Conversions implements ConversionProvider {
 		
 		public void registerWith(ConversionRegistry registry) {
-			registry.registerJoker(MapType.class, 
-					new Joker<MapType>() {
-				public <T> ConversionStep<MapType, T> lastStep(
-						Class<? extends MapType> from, 
-						final Class<T> to, 
-						ConversionLookup conversions) {
-
-					@SuppressWarnings("rawtypes")
-					final ConversionPath<Map, T> finalConversion = 
-							conversions.findConversion(Map.class, to);
-					
-			    	if (finalConversion == null) {
-				    	return null;
-			    	}
-			    	
-					return new ConversionStep<MapType, T>() {
-						public Class<MapType> getFromClass() {
-							return MapType.class;
-						}
-						public Class<T> getToClass() {
-							return to;
-						}
-						public T convert(MapType from, ArooaConverter converter) 
-						throws ArooaConversionException {
-								
-							Map<String, ?> map = from.convertContents(
-									converter, Object.class);
-									
-							return finalConversion.convert(map, converter);
-						}
-					};
-		    	}
-			});
+			registry.registerJoker(MapType.class,
+					new MapTypeJoker());
 		}
 	}
 		
@@ -151,31 +177,30 @@ public class MapType implements ArooaValue, Serializable {
      * @param converter The ArooaConverter used to convert the
      * 			internal types.
      * @param required The required array class 
-     * @return
-     * 
-     * @throws NoConversionAvailableException
+     * @return Map with converted contents.
+     *
      */
-	@SuppressWarnings("unchecked")
-	<T> Map<String, T> convertContents(ArooaConverter converter, Class<T> required) 
+    <T> Map<String, T> convertContents(ArooaConverter converter,
+									   Type required)
     throws ArooaConversionException {
 		
-    	Map<String, T> results= new LinkedHashMap<String, T>();
+    	Map<String, T> results= new LinkedHashMap<>();
     	
 		if (this.elementType != null) {
 			
-			if (
-				!required.isAssignableFrom(
+			if (!TypeArooaUtils.rawType(required).isAssignableFrom(
 						this.elementType)) {
 				throw new ArooaConversionException(
 					"MapType can't convert to required Map of " +
-					required.getComponentType() + 
+					required.getTypeName() +
 					" because elementType attribute is specified as " +
 					this.elementType);
 			}
-			required = (Class<T>) elementType;
+
+			required = elementType;
 		}
 		
-		Map<String, ArooaValue> valuesAndExtras = new LinkedHashMap<String, ArooaValue>();
+		Map<String, ArooaValue> valuesAndExtras = new LinkedHashMap<>();
 		synchronized (this) {
 			valuesAndExtras.putAll(values);
 			valuesAndExtras.putAll(extras);

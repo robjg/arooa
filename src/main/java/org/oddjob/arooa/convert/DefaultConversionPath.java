@@ -37,8 +37,9 @@ public class DefaultConversionPath<F, T> implements ConversionPath<F, T> {
 		}
 
 		if (!following.getFromType().equals(getToType())) {
-			throw new IllegalArgumentException("Can't append path with [" + 
-					following.getFromType() + "], expected [" +
+			throw new IllegalArgumentException("Can't append [" +
+					following + "] to " + this + " because " +
+					following.getFromType() + "], is not an [" +
 					getToType() + "]");
 		}
 		
