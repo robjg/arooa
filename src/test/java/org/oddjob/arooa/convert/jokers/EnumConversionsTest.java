@@ -53,13 +53,13 @@ public class EnumConversionsTest extends Assert {
                     return new ConversionStep<>() {
 
                         @Override
-                        public Class<Deed> getFromClass() {
-                            return Deed.class;
+                        public TypeArooa<Deed> getFromType() {
+                            return from;
                         }
 
                         @Override
-                        public Class<T> getToClass() {
-                            return to;
+                        public TypeArooa<T> getToType() {
+                            return toType;
                         }
 
                         @Override

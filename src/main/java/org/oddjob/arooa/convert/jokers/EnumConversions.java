@@ -25,18 +25,8 @@ public class EnumConversions implements ConversionProvider {
 				return new ConversionStep<>() {
 
                     @Override
-                    public Class<String> getFromClass() {
-                        return String.class;
-                    }
-
-                    @Override
                     public TypeArooa<String> getFromType() {
                         return from;
-                    }
-
-                    @Override
-                    public Class<T> getToClass() {
-                        return to.getRawType();
                     }
 
                     @Override

@@ -53,8 +53,8 @@ public class DefaultConversionRegistryTest {
 
         assertEquals(1, result.length());
 
-        assertEquals(Long.class, result.getFromClass());
-        assertEquals(java.sql.Date.class, result.getToClass());
+        assertEquals(Long.class, result.getFromType().getRawType());
+        assertEquals(java.sql.Date.class, result.getToType().getRawType());
 
     }
 
@@ -85,8 +85,8 @@ public class DefaultConversionRegistryTest {
 
         assertEquals(1, result.length());
 
-        assertEquals(Long.class, result.getFromClass());
-        assertEquals(java.util.Date.class, result.getToClass());
+        assertEquals(Long.class, result.getFromType().getRawType());
+        assertEquals(java.util.Date.class, result.getToType().getRawType());
 
     }
 
@@ -119,11 +119,15 @@ public class DefaultConversionRegistryTest {
 
         assertEquals(2, result.length());
 
-        assertEquals(Float.class, result.getStep(0).getFromClass());
-        assertEquals(Number.class, result.getStep(0).getToClass());
+        assertEquals(Float.class, result.getStep(0)
+                .getFromType().getRawType());
+        assertEquals(Number.class, result.getStep(0)
+                .getToType().getRawType());
 
-        assertEquals(Number.class, result.getStep(1).getFromClass());
-        assertEquals(Double.class, result.getStep(1).getToClass());
+        assertEquals(Number.class, result.getStep(1)
+                .getFromType().getRawType());
+        assertEquals(Double.class, result.getStep(1)
+                .getToType().getRawType());
 
     }
 
@@ -251,8 +255,8 @@ public class DefaultConversionRegistryTest {
 
         Class<?> previousTo = null;
         for (int i = 0; i < result.length(); ++i) {
-            Class<?> from = result.getStep(i).getFromClass();
-            Class<?> to = result.getStep(i).getToClass();
+            Class<?> from = result.getStep(i).getFromType().getRawType();
+            Class<?> to = result.getStep(i).getToType().getRawType();
 
             if (i == 0) {
                 build.append(from.getSimpleName());
@@ -459,7 +463,7 @@ public class DefaultConversionRegistryTest {
         ConversionPath<?, ?> result = lookup.findConversion(from, ArooaValue.class);
         System.out.print("Result: " + from.getName());
         for (int i = 0; i < result.length(); ++i) {
-            System.out.print("->" + result.getStep(i).getToClass().getName());
+            System.out.print("->" + result.getStep(i).getToType());
         }
         System.out.println();
     }

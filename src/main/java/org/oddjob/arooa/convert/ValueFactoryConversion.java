@@ -42,12 +42,18 @@ public class ValueFactoryConversion implements Joker<ValueFactory<?>> {
         }
 
         return new ConversionStep<>() {
-            public Class<ValueFactory<?>> getFromClass() {
-                return (Class) ValueFactory.class;
+
+            @Override
+            public TypeArooa<ValueFactory<?>> getFromType() {
+                return from;
             }
-            public Class<T> getToClass() {
-                return to.getRawType();
+
+            @Override
+            public TypeArooa<T> getToType() {
+                return to;
             }
+
+            @Override
             public T convert(ValueFactory<?> from, ArooaConverter converter)
                     throws ArooaConversionException {
 

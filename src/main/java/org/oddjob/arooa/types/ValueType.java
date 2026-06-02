@@ -81,18 +81,8 @@ public class ValueType implements ArooaValue, Serializable {
 			return new ConversionStep<>() {
 
                 @Override
-                public Class<ValueType> getFromClass() {
-                    return ValueType.class;
-                }
-
-                @Override
                 public TypeArooa<ValueType> getFromType() {
                     return from;
-                }
-
-                @Override
-                public Class<T> getToClass() {
-                    return to.getRawType();
                 }
 
                 @Override
@@ -104,7 +94,7 @@ public class ValueType implements ArooaValue, Serializable {
                                  ArooaConverter converter)
                         throws ArooaConversionException {
 
-                    return converter.convert(from.value, to.getRawType());
+                    return converter.convert(from.value, to.getType());
                 }
             };
 		}

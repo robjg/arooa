@@ -53,18 +53,8 @@ public class ImportType implements ArooaValue, ArooaSessionAware {
             return new ConversionStep<>() {
 
                 @Override
-                public Class<ImportType> getFromClass() {
-                    return ImportType.class;
-                }
-
-                @Override
                 public TypeArooa<ImportType> getFromType() {
                     return from;
-                }
-
-                @Override
-                public Class<T> getToClass() {
-                    return to.getRawType();
                 }
 
                 @Override

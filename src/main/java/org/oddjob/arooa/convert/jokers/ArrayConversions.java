@@ -18,29 +18,33 @@ public class ArrayConversions implements ConversionProvider {
 
             // Array conversions first go to object because there is no way to register a
             // conversion for all array types.
-            Class<?> from;
+            TypeArooa<Object> originalFrom;
             if (pathBefore.length() == 0) {
-                from = fromType.getRawType();
+                originalFrom = fromType;
+            } else {
+                originalFrom = pathBefore.getStep(pathBefore.length() - 1).getFromType();
             }
-            else {
-                from = pathBefore.getStep(pathBefore.length() - 1).getFromType().getRawType();
-            }
+            Class<?> from = originalFrom.getRawType();
 
             Class<T> to = toType.getRawType();
 
             if (from.isArray() && to.isAssignableFrom(List.class)) {
 
                 return new ConversionStep<>() {
-                    public Class<Object> getFromClass() {
-                        return Object.class;
+
+                    @Override
+                    public TypeArooa<Object> getFromType() {
+                        return fromType;
                     }
 
-                    public Class<T> getToClass() {
-                        return to;
+                    @Override
+                    public TypeArooa<T> getToType() {
+                        return toType;
                     }
 
                     public T convert(Object from, ArooaConverter converter) {
                         final Object[] array = (Object[]) from;
+                        //noinspection unchecked
                         return (T) Arrays.asList(array);
                     }
                 };
@@ -60,18 +64,8 @@ public class ArrayConversions implements ConversionProvider {
                 return new ConversionStep<>() {
 
                     @Override
-                    public Class<Object> getFromClass() {
-                        return Object.class;
-                    }
-
-                    @Override
                     public TypeArooa<Object> getFromType() {
                         return fromType;
-                    }
-
-                    @Override
-                    public Class<T> getToClass() {
-                        return to;
                     }
 
                     @Override
@@ -106,7 +100,9 @@ public class ArrayConversions implements ConversionProvider {
 
             if (from.isArray() && to.isAssignableFrom(String.class)) {
 
-                return (ConversionStep<Object, T>) toStringConversion(from, conversions);
+                //noinspection unchecked
+                return (ConversionStep<Object, T>) toStringConversion(
+                        fromType, from, conversions);
             }
 
             if (to.isArray()) {
@@ -121,14 +117,18 @@ public class ArrayConversions implements ConversionProvider {
                 }
 
                 return new ConversionStep<>() {
-                    public Class<Object> getFromClass() {
-                        return Object.class;
+
+                    @Override
+                    public TypeArooa<Object> getFromType() {
+                        return fromType;
                     }
 
-                    public Class<T> getToClass() {
-                        return to;
+                    @Override
+                    public TypeArooa<T> getToType() {
+                        return toType;
                     }
 
+                    @Override
                     public T convert(Object from, ArooaConverter converter)
                             throws ArooaConversionException {
                         Object newArray = Array.newInstance(
@@ -145,6 +145,7 @@ public class ArrayConversions implements ConversionProvider {
                                     convertedElement);
                         }
 
+                        //noinspection unchecked
                         return (T) newArray;
                     }
                 };
@@ -158,11 +159,14 @@ public class ArrayConversions implements ConversionProvider {
         registry.registerJoker(Object.class, new ArrayJoker());
     }
 
-    static <T> ConversionStep<?, String> toStringConversion(
-            final Class<?> fromType, ConversionLookup conversions) {
+    static <T> ConversionStep<?, String> toStringConversion(final TypeArooa<Object> fromType,
+                                                            final Class<?> from,
+                                                            ConversionLookup conversions) {
+
+        TypeArooa<String> toType = TypeArooa.of(String.class);
 
         @SuppressWarnings("unchecked")
-        Class<T> fromComponent = (Class<T>) fromType.getComponentType();
+        Class<T> fromComponent = (Class<T>) from.getComponentType();
 
         final ConversionPath<T, String> componentConversion =
                 conversions.findConversion(fromComponent, String.class);
@@ -170,13 +174,13 @@ public class ArrayConversions implements ConversionProvider {
         return new ConversionStep<>() {
 
             @Override
-            public Class<Object> getFromClass() {
-                return Object.class;
+            public TypeArooa<Object> getFromType() {
+                return fromType;
             }
 
             @Override
-            public Class<String> getToClass() {
-                return String.class;
+            public TypeArooa<String> getToType() {
+                return toType;
             }
 
             @Override

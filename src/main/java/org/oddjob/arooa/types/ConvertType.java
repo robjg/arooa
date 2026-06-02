@@ -51,17 +51,9 @@ public class ConvertType implements ArooaValue, ArooaSessionAware {
 
             return new ConversionStep<>() {
 
-                public Class<ConvertType> getFromClass() {
-                    return from.getRawType();
-                }
-
                 @Override
                 public TypeArooa<ConvertType> getFromType() {
                     return from;
-                }
-
-                public Class<T> getToClass() {
-                    return to.getRawType();
                 }
 
                 @Override

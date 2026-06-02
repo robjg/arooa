@@ -12,26 +12,18 @@ package org.oddjob.arooa.convert;
 public interface ConversionStep<F, T> {
 	
 	/**
-	 * Get the class the ConversionStep is from.
+	 * Get the type the ConversionStep is from.
 	 * 
-	 * @return The class. Never null.
+	 * @return The type. Never null.
 	 */
-	Class<F> getFromClass();
-
-    default TypeArooa<F> getFromType() {
-        return TypeArooa.of(getFromClass());
-    }
+    TypeArooa<F> getFromType();
 
 	/**
-	 * Get the class the ConversionStep is to.
+	 * Get the type the ConversionStep is to.
 	 * 
-	 * @return The class. Never null.
+	 * @return The type. Never null.
 	 */
-	Class<T> getToClass();
-
-    default TypeArooa<T> getToType() {
-        return TypeArooa.of(getToClass());
-    }
+    TypeArooa<T> getToType();
 
 	T convert(F from, ArooaConverter converter)
 	throws ArooaConversionException;

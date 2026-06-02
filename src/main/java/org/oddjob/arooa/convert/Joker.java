@@ -19,27 +19,19 @@ public interface Joker<F> {
      * Provide the final step. Will return null if there
      * is no conversion to the required type.
      *
-     * @param <T>         The to type.
-     * @param from        The from class.
-     * @param to          The to class.
-     * @param conversions The conversions this Jokers is part of. Useful for
+     * @param pathBefore  The conversion path up to calling the joker.
+     * @param from        The type converting from.
+     * @param to          The type converting to.
+     * @param conversions The conversions that this Joker is part of. Useful for
      *                    converting content type but be careful of recursion.
      * @return The ConversionStep or null.
+     *
+     * @param <T>         The to type.
      */
-/*    <T> ConversionStep<F, T> lastStep(
-            Class<? extends F> from, Class<T> to,
-            ConversionLookup conversions);
-
-    default */
-
     <T> ConversionStep<F, T> lastStep(ConversionPath<?, F> pathBefore,
                                                  TypeArooa<F> from,
                                               TypeArooa<T> to,
                                               ConversionLookup conversions);
-
-    /* {
-        return lastStep(from.getRawType(), to.getRawType(), conversions);
-    } */
 
     /**
      * How this joker is documented. The strategy will ultimately provide

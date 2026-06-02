@@ -93,7 +93,7 @@ public class MapType implements ArooaValue, Serializable {
 			}
 
 			Type contentType;
-			if (to.getType() instanceof ParameterizedType pt) {
+			if (to.getRawType() == Map.class && to.getType() instanceof ParameterizedType pt) {
 				contentType = pt.getActualTypeArguments()[1];
 			}
 			else {
@@ -103,18 +103,8 @@ public class MapType implements ArooaValue, Serializable {
 			return new ConversionStep<>() {
 
                 @Override
-                public Class<MapType> getFromClass() {
-                    return MapType.class;
-                }
-
-                @Override
                 public TypeArooa<MapType> getFromType() {
                     return from;
-                }
-
-                @Override
-                public Class<T> getToClass() {
-                    return to.getRawType();
                 }
 
                 @Override

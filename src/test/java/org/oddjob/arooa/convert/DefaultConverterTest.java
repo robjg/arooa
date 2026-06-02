@@ -219,14 +219,18 @@ public class DefaultConverterTest {
                         assertEquals(String.class, to);
                         ConversionPath<AV, AV> conversion = DefaultConversionPath.instance(AV.class);
                         ConversionPath<AV, String> conversion2 = conversion.append(new ConversionStep<>() {
-                            public Class<AV> getFromClass() {
-                                return AV.class;
+
+                            @Override
+                            public TypeArooa<AV> getFromType() {
+                                return TypeArooa.of(AV.class);
                             }
 
-                            public Class<String> getToClass() {
-                                return String.class;
+                            @Override
+                            public TypeArooa<String> getToType() {
+                                return TypeArooa.of(String.class);
                             }
 
+                            @Override
                             public String convert(AV from, ArooaConverter converter) {
                                 return "test";
                             }

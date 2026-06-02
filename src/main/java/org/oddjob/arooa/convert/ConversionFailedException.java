@@ -17,8 +17,8 @@ public class ConversionFailedException extends ArooaConversionException {
 	public ConversionFailedException(ConversionStack conversionStack, 
 			Exception cause) {
 		super("Conversion failed between [" +
-				conversionStack.getConversionPath().getFromClass() + "] and [" +
-				conversionStack.getConversionPath().getToClass() + "]",
+				conversionStack.getConversionPath().getFromType() + "] and [" +
+				conversionStack.getConversionPath().getToType() + "]",
 				cause);
 		this.conversionStack = conversionStack;
 	}

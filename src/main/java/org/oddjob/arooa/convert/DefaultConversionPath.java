@@ -57,9 +57,9 @@ public class DefaultConversionPath<F, T> implements ConversionPath<F, T> {
 			throw new NullPointerException("ConversionStep can not be null.");
 		}
 		
-		if (!preceding.getToClass().equals(getFromClass())) {
+		if (!preceding.getToType().equals(getFromType())) {
 			throw new IllegalArgumentException("Can't preceed with [" + 
-					preceding.getToClass() + "]");
+					preceding.getToType() + "]");
 		}
 		
 		List<ConversionStep<?, ?>> next =

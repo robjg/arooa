@@ -135,32 +135,8 @@ public class DefaultConversionRegistry implements ConversionRegistry, Supplier<C
                     }
 
                     // work out what the next conversion steps would be
-                    ConversionStep<X, Y> nextStep = new ConversionStep<>() {
-                        public Y convert(X from, ArooaConverter converter)
-                                throws ArooaConversionException {
-                            return convertlet.convert(from);
-                        }
-
-                        @Override
-                        public Class<X> getFromClass() {
-                            return from.getRawType();
-                        }
-
-                        @Override
-                        public Class<Y> getToClass() {
-                            return maybeTo.getRawType();
-                        }
-
-                        @Override
-                        public TypeArooa<X> getFromType() {
-                            return from;
-                        }
-
-                        @Override
-                        public TypeArooa<Y> getToType() {
-                            return maybeTo;
-                        }
-                    };
+                    ConversionStep<X, Y> nextStep = new ConvertletStep<>(
+                            from, maybeTo, convertlet);
 
                     // recursively call. A non null result means we found a match.
                     ConversionPath<F, T> result = nextBest(maybeTo,
@@ -181,32 +157,7 @@ public class DefaultConversionRegistry implements ConversionRegistry, Supplier<C
                 final TypeArooa<Y> superClass = (TypeArooa<Y>) TypeArooa.of(aSuper);
 
                 // next conversion steps would be with super class
-                ConversionStep<X, Y> nextStep = new ConversionStep<>() {
-                    @Override
-                    public Y convert(X from, ArooaConverter converter) {
-                        return (Y) from;
-                    }
-
-                    @Override
-                    public Class<X> getFromClass() {
-                        return from.getRawType();
-                    }
-
-                    @Override
-                    public Class<Y> getToClass() {
-                        return superClass.getRawType();
-                    }
-
-                    @Override
-                    public TypeArooa<X> getFromType() {
-                        return from;
-                    }
-
-                    @Override
-                    public TypeArooa<Y> getToType() {
-                        return superClass;
-                    }
-                };
+                ConversionStep<X, Y> nextStep = new SuperTypeStep<>(from, superClass);
 
                 // recursively call. A non null result means we found a match.
                 ConversionPath<F, T> result = nextBest((TypeArooa<Y>) from,
@@ -315,5 +266,84 @@ public class DefaultConversionRegistry implements ConversionRegistry, Supplier<C
             return results;
         }
     }
+
+    static class SuperTypeStep<X, Y> implements ConversionStep<X, Y> {
+
+        private final TypeArooa<X> from;
+
+        private final TypeArooa<Y> to;
+
+        SuperTypeStep(TypeArooa<X> from,
+                      TypeArooa<Y> to) {
+            this.from = from;
+            this.to = to;
+        }
+
+        @Override
+        public TypeArooa<X> getFromType() {
+            return from;
+        }
+
+        @Override
+        public TypeArooa<Y> getToType() {
+            return to;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Y convert(X from, ArooaConverter converter) {
+            return (Y) from;
+        }
+
+        @Override
+        public String toString() {
+            return "SuperTypeStep{" +
+                    "from=" + from +
+                    ", to=" + to +
+                    '}';
+        }
+    };
+
+    static class ConvertletStep<X, Y> implements ConversionStep<X, Y> {
+
+        private final TypeArooa<X> from;
+
+        private final TypeArooa<Y> to;
+
+        private final Convertlet<X,  Y> convertlet;
+
+        ConvertletStep(TypeArooa<X> from,
+                       TypeArooa<Y> to,
+                       Convertlet<X, Y> convertlet) {
+            this.from = from;
+            this.to = to;
+            this.convertlet = convertlet;
+        }
+
+        @Override
+        public TypeArooa<X> getFromType() {
+            return from;
+        }
+
+        @Override
+        public TypeArooa<Y> getToType() {
+            return to;
+        }
+
+        @Override
+        public Y convert(X from, ArooaConverter converter)
+                throws ArooaConversionException {
+            return convertlet.convert(from);
+        }
+
+        @Override
+        public String toString() {
+            return "ConvertletStep{" +
+                    "from=" + from +
+                    ", to=" + to +
+                    ", convertlet=" + convertlet +
+                    '}';
+        }
+    };
 
 }

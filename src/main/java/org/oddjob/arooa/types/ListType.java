@@ -124,18 +124,8 @@ public class ListType implements ArooaValue, Serializable {
             abstract class AbstractLastStep implements ConversionStep<ListType, T> {
 
                 @Override
-                public Class<ListType> getFromClass() {
-                    throw new UnsupportedOperationException();
-                }
-
-                @Override
                 public TypeArooa<ListType> getFromType() {
                     return from;
-                }
-
-                @Override
-                public Class<T> getToClass() {
-                    throw new UnsupportedOperationException();
                 }
 
                 @Override

@@ -42,18 +42,8 @@ public class IdentifiableValueType
             return new ConversionStep<>() {
 
                 @Override
-                public Class<IdentifiableValueType> getFromClass() {
-                    return IdentifiableValueType.class;
-                }
-
-                @Override
                 public TypeArooa<IdentifiableValueType> getFromType() {
                     return from;
-                }
-
-                @Override
-                public Class<T> getToClass() {
-                    return to.getRawType();
                 }
 
                 @Override

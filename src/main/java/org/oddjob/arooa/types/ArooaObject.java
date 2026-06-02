@@ -35,18 +35,8 @@ public class ArooaObject implements ArooaValue, Serializable {
 			return new ConversionStep<>() {
 
 				@Override
-				public Class<ArooaObject> getFromClass() {
-					return ArooaObject.class;
-				}
-
-				@Override
 				public TypeArooa<ArooaObject> getFromType() {
 					return from;
-				}
-
-				@Override
-				public Class<T> getToClass() {
-					return to.getRawType();
 				}
 
 				@Override

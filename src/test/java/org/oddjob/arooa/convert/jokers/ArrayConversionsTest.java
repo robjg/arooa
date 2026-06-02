@@ -24,8 +24,8 @@ public class ArrayConversionsTest {
         String[] sa = {"3", "9"};
         ConversionPath<String[], ?> result = test.findConversion(String[].class, int[].class);
 
-        assertEquals(String[].class, result.getFromClass());
-        assertEquals(int[].class, result.getToClass());
+        assertEquals(String[].class, result.getFromType().getRawType());
+        assertEquals(int[].class, result.getToType().getRawType());
 
         assertEquals(2, result.length());
 

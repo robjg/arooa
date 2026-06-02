@@ -24,27 +24,19 @@ public interface ConversionPath<F, T> {
 	 * @return A new path.
 	 */
     <X> ConversionPath<X, T> prepend(ConversionStep<X, F> preceding);
-	
+
 	/**
-	 * Get the 'from' Class of this ConversionPath.
-	 * 
+	 * Get the 'from' type of this ConversionPath.
+	 *
 	 * @return The 'from' type.
 	 */
-    default Class<F> getFromClass() {
-        return getFromType().getRawType();
-    }
-
     TypeArooa<F> getFromType();
 
 	/**
-	 * Get the to Class of this ConversionPath.
+	 * Get the to type of this ConversionPath.
 	 * 
 	 * @return The to type.
 	 */
-    default Class<T> getToClass() {
-        return getToType().getRawType();
-    }
-
     TypeArooa<T> getToType();
 
 
