@@ -5,7 +5,10 @@ import org.oddjob.arooa.deploy.annotations.*;
 import org.oddjob.arooa.utils.ClassUtils;
 
 import javax.inject.Inject;
-import javax.inject.Named;
+import javax.inject.Qualifier;
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Contributes to an {@link BeanDescriptorContributor} from an annotated class.
@@ -23,7 +26,7 @@ public class AnnotatedBeanDescriptorContributor implements BeanDescriptorContrib
         if (interceptorAnnotation != null) {
 
             String interceptor = interceptorAnnotation.value();
-            if (interceptor.length() > 0) {
+            if (!interceptor.isEmpty()) {
                 ParsingInterceptor parsingInterceptor = (ParsingInterceptor)
                         ClassUtils.instantiate(
                                 interceptor, cl.getClassLoader());
@@ -60,18 +63,15 @@ public class AnnotatedBeanDescriptorContributor implements BeanDescriptorContrib
                 accumulator.setComponentProperty(property);
             }
 
-            ArooaAnnotation namedAnnotation = annotations.annotationForProperty(
-                    property, Named.class.getName());
+            // Finds any Qualifier annotations. Only finds the last.
+            // No handling of more than one qualifier yet.
+            List<Annotation> propertyAnnotations = annotations.annotationsFor(property);
+            for (Annotation propertyAnnotation : propertyAnnotations) {
 
-            if (namedAnnotation != null) {
-                Named named = namedAnnotation.realAnnotation(Named.class);
-                if (named == null) {
-                    throw new IllegalArgumentException(
-                            "NAMED must be a real annotation.");
-                }
-
-                accumulator.setFlavour(property, named.value());
-
+                Arrays.stream(propertyAnnotation
+                                .annotationType().getAnnotations())
+                        .filter(an -> an.annotationType() == Qualifier.class)
+                        .forEach(an -> accumulator.setQualifier(property, propertyAnnotation));
             }
 
             if (annotations.annotationForProperty(

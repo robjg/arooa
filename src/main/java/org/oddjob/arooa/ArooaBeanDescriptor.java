@@ -3,6 +3,8 @@
  */
 package org.oddjob.arooa;
 
+import java.lang.annotation.Annotation;
+
 /**
  * A description of any special types of properties a 
  * class might have.
@@ -65,13 +67,18 @@ public interface ArooaBeanDescriptor {
 	
 	/**
 	 * Get the property flavour. This is for services.
-	 * 
+	 *
 	 * @param property The property name.
 	 * 
 	 * @return The flavour. May be null.
+	 *
+	 * @deprecated Use {@link #getQualifier(String)}
 	 */
+	@Deprecated
 	String getFlavour(String property);
-	
+
+	Annotation getQualifier(String property);
+
 	/**
 	 * Indicates that the property should be set automatically
 	 * from the services.

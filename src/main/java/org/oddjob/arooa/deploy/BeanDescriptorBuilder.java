@@ -7,6 +7,8 @@ import org.oddjob.arooa.ParsingInterceptor;
 import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.ArooaPropertyException;
 
+import javax.inject.Named;
+import java.lang.annotation.Annotation;
 import java.util.*;
 
 /**
@@ -31,7 +33,7 @@ public class BeanDescriptorBuilder
     private final Map<String, ConfiguredHow> configuredHowMap =
             new HashMap<>();
 
-    private final Map<String, String> flavours =
+    private final Map<String, Annotation> flavours =
             new HashMap<>();
 
     private final Set<String> autos = new HashSet<>();
@@ -56,7 +58,7 @@ public class BeanDescriptorBuilder
     /**
      * Constructor
      *
-     * @param classFor
+     * @param classFor The Arooa Class this is a Builder for.
      */
     public BeanDescriptorBuilder(ArooaClass classFor) {
         this.classIdentifier = Objects.requireNonNull(classFor, "Class identifier is null.");
@@ -95,8 +97,9 @@ public class BeanDescriptorBuilder
     /**
      * Set the component property.
      *
-     * @param property
+     * @param property The property name.
      */
+    @Override
     public void setComponentProperty(String property) {
         if (componentProperty != null) {
             throw new IllegalStateException("Component property of " +
@@ -110,8 +113,9 @@ public class BeanDescriptorBuilder
     /**
      * Set the text property.
      *
-     * @param property
+     * @param property The property name.
      */
+    @Override
     public void setTextProperty(String property) {
         if (textProperty != null) {
             throw new IllegalStateException("Text property of " +
@@ -123,26 +127,28 @@ public class BeanDescriptorBuilder
     }
 
     /**
-     * Set the flavour for a property.
+     * Set the Qualifier for a property.
      *
-     * @param property
-     * @param flavour
+     * @param property The property name.
+     * @param qualifier The Qualifier.
      */
-    public void setFlavour(String property, String flavour) {
-        flavours.put(property, flavour);
+    @Override
+    public void setQualifier(String property, Annotation qualifier) {
+        flavours.put(property, qualifier);
     }
 
     /**
      * Set the parsing interceptor. Used by
      * {@link AnnotatedBeanDescriptorContributor}.
      *
-     * @param interceptor
+     * @param interceptor The Parsing Interceptor.
      */
+    @Override
     public void setParsingInterceptor(ParsingInterceptor interceptor) {
         this.parsingInterceptor = interceptor;
     }
 
-
+    @SuppressWarnings("UnusedReturnValue")
     public BeanDescriptorBuilder setArooaAnnotations(ArooaAnnotations arooaAnnotations) {
         this.arooaAnnotations = arooaAnnotations;
         return this;
@@ -160,9 +166,11 @@ public class BeanDescriptorBuilder
             String propertyName = entry.getKey();
             ConfiguredHow configuredHow = entry.getValue();
 
+            Annotation qualifier = flavours.get(propertyName);
+
             properties.put(propertyName,
                     new PropertyDefinition(configuredHow,
-                            flavours.get(propertyName), autos.contains(propertyName)));
+                            qualifier, autos.contains(propertyName)));
         }
 
         return new Immutable(this.classIdentifier,
@@ -243,7 +251,26 @@ public class BeanDescriptorBuilder
                 return null;
             }
 
-            return propertyDefinition.flavour;
+            Annotation qualifier = propertyDefinition.qualifier;
+            String flavour;
+            if (qualifier instanceof Named named) {
+                flavour = named.value();
+            }
+            else {
+                flavour = null;
+            }
+
+            return flavour;
+        }
+
+        @Override
+        public Annotation getQualifier(String property) {
+            PropertyDefinition propertyDefinition = properties.get(property);
+            if (propertyDefinition == null) {
+                return null;
+            }
+
+            return propertyDefinition.qualifier;
         }
 
         @Override
@@ -275,13 +302,15 @@ public class BeanDescriptorBuilder
 
         private final ConfiguredHow configuredHow;
 
-        private final String flavour;
+        private final Annotation qualifier;
 
         private final boolean auto;
 
-        PropertyDefinition(ConfiguredHow configuredHow, String flavour, boolean auto) {
+        PropertyDefinition(ConfiguredHow configuredHow,
+                           Annotation qualifier,
+                           boolean auto) {
             this.configuredHow = configuredHow;
-            this.flavour = flavour;
+            this.qualifier = qualifier;
             this.auto = auto;
         }
     }

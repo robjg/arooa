@@ -10,6 +10,8 @@ import org.oddjob.arooa.parsing.ArooaContext;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.lang.annotation.Annotation;
+import java.lang.annotation.RetentionPolicy;
 import java.net.URL;
 import java.util.Objects;
 
@@ -22,6 +24,14 @@ public class AnnotatedBeanDescriptorTest {
         public ArooaContext intercept(ArooaContext suggestedContext) {
             return null;
         }
+    }
+
+    @java.lang.annotation.Documented
+    @java.lang.annotation.Retention(RetentionPolicy.RUNTIME)
+    @javax.inject.Qualifier
+    public @interface Leather {
+        Color color() default Color.TAN;
+        enum Color { RED, BLACK, TAN }
     }
 
     @ArooaInterceptor("org.oddjob.arooa.deploy.AnnotatedBeanDescriptorTest$OurInterceptor")
@@ -39,6 +49,12 @@ public class AnnotatedBeanDescriptorTest {
         @Named("red")
         @ArooaAttribute
         public void setMyAttribute(Object ignored) {
+        }
+
+        @Inject
+        @Leather(color = Leather.Color.RED)
+        @ArooaAttribute
+        public void setMyLeather(Object ignored) {
         }
 
         @Inject
@@ -83,6 +99,10 @@ public class AnnotatedBeanDescriptorTest {
         assertThat(beanDescriptor.isAuto("myAttribute"), is(true));
 
         assertThat(beanDescriptor.isAuto("myValue"), is(true));
+
+        Annotation qualifier = beanDescriptor.getQualifier("myLeather");
+        assertThat(qualifier, Matchers.instanceOf(Leather.class));
+        assertThat(((Leather) qualifier).color(), is(Leather.Color.RED));
 
         assertThat(beanDescriptor.getFlavour("myAttribute"), is("red"));
 

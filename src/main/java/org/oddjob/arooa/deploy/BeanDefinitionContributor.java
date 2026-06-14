@@ -2,6 +2,8 @@ package org.oddjob.arooa.deploy;
 
 import org.oddjob.arooa.ConfiguredHow;
 
+import javax.inject.Named;
+import javax.inject.Qualifier;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
@@ -53,8 +55,17 @@ public class BeanDefinitionContributor implements BeanDescriptorContributor {
                 }
             }
 
-            Optional.ofNullable(propertyDefinition.getFlavour())
-                    .ifPresent(flavour -> accumulator.setFlavour(propertyName, flavour));
+            String flavour = propertyDefinition.getFlavour();
+            if (flavour != null) {
+                try {
+                    Named annotation = (Named) SyntheticAnnotation.with()
+                            .value(flavour)
+                            .named(Named.class.getName());
+                    accumulator.setQualifier(propertyName, (Qualifier) annotation);
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
 
             if (propertyDefinition.getAuto()) {
                 accumulator.setAuto(propertyName);

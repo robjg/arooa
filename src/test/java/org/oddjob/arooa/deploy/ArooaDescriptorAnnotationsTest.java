@@ -76,7 +76,7 @@ public class ArooaDescriptorAnnotationsTest {
         Method doStuff = test.methodFor(DoStuff.class.getName());
         assertThat(doStuff.getName(), is("myDoStuff"));
 
-        Method destroy = test.methodFor("org.oddjob.arooa.life.ArooaDestroy");
+        Method destroy = test.methodFor("org.oddjob.arooa.life.Destroy");
         assertThat(destroy.getName(), is("myDestroy"));
 
         Method acceptSpecial = test.methodFor(

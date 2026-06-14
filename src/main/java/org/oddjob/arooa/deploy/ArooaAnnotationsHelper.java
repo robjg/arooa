@@ -37,7 +37,7 @@ public class ArooaAnnotationsHelper {
 	/**
 	 * Constructor.
 	 * 
-	 * @param classIdentifier
+	 * @param classIdentifier The Arooa Class.
 	 */
 	public ArooaAnnotationsHelper(ArooaClass classIdentifier) {
 
@@ -106,9 +106,9 @@ public class ArooaAnnotationsHelper {
 	/**
 	 * Add a property definition.
 	 * 
-	 * @param definition
+	 * @param definition The Property Definition Bean.
 	 */
-	public void addPropertyDefinition(PropertyDefinitionBean definition) {
+	public void addPropertyDefinition(PropertyDefinitionBean definition)  {
 		
 		String annotation = definition.getAnnotation();
 		
@@ -116,9 +116,14 @@ public class ArooaAnnotationsHelper {
 			return;
 		}
 
-		addProperty(new SyntheticArooaAnnotation(annotation), 
-				definition.getName());
-	}
+        try {
+            addProperty(SyntheticArooaAnnotation.named(annotation),
+                    definition.getName());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Failed adding annotation [" +
+					annotation + "] for property [" + definition.getName() + "]");
+        }
+    }
 	
 	/**
 	 * Add an annotation definition.
@@ -142,7 +147,7 @@ public class ArooaAnnotationsHelper {
 			Method method = theClass.getMethod(definition.getMethod(),
 					parameterTypes);
 
-			addMethod(new SyntheticArooaAnnotation(definition.getName()),
+			addMethod(SyntheticArooaAnnotation.named(definition.getName()),
 					method);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -164,7 +169,20 @@ public class ArooaAnnotationsHelper {
 		
 		return values.toArray(new ArooaAnnotation[0]);
 	}
-	
+
+	public List<Annotation> annotationsFor(String propertyName) {
+		Map<String, ArooaAnnotation> annotations = propertyAnnotations.get(propertyName);
+		if (annotations == null) {
+			return List.of();
+		}
+
+		return annotations.values()
+				.stream()
+				.map(arooaAnnotation
+						-> arooaAnnotation.realAnnotation(Annotation.class))
+				.toList();
+	}
+
 	public ArooaAnnotation annotationForProperty(String propertyName,
 			String annotationName) {
 		Map<String, ArooaAnnotation> annotations = propertyAnnotations.get(propertyName);
@@ -229,7 +247,7 @@ public class ArooaAnnotationsHelper {
 						annotationName + ": " + methods);
 			}
 			else {
-				return methods.get(0);
+				return methods.getFirst();
 			}
 		}
 
@@ -245,7 +263,7 @@ public class ArooaAnnotationsHelper {
 						annotationName + ": " + properties);
 			}
 			else {
-				return properties.get(0);
+				return properties.getFirst();
 			}
 		}
 

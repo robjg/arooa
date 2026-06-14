@@ -5,11 +5,14 @@ import org.oddjob.arooa.ArooaAnnotations;
 import org.oddjob.arooa.deploy.annotations.ArooaAttribute;
 import org.oddjob.arooa.deploy.annotations.ArooaComponent;
 import org.oddjob.arooa.deploy.annotations.ArooaHidden;
+import org.oddjob.arooa.deploy.test.Special;
 import org.oddjob.arooa.life.Configured;
 import org.oddjob.arooa.life.Destroy;
 import org.oddjob.arooa.life.Initialised;
 import org.oddjob.arooa.life.SimpleArooaClass;
 
+import javax.inject.Named;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Method;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -44,7 +47,6 @@ public class ArooaAnnotationsHelperTest {
         }
     }
 
-
     @Test
     public void testMethodAnnotations() {
 
@@ -54,7 +56,7 @@ public class ArooaAnnotationsHelperTest {
 
         AnnotationDefinitionBean def = new AnnotationDefinitionBean();
         def.setMethod("missing");
-        def.setName("org.oddjob.test.Anything");
+        def.setName("org.oddjob.arooa.deploy.test.Special");
 
         try {
             test.addAnnotationDefinition(def);
@@ -81,7 +83,7 @@ public class ArooaAnnotationsHelperTest {
 
         assertThat(method.getName(), is("doStuff"));
 
-        method = arooaAnnotations.methodFor("org.oddjob.test.Anything");
+        method = arooaAnnotations.methodFor(Special.class.getName());
 
         assertThat(method.getName(), is("doStuff"));
 
@@ -123,14 +125,14 @@ public class ArooaAnnotationsHelperTest {
 
         PropertyDefinitionBean definition = new PropertyDefinitionBean();
         definition.setName("colour");
-        definition.setAnnotation("org.oddjob.test.Anything");
+        definition.setAnnotation("org.oddjob.arooa.deploy.test.Special");
 
         test.addPropertyDefinition(definition);
 
         annotation = test.annotationForProperty("colour",
-                "org.oddjob.test.Anything");
+                "org.oddjob.arooa.deploy.test.Special");
 
-        assertThat(annotation.getName(), is("org.oddjob.test.Anything"));
+        assertThat(annotation.getName(), is(Special.class.getName()));
 
         annotation = test.annotationForProperty("shape",
                 ArooaAttribute.class.getName());
@@ -162,4 +164,47 @@ public class ArooaAnnotationsHelperTest {
 
         assertThat(arooaAnnotation, notNullValue());
     }
+
+    @java.lang.annotation.Documented
+    @java.lang.annotation.Retention(RetentionPolicy.RUNTIME)
+    @javax.inject.Qualifier
+    public @interface Flower {
+        Choice choice() default Choice.POPPY;
+        enum Choice { ROSE, POPPY, DAISY }
+    }
+
+
+
+    public static class QualifiedBean {
+
+        @Named("red")
+        public void setFoo(String foo) {
+
+        }
+
+        @Flower(choice = Flower.Choice.ROSE)
+        public void setBar(String foo) {
+
+        }
+    }
+
+    @Test
+    public void testQualifiers() {
+
+        ArooaAnnotationsHelper test = new ArooaAnnotationsHelper(
+                new SimpleArooaClass(QualifiedBean.class));
+
+        Named namedAnnotation = test.annotationForProperty(
+                "foo", Named.class.getName())
+                .realAnnotation(Named.class);
+
+        assertThat(namedAnnotation.value(), is("red"));
+
+        Flower flowerAnnotation = test.annotationForProperty(
+                "bar", Flower.class.getName())
+                .realAnnotation(Flower.class);
+
+        assertThat(flowerAnnotation.choice(), is(Flower.Choice.ROSE));
+    }
+
 }

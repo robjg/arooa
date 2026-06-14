@@ -5,6 +5,8 @@ import org.oddjob.arooa.ArooaBeanDescriptor;
 import org.oddjob.arooa.ConfiguredHow;
 import org.oddjob.arooa.ParsingInterceptor;
 
+import java.lang.annotation.Annotation;
+
 /**
  * Link together two {@link ArooaBeanDescriptor}s.
  * 
@@ -49,7 +51,16 @@ public class LinkedBeanDescriptor implements ArooaBeanDescriptor {
 		}
 		return secondary.getFlavour(property);
 	}
-	
+
+	@Override
+	public Annotation getQualifier(String property) {
+		Annotation result = primary.getQualifier(property);
+		if (result != null) {
+			return result;
+		}
+		return secondary.getQualifier(property);
+	}
+
 	@Override
 	public ParsingInterceptor getParsingInterceptor() {
 		ParsingInterceptor result = primary.getParsingInterceptor();

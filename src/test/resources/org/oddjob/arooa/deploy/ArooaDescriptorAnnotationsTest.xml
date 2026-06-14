@@ -4,7 +4,7 @@
         <arooa:bean-def element="my-bean"
             className="org.oddjob.arooa.deploy.ArooaDescriptorAnnotationsTest$MyBean">
             <annotations>
-                <arooa:annotation name="org.oddjob.arooa.life.ArooaDestroy"
+                <arooa:annotation name="org.oddjob.arooa.life.Destroy"
                         method="myDestroy"/>
                 <arooa:annotation name="org.oddjob.arooa.deploy.test.Special"
                         method="acceptSpecial" 

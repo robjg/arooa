@@ -11,6 +11,7 @@ import org.oddjob.arooa.reflect.ArooaClass;
 import org.oddjob.arooa.reflect.ArooaNoPropertyException;
 import org.oddjob.arooa.utils.Pair;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -148,6 +149,11 @@ public class MagicBeanDefinition {
 
         @Override
         public String getFlavour(String property) {
+            return null;
+        }
+
+        @Override
+        public Annotation getQualifier(String property) {
             return null;
         }
 

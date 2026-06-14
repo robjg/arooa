@@ -11,25 +11,33 @@ import java.lang.annotation.Annotation;
  */
 public class SyntheticArooaAnnotation implements ArooaAnnotation {
 	
-	private final String annotationName;
+	private final Annotation annotation;
 	
 	/**
 	 * Constructor.
 	 * 
-	 * @param annotationName The name of the annotation.
+	 * @param annotation The name of the annotation.
 	 */
-	public SyntheticArooaAnnotation(String annotationName) {
-		this.annotationName = annotationName;
+	private SyntheticArooaAnnotation(Annotation annotation) {
+		this.annotation = annotation;
 	}
-	
+
 	@Override
 	public String getName() {
-		return annotationName;
+		return annotation.annotationType().getName();
 	}
 	
 	@Override
 	public <T extends Annotation> T realAnnotation(Class<T> annotationType) {
-		return null;
+		return annotationType.cast(annotation);
 	}
 
+	public static SyntheticArooaAnnotation named(String name) throws ClassNotFoundException {
+		return new SyntheticArooaAnnotation(SyntheticAnnotation.named(name));
+	}
+
+	public static SyntheticArooaAnnotation named(String name, ClassLoader classLoader) throws ClassNotFoundException {
+		return new SyntheticArooaAnnotation(SyntheticAnnotation.with()
+				.classLoader(classLoader).named(name));
+	}
 }

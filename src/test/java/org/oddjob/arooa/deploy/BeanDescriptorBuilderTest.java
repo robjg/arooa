@@ -8,6 +8,8 @@ import org.oddjob.arooa.ParsingInterceptor;
 import org.oddjob.arooa.life.SimpleArooaClass;
 import org.oddjob.arooa.reflect.ArooaClass;
 
+import javax.inject.Named;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
@@ -31,7 +33,10 @@ public class BeanDescriptorBuilderTest {
         test.setComponentProperty("someComponent");
         test.setTextProperty("someText");
         test.addHiddenProperty("someHidden");
-        test.setFlavour("someElement", "blue");
+        test.setQualifier("someElement",
+                SyntheticAnnotation.with()
+                        .value("blue")
+                        .of(Named.class));
         test.setParsingInterceptor(parsingInterceptor);
         test.setArooaAnnotations(arooaAnnotations);
 
