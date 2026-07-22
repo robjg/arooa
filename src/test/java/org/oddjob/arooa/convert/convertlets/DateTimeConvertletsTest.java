@@ -10,6 +10,7 @@ import org.oddjob.arooa.convert.DefaultConverter;
 import org.oddjob.arooa.convert.NoConversionAvailableException;
 import org.oddjob.arooa.utils.DateTimeHelper;
 
+import java.time.Duration;
 import java.time.Instant;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -40,6 +41,20 @@ class DateTimeConvertletsTest {
         assertThat(converter.convert(instant, long.class),
                 is(millis));
 
+    }
+
+    @Test
+    void duration() throws NoConversionAvailableException, ConversionFailedException {
+
+        ArooaConverter converter = DefaultConverter.from(new DateTimeConvertlets());
+
+        Duration duration = converter.convert("PT15M", Duration.class);
+
+        assertThat(duration, is(Duration.ofMinutes(15)));
+
+        String text = converter.convert(duration, String.class);
+
+        assertThat(text, is("PT15M"));
     }
 
 }
